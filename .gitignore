@@ -1,3 +1,14 @@
+*.~uml
+*.csv 
+*.dll
+*.log
+*.exe
+*.txt
+*.dump
+*.dmp
+*.dat 
+*.mak 
+
 # Prerequisites
 *.d
 
@@ -28,5 +39,32 @@
 
 # Executables
 *.exe
+*.exp
 *.out
 *.app
+
+# msvc
+*.db
+*.suo
+*.user
+*.opendb
+*.sdf
+*.opensdf
+
+#fgui
+*.info
+
+#hive
+*.err
+
+*.zip
+*.7z
+*.tar
+
+
+#ignore this dir##
+.vs/
+.vscode/
+temp/
+tools/cfg_dir/
+tools/cfg_xls/
