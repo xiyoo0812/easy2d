@@ -22,22 +22,22 @@ namespace Easy2D
     typedef unsigned short  uchar16;
     typedef int             char32;
     typedef unsigned int    uchar32;
+    typedef unsigned char   BYTE;
 
     //bit types
-    typedef unsigned char   bit8;
-    typedef unsigned short  bit16;
-    typedef unsigned int    bit32;
+    typedef char            int8;
+    typedef short           int16;
+    typedef int             int32;
+    typedef long long       int64;
     //byte types
-    typedef unsigned char   byte;
-    typedef unsigned short  byte2;
-    typedef unsigned int    byte4;
-    #if defined(_MSC_VER)
-    typedef __int64         bit64;
-    typedef __int64         byte16;
-    #else
-    typedef long long       bit64;
-    typedef long long       byte16;
-    #endif
+    typedef unsigned char   uint8;
+    typedef unsigned short  uint16;
+    typedef unsigned int    uint32;
+    typedef unsigned long long uint64;
+
+    typedef float           float32;
+    typedef double          float64;
+    typedef long double     float128;
 
     //std
     typedef std::string             String;

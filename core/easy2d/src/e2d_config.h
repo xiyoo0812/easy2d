@@ -4,6 +4,7 @@
 #include <ctime>
 #include <iostream>
 #include <algorithm>
+#include <stdio.h>
 
 #include "base/e2d_types.h"
 
@@ -12,9 +13,12 @@
         #define NOMINMAX 
     #endif
     #define PLATFORM_WINDOW
+    #define _CRT_SECURE_NO_DEPRECATE
+    #define _CRT_NONSTDC_NO_WARNINGS
     #include <windows.h>
+    #include <gl/glew.h>
     #include <gl/GL.h>
-    #include <GL/glu.h>
+    #include <gl/glu.h>
 #endif
 
 #endif

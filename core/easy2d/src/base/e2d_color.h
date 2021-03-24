@@ -6,170 +6,188 @@
 
 namespace Easy2D
 {
-    /* pixel structure */
-    struct Color
+    struct Color final
     {
-        /*
-        black	Solid black. RGBA is (0, 0, 0, 1).
-        blue	Solid blue. RGBA is (0, 0, 1, 1).
-        clear	Completely transparent. RGBA is (0, 0, 0, 0).
-        cyan	Cyan. RGBA is (0, 1, 1, 1).
-        gray	Gray. RGBA is (0.5, 0.5, 0.5, 1).
-        green	Solid green. RGBA is (0, 1, 0, 1).
-        grey	English spelling for gray. RGBA is the same (0.5, 0.5, 0.5, 1).
-        magenta	Magenta. RGBA is (1, 0, 1, 1).
-        red	Solid red. RGBA is (1, 0, 0, 1).
-        white	Solid white. RGBA is (1, 1, 1, 1).
-        yellow  Yellow. RGBA is (1, 0.92, 0.016, 1), but the color is nice to look at!
-        */
+        float32 r, g, b, a;
 
-        //static colors
-        static Color BLACK,
-               BLUE,
-               CLEAR,
-               CYAN,
-               GRAY,
-               GREEN,
-               GREY,
-               MAGENTA,
-               RED,
-               WHITE,
-               YELLOW;
-        //attributes
-        uchar r,g,b,a;
+        static const Color
+            AliceBlue,
+            AntiqueWhite,
+            Aqua,
+            Aquamarine,
+            Azure,
+            Beige,
+            Bisque,
+            Black,
+            BlanchedAlmond,
+            Blue,
+            BlueViolet,
+            Brown,
+            BurlyWood,
+            CadetBlue,
+            Chartreuse,
+            Chocolate,
+            Colar,
+            CornflowerBlue,
+            Cornsilk,
+            Crimson,
+            Cyan,
+            DarkBlue,
+            DarkCyan,
+            DarkGoldenrod,
+            DarkGray,
+            DarkGreen,
+            DarkKhaki,
+            DarkMagenta,
+            DarkOliveGreen,
+            DarkOrange,
+            DarkOrchild,
+            DarkRed,
+            DarkSalmon,
+            DarkSeaGreen,
+            DarkSlateBlue,
+            DarkSlateGray,
+            DarkTurquoise,
+            DarkViolet,
+            DeepPink,
+            DeepSkyBlue,
+            DimGray,
+            DodgetBlue,
+            Firebrick,
+            FloralWhite,
+            ForestGreen,
+            Fuchsia,
+            Gainsboro,
+            GhostWhite,
+            Gold,
+            Goldenrod,
+            Gray,
+            Green,
+            GreenYellow,
+            Honeydew,
+            HotPink,
+            IndianRed,
+            Indigo,
+            Ivory,
+            Khaki,
+            Lavender,
+            LavenderBlush,
+            LawnGreen,
+            LemonChiffon,
+            LightBlue,
+            LightCoral,
+            LightCyan,
+            LightGoldenrodYellow,
+            LightGray,
+            LightGreen,
+            LightPink,
+            LightSalmon,
+            LightSeaGreen,
+            LightSkyBlue,
+            LightSlateGray,
+            LightSteelBlue,
+            LightYellow,
+            Lime,
+            LimeGreen,
+            Linen,
+            Magenta,
+            Maroon,
+            MediumAquamarine,
+            MediumBlue,
+            MediumOrchid,
+            MediumPurple,
+            MediumSeaGreen,
+            MediumSlateBlue,
+            MediumSpringGreen,
+            MediumTurquoise,
+            MediumVioletRed,
+            MidnightBlue,
+            MintCream,
+            MistyRose,
+            Moccasin,
+            NavajoWhite,
+            Navy,
+            OldLace,
+            Olive,
+            OliveDrab,
+            Orange,
+            OrangeRed,
+            Orchid,
+            PaleGoldenrod,
+            PaleGreen,
+            PaleTurquoise,
+            PaleVioletRed,
+            PapayaWhip,
+            PeachPuff,
+            Peru,
+            Pink,
+            Plum,
+            PowderBlue,
+            Purple,
+            Red,
+            RosyBrown,
+            RoyalBlue,
+            SaddleBrown,
+            Salmon,
+            SandyBrown,
+            SeaGreen,
+            SeaShell,
+            Sienna,
+            Silver,
+            SkyBlue,
+            SlateBlue,
+            SlateGray,
+            Snow,
+            SpringGreen,
+            SteelBlue,
+            Tan,
+            Teal,
+            Thistle,
+            Tomato,
+            Transparant,
+            Turqouise,
+            Violet,
+            Wheat,
+            White,
+            WhiteSmoke,
+            Yellow,
+            YellowGreen;
 
-        //methos
-        Color()
-        {
-            r=g=b=a=255;
-        }
+        Color();
+        Color(float32 R, float32 G, float32 B, float32 A = 1.0f);
+        Color(const Color & yRef);
+        Color(Color && yRef);
+        Color(const Vec3 & yRef);
+        Color(const Vec4 & yRef);
 
-        Color(uchar r, uchar g, uchar b, uchar a):r(r),g(g),b(b),a(a) {}
+        Color & operator=(const Color & yRef);
+        Color & operator=(Color && yRef);
+        Color & operator=(const Vec3 & yRef);
+        Color & operator=(const Vec4 & yRef);
 
-        void setColor(uchar r, uchar g, uchar b, uchar a)
-        {
-            this->r=r;
-            this->g=g;
-            this->b=b;
-            this->a=a;
-        }
+        Color & operator+=(const Color & yRef);
+        Color & operator+=(const Vec3 & yRef);
+        Color & operator+=(const Vec4 & yRef);
 
-        Color operator + (const Color& v) const
-        {
-            Color out;
-            out.r=(uchar)Math::clamp(r+v.r,255,0);
-            out.g=(uchar)Math::clamp(g+v.g,255,0);
-            out.b=(uchar)Math::clamp(b+v.b,255,0);
-            out.a=(uchar)Math::clamp(a+v.a,255,0);
-            return out;
-        }
-    
-        Color operator - (const Color& v) const
-        {
-            Color out;
-            out.r=(uchar)Math::clamp(r-v.r,255,0);
-            out.g=(uchar)Math::clamp(g-v.g,255,0);
-            out.b=(uchar)Math::clamp(b-v.b,255,0);
-            out.a=(uchar)Math::clamp(a-v.a,255,0);
-            return out;
-        }
-    
-        Color operator * (const Color& v) const
-        {
-            Color out;
-            out.r=(uchar)Math::clamp((r*v.r)/255,255,0);
-            out.g=(uchar)Math::clamp((g*v.g)/255,255,0);
-            out.b=(uchar)Math::clamp((b*v.b)/255,255,0);
-            out.a=(uchar)Math::clamp((a*v.a)/255,255,0);
-            return out;
-        }
-    
-        bool operator == (const Color& v) const
-        {
-            return r==v.r && g==v.g && b==v.b && a==v.a;
-        }
-    
-        bool operator != (const Color& v) const
-        {
-            return r!=v.r || g!=v.g || b!=v.b || a!=v.a;
-        }
-    
-        Color operator * (const float factor) const
-        {
-            Color out;
-            out.r=(uchar)Math::clamp(r*factor,255.0f,0.0f);
-            out.g=(uchar)Math::clamp(g*factor,255.0f,0.0f);
-            out.b=(uchar)Math::clamp(b*factor,255.0f,0.0f);
-            out.a=(uchar)Math::clamp(a*factor,255.0f,0.0f);
-            return out;
-        }
+        Color & operator-=(const Color & yRef);
+        Color & operator-=(const Vec3 & yRef);
+        Color & operator-=(const Vec4 & yRef);
 
-        operator const uchar* () const
-        {
-            return (const uchar*) this;
-        }
-    
-        operator uchar* () const
-        {
-            return (uchar*) this;
-        }
+        Color operator+(const Color & yRef) const;
+        Color operator+(const Vec3 & yRef) const;
+        Color operator+(const Vec4 & yRef) const;
 
-        float rNormalize() const
-        {
-            return (float)r/255;
-        }
-    
-        float gNormalize() const
-        {
-            return (float)g/255;
-        }
-    
-        float bNormalize() const
-        {
-            return (float)b/255;
-        }
-    
-        float aNormalize() const
-        {
-            return (float)a/255;
-        }
-    
-        Vec4 toNormalize() const
-        {
-            return Vec4(r,g,b,a)/255.0;
-        }
-        const Color& setFromNormalized(const Vec4& v)
-        {
-            r=uchar(v.r*255.0f);
-            g=uchar(v.g*255.0f);
-            b=uchar(v.b*255.0f);
-            a=uchar(v.a*255.0f);
-            return *this;
-        }
-    
-        Vec4 toVec4() const
-        {
-            return Vec4(r,g,b,a);
-        }
-    
-        const Color& setFromVec4(const Vec4& v)
-        {
-            r=uchar(v.r);
-            g=uchar(v.g);
-            b=uchar(v.b);
-            a=uchar(v.a);
-            return *this;
-        }
-    
-        static Color from(const Vec4& v)
-        {
-            return Color(uchar(v.r),uchar(v.g),uchar(v.b),uchar(v.a));
-        }
-    
-        static Color normalized(const Vec4& v)
-        {
-            return Color(uchar(v.r*255.0f),uchar(v.g*255.0f),uchar(v.b*255.0f),uchar(v.a*255.0f));
-        }
+        Color operator-(const Color & yRef) const;
+        Color operator-(const Vec3 & yRef) const;
+        Color operator-(const Vec4 & yRef) const;
+
+        bool operator==(const Color & yRef) const;
+        bool operator==(const Vec3 & yRef) const;
+        bool operator==(const Vec4 & yRef) const;
+
+        bool operator!=(const Color & yRef) const;
+        bool operator!=(const Vec3 & yRef) const;
+        bool operator!=(const Vec4 & yRef) const;
     };
 };
 

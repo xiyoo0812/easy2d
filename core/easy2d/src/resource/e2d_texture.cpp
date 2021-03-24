@@ -1,8 +1,7 @@
 #include "e2d_texture.h"
+#include "base/e2d_image.h"
 //#include <Application.h>
 //#include <RenderContext.h>
-#define IMAGE_LOADER_OPENGL
-//#include <Image.h>
 
 using namespace Easy2D;
 
@@ -138,60 +137,15 @@ bool Texture::load()
     //cpu load
     //load image
     Image image;
-    Path imagePath=rpath;
-    //size sprite
-    spriteWidth=0;
-    spriteHeight=0;
-    //offset?
-    bool textureUVOffset=false;
-    //enable gamma correction?
-	bool gammaCorrection=false;
-    //load image
+    if (image.loadImage(rpath.string()))
     {
-        //get raw file
-        void *data=NULL;
-        size_t len=0;
-        Application::instance()->loadData(imagePath,data,len);
-        image.loadFromData(data, len, Image::getTypeFromExtetion(imagePath.extension()));
-        if(bFlipVertical)
-            image.flipY();
-        if(gammaCorrection)
-            image.gammaCorrection();
-        //save width end height
-        width=realWidth=image.width;
-        height=realHeight=image.height;
-        //set width end height
-        spriteWidth =spriteWidth ? spriteWidth  : realWidth;
-        spriteHeight=spriteHeight? spriteHeight : realHeight;
-        //free raw file
-        free(data);
+        width = realWidth = image.geiWidth();
+        height = realHeight = image.geiHeight();
+        spriteWidth = realWidth;
+        spriteHeight = realHeight;
     }
-    /////////////////////////////////////////////////////////////////////
-    //gen gpu
-    //support only pow of 2?
-    if(Application::instance()->onlyPO2())
-    {
-        bool isNotPO2Width =!Math::isPowerOfTwo(realWidth);
-        bool isNotPO2Height=!Math::isPowerOfTwo(realHeight);
-        bool isNotPO2=(isNotPO2Width||isNotPO2Height);
-        
-        if(isNotPO2Width)
-            realWidth=Math::nextPowerOfTwo(realWidth);
-        if(isNotPO2Width)
-            realHeight=Math::nextPowerOfTwo(realHeight);
-               
-        if(!textureUVOffset && isNotPO2)
-        {
-            //calc offset uv
-            offsetUV.z=(float)width/realWidth;
-            offsetUV.w=(float)height/realHeight;
-        }
-    }
-    if(image.type==TYPE_ALPHA8)
-        image.convertAlphaTo32bit();
-    uint type=image.type;
     //create texture
-    loadFromBinaryData(image.bytes,width,height,realWidth,realHeight,image.type,type);
+    loadFromBinaryData(image.mBuffer,width,height,realWidth,realHeight,image.type,type);
     //is loaded
     loaded=true;
     //if olready getted, build mesh
@@ -238,10 +192,6 @@ bool Texture::loadFromBinaryData(const uchar* bytes, uint width, uint height, ui
 }
 bool Texture::loadFromBinaryData(const uchar* bytes, uint argWidth, uint argHeight, uint argGpuWidth, uint argGpuHeight, uint format, uint type)
 {
-    //error if olready loaded
-    DEBUG_ASSERT(!loaded);
-    /////////////////////////////////////////////////////////////////////
-    //save width end height
     width=argWidth;
     height=argHeight;
     realWidth=argGpuWidth;
@@ -255,13 +205,11 @@ bool Texture::loadFromBinaryData(const uchar* bytes, uint argWidth, uint argHeig
 #endif
     //bind
     bind();
-    CHECK_GPU_ERRORS();
     //add image
     if(bytes)
     {
         RenderContext::subTexture(type,width, height, bytes);
     }
-    CHECK_GPU_ERRORS();
     //is loaded
     loaded=true;
     //is not relodable

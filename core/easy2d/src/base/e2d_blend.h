@@ -4,11 +4,11 @@
 #include "e2d_config.h"
 
 namespace Easy2D
-    {
+{
     //blend
     namespace BLEND
     {
-        enum
+        enum 
         {
             ONE = GL_ONE,
             ZERO = GL_ZERO

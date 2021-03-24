@@ -222,7 +222,6 @@ namespace Easy2D
     }
     //-----------------------------------------------
 
-   
     class Vector2D
     {
     public:

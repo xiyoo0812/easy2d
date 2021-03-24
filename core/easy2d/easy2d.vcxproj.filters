@@ -13,8 +13,14 @@
     <ClCompile Include="src\resource\e2d_resource_group.cpp">
       <Filter>resource</Filter>
     </ClCompile>
-    <ClCompile Include="src\resource\e2d_texture.cpp">
-      <Filter>resource</Filter>
+    <ClCompile Include="src\base\e2d_image.cpp">
+      <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\e2d_texture2d.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\e2d_font.cpp">
+      <Filter>graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -42,8 +48,14 @@
     <ClInclude Include="src\resource\e2d_resource_manager.h">
       <Filter>resource</Filter>
     </ClInclude>
-    <ClInclude Include="src\resource\e2d_texture.h">
-      <Filter>resource</Filter>
+    <ClInclude Include="src\base\e2d_image.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\e2d_texture2d.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\e2d_font.h">
+      <Filter>graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -56,11 +68,11 @@
     <Filter Include="inc">
       <UniqueIdentifier>{eb742b04-8bcc-416d-8d29-2d35a7dd660a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="string">
-      <UniqueIdentifier>{52c2221a-54e6-47b2-a894-789632ba8f89}</UniqueIdentifier>
-    </Filter>
     <Filter Include="resource">
       <UniqueIdentifier>{ad794501-1da9-41f5-a357-0cb63aebfa4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="graphics">
+      <UniqueIdentifier>{65501c58-b5a0-4bbc-a99e-d35a6cf1a362}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -57,7 +57,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>./src;../../extend/lua/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./src;../../extend/stb;../../extend/lua/src;../../extend/luna/src;../../extend/glew/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>RELEASEDEBUG;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -86,7 +86,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>./src;../../extend/lua/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./src;../../extend/stb;../../extend/lua/src;../../extend/luna/src;../../extend/glew/src;../../extend/freetype/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>RELEASEDEBUG;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -113,20 +113,24 @@
   <ItemGroup>
     <ClCompile Include="src\base\e2d_blend.cpp" />
     <ClCompile Include="src\base\e2d_color.cpp" />
+    <ClCompile Include="src\base\e2d_image.cpp" />
+    <ClCompile Include="src\graphics\e2d_font.cpp" />
+    <ClCompile Include="src\graphics\e2d_texture2d.cpp" />
     <ClCompile Include="src\math\e2d_math.cpp" />
     <ClCompile Include="src\resource\e2d_resource_group.cpp" />
-    <ClCompile Include="src\resource\e2d_texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\base\e2d_blend.h" />
     <ClInclude Include="src\base\e2d_color.h" />
+    <ClInclude Include="src\base\e2d_image.h" />
     <ClInclude Include="src\base\e2d_types.h" />
     <ClInclude Include="src\e2d_config.h" />
+    <ClInclude Include="src\graphics\e2d_font.h" />
+    <ClInclude Include="src\graphics\e2d_texture2d.h" />
     <ClInclude Include="src\math\e2d_math.h" />
     <ClInclude Include="src\resource\e2d_resource.h" />
     <ClInclude Include="src\resource\e2d_resource_group.h" />
     <ClInclude Include="src\resource\e2d_resource_manager.h" />
-    <ClInclude Include="src\resource\e2d_texture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
