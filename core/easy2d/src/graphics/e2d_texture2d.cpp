@@ -6,34 +6,34 @@ using namespace Easy2D;
 Texture2D::Texture2D(const String& pPath)
     : mPath(pPath)
 #ifdef ANDROID
-	, mResource(pPath)
+    , mResource(pPath)
 #endif
 {
-	load();
+    load();
 }
 
 #ifdef ANDROID
 void Texture2D::CallbackRead(png_structp png, png_bytep data, png_size_t size)
 {
-	Resource& lReader = *((Resource*)png_get_io_ptr(png));
-	if(!lReader.Read(data,size))
-	{
-		lReader.Close();
-		png_error(png, "Error while reading PNG file");
-	}
+    Resource& lReader = *((Resource*)png_get_io_ptr(png));
+    if (!lReader.Read(data, size))
+    {
+        lReader.Close();
+        png_error(png, "Error while reading PNG file");
+    }
 }
 #endif
 
 Texture2D::~Texture2D()
 {
-	if(mTextureId != 0)
-	{
-		glDeleteTextures(1, &mTextureId);
-		mTextureId = 0;
-	}
-	mWidth = 0;
-	mHeight = 0;
-	mFormat = 0;
+    if (mTextureId != 0)
+    {
+        glDeleteTextures(1, &mTextureId);
+        mTextureId = 0;
+    }
+    mWidth = 0;
+    mHeight = 0;
+    mFormat = 0;
 }
 
 void Texture2D::load()
@@ -56,22 +56,22 @@ void Texture2D::load()
     }
 }
 
-const String & Texture2D::getPath() const
+const String& Texture2D::getPath() const
 {
-	return mPath;
+    return mPath;
 }
 
 int32 Texture2D::getHeight() const
 {
-	return mHeight;
+    return mHeight;
 }
 
 int32 Texture2D::getWidth() const
 {
-	return mWidth;
+    return mWidth;
 }
 
 GLuint Texture2D::getTextureID() const
 {
-	return mTextureId;
+    return mTextureId;
 }

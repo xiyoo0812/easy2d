@@ -1,7 +1,7 @@
 #ifndef COLOR_H
 #define COLOR_H
 
-#include "e2d_math.h"
+#include "math/e2d_math.h"
 
 namespace Easy2D
 {
@@ -154,39 +154,39 @@ namespace Easy2D
 
         Color();
         Color(float32 R, float32 G, float32 B, float32 A = 1.0f);
-        Color(const Color & yRef);
-        Color(Color && yRef);
-        Color(const Vec3 & yRef);
-        Color(const Vec4 & yRef);
+        Color(const Color& yRef);
+        Color(Color&& yRef);
+        Color(const Vec3& yRef);
+        Color(const Vec4& yRef);
 
-        Color & operator=(const Color & yRef);
-        Color & operator=(Color && yRef);
-        Color & operator=(const Vec3 & yRef);
-        Color & operator=(const Vec4 & yRef);
+        Color& operator=(const Color& yRef);
+        Color& operator=(Color&& yRef);
+        Color& operator=(const Vec3& yRef);
+        Color& operator=(const Vec4& yRef);
 
-        Color & operator+=(const Color & yRef);
-        Color & operator+=(const Vec3 & yRef);
-        Color & operator+=(const Vec4 & yRef);
+        Color& operator+=(const Color& yRef);
+        Color& operator+=(const Vec3& yRef);
+        Color& operator+=(const Vec4& yRef);
 
-        Color & operator-=(const Color & yRef);
-        Color & operator-=(const Vec3 & yRef);
-        Color & operator-=(const Vec4 & yRef);
+        Color& operator-=(const Color& yRef);
+        Color& operator-=(const Vec3& yRef);
+        Color& operator-=(const Vec4& yRef);
 
-        Color operator+(const Color & yRef) const;
-        Color operator+(const Vec3 & yRef) const;
-        Color operator+(const Vec4 & yRef) const;
+        Color operator+(const Color& yRef) const;
+        Color operator+(const Vec3& yRef) const;
+        Color operator+(const Vec4& yRef) const;
 
-        Color operator-(const Color & yRef) const;
-        Color operator-(const Vec3 & yRef) const;
-        Color operator-(const Vec4 & yRef) const;
+        Color operator-(const Color& yRef) const;
+        Color operator-(const Vec3& yRef) const;
+        Color operator-(const Vec4& yRef) const;
 
-        bool operator==(const Color & yRef) const;
-        bool operator==(const Vec3 & yRef) const;
-        bool operator==(const Vec4 & yRef) const;
+        bool operator==(const Color& yRef) const;
+        bool operator==(const Vec3& yRef) const;
+        bool operator==(const Vec4& yRef) const;
 
-        bool operator!=(const Color & yRef) const;
-        bool operator!=(const Vec3 & yRef) const;
-        bool operator!=(const Vec4 & yRef) const;
+        bool operator!=(const Color& yRef) const;
+        bool operator!=(const Vec3& yRef) const;
+        bool operator!=(const Vec4& yRef) const;
     };
 };
 

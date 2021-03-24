@@ -18,7 +18,7 @@ Image::Image()
 Image::Image(int width, int height, int bits, bool set_default_color/* =false */, const Color& color/* = Color(255,255,255,255) */)
     :mWidth(width), mHeight(height), mChannels(bits)
 {
-    mBuffer = (BYTE*)malloc(width * height  * mChannels * sizeof(BYTE));
+    mBuffer = (BYTE*)malloc(width * height * mChannels * sizeof(BYTE));
     if (set_default_color)
         for (int x = 0; x < width; ++x)
             for (int y = 0; y < height; ++y)
@@ -41,7 +41,7 @@ bool Image::loadImage(const String& path)
     return false;
 }
 
-bool Image::loadFromData(BYTE *data, int size)
+bool Image::loadFromData(BYTE* data, int size)
 {
     stbi_set_flip_vertically_on_load(true);
     mBuffer = stbi_load_from_memory(data, size, &mWidth, &mHeight, &mChannels, 0);
@@ -91,17 +91,17 @@ Color Image::getPixel(int x, int y)
     int alpha = 255;
     if (mChannels != 3)
         alpha = (int)mBuffer[(y * mWidth + x) * 4 + 3] * 1;
-    return Color((int)mBuffer[(y * mWidth + x)*mChannels] * 1, (int)mBuffer[(y*mWidth + x)*mChannels + 1] * 1, (int)mBuffer[(y*mWidth + x)*mChannels + 2] * 1, alpha);
+    return Color((int)mBuffer[(y * mWidth + x) * mChannels] * 1, (int)mBuffer[(y * mWidth + x) * mChannels + 1] * 1, (int)mBuffer[(y * mWidth + x) * mChannels + 2] * 1, alpha);
 }
 
 //imposta un pixel
-void Image::setPixel(int x, int y, const Color &pixel)
+void Image::setPixel(int x, int y, const Color& pixel)
 {
-    mBuffer[(y*mWidth + x)*mChannels] = pixel.r;
-    mBuffer[(y*mWidth + x)*mChannels + 1] = pixel.g;
-    mBuffer[(y*mWidth + x)*mChannels + 2] = pixel.b;
+    mBuffer[(y * mWidth + x) * mChannels] = pixel.r;
+    mBuffer[(y * mWidth + x) * mChannels + 1] = pixel.g;
+    mBuffer[(y * mWidth + x) * mChannels + 2] = pixel.b;
     if (mChannels != 3)
-        mBuffer[(y*mWidth + x) * 4 + 3] = pixel.a;
+        mBuffer[(y * mWidth + x) * 4 + 3] = pixel.a;
 }
 
 //restituisci subImage
@@ -110,21 +110,21 @@ Image* Image::getImage(Image* surce, int x, int y, int width, int height)
     int _x, _y;
     Color RGBA;
     //creo la memoria
-    BYTE* bytes = (BYTE*)malloc(width*height*surce->mChannels * sizeof(BYTE));
+    BYTE* bytes = (BYTE*)malloc(width * height * surce->mChannels * sizeof(BYTE));
 
     //creo una nuova immagine
-    Image *out_img = new Image();
+    Image* out_img = new Image();
 
     for (_y = y; _y < (height + y); _y++)
     {
         for (_x = x; _x < (width + x); _x++)
         {
             RGBA = surce->getPixel(_x, _y);
-            bytes[((_y - y)*width + _x - x)*surce->mChannels] = (BYTE)RGBA.r;
-            bytes[((_y - y)*width + _x - x)*surce->mChannels + 1] = (BYTE)RGBA.g;
-            bytes[((_y - y)*width + _x - x)*surce->mChannels + 2] = (BYTE)RGBA.b;
+            bytes[((_y - y) * width + _x - x) * surce->mChannels] = (BYTE)RGBA.r;
+            bytes[((_y - y) * width + _x - x) * surce->mChannels + 1] = (BYTE)RGBA.g;
+            bytes[((_y - y) * width + _x - x) * surce->mChannels + 2] = (BYTE)RGBA.b;
             if (surce->mChannels == 4)
-                bytes[((_y - y)*width + _x - x)*surce->mChannels + 3] = (BYTE)RGBA.a;
+                bytes[((_y - y) * width + _x - x) * surce->mChannels + 3] = (BYTE)RGBA.a;
         }
     }
     //salvo
@@ -139,7 +139,7 @@ Image* Image::getImage(Image* surce, int x, int y, int width, int height)
 //scale image:
 bool Image::scale(int newWidth, int newHeight)
 {
-    BYTE *newbytes = (BYTE *)malloc(mChannels * newWidth * newHeight);
+    BYTE* newbytes = (BYTE*)malloc(mChannels * newWidth * newHeight);
     if (stbir_resize(mBuffer, mWidth, mHeight, 0, newbytes, newWidth, newHeight, 0, STBIR_TYPE_UINT8, mChannels, STBIR_ALPHA_CHANNEL_NONE, 0,
         STBIR_EDGE_CLAMP, STBIR_EDGE_CLAMP, STBIR_FILTER_BOX, STBIR_FILTER_BOX, STBIR_COLORSPACE_SRGB, nullptr) == 0)
     {
@@ -156,13 +156,13 @@ bool Image::scale(int newWidth, int newHeight)
 // OpenGL bite format
 BYTE& Image::pixel(BYTE* bytes, int width, int x, int y, int c)
 {
-    return bytes[(y*width + x) * 3 + c];
+    return bytes[(y * width + x) * 3 + c];
 }
 
 // OpenGL screen save
 Image* Image::getScreenshot(int width, int height)
 {
-    Image *out_img = new Image();
+    Image* out_img = new Image();
     out_img->mWidth = width;
     out_img->mHeight = height;
     out_img->mChannels = 4;

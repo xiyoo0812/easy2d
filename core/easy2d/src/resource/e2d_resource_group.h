@@ -17,12 +17,12 @@ namespace Easy2D
 {
     class ResourcesGroup
     {
-//         ResourcesManager<Font>* fonts;
-//         ResourcesManager<Mesh>* meshes;
-//         ResourcesManager<Sound>* sounds;
-//         ResourcesManager<Shader>* shaders;
-//         ResourcesManager<Texture>* textures;
-//         ResourcesManager<FrameSet>* frameSets;
+        //         ResourcesManager<Font>* fonts;
+        //         ResourcesManager<Mesh>* meshes;
+        //         ResourcesManager<Sound>* sounds;
+        //         ResourcesManager<Shader>* shaders;
+        //         ResourcesManager<Texture>* textures;
+        //         ResourcesManager<FrameSet>* frameSets;
 
     public:
         template<typename T>
@@ -30,7 +30,7 @@ namespace Easy2D
         {
             return nullptr;
         }
-    
+
     private:
         //is subscribe
         bool isSubscribed = false;
@@ -88,24 +88,24 @@ namespace Easy2D
         /** load all resources returned  */
         inline void load()
         {
-//             textures.load();
-//             meshes.load();
-//             frameSets.load();
-//             fonts.load();
-//             sounds.load();
-//             scripts.load();
-//             shaders.load();
+            //             textures.load();
+            //             meshes.load();
+            //             frameSets.load();
+            //             fonts.load();
+            //             sounds.load();
+            //             scripts.load();
+            //             shaders.load();
         }
         /** unload all resources returned  */
         inline void unload(bool destroy)
         {
-//             textures.unload(destroy);
-//             meshes.unload(destroy);
-//             frameSets.unload(destroy);
-//             fonts.unload(destroy);
-//             sounds.unload(destroy);
-//             scripts.unload(destroy);
-//             shaders.unload(destroy);
+            //             textures.unload(destroy);
+            //             meshes.unload(destroy);
+            //             frameSets.unload(destroy);
+            //             fonts.unload(destroy);
+            //             sounds.unload(destroy);
+            //             scripts.unload(destroy);
+            //             shaders.unload(destroy);
         }
         /** directory of resources */
         String getResourcesDirectory()
@@ -115,36 +115,36 @@ namespace Easy2D
         /** reload only gpu resource */
         void reloadGpuResouce();
     };
-//     template<>
-//     inline ResourcesManager<Texture>& ResourcesGroup::getManager<Texture>()
-//     {
-//         return textures;
-//     }
-//     template<>
-//     inline ResourcesManager<Mesh>& ResourcesGroup::getManager<Mesh>()
-//     {
-//         return meshes;
-//     }
-//     template<>
-//     inline ResourcesManager<FrameSet>& ResourcesGroup::getManager<FrameSet>()
-//     {
-//         return frameSets;
-//     }
-//     template<>
-//     inline ResourcesManager<Font>& ResourcesGroup::getManager<Font>()
-//     {
-//         return fonts;
-//     }
-//     template<>
-//     inline ResourcesManager<Sound>& ResourcesGroup::getManager<Sound>()
-//     {
-//         return sounds;
-//     }
-//     template<>
-//     inline ResourcesManager<Shader>& ResourcesGroup::getManager<Shader>()
-//     {
-//         return shaders;
-//     }
+    //     template<>
+    //     inline ResourcesManager<Texture>& ResourcesGroup::getManager<Texture>()
+    //     {
+    //         return textures;
+    //     }
+    //     template<>
+    //     inline ResourcesManager<Mesh>& ResourcesGroup::getManager<Mesh>()
+    //     {
+    //         return meshes;
+    //     }
+    //     template<>
+    //     inline ResourcesManager<FrameSet>& ResourcesGroup::getManager<FrameSet>()
+    //     {
+    //         return frameSets;
+    //     }
+    //     template<>
+    //     inline ResourcesManager<Font>& ResourcesGroup::getManager<Font>()
+    //     {
+    //         return fonts;
+    //     }
+    //     template<>
+    //     inline ResourcesManager<Sound>& ResourcesGroup::getManager<Sound>()
+    //     {
+    //         return sounds;
+    //     }
+    //     template<>
+    //     inline ResourcesManager<Shader>& ResourcesGroup::getManager<Shader>()
+    //     {
+    //         return shaders;
+    //     }
 };
 
 #endif

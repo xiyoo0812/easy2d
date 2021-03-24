@@ -74,6 +74,9 @@
     <ClCompile Include="build\windows\ftdebug.c" />
     <ClCompile Include="src\lzw\ftlzw.c" />
     <ClCompile Include="src\base\ftsystem.c" />
+    <ClCompile Include="src\autofit\autofit.c" />
+    <ClCompile Include="src\base\ftbase.c" />
+    <ClCompile Include="src\bdf\bdf.c" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\base\ftver.rc" />

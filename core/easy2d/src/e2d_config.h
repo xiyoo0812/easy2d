@@ -4,6 +4,7 @@
 #include <ctime>
 #include <iostream>
 #include <algorithm>
+#include <tchar.h>
 #include <stdio.h>
 
 #include "base/e2d_types.h"

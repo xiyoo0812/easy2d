@@ -8,7 +8,7 @@ namespace Easy2D
     //blend
     namespace BLEND
     {
-        enum 
+        enum
         {
             ONE = GL_ONE,
             ZERO = GL_ZERO
@@ -64,7 +64,7 @@ namespace Easy2D
 
         //utilities
         String toString(uint blend);
-        uint fromString(String blend,int vlDefault=BLEND::ZERO);
+        uint fromString(String blend, int vlDefault = BLEND::ZERO);
 
     };
 };

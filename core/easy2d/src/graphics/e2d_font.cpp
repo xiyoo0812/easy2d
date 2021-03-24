@@ -66,7 +66,7 @@ void Font::unload()
 #endif
 }
 
-void Font::make_D_List(FT_Face face, uchar ch, GLuint * tex_base)
+void Font::make_D_List(FT_Face face, uchar ch, GLuint* tex_base)
 {
     auto error = FT_Load_Char(face, ch, FT_LOAD_DEFAULT);
     if (error)
@@ -125,7 +125,7 @@ void Font::make_D_List(FT_Face face, uchar ch, GLuint * tex_base)
     mCharacterInfoMap.at(ch).uvDimensions = Vec2(x, y);
 }
 
-const String & Font::getFontPath() const
+const String& Font::getFontPath() const
 {
     return mFontPath;
 }
@@ -176,7 +176,7 @@ int32 Font::getMinLetterHeight() const
 uint32 Font::getStringLength(const String& string) const
 {
     int32 length = 0;
-    const char *line = string.c_str();
+    const char* line = string.c_str();
     for (uint32 i = 0; line[i] != 0; ++i)
     {
         length += mCharacterInfoMap.at(line[i]).letterDimensions.x;

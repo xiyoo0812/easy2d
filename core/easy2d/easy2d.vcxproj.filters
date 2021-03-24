@@ -16,9 +16,6 @@
     <ClCompile Include="src\graphics\e2d_font.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\base\e2d_math.cpp">
-      <Filter>base</Filter>
-    </ClCompile>
     <ClCompile Include="src\graphics\e2d_font_manager.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
@@ -28,8 +25,32 @@
     <ClCompile Include="src\graphics\e2d_image.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\base\e2d_rect.cpp">
-      <Filter>base</Filter>
+    <ClCompile Include="src\math\e2d_aabb.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\math\e2d_angel.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\math\e2d_math.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\math\e2d_matrix.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\math\e2d_rect.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\math\e2d_vector2d.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\math\e2d_vector3d.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\math\e2d_vector4d.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\e2d_shader.cpp">
+      <Filter>graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -60,9 +81,6 @@
     <ClInclude Include="src\graphics\e2d_font.h">
       <Filter>graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\base\e2d_math.h">
-      <Filter>base</Filter>
-    </ClInclude>
     <ClInclude Include="src\graphics\e2d_font_manager.h">
       <Filter>graphics</Filter>
     </ClInclude>
@@ -72,11 +90,35 @@
     <ClInclude Include="src\graphics\e2d_image.h">
       <Filter>graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\base\e2d_rect.h">
-      <Filter>base</Filter>
-    </ClInclude>
     <ClInclude Include="src\base\e2d_singleton.h">
       <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\math\e2d_aabb.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\math\e2d_angel.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\math\e2d_math.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\math\e2d_matrix.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\math\e2d_rect.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\math\e2d_vector2d.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\math\e2d_vector3d.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\math\e2d_vector4d.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\e2d_shader.h">
+      <Filter>graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -91,6 +133,9 @@
     </Filter>
     <Filter Include="graphics">
       <UniqueIdentifier>{65501c58-b5a0-4bbc-a99e-d35a6cf1a362}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math">
+      <UniqueIdentifier>{7366264e-2b7d-4f24-8c86-73b0108e929c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

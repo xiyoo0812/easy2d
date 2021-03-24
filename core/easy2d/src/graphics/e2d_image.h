@@ -10,24 +10,24 @@ namespace Easy2D
     public:
         //constructors
         Image();
-        Image(int width, int height, int bits, bool set_default_color=false, const Color& color= Color(255,255,255,255));
+        Image(int width, int height, int bits, bool set_default_color = false, const Color& color = Color(255, 255, 255, 255));
         //destructor
         ~Image();
         //load a image from file
         bool loadImage(const String& path);
-        bool loadFromData(BYTE *data, int size);
+        bool loadFromData(BYTE* data, int size);
         //save in a file
         bool save(const String& path);
         //clear
         void clear();
         //get a pixel
-        Color getPixel(int x,int y);
+        Color getPixel(int x, int y);
         //imposta un pixel
-        void setPixel(int x, int y, const Color &pixel);
+        void setPixel(int x, int y, const Color& pixel);
         //scale image:
         bool scale(int width, int height);
         //width
-        inline int getWidth() 
+        inline int getWidth()
         {
             return mWidth;
         }
@@ -48,7 +48,7 @@ namespace Easy2D
         }
 
         //returna a sub immage
-        static Image* getImage(Image* surce, int x,int y, int width, int height);
+        static Image* getImage(Image* surce, int x, int y, int width, int height);
         // return openGL bite format
         static BYTE& pixel(BYTE* bytes, int width, int x, int y, int c);
         // save a openGL screen

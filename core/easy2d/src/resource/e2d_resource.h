@@ -14,16 +14,16 @@ namespace Easy2D
     {
     public:
         //create a resource
-        Resource(ResourcesManager<T> *rsmr = nullptr, const Path& sfile = "")
+        Resource(ResourcesManager<T>* rsmr = nullptr, const Path& sfile = "")
             :ptrResources(rsmr), rpath(sfile)
         {
         };
         /*manager show header disable this method*/
         void release(bool dtach = true)
         {
-            if(((T*)this)->T::isLoad())
+            if (((T*)this)->T::isLoad())
                 ((T*)this)->T::unload();
-            if(dtach && cbRelease)
+            if (dtach && cbRelease)
                 cbRelease(this);
         }
         //getter
@@ -36,8 +36,8 @@ namespace Easy2D
             return reloadable;
         }
         //load methods
-        virtual bool load()=0;
-        virtual bool unload()=0;
+        virtual bool load() = 0;
+        virtual bool unload() = 0;
         //no virtual methods
         inline const String& getName() const
         {
@@ -58,11 +58,11 @@ namespace Easy2D
 
         inline void setName(const String& name)
         {
-            this->name=name;
+            this->name = name;
         }
         inline void setReleaseCallBack(std::function<void(Resource<T>*)> cbRelease)
         {
-            this->cbRelease=cbRelease;
+            this->cbRelease = cbRelease;
         }
 
         String name;

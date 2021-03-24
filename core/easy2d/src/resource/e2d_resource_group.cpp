@@ -13,11 +13,11 @@ ResourcesGroup::ResourcesGroup(const String& rsname, const Path& path)
 void ResourcesGroup::subscription(const String& rgname)
 {
     //save name
-    name=rgname;
+    name = rgname;
     //regist this resource group
     //Application::instance()->subscriptionResourcesGroup(name, this);
     //is subscribed
-    isSubscribed=true;
+    isSubscribed = true;
 }
 
 void ResourcesGroup::unsubscription()
@@ -50,16 +50,16 @@ void ResourcesGroup::addResourceFiles(const String& rsname, const Path& path)
 ResourcesGroup::~ResourcesGroup()
 {
     //unregist this resource group
-    if(isSubscribed)
+    if (isSubscribed)
         unsubscription();
 }
 
 /** reload only gpu resource */
 void ResourcesGroup::reloadGpuResouce()
 {
-//     textures.__forceReload();
-//     meshes.__forceReload();
-//     frameSets.__forceReload();
-//     fonts.__forceReload();
-//     shaders.__forceReload();
+    //     textures.__forceReload();
+    //     meshes.__forceReload();
+    //     frameSets.__forceReload();
+    //     fonts.__forceReload();
+    //     shaders.__forceReload();
 }

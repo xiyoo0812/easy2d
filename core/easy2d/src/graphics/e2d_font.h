@@ -4,12 +4,12 @@
 #include "ft2build.h"
 #include "freetype/freetype.h"
 
-#include "base/e2d_math.h"
+#include "math/e2d_math.h"
 
 namespace Easy2D
 {
-    #define FONT_DPI 96
-    #define FONT_TEXTURES 128
+#define FONT_DPI 96
+#define FONT_TEXTURES 128
 
     struct CharacterInfo
     {
@@ -26,7 +26,7 @@ namespace Easy2D
         bool load(const String& path, uint32 size, FT_Library& library);
         void unload();
 
-        const String & getFontPath() const;
+        const String& getFontPath() const;
 
         GLuint* getTextures() const;
         uint32 getFontSize() const;
@@ -39,7 +39,7 @@ namespace Easy2D
         uint32 getStringLength(const String& string) const;
 
     private:
-        void make_D_List(FT_Face face, uchar ch, GLuint * tex_base);
+        void make_D_List(FT_Face face, uchar ch, GLuint* tex_base);
         int32 nextPowerOfTwo(int32 number) const;
 
         uint32  mSize = 0;

@@ -1,21 +1,21 @@
 #ifndef RECT_H
 #define RECT_H
 
-#include "base/e2d_math.h"
+#include "e2d_vector2d.h"
 
 namespace Easy2D
 {
     class Rect
     {
     public:
-        Rect(){}
+        Rect() {}
         Rect(const Vec2& leftBottom, const Vec2& rightBottom, const Vec2& leftTop, const Vec2& rightTop);
         Rect operator=(const Rect& yRef);
 
         Rect operator*(float32 constant) const;
         Rect operator/(float32 constant) const;
         Rect& operator*=(float32 constant);
-        
+
         float32 getWidth() const;
         float32 getHeight() const;
 
