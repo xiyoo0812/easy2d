@@ -1,5 +1,5 @@
 #include "e2d_texture2d.h"
-#include "base/e2d_image.h"
+#include "e2d_image.h"
 
 using namespace Easy2D;
 

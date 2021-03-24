@@ -4,11 +4,11 @@ using namespace Easy2D;
 
 Font::~Font()
 {
-    deleteFont();
+    unload();
     mCharacterInfoMap.clear();
 }
 
-bool Font::init(const String& path, uint32 size, FT_Library& library)
+bool Font::load(const String& path, uint32 size, FT_Library& library)
 {
     mSize = size;
     mFontPath = path;
@@ -57,7 +57,7 @@ bool Font::init(const String& path, uint32 size, FT_Library& library)
     return true;
 }
 
-void Font::deleteFont()
+void Font::unload()
 {
     glDeleteTextures(FONT_TEXTURES, mTextures);
     delete[] mTextures;

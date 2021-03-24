@@ -1,8 +1,7 @@
 #ifndef COLOR_H
 #define COLOR_H
 
-#include "e2d_config.h"
-#include "math/e2d_math.h"
+#include "e2d_math.h"
 
 namespace Easy2D
 {

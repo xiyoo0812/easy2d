@@ -1,9 +1,7 @@
 #ifndef IMAGE_H
 #define IMAGE_H
 
-#include "e2d_config.h"
-#include "e2d_color.h"
-#include "math/e2d_math.h"
+#include "base/e2d_color.h"
 
 namespace Easy2D
 {

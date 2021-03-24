@@ -1,6 +1,7 @@
 #ifndef TYPES_H
 #define TYPES_H
 
+#include <map>
 #include <string>
 #include <vector>
 #include <memory>
@@ -42,15 +43,18 @@ namespace Easy2D
     //std
     typedef std::string             String;
     typedef std::filesystem::path   Path;
+
     template <typename T> 
     using WPtr = std::weak_ptr<T>;
     template <typename T> 
     using SPtr = std::shared_ptr<T>;
-    template <typename T> 
+    template <typename T>
     using UPtr = std::unique_ptr<T>;
-    template <typename F> 
+    template <typename F>
     using Function = std::function<F>;
-    template <class Key, class T,class Hash = std::hash<Key>,class KeyEqual = std::equal_to<Key>>
+    template <typename T>
+    using Vector = std::vector<T>;
+    template <class Key, class T, class Hash = std::hash<Key>, class KeyEqual = std::equal_to<Key>>
     using UnorderedMap = std::unordered_map<Key, T, Hash, KeyEqual>;
 };
 

@@ -4,13 +4,12 @@
 #include "ft2build.h"
 #include "freetype/freetype.h"
 
-#include "e2d_config.h"
-#include "math/e2d_math.h"
+#include "base/e2d_math.h"
 
 namespace Easy2D
 {
-#define FONT_DPI 96
-#define FONT_TEXTURES 128
+    #define FONT_DPI 96
+    #define FONT_TEXTURES 128
 
     struct CharacterInfo
     {
@@ -24,8 +23,8 @@ namespace Easy2D
         Font() {}
         ~Font();
 
-        bool init(const String& path, uint32 size, FT_Library& library);
-        void deleteFont();
+        bool load(const String& path, uint32 size, FT_Library& library);
+        void unload();
 
         const String & getFontPath() const;
 

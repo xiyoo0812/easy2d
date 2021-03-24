@@ -113,21 +113,28 @@
   <ItemGroup>
     <ClCompile Include="src\base\e2d_blend.cpp" />
     <ClCompile Include="src\base\e2d_color.cpp" />
-    <ClCompile Include="src\base\e2d_image.cpp" />
+    <ClCompile Include="src\base\e2d_math.cpp" />
+    <ClCompile Include="src\base\e2d_rect.cpp" />
     <ClCompile Include="src\graphics\e2d_font.cpp" />
+    <ClCompile Include="src\graphics\e2d_font_manager.cpp" />
+    <ClCompile Include="src\graphics\e2d_image.cpp" />
     <ClCompile Include="src\graphics\e2d_texture2d.cpp" />
-    <ClCompile Include="src\math\e2d_math.cpp" />
+    <ClCompile Include="src\graphics\e2d_texture_manager.cpp" />
     <ClCompile Include="src\resource\e2d_resource_group.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\base\e2d_blend.h" />
     <ClInclude Include="src\base\e2d_color.h" />
-    <ClInclude Include="src\base\e2d_image.h" />
+    <ClInclude Include="src\base\e2d_math.h" />
+    <ClInclude Include="src\base\e2d_rect.h" />
+    <ClInclude Include="src\base\e2d_singleton.h" />
     <ClInclude Include="src\base\e2d_types.h" />
     <ClInclude Include="src\e2d_config.h" />
     <ClInclude Include="src\graphics\e2d_font.h" />
+    <ClInclude Include="src\graphics\e2d_font_manager.h" />
+    <ClInclude Include="src\graphics\e2d_image.h" />
     <ClInclude Include="src\graphics\e2d_texture2d.h" />
-    <ClInclude Include="src\math\e2d_math.h" />
+    <ClInclude Include="src\graphics\e2d_texture_manager.h" />
     <ClInclude Include="src\resource\e2d_resource.h" />
     <ClInclude Include="src\resource\e2d_resource_group.h" />
     <ClInclude Include="src\resource\e2d_resource_manager.h" />
