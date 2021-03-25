@@ -636,3 +636,18 @@ inline std::string log_dest::build_postfix(std::shared_ptr<log_message> logmsg)
 	return date_ch;
 }
 
+template<log_level level>
+log_ctx<level> logger_ctx(std::string source = "", int line = 0)
+{
+    auto service = log_service::default_instance();
+    auto log_filter = service->get_filter();
+    if (log_filter)
+    {
+        bool filter = log_filter->is_filter(level);
+        if (!filter)
+        {
+            return log_ctx<level>(service, source, line);
+        }
+    }
+    return log_ctx<level>(service, source, line);
+}
