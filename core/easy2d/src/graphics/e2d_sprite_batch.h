@@ -2,7 +2,6 @@
 #define SPRITEVATCH_H
 
 #include "base/e2d_color.h"
-#include "base/e2d_singleton.h"
 #include "e2d_shader.h"
 
 namespace Easy2D

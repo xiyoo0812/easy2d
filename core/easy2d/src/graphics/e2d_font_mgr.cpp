@@ -1,4 +1,4 @@
-#include "e2d_font_manager.h"
+#include "e2d_font_mgr.h"
 
 using namespace Easy2D;
 

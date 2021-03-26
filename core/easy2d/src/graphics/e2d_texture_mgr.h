@@ -3,7 +3,6 @@
 
 #include "e2d_texture2d.h"
 #include "math/e2d_math.h"
-#include "base/e2d_singleton.h"
 
 namespace Easy2D
 {

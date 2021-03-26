@@ -16,12 +16,6 @@
     <ClCompile Include="src\graphics\e2d_font.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphics\e2d_font_manager.cpp">
-      <Filter>graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graphics\e2d_texture_manager.cpp">
-      <Filter>graphics</Filter>
-    </ClCompile>
     <ClCompile Include="src\graphics\e2d_image.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
@@ -55,6 +49,15 @@
     <ClCompile Include="src\windows\e2d_window.cpp">
       <Filter>windows</Filter>
     </ClCompile>
+    <ClCompile Include="src\base\e2d_timer_mgr.cpp">
+      <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\e2d_font_mgr.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\e2d_texture_mgr.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\base\e2d_color.h">
@@ -82,12 +85,6 @@
       <Filter>graphics</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\e2d_font.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphics\e2d_font_manager.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphics\e2d_texture_manager.h">
       <Filter>graphics</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\e2d_image.h">
@@ -125,6 +122,15 @@
     </ClInclude>
     <ClInclude Include="src\windows\e2d_window.h">
       <Filter>windows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\base\e2d_timer_mgr.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\e2d_font_mgr.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\e2d_texture_mgr.h">
+      <Filter>graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

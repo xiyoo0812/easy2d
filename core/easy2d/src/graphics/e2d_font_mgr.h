@@ -2,7 +2,6 @@
 #define FONT_MANAGER_H
 
 #include "e2d_font.h"
-#include "base/e2d_singleton.h"
 
 namespace Easy2D
 {

@@ -1,4 +1,4 @@
-#include "e2d_texture_manager.h"
+#include "e2d_texture_mgr.h"
 
 using namespace Easy2D;
 
