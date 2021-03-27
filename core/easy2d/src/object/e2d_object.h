@@ -15,26 +15,30 @@ namespace Easy2D
 	public:
 		Object();
 		explicit Object(const String& name);
-		Object(const String& name, const String& groupTag);
+		Object(const String& name, const String& group);
+		Object(const Object& t);
+		Object(Object&& t);
+		Object& operator=(const Object& t);
+		Object& operator=(Object&& t);
 		virtual ~Object(void);
 
 		void Destroy();
 
 		Object* GetParent() const;
 
-		void Initialize();
-		void AfterInitialized();
-		void Update(const Context& context);
-		void Draw();
-		void DrawWithCulling(float32 left,float32 right,float32 top,float32 bottom);
+		virtual void Initialize();
+		virtual void AfterInitialized();
+		virtual void Draw();
+		virtual void Update(const Context& context);
+		virtual void DrawWithCulling(float32 left,float32 right,float32 top,float32 bottom);
 
 		const String& GetPhysicsTag() const;
 		void SetPhysicsTag(const String& tag);
 		bool ComparePhysicsTag(const String& tag);
 
-		const String& GetGroupTag() const;
-		void SetGroupTag(const String& tag);
-		bool CompareGroupTag(const String& tag);
+		const String& GetGroup() const;
+		void SetGroup(const String& tag);
+		bool CompareGroup(const String& tag);
 
 		void AddComponent(BaseComponent* pComponent);
 
@@ -60,110 +64,54 @@ namespace Easy2D
 
 		void RemoveComponent(BaseComponent * pComponent);
 
-		template <typename T>
-		T * GetChildByName(const String& name);
-
 		virtual void SetVisible(bool visible);
-		bool IsVisible() const;
-
-		virtual void Freeze(bool freeze);
-		bool IsFrozen() const;
-
-		bool IsChildNameAlreadyInUse(const String& name) const;
-		bool IsActionNameAlreadyInUse(const String& name) const;
-
 		virtual void SetDisabled(bool disabled);
 		virtual bool IsDisabled() const;
-
 		bool IsInitialized() const;
+		bool IsVisible() const;
 
-		void SetScene(BaseScene * pScene);
-		void UnsetScene(); 
+		bool IsChildNameExist(const String& name) const;
+		bool IsActionNameExist(const String& name) const;
+
+		BaseScene* GetScene() const;
+		void SetScene(BaseScene* pScene);
+		int32* GetZorder() const;
+		void SetZorder(int32* order);
+		String* GetName() const;
+		void SetName(String* name);
 
 		virtual void Reset();
 
-		TransformComponent * GetTransform() const;
+		TransformComponent* GetTransform() const;
 
-		BaseScene * GetScene() const;
-
+		template <typename T>
+		T* GetChildByName(const String& name);
 		template <typename T>
 		void RemoveComponent();
-
 		template <typename T>
 		T* GetComponent(bool searchChildren = false) const;
-
-		const Vector<BaseComponent*>& GetComponents() const;
-
 		template <typename T>
 		T* GetChild() const;
-
 		template <typename T>
 		T* GetChild(const String& name) const;
-
 		template <typename T>
 		bool HasComponent(BaseComponent * component) const;
 
-		void RecalculateDimensions();
-
 	protected:
-		enum class GarbageType : byte
-		{
-			ComponentType = 0,
-			ObjectType = 1,
-			ActionType = 2
-		};
+		virtual bool CheckCulling(float32 left,float32 right,float32 top,float32 bottom);
 
-		struct GarbageInfo
-		{
-			GarbageInfo(
-				Entity* pEntity,
-				GarbageType type
-				);
+		uint64 mGUID = 0;
+		int32 mZorder = 0;
+		bool mVisible = true;
+		bool mInitialized = false;
+		String mName = "", mGroup = "default", mPhysics = "default";
 
-			Entity *element;
-			GarbageType type;
-		};
-
-		void DestroyGarbageElement(const GarbageInfo & info);
-
-		virtual void Initialize();
-		virtual void AfterInitialized();
-		virtual void Update(const Context & context);
-		virtual void Draw();
-
-		bool BaseCheckCulling(
-			float32 left, float32 right, float32 top, float32 bottom
-			);
-
-		virtual bool CheckCulling(
-			float32 left,
-			float32 right,
-			float32 top,
-			float32 bottom
-			);
-
-		bool m_bIsInitialized;
-		bool m_IsVisible;
-		bool m_IsFrozen;
-		Object* m_pParentGameObject;
-		PathFindNodeComponent* m_pPathFindComp;
-		BaseScene *m_pScene;
+		Object* mParent = nullptr;
+		BaseScene* mScene = nullptr;
 		
-		Vector<GarbageInfo> m_pGarbageContainer;
-
-		Vector<BaseComponent*> m_pComponents;
-		Vector<Object*> m_pChildren;
-		Vector<Action*> m_pActions;
-
-		HashTag m_GroupTag, m_PhysicsTag;
-
-	private:
-		void CollectGarbage();
-
-		Object(const Object& t);
-		Object(Object&& t);
-		Object& operator=(const Object& t);
-		Object& operator=(Object&& t);
+		UnorderedMap<String, SPtr<Action*>> mActions;
+		UnorderedMap<String, SPtr<Object*>> mChildren;
+		UnorderedMap<String, SPtr<BaseComponent*>> mComponents;
 	};
 }
 

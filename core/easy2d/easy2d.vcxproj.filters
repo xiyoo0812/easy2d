@@ -58,6 +58,9 @@
     <ClCompile Include="src\graphics\e2d_texture_mgr.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
+    <ClCompile Include="src\base\e2d_guid.cpp">
+      <Filter>base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\base\e2d_color.h">
@@ -131,6 +134,9 @@
     </ClInclude>
     <ClInclude Include="src\graphics\e2d_texture_mgr.h">
       <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\base\e2d_guid.h">
+      <Filter>base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

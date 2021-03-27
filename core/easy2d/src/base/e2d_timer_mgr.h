@@ -23,7 +23,9 @@ namespace Easy2D
 	
 	class TimerManager final : public Singleton<TimerManager>
 	{
-	public:
+    public:
+        friend Singleton<TimerManager>;
+
 		~TimerManager() {}
 
 		void update(const uint32& escape_ms);

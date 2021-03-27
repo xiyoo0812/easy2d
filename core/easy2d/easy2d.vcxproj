@@ -113,6 +113,7 @@
   <ItemGroup>
     <ClCompile Include="src\base\e2d_blend.cpp" />
     <ClCompile Include="src\base\e2d_color.cpp" />
+    <ClCompile Include="src\base\e2d_guid.cpp" />
     <ClCompile Include="src\base\e2d_timer_mgr.cpp" />
     <ClCompile Include="src\graphics\e2d_font.cpp" />
     <ClCompile Include="src\graphics\e2d_font_mgr.cpp" />
@@ -134,6 +135,7 @@
   <ItemGroup>
     <ClInclude Include="src\base\e2d_blend.h" />
     <ClInclude Include="src\base\e2d_color.h" />
+    <ClInclude Include="src\base\e2d_guid.h" />
     <ClInclude Include="src\base\e2d_singleton.h" />
     <ClInclude Include="src\base\e2d_timer_mgr.h" />
     <ClInclude Include="src\base\e2d_types.h" />

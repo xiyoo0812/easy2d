@@ -4,210 +4,65 @@
 using namespace Easy2D;
 
 Object::Object(void)
-	: Entity()
-	, m_bIsInitialized(false)
-	, m_IsVisible(true)
-	, m_IsFrozen(false)
-	, m_pParentGameObject(nullptr)
-	, m_pPathFindComp(nullptr)
-	, m_pScene(nullptr)
-	, m_pGarbageContainer()
-	, m_pComponents()
-	, m_pChildren()
-	, m_pActions()
-	, m_GroupTag(_T("Default"))
-	, m_PhysicsTag(_T("Default"))
 {
-	m_pComponents.push_back(new TransformComponent(this));
+	addComponent(new TransformComponent(this));
 }
 
-Object::Object(const tstring & name)
-	: Entity(name)
-	, m_bIsInitialized(false)
-	, m_IsVisible(true)
-	, m_IsFrozen(false)
-	, m_pParentGameObject(nullptr)
-	, m_pPathFindComp(nullptr)
-	, m_pScene(nullptr)
-	, m_pGarbageContainer()
-	, m_pComponents()
-	, m_pChildren()
-	, m_pActions()
-	, m_GroupTag(_T("Default"))
-	, m_PhysicsTag(_T("Default"))
+Object::Object(const String& name)
+	: mName(name)
 {
-	m_pComponents.push_back(new TransformComponent(this));
+	addComponent(new TransformComponent(this));
 }
 
-Object::Object(
-	const tstring & name,
-	const tstring & groupTag
-	)
-	: Entity(name)
-	, m_bIsInitialized(false)
-	, m_IsVisible(true)
-	, m_IsFrozen(false)
-	, m_pParentGameObject(nullptr)
-	, m_pPathFindComp(nullptr)
-	, m_pScene(nullptr)
-	, m_pGarbageContainer()
-	, m_pComponents()
-	, m_pChildren()
-	, m_pActions()
-	, m_GroupTag(groupTag)
-	, m_PhysicsTag(_T("Default"))
+Object::Object(const String& name, const String& group)
+	: mName(name), mGroup(group)
 {
-	m_pComponents.push_back(new TransformComponent(this));
+	addComponent(new TransformComponent(this));
 }
 
-Object::~Object(void)
+Object::~Object()
 {
-	for(auto & info : m_pGarbageContainer)
-	{
-		DestroyGarbageElement(info);
-	}
-	m_pGarbageContainer.clear();
-
-	for(auto comp : m_pComponents)
-	{
-		SafeDelete(comp);
-	}
-	m_pComponents.clear();
-
-	for(auto child : m_pChildren)
-	{
-		SafeDelete(child);
-	}
-	m_pChildren.clear();
-
-	for(auto action : m_pActions)
-	{
-		SafeDelete(action);
-	}
-	m_pActions.clear();
+	mActions.clear();
+	mChildren.clear();
+	mComponents.clear();
 }
 
 void Object::Destroy()
 {
-	if(m_pParentGameObject)
+	if(mParent)
 	{
-		m_pParentGameObject->RemoveChild(this);
+		mParent->RemoveChild(this);
 	}
 	else
 	{
-		m_pScene->RemoveObject(this);
+		mScene->RemoveObject(this);
 	}
 }
 
 Object* Object::GetParent() const
 {
-	return (m_pParentGameObject);
-}
-
-void Object::BaseInitialize()
-{
-	if (m_bIsInitialized)
-	{
-		return;
-	}
-
-	Initialize();
-	for(auto action : m_pActions)
-	{
-		if(action)
-		{
-			action->BaseInitialize();
-		}
-	}
-
-	for(auto comp : m_pComponents)
-	{
-		if(comp && !comp->IsInitialized())
-		{
-			comp->Initialize();
-		}
-	}
-
-	for(auto child : m_pChildren)
-	{
-		if(child && !child->m_bIsInitialized)
-		{
-			child->SetScene(GetScene());
-			child->BaseInitialize();
-		}
-	}
-	BaseAfterInitialized();
-	m_bIsInitialized = true;
-}
-
-Object::GarbageInfo::GarbageInfo(
-	Entity* pEntity,
-	GarbageType type
-	)
-	: element(pEntity)
-	, type(type)
-{
-}
-
-void Object::DestroyGarbageElement(const GarbageInfo & info)
-{
-	switch(info.type)
-	{
-		case GarbageType::ActionType:
-		{
-			auto action = dynamic_cast<Action*>(info.element);
-			auto it = std::find(m_pActions.begin(), m_pActions.end(), action);
-			m_pActions.erase(it);
-		}
-		break;
-		case GarbageType::ObjectType:
-		{
-			auto object = dynamic_cast<Object*>(info.element);
-			auto it = std::find(m_pChildren.begin(), m_pChildren.end(), object);
-			m_pChildren.erase(it);
-		}
-		break;
-		case GarbageType::ComponentType:
-		{
-			auto component = dynamic_cast<BaseComponent*>(info.element);
-			auto it = std::find(m_pComponents.begin(), m_pComponents.end(), component);
-			m_pComponents.erase(it);
-			RecalculateDimensions();
-		}
-		break;
-	}
-	delete info.element;
-}
-
-void Object::RecalculateDimensions()
-{
-	ivec2 dim(0,0);
-	auto transform = GetTransform();
-	for(auto comp : m_pComponents)
-	{
-		if(comp != transform)
-		{
-			ivec2 temp = comp->GetDimensions();
-			if(temp.x > dim.x)
-			{
-				dim.x = temp.x;
-			}
-			if(temp.y > dim.y)
-			{
-				dim.y = temp.y;
-			}
-		}
-	}
-	transform->SetDimensions(dim);
+	return (mParent);
 }
 
 void Object::Initialize()
 {
-}
-
-void Object::BaseAfterInitialized()
-{
-	AfterInitialized();
+	if (!mInitialized)
+	{
+		for(auto action : mActions)
+		{
+			action->Initialize(this);
+		}
+		for(auto comp : mComponents)
+		{
+			comp->Initialize(this);
+		}
+		for(auto child : mChildren)
+		{
+			child->Initialize(this);
+		}
+		AfterInitialized();
+		mInitialized = true;
+	}
 }
 
 void Object::AfterInitialized()
@@ -216,538 +71,260 @@ void Object::AfterInitialized()
 
 void Object::Update(const Context& context)
 {
-}
-
-void Object::BaseUpdate(const Context & context)
-{
-	CollectGarbage();
 	if(!m_IsFrozen)
 	{
-		Update(context);
-
-		for(auto action : m_pActions)
+		for(auto action : mActions)
 		{
-			if(action)
-			{
-				action->BaseUpdate(context);
-			}
-			else
-			{
-				m_pActions.erase(
-					std::find(
-					m_pActions.begin(),
-					m_pActions.end(),
-					action)
-					);
-				LOG(LogLevel::Warning,
-					tstring(_T("Object::BaseUpdate: ")) +
-					_T("Trying to update nullptr action from object '")
-					+ GetName() + _T("'."), STARENGINE_LOG_TAG);
-			}
+			action->Update(context);
 		}
-
-		for(auto component : m_pComponents)
+		for(auto component : mComponents)
 		{
-			if(component)
-			{
-				component->BaseUpdate(context);
-			}
-			else
-			{
-				m_pComponents.erase(
-					std::find(
-					m_pComponents.begin(),
-					m_pComponents.end(),
-					component)
-					);
-				LOG(LogLevel::Warning,
-					tstring(_T("Object::BaseUpdate: ")) +
-					_T("Trying to update nullptr component from object '")
-					+ GetName() + _T("'."), STARENGINE_LOG_TAG);
-			}
+			component->Update(context);
 		}
-
-		for(auto child : m_pChildren)
+		for(auto child : mChildren)
 		{
-			if(child)
-			{
-				child->BaseUpdate(context);
-			}
-			else
-			{
-				m_pChildren.erase(
-					std::find(
-					m_pChildren.begin(),
-					m_pChildren.end(),
-					child)
-					);
-				LOG(LogLevel::Warning,
-					tstring(_T("Object::BaseUpdate: ")) +
-					_T("Trying to update nullptr child from object '")
-					+ GetName() + _T("'."), STARENGINE_LOG_TAG);
-			}
+			child->Update(context);
 		}
 	}
 }
 
-void Object::Draw()
-{
-}
 
-bool Object::BaseCheckCulling(
-	float32 left, float32 right, float32 top, float32 bottom
-	)
+bool Object::CheckCulling(float32 left, float32 right, float32 top, float32 bottom)
 {
-	for ( auto component : m_pComponents)
+	for ( auto component : mComponents)
 	{
 		if(component->CheckCulling(left, right, top, bottom))
 		{
 			return true;
 		}
 	}
-
-	return CheckCulling(left, right, top, bottom);
-}
-
-bool Object::CheckCulling(
-	float32 left,
-	float32 right,
-	float32 top,
-	float32 bottom
-	)
-{
 	return false;
 }
 
-void Object::BaseDraw()
+void Object::Draw()
 {
-	if(m_IsVisible)
+	if(mVisible)
 	{
-		Draw();
-
-		for(auto component : m_pComponents)
+		for(auto component : mComponents)
 		{
-			if(component)
-			{
-				component->BaseDraw();
-			} 
-			else
-			{
-				LOG(LogLevel::Warning,
-					tstring(_T("Object::BaseDraw: ")) +
-					_T("Trying to draw nullptr component from object '")
-					+ GetName() + _T("'."), STARENGINE_LOG_TAG);
-			}
+			component->Draw();
 		}
-
-		for(auto child : m_pChildren)
+		for(auto child : mChildren)
 		{
-			if(child)
-			{
-				child->BaseDraw();
-			}
-			else
-			{
-				LOG(LogLevel::Warning,
-					tstring(_T("Object::BaseDraw: ")) +
-					_T("Trying to draw nullptr object child from object '")
-					+ GetName() + _T("'."), STARENGINE_LOG_TAG);
-			}
+			child->Draw();
 		}
 	}
 }
 
-void Object::BaseDrawWithCulling(
-	float32 left,
-	float32 right,
-	float32 top,
-	float32 bottom
-	)
+void Object::DrawWithCulling(float32 left,float32 right,float32 top,float32 bottom)
 {
-	if(m_IsVisible)
+	if(mVisible)
 	{
-		if(BaseCheckCulling(left, right, top, bottom))
+		if(CheckCulling(left, right, top, bottom))
 		{
-			Draw();
-
-			for(auto component : m_pComponents)
+			for(auto component : mComponents)
 			{
-				if(component)
-				{
-					component->BaseDraw();
-				} 
-				else
-				{
-					LOG(LogLevel::Warning,
-						tstring(_T("Object::BaseDrawWithCulling: ")) +
-						_T("Trying to draw nullptr component from object '")
-						+ GetName() + _T("'."), STARENGINE_LOG_TAG);
-				}
+				component->Draw();
 			}
 		}
-
-		for(auto child : m_pChildren)
+		for(auto child : mChildren)
 		{
-			if(child)
-			{
-				child->BaseDrawWithCulling(left, right, top, bottom);
-			}
-			else
-			{
-				LOG(LogLevel::Warning,
-					tstring(_T("Object::BaseDrawWithCulling: ")) +
-					_T("Trying to draw nullptr object child from object '")
-					+ GetName() + _T("'."), STARENGINE_LOG_TAG);
-			}
+			child->DrawWithCulling(left, right, top, bottom);
 		}
 	}
 }
 
-const tstring& Object::GetPhysicsTag() const
+const String& Object::GetPhysicsTag() const
 {
-	return m_PhysicsTag.GetTag();
+	return mPhysics;
 }
 
-void Object::SetPhysicsTag(const tstring& tag)
+void Object::SetPhysicsTag(const String& tag)
 {
-	m_PhysicsTag.SetTag(tag);
+	mPhysics = tag;
 }
 
-bool Object::ComparePhysicsTag(const tstring & tag)
+bool Object::ComparePhysicsTag(const String& tag)
 {
-	return m_PhysicsTag == tag;
+	return mPhysics == tag;
 }
 
-bool CompareName(const tstring & name);
-
-const tstring& Object::GetGroupTag() const
+bool CompareName(const String& name)
 {
-	return m_GroupTag.GetTag();
+	return mName == name;
 }
 
-void Object::SetGroupTag(const tstring& tag)
+const String& Object::GetGroupTag() const
 {
-	m_GroupTag.SetTag(tag);
+	return mGroup;
 }
 
-bool Object::CompareGroupTag(const tstring & tag)
+void Object::SetGroupTag(const String& tag)
 {
-	return m_GroupTag == tag;
+	mGroup =tag;
+}
+
+bool Object::CompareGroupTag(const String& tag)
+{
+	return mGroup == tag;
 }
 
 void Object::AddComponent(BaseComponent *pComponent)
 {
-	for(auto comp : m_pComponents)
+	auto it = mComponents.find(pComponent->getName())
+	if (it != mComponents.end())
 	{
-		ASSERT_LOG(typeid(*comp) != typeid(*pComponent), 
-			_T("Object::AddComponent: \
-Adding 2 components of the same type \
-to the same object is illegal."), STARENGINE_LOG_TAG);
+		pComponent->Initialize(this);
+		mComponents.insert(std::make_pair(pComponent->getName(), pComponent);
 	}
-
-	pComponent->SetParent(this);
-
-	if(m_bIsInitialized && ! pComponent->IsInitialized())
-	{
-		pComponent->Initialize();
-	}
-
-	m_pComponents.push_back(pComponent);
 }	
 
 void Object::AddChild(Object *pChild)
 {
-	pChild->m_pParentGameObject = this;
-
-	if(IsChildNameAlreadyInUse(pChild->GetName()))
+	if(IsChildNameExist(pChild->GetName()))
 	{
-		DEBUG_LOG(LogLevel::Warning,
-			_T("Object::AddChild: a child with the name '")
-			+ pChild->GetName() + _T("' already exists. \
-Child gets added but beware, duplicate names can become the cause of problems."),
-			STARENGINE_LOG_TAG);
+		LOG_DEBUG << _T("Object::AddChild: a child with the name '") << pChild->GetName() << 
+			_T("' already exists. Child gets added but beware, duplicate names can become the cause of problems.")
 	}
-
-	if(m_bIsInitialized && !pChild->m_bIsInitialized)
+	auto it = mChildren.find(pChild->getName())
+	if (it != mChildren.end())
 	{
-		pChild->SetScene(GetScene());
-		pChild->BaseInitialize();
+		pChild->Initialize(this);
+		mChildren.insert(std::make_pair(pChild->getName(), pChild);
 	}
-
-	m_pChildren.push_back(pChild);
 }
 
 void Object::RemoveChild(const Object* pObject)
 {
-	auto it = std::find(m_pChildren.begin(), m_pChildren.end(), pObject);
-	bool isOK = it != m_pChildren.end();
-	if(isOK)
+	RemoveChild(pObject->getName());
+}
+
+void Object::RemoveChild(const String& name)
+{
+	auto it = mChildren.find(name)
+	if (it != mChildren.end())
 	{
-		m_pGarbageContainer.push_back(
-			GarbageInfo(
-				*it,
-				GarbageType::ObjectType
-				)
-			);
-	}
-	else
-	{
-		LOG(LogLevel::Error,
-			_T("Object::RemoveChild: The object you tried \
-to remove is not a child of this object!"), STARENGINE_LOG_TAG);
+		mChildren.erase(it);
 	}
 }
 
-void Object::RemoveChild(const tstring & name)
+const UnorderedMap<String, SPtr<Object*>>& Object::GetChildren() const
 {
-	for(auto child : m_pChildren)
+	return mChildren;
+}
+
+void Object::SetChildDisabled(const String& name, bool disabled)
+{
+	auto it = mChildren.find(name)
+	if (it != mChildren.end())
 	{
-		if(child->CompareName(name))
-		{
-			RemoveChild(child);
-			return;
-		}
+		it->second->SetDisabled(disabled);
 	}
-	LOG(LogLevel::Error,
-		_T("Object::RemoveChild: The object you tried \
-to remove is not a child of this object!"), STARENGINE_LOG_TAG);
 }
 
-const std::vector<Object*>& Object::GetChildren() const
+void Object::SetChildVisible(const String& name, bool visible)
 {
-	return m_pChildren;
-}
-
-void Object::SetChildFrozen(const tstring & name, bool freeze)
-{
-	for(auto child : m_pChildren)
+	auto it = mChildren.find(name)
+	if (it != mChildren.end())
 	{
-		if(child->CompareName(name))
-		{
-			child->Freeze(freeze);
-			return;
-		}
-	}
-	LOG(LogLevel::Warning,
-			_T("Object::SetChildFrozen: \
-Trying to (un)freeze unknown child '")
-				+ name + _T("'."), STARENGINE_LOG_TAG);
-}
-
-void Object::SetChildDisabled(const tstring & name, bool disabled)
-{
-	for(auto child : m_pChildren)
-	{
-		if(child->CompareName(name))
-		{
-			child->SetDisabled(disabled);
-			return;
-		}
-	}
-	LOG(LogLevel::Warning,
-			_T("Object::SetChildDisabled: \
-Trying to enable/disable unknown child '")
-				+ name + _T("'."), STARENGINE_LOG_TAG);
-}
-
-void Object::SetChildVisible(const tstring & name, bool visible)
-{
-	for(auto child : m_pChildren)
-	{
-		if(child->CompareName(name))
-		{
-			child->SetVisible(visible);
-			return;
-		}
-	}
-	LOG(LogLevel::Warning,
-			_T("Object::SetChildVisible: \
-Trying to (un)hide unknown child '")
-			+ name + _T("'."), STARENGINE_LOG_TAG);
-}
-
-void Object::SetChildrenFrozen(bool freeze)
-{
-	for(auto child : m_pChildren)
-	{
-		child->Freeze(freeze);
-		child->SetChildrenFrozen(freeze);
+		it->second->SetVisible(disabled);
 	}
 }
 
 void Object::SetChildrenDisabled(bool disable)
 {
-	for(auto child : m_pChildren)
+	for(auto child : mChildren)
 	{
 		child->SetDisabled(disable);
-		child->SetChildrenDisabled(disable);
 	}
 }
 
 void Object::SetChildrenVisible(bool visible)
 {
-	for(auto child : m_pChildren)
+	for(auto child : mChildren)
 	{
 		child->SetVisible(visible);
-		child->SetChildrenVisible(visible);
 	}
 }
 
-void Object::AddAction(Action * pAction)
+void Object::AddAction(Action* pAction)
 {
-	for(auto action : m_pActions)
+	if(IsActionNameExist(pAction->GetName()))
 	{
-		if(action == pAction)
-		{
-			LOG(LogLevel::Warning,
-				_T("Object::AddAction: Trying to add a duplicate action."),
-				STARENGINE_LOG_TAG);
-			return;
-		}
+		LOG_DEBUG << _T("Object::AddAction: a child with the name '") << pAction->GetName() << 
+			_T("' already exists. Action gets added but beware, duplicate names can become the cause of problems.")
 	}
-	if(IsActionNameAlreadyInUse(pAction->GetName()))
+	auto it = mActions.find(pAction->getName())
+	if (it != mActions.end())
 	{
-		DEBUG_LOG(LogLevel::Warning,
-		_T("Object::AddAction: an action with the name '")
-		+ pAction->GetName() + _T("' already exists. \
-Action gets added but beware, duplicate names can become the cause of problems."),
-		STARENGINE_LOG_TAG);
-	}
-	m_pActions.push_back(pAction);
-	pAction->SetParent(this);
-	if(m_bIsInitialized)
-	{
-		pAction->BaseInitialize();
+		pAction->Initialize(this);
+		mActions.insert(std::make_pair(pAction->getName(), pAction);
 	}
 }
 
 void Object::RemoveAction(Action *pAction)
 {
-	auto it = std::find(m_pActions.begin(), m_pActions.end(), pAction);
-	bool isOK = it != m_pActions.end();
-	ASSERT_LOG(isOK,
-		_T("Object::RemoveAction: The action you tried \
-to remove could not be found."), STARENGINE_LOG_TAG);
-	if(isOK)
+	RemoveAction(pAction->GetName());
+}
+
+void Object::RemoveAction(const String& name)
+{
+	auto it = mActions.find(name)
+	if (it != mActions.end())
 	{
-		m_pGarbageContainer.push_back(
-			GarbageInfo(
-				*it,
-				GarbageType::ActionType
-				)
-			);
+		mActions.erase(it);
 	}
 }
 
-void Object::RemoveAction(const tstring & name)
+void Object::RestartAction(const String& name)
 {
-	for(auto action : m_pActions)
+	auto it = mActions.find(name)
+	if (it != mActions.end())
 	{
-		if(action->CompareName(name))
-		{
-			RemoveAction(action);
-			return;
-		}
+		it.second->Restart();
 	}
-	LOG(LogLevel::Warning,
-		_T("Object::RemoveAction: Action '")
-		+ name + _T("' could not be found."), STARENGINE_LOG_TAG);
 }
 
-void Object::RestartAction(const tstring & name)
+void Object::PauseAction(const String& name)
 {
-	for(auto action : m_pActions)
+	auto it = mActions.find(name)
+	if (it != mActions.end())
 	{
-		if(action->CompareName(name))
-		{
-			action->Restart();
-			return;
-		}
+		it.second->Pause();
 	}
-	LOG(LogLevel::Warning,
-		_T("Object::RestartAction: Action '")
-		+ name + _T("' could not be found."), STARENGINE_LOG_TAG);
 }
 
-void Object::PauseAction(const tstring & name)
+void Object::ResumeAction(const String& name)
 {
-	for(auto action : m_pActions)
+	auto it = pAction.find(name)
+	if (it != pAction.end())
 	{
-		if(action->CompareName(name))
-		{
-			action->Pause();
-			return;
-		}
+		it.second->Resume();
 	}
-	LOG(LogLevel::Warning,
-		_T("Object::PauseAction: Action '")
-		+ name + _T("' could not be found."), STARENGINE_LOG_TAG);
 }
 
-void Object::ResumeAction(const tstring & name)
+void Object::RemoveComponent(BaseComponent* pComponent)
 {
-	for(auto action : m_pActions)
+	auto it = mComponents.find(pComponent->getName())
+	if (it != mComponents.end())
 	{
-		if(action->CompareName(name))
-		{
-			action->Resume();
-			return;
-		}
-	}
-	LOG(LogLevel::Warning,
-		_T("Object::ResumeAction: Action '")
-		+ name + _T("' could not be found."), STARENGINE_LOG_TAG);
-}
-
-void Object::RemoveComponent(BaseComponent * pComponent)
-{
-	auto it = std::find(m_pComponents.begin(), m_pComponents.end(), pComponent);
-	bool isOK = it != m_pComponents.end();
-	ASSERT_LOG(isOK,
-		_T("Object::RemoveComponent: The component you tried \
-			to remove could not be found."), STARENGINE_LOG_TAG);
-	if(isOK)
-	{
-		m_pGarbageContainer.push_back(
-			GarbageInfo(
-				*it,
-				GarbageType::ComponentType
-				)
-			);
+		mComponents.erase(it);
 	}
 }
 
 void Object::SetVisible(bool visible)
 {
-	m_IsVisible = visible;
-	for(auto child : m_pChildren)
-	{
-		child->SetVisible(visible);
-	}
+	mVisible = visible;
 }
 
 bool Object::IsVisible() const
 {
-	return m_IsVisible;
+	return mVisible;
 }
 
-void Object::Freeze(bool freeze)
+bool Object::IsChildNameExist(const String& name) const
 {
-	m_IsFrozen = freeze;
-	for(auto child : m_pChildren)
-	{
-		child->Freeze(freeze);
-	}
-}
-
-bool Object::IsFrozen() const
-{
-	return m_IsFrozen;
-}
-
-bool Object::IsChildNameAlreadyInUse(const tstring & name) const
-{
-	for(auto pChild : m_pChildren)
+	for(auto pChild : mChildren)
 	{
 		if(pChild->CompareName(name))
 		{
@@ -757,9 +334,9 @@ bool Object::IsChildNameAlreadyInUse(const tstring & name) const
 	return false;
 }
 
-bool Object::IsActionNameAlreadyInUse(const tstring & name) const
+bool Object::IsActionNameExist(const String& name) const
 {
-	for(auto pAction : m_pActions)
+	for(auto pAction : mActions)
 	{
 		if(pAction->CompareName(name))
 		{
@@ -771,62 +348,62 @@ bool Object::IsActionNameAlreadyInUse(const tstring & name) const
 
 void Object::SetDisabled(bool disabled)
 {
-	m_IsVisible = !disabled;
-	m_IsFrozen = disabled;
+	mVisible = !disabled;
 }
 
 bool Object::IsDisabled() const
 {
-	return !m_IsVisible && m_IsFrozen;
+	return !mVisible && m_IsFrozen;
 }
 
 bool Object::IsInitialized() const
 {
-	return m_bIsInitialized;
+	return mInitialized;
 }
 
-void Object::SetScene(BaseScene * pScene)
+int32* Object::GetZorder() const
 {
-	m_pScene = pScene;
+	return mZorder;
 }
 
-void Object::UnsetScene()
+void Object::SetZorder(int32* order)
 {
-	m_pScene = nullptr;
+	mZorder = order;
+}
+
+BaseScene* Object::GetScene() const
+{
+	return mScene;
+}
+
+void Object::SetScene(BaseScene* pScene)
+{
+	mScene = pScene;
+	for(auto child : mChildren)
+	{
+		child->SetScene(pScene);
+	}
+}
+
+const String & Object::GetName() const
+{
+	return mName;
+}
+
+void Object::SetName(const String& name)
+{
+	mName = name;
 }
 
 void Object::Reset()
 {
-	for(auto child : m_pChildren)
+	for(auto child : mChildren)
 	{
 		child->Reset();
 	}
 }
 
-TransformComponent * Object::GetTransform() const
+TransformComponent* Object::GetTransform() const
 {
 	return GetComponent<TransformComponent>();
-}
-
-BaseScene * Object::GetScene() const
-{
-	return m_pScene;
-}
-
-const std::vector<BaseComponent*> & Object::GetComponents() const
-{
-	return m_pComponents;
-}
-
-void Object::CollectGarbage()
-{
-	for(auto & info : m_pGarbageContainer)
-	{
-		LOG(LogLevel::Info,
-			tstring(_T("Object::CollectGarbage: ")) +
-			_T("Object::CollectGarbage: Removed entity '")
-			+ info.element->GetName() + _T("'."), STARENGINE_LOG_TAG);
-		DestroyGarbageElement(info);
-	}
-	m_pGarbageContainer.clear();
 }
