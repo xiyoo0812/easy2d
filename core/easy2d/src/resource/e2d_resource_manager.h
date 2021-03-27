@@ -42,7 +42,7 @@ namespace Easy2D
             Path path = resPath;
             if (std::filesystem::exists(path.append(objectname)))
             {
-                SPtr<T> resource = std::make_shared<T>(this, path);
+                SPtr<T> resource = NewSPtr<T>(this, path);
                 //set into map
                 resMap[objectname] = resource;
                 resource->Resource<T>::setName(objectname);

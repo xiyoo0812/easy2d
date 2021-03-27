@@ -32,7 +32,7 @@ void TextureManager::loadTexture(const String& path, const String& name)
         mPathList.erase(pathit);
         return;
     }
-    mTextureMap[name] = std::make_shared<Texture2D>(path);
+    mTextureMap[name] = NewSPtr<Texture2D>(path);
     mPathList[path] = name;
 }
 
@@ -77,7 +77,7 @@ bool TextureManager::reload()
     mTextureMap.clear();
     for (auto it = mPathList.begin(); it != mPathList.end(); ++it)
     {
-        mTextureMap[it->second] = std::make_shared<Texture2D>(it->first);
+        mTextureMap[it->second] = NewSPtr<Texture2D>(it->first);
     }
     return true;
 }

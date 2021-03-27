@@ -50,10 +50,13 @@ namespace Easy2D
 
     template <typename T> 
     using WPtr = std::weak_ptr<T>;
+    using NewWPtr = std::make_weak<T>;
     template <typename T> 
     using SPtr = std::shared_ptr<T>;
+    using NewSPtr = std::make_shared<T>;
     template <typename T>
     using UPtr = std::unique_ptr<T>;
+    using NewUPtr = std::make_unique<T>;
     template <typename F>
     using Function = std::function<F>;
     template <typename T>

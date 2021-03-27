@@ -5,7 +5,7 @@
 using namespace Easy2D;
 using namespace std::chrono;
 
-void TimerManager::update(const uint32& escape_ms)
+void TimerManager::update(const uint32& escapeMs)
 {
 	for(auto it = mTimers.begin() ; it != mTimers.end() ; )
 	{
@@ -17,7 +17,7 @@ void TimerManager::update(const uint32& escape_ms)
 		}
 		if (!timer.mPause)
 		{
-			timer.mEscape += escape_ms;
+			timer.mEscape += escapeMs;
 			if (timer.mEscape >= timer.mPeriod)
 			{
 				if (timer.mTimes > 0)
