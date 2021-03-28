@@ -14,11 +14,10 @@ Scene::~Scene()
 {
 	for(auto & entity : mEntitys)
 	{
-		SafeDelete(entity);
+		safeDelete(entity);
 	}
 	mEntitys.clear();
 	// m_pCollisionManager = nullptr;
-	SafeDelete(m_pCursor);
 }
 
 void Scene::destroy()
@@ -116,7 +115,7 @@ void Scene::addEntity(Entity* pEntity)
 {
 	if(!pEntity)
 	{
-		LOG(LogLevel::Error, _T("Scene::addEntity: You can't add a nullptr object. Adding failed!"));
+		LOG_ERROR << _T("Scene::addEntity: You can't add a nullptr object. Adding failed!");
 		return;
 	}
 	auto it = std::find(mEntitys.begin(), mEntitys.end(), pEntity);
@@ -128,11 +127,8 @@ void Scene::addEntity(Entity* pEntity)
 		}
 		if(isObjectNameExist(pEntity->GetName()))
 		{
-			DEBUG_LOG(LogLevel::Warning,
-			_T("Scene::addEntity: an object with the name '")
-			+ pEntity->GetName() + _T("' already exists. \
-Object gets added but beware, duplicate names can become the cause of problems."),
-			STARENGINE_LOG_TAG);
+			LOG_DEBUG << _T("Scene::addEntity: an object with the name '")
+			<< pEntity->GetName() << _T("' already exists. Object gets added but beware, duplicate names can become the cause of problems.");
 		}
 		mEntitys.push_back(pEntity);
 	}
@@ -142,7 +138,7 @@ void Scene::addEntity(Entity* pEntity, const String& name)
 {
 	if(!pEntity)
 	{
-		LOG(LogLevel::Error, _T("Scene::addEntity: Trying to add a nullptr object."));
+		LOG_ERROR << _T("Scene::addEntity: Trying to add a nullptr object.");
 		return;
 	}
 	pEntity->setName(name);
@@ -235,13 +231,13 @@ void Scene::setActiveCamera(Camera* pCamera)
 	}
 	if(mActiveCamera != nullptr)
 	{
-		mActiveCamera->GetComponent<CameraComponent>()->Deactivate();
+		mActiveCamera->deactivate();
 	}
-	mActiveCamera = pCamera;
-	mActiveCamera->GetComponent<CameraComponent>()->Activate();
+	mActiveCamera = NewSPtr<Camera>(pCamera);
+	mActiveCamera->activate();
 }
 
-Camera* Scene::getActiveCamera() const
+SPtr<Camera> Scene::getActiveCamera() const
 {
 	return mActiveCamera;
 }

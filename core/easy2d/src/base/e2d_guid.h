@@ -25,6 +25,7 @@ namespace Easy2D
     #define MAX_TIMESTAMP               0xFFFFFFFF
     #define MAKE_GUID(w, t, s, ts)      (uint64(s) | (uint64(ts) << 20) | (uint64(t) << 52) | (uint64(w) << 58))
     #define NEW_GUID(world, type)       Guid::newGuid(world, type)
+    #define NEW_GUID_STR(world, type)   Guid::toString(Guid::newGuid(world, type))
     #define GUID2STR(guid)              Guid::toString(guid)
     #define STR2GUID(str)               Guid::toGuid(str)
 

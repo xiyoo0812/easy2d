@@ -20,7 +20,7 @@ void Component::destroy()
 	}
 }
 
-Scene* Component::getScene() const
+WPtr<Scene> Component::getScene() const
 { 
 	if(mMaster)
 	{
@@ -74,7 +74,7 @@ int32 Component::getHeight() const
 	return mDimensions.y; 
 }
 
-SPtr<Entity> Component::getMaster() const
+WPtr<Entity> Component::getMaster() const
 {
 	return mMaster;
 }
@@ -83,7 +83,7 @@ void Component::setMaster(Entity* pEntity)
 {
 	if (pEntity)
 	{
-		mMaster = NewSPtr(pEntity);
+		mMaster = NewWPtr(pEntity);
 	}
 	else
 	{

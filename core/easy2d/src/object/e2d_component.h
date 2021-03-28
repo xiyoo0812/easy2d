@@ -17,12 +17,12 @@ namespace Easy2D
 
 		void destroy();
 
-		virtual initialize(Object* parent) = 0;
+		virtual void initialize(Object* parent) = 0;
 
 		virtual void draw() = 0;
 		virtual void update(const uint32& escapeMs) = 0;
 
-		Scene* getScene() const;
+		WPtr<Scene> getScene() const;
 		TransformComponent* getTransform() const;
 
 		virtual bool checkCulling(float32 left, float32 right, float32 top,float32 bottom) const;
@@ -37,11 +37,11 @@ namespace Easy2D
 		virtual int32 getWidth() const;
 		virtual int32 getHeight() const;
 
-		SPtr<Entity> getMaster() const;
+		WPtr<Entity> getMaster() const;
 		void setMaster(Entity* pMaster);
 
 	protected:
-		SPtr<Entity> mMaster = nullptr;
+		WPtr<Entity> mMaster = nullptr;
 		Vec2	m_Dimensions = Vec2::ZERO;
 		bool	mEnabled = true, mVisible = true;
 	};

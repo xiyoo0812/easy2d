@@ -20,14 +20,14 @@ namespace Easy2D
 		virtual void resume();
 		virtual void update(const uint32& escapeMs) = 0;
 
-		SPtr<Entity> getMaster() const;
+		WPtr<Entity> getMaster() const;
 		void setMaster(Entity* pMaster);
 
 	protected:
 		virtual void initialize() = 0;
 
 		bool mPaused;
-		SPtr<Entity> mMaster = nullptr;
+		WPtr<Entity> mMaster = nullptr;
 	};
 }
 

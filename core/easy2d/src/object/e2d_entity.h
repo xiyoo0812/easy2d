@@ -62,15 +62,17 @@ namespace Easy2D
 
 		int32 getZorder() const;
 		void setZorder(int32 order);
-		SPtr<Scene> getScene() const;
+		WPtr<Scene> getScene() const;
 		void setScene(Scene* pScene);
-		SPtr<Object> getParent() const;
+		WPtr<Object> getParent() const;
 		void setParent(Object* pParent);
 
-		template <typename T>
-		SPtr<T>  getChild(const String& name) const;
-		template <typename T>
-		SPtr<T>  getComponent(const String& name) const;
+		template <typename T = Entity>
+		SPtr<T> getChild(const String& name) const;
+		template <typename T = Action>
+		SPtr<T> getAction(const String& name) const;
+		template <typename T = Component>
+		SPtr<T> getComponent(const String& name) const;
 
 	protected:
 		virtual bool checkCulling(float32 left,float32 right,float32 top,float32 bottom);
@@ -79,7 +81,7 @@ namespace Easy2D
 		bool mVisible = true;
 		String mGroup = "default", mPhysics = "default";
 
-		SPtr<Scene> mScene = nullptr;
+		WPtr<Scene> mScene = nullptr;
 		SPtr<Object> mParent = nullptr;
 		
 		UnorderedMap<String, SPtr<Action>> mActions;

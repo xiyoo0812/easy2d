@@ -5,18 +5,18 @@ using namespace Easy2D;
 
 Entity::Entity(void) : Object()
 {
-	addComponent(new TransformComponent(this));
+	addComponent(new TransformComponent());
 }
 
 Entity::Entity(const String& name) : Object(name)
 {
-	addComponent(new TransformComponent(this));
+	addComponent(new TransformComponent());
 }
 
 Entity::Entity(const String& name, const String& group)
 	: Object(name), mGroup(group)
 {
-	addComponent(new TransformComponent(this));
+	addComponent(new TransformComponent());
 }
 
 Entity::~Entity()
@@ -360,7 +360,7 @@ void Entity::setZorder(int32* order)
 	mZorder = order;
 }
 
-SPtr<Scene> Entity::getScene() const
+WPtr<Scene> Entity::getScene() const
 {
 	return mScene;
 }
@@ -369,7 +369,7 @@ void Entity::setScene(Scene* pScene)
 {
 	if (pScene)
 	{
-		mScene = NewSPtr(pScene);
+		mScene = NewWPtr(pScene);
 	}
 	else
 	{
@@ -381,21 +381,43 @@ void Entity::setScene(Scene* pScene)
 	}
 }
 
-SPtr<Entity> Object::getParent() const
+WPtr<Entity> Entity::getParent() const
 {
 	return mParent;
 }
 
-void Object::setParent(Object* pObject)
+void Entity::setParent(Entity* pEntity)
 {
-	if (pObject)
+	if (pEntity)
 	{
-		mParent = NewSPtr(pObject);
+		mParent = NewWPtr(pEntity);
 	}
 	else
 	{
 		mParent = nullptr;
 	}
+}
+
+void Entity::RecalculateDimensions()
+{
+	ivec2 dim(0,0);
+	auto transform = GetTransform();
+	for(auto comp : m_pComponents)
+	{
+		if(comp != transform)
+		{
+			ivec2 temp = comp->GetDimensions();
+			if(temp.x > dim.x)
+			{
+				dim.x = temp.x;
+			}
+			if(temp.y > dim.y)
+			{
+				dim.y = temp.y;
+			}
+		}
+	}
+	transform->SetDimensions(dim);
 }
 
 void Entity::reset()
@@ -412,10 +434,24 @@ SPtr<T> Entity::getChild(const String& name) const
 	auto it = mChildren.find(name)
 	if (it != mChildren.end())
 	{
-		Entity* child = it->second; 
-		if(typeid(*child) == typeid(T))
+		if(typeid(*it->second.get()) == typeid(T))
 		{
-			return dynamic_cast<SPtr<T>>(child);
+			return dynamic_pointer_cast<T>(it->second));
+		}
+	}
+	return nullptr;
+}
+
+template <typename T>
+SPtr<T> Entity::getAction(const String& name) const
+{
+	auto it = mActions.find(name)
+	if (it != mActions.end())
+	{
+		Action* action = it->second.get(); 
+		if(typeid(*it->second.get()) == typeid(T))
+		{
+			return dynamic_pointer_cast<T>(it->second));
 		}
 	}
 	return nullptr;
@@ -427,10 +463,9 @@ SPtr<T> Entity::getComponent(const String& name) const
 	auto it = mComponents.find(name)
 	if (it != mComponents.end())
 	{
-		Component* comp = it->second; 
-		if(typeid(*comp) == typeid(T))
+		if(typeid(*it->second.get()) == typeid(T))
 		{
-			return NewSPtr<T>(dynamic_cast<T*>(comp));
+			return dynamic_pointer_cast<T>(it->second));
 		}
 	}
 	return nullptr;

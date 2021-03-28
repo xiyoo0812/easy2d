@@ -43,7 +43,7 @@ void Action::resume()
 	mPaused = false;
 }
 
-SPtr<Entity> Action::getMaster() const
+WPtr<Entity> Action::getMaster() const
 {
 	return mMaster;
 }
@@ -52,7 +52,7 @@ void Action::setMaster(Entity* pEntity)
 {
 	if (pEntity)
 	{
-		mMaster = NewSPtr(pEntity);
+		mMaster = NewWPtr(pEntity);
 	}
 	else
 	{

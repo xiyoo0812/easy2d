@@ -9,6 +9,7 @@
 
 #include "logger.h"
 #include "base/e2d_types.h"
+#include "base/e2d_utils.h"
 #include "base/e2d_singleton.h"
 
 #define LOG_WARN logger_ctx<log_level::LOG_LEVEL_WARN>(__FILE__, __LINE__)

@@ -63,6 +63,16 @@ namespace Easy2D
     using Vector = std::vector<T>;
     template <class Key, class T, class Hash = std::hash<Key>, class KeyEqual = std::equal_to<Key>>
     using UnorderedMap = std::unordered_map<Key, T, Hash, KeyEqual>;
+
+    template <typename T>
+	inline void SafeDelete(T * &pointer)
+	{
+		if(pointer != nullptr)
+		{
+			delete pointer;
+			pointer = nullptr;
+		}
+	}
 };
 
 #endif

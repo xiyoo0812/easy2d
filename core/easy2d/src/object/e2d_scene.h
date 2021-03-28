@@ -43,7 +43,7 @@ namespace Easy2D
 		void getGroup(const String& tag, std::vector<Entity*> & group);
 
 		void setActiveCamera(Camera* pCamera);
-		Camera* getActiveCamera() const;
+		SPtr<Camera> getActiveCamera() const;
 
 		static void setCullingIsEnabled(bool enabled);
 		static bool isCullingEnabled();
@@ -59,7 +59,7 @@ namespace Easy2D
 		//std::shared_ptr<CollisionManager> m_pCollisionManager;
 
 		std::vector<Entity*> mEntitys;
-		Camera *mDefaultCamera, *mActiveCamera;
+		SPtr<Camera> *mDefaultCamera, *mActiveCamera;
 
 		int32 mCullingOffsetX, mCullingOffsetY;
 		static bool CULLING_IS_ENABLED;
