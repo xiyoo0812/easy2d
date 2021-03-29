@@ -38,31 +38,11 @@ void Entity::destroy()
 	}
 }
 
-void Entity::initialize(Scene* pScene)
+void Entity::initialize()
 {
-	if (!mInitialized)
-	{
-		for(auto action : mActions)
-		{
-			action->initialize(this);
-		}
-		for(auto comp : mComponents)
-		{
-			comp->initialize(this);
-		}
-		for(auto child : mChildren)
-		{
-			child->initialize(this);
-		}
-		SetScene(pScene);
-		afterInitialized();
-		mInitialized = true;
-	}
+
 }
 
-void Entity::afterInitialized()
-{
-}
 
 void Entity::update(const uint32& escapeMs)
 {
@@ -169,7 +149,8 @@ void Entity::addChild(Entity* pChild)
 	auto it = mChildren.find(pChild->getName())
 	if (it != mChildren.end())
 	{
-		pChild->initialize(this);
+		pChild->initialize();
+		pChild->setParent(dynamic_pointer_cast<Entity>(shared_from_this(this)));
 		mChildren.insert(std::make_pair(pChild->getName(), pChild);
 	}
 }
@@ -238,7 +219,8 @@ void Entity::addAction(Action* pAction)
 	auto it = mActions.find(pAction->getName())
 	if (it != mActions.end())
 	{
-		pAction->initialize(this);
+		pAction->initialize();
+		pAction->setMaster(dynamic_pointer_cast<Entity>(shared_from_this(this)));
 		mActions.insert(std::make_pair(pAction->getName(), pAction);
 	}
 }
@@ -290,7 +272,8 @@ void Entity::addComponent(Component *pComponent)
 	auto it = mComponents.find(pComponent->getName())
 	if (it != mComponents.end())
 	{
-		pComponent->initialize(this);
+		pComponent->initialize();
+		pComponent->setMaster(dynamic_pointer_cast<Entity>(shared_from_this(this)));
 		mComponents.insert(std::make_pair(pComponent->getName(), pComponent);
 	}
 }	
@@ -365,16 +348,9 @@ WPtr<Scene> Entity::getScene() const
 	return mScene;
 }
 
-void Entity::setScene(Scene* pScene)
+void Entity::setScene(SPtr<Scene> pScene)
 {
-	if (pScene)
-	{
-		mScene = NewWPtr(pScene);
-	}
-	else
-	{
-		mScene = nullptr;
-	}
+	mScene = pScene;
 	for(auto child : mChildren)
 	{
 		child->setScene(pScene);
@@ -386,27 +362,25 @@ WPtr<Entity> Entity::getParent() const
 	return mParent;
 }
 
-void Entity::setParent(Entity* pEntity)
+void Entity::setParent(SPtr<Entity> pEntity)
 {
-	if (pEntity)
-	{
-		mParent = NewWPtr(pEntity);
-	}
-	else
-	{
-		mParent = nullptr;
-	}
+	mParent = pEntity;
 }
 
-void Entity::RecalculateDimensions()
+SPtr<TransformComponent> Entity::getTransform() const
 {
-	ivec2 dim(0,0);
-	auto transform = GetTransform();
+	return getComponent<TransformComponent>(TransformComponent::GUID);
+}
+
+void Entity::recalculateDimensions()
+{
+	Vec2 dim(0, 0);
+	auto transform = getTransform();
 	for(auto comp : m_pComponents)
 	{
 		if(comp != transform)
 		{
-			ivec2 temp = comp->GetDimensions();
+			Vec2 temp = comp->getDimensions();
 			if(temp.x > dim.x)
 			{
 				dim.x = temp.x;
@@ -417,7 +391,7 @@ void Entity::RecalculateDimensions()
 			}
 		}
 	}
-	transform->SetDimensions(dim);
+	transform->setDimensions(dim);
 }
 
 void Entity::reset()

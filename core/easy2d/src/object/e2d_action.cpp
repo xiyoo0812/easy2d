@@ -20,14 +20,6 @@ Action::~Action()
 
 }
 
-void Action::destroy()
-{
-	if (mMaster)
-	{
-		mMaster->removeAction(this);
-	}
-}
-
 void Action::restart()
 {
 	mPaused = false;
@@ -48,14 +40,7 @@ WPtr<Entity> Action::getMaster() const
 	return mMaster;
 }
 
-void Action::setMaster(Entity* pEntity)
+void Action::setMaster(SPtr<Entity> pEntity)
 {
-	if (pEntity)
-	{
-		mMaster = NewWPtr(pEntity);
-	}
-	else
-	{
-		mMaster = nullptr;
-	}
+	mMaster = pEntity;
 }

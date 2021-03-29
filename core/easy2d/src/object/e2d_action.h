@@ -13,7 +13,7 @@ namespace Easy2D
 		Action(const String& name);
 		virtual ~Action();
 
-		void destroy();
+		virtual void initialize() = 0;
 
 		virtual void restart();
 		virtual void pause();
@@ -21,11 +21,9 @@ namespace Easy2D
 		virtual void update(const uint32& escapeMs) = 0;
 
 		WPtr<Entity> getMaster() const;
-		void setMaster(Entity* pMaster);
+		void setMaster(SPtr<Entity> pMaster);
 
 	protected:
-		virtual void initialize() = 0;
-
 		bool mPaused;
 		WPtr<Entity> mMaster = nullptr;
 	};

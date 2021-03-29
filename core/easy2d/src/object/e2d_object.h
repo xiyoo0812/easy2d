@@ -6,7 +6,8 @@
 
 namespace Easy2D
 {
-	class Object
+	// 子类需要调用shared_from_this()
+	class Object final : public enable_shared_from_this<Object>
 	{
 	public:
 		Object();

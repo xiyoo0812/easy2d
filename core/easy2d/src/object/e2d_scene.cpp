@@ -35,18 +35,9 @@ void Scene::initialize()
 			mDefaultCamera = new Camera();
 			addEntity(mDefaultCamera);
 		}
+		setActiveCamera(mDefaultCamera);
 		mInitialized = true;
-		for(auto object : mEntitys)
-		{
-			object->initialize(this);
-		}
-		afterInitializedObjects();
 	}
-}
-
-void Scene::afterInitializedObjects()
-{
-	setActiveCamera(mDefaultCamera);
 }
 
 void Scene::onActivate()
@@ -123,7 +114,8 @@ void Scene::addEntity(Entity* pEntity)
 	{
 		if(mInitialized)
 		{
-			pEntity->initialize(this);
+			pEntity->setScene(dynamic_pointer_cast<Scene>(shared_from_this(this)));
+			pEntity->initialize();
 		}
 		if(isObjectNameExist(pEntity->GetName()))
 		{

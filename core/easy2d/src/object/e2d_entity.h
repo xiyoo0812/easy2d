@@ -18,8 +18,7 @@ namespace Easy2D
 
 		virtual void reset();
 		virtual void destroy();
-		virtual void initialize(Scene* pScene);
-		virtual void afterInitialized();
+		virtual void initialize();
 		virtual void draw();
 		virtual void update(const uint32& escapeMs);
 		virtual void drawWithCulling(float32 left,float32 right,float32 top,float32 bottom);
@@ -59,13 +58,15 @@ namespace Easy2D
 
 		bool isChildNameExist(const String& name) const;
 		bool isActionNameExist(const String& name) const;
+		void Entity::recalculateDimensions()
 
 		int32 getZorder() const;
 		void setZorder(int32 order);
 		WPtr<Scene> getScene() const;
-		void setScene(Scene* pScene);
-		WPtr<Object> getParent() const;
-		void setParent(Object* pParent);
+		void setScene(SPtr<Scene> pScene);
+		WPtr<Entity> getParent() const;
+		void setParent(SPtr<Entity> pParent);
+		SPtr<TransformComponent> getTransform() const;
 
 		template <typename T = Entity>
 		SPtr<T> getChild(const String& name) const;
@@ -82,7 +83,7 @@ namespace Easy2D
 		String mGroup = "default", mPhysics = "default";
 
 		WPtr<Scene> mScene = nullptr;
-		SPtr<Object> mParent = nullptr;
+		WPtr<Entity> mParent = nullptr;
 		
 		UnorderedMap<String, SPtr<Action>> mActions;
 		UnorderedMap<String, SPtr<Entity>> mChildren;

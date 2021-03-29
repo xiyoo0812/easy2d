@@ -11,9 +11,8 @@ TransformComponent::~TransformComponent(void)
 {
 }
 
-void TransformComponent::initialize(Entity* entity)
+void TransformComponent::initialize()
 {
-	setMaster(entity);
 	CheckForUpdate(true);
 	m_Invalidate = true;
 }

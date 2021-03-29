@@ -14,7 +14,7 @@ Component::~Component()
 
 void Component::destroy()
 {
-	if(mMaster)
+	if(mMaster && mMaster.expired())
 	{
 		mMaster->removeComponent(this);
 	}
@@ -22,16 +22,20 @@ void Component::destroy()
 
 WPtr<Scene> Component::getScene() const
 { 
-	if(mMaster)
+	if(mMaster && mMaster.expired())
 	{
 		return mMaster->getScene();
 	}
 	return nullptr;
 }
 
-TransformComponent* Component::getTransform() const
+SPtr<TransformComponent> Component::getTransform() const
 {
-	return m_pParentObject->getComponent<TransformComponent>();
+	if(mMaster && mMaster.expired())
+	{
+		mMaster->getTransform();
+	}
+	return nullptr;
 }
 
 bool Component::checkCulling(float left,float right,float top,float bottom) const
@@ -79,14 +83,7 @@ WPtr<Entity> Component::getMaster() const
 	return mMaster;
 }
 
-void Component::setMaster(Entity* pEntity)
+void Component::setMaster(SPtr<Entity>* pEntity)
 {
-	if (pEntity)
-	{
-		mMaster = NewWPtr(pEntity);
-	}
-	else
-	{
-		mMaster = nullptr;
-	}
+	mMaster = pEntity;
 }

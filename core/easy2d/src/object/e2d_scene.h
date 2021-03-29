@@ -17,7 +17,6 @@ namespace Easy2D
 		void destroy();
 		
 		virtual void initialize();
-		virtual void afterInitializedEntitys();
 		virtual void onActivate();
 		virtual void onDeactivate();
 		virtual void update(const uint32& escapeMs));
@@ -27,9 +26,9 @@ namespace Easy2D
 		virtual void onConfigurationChanged();
 		virtual void onLowMemory();
 
-		virtual void addEntity(Entity * pEntity); 
-		void addEntity(Entity * pEntity, const String& name); 
-		virtual void removeEntity(Entity * pEntity);
+		virtual void addEntity(Entity* pEntity); 
+		void addEntity(Entity* pEntity, const String& name); 
+		virtual void removeEntity(Entity* pEntity);
 		void removeEntity(const String& name);
 
 		template <typename T>

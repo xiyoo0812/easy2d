@@ -21,7 +21,7 @@ namespace Easy2D
 		TransformComponent();
 		~TransformComponent(void);
 
-		virtual void initialize(Entity* entity);
+		virtual void initialize();
 
 		void Update(const Context& context);
 		void Draw();
@@ -76,12 +76,12 @@ namespace Easy2D
 		void SetDimensionsXSafe(int32 x);
 		void SetDimensionsYSafe(int32 y);
 
-		const Mat4 & GetWorldMatrix() const;
+		const Mat4& GetWorldMatrix() const;
 
 	private:
 		void CheckForUpdate(const bool force = false);
 		void CommonUpdate();
-		void SingleUpdate(Mat4 & world);
+		void SingleUpdate(Mat4& world);
 
 		suchar m_IsChanged;
 		bool m_Invalidate;

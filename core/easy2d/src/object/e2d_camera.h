@@ -18,7 +18,6 @@ namespace Easy2D
 		virtual void translateY(float32 y);
 		virtual void activate();
 		virtual void deactivate();
-		
 
 		virtual void convertScreenToWorld(Vec2& posInOut);
 	};
