@@ -5,13 +5,13 @@ using namespace Easy2D;
 
 Object::Object()
 {
-
+	mGUID = MAKE_GUID(RandIntDist(0, MAX_WORLD), RandIntDist(0, MAX_TYPE));
 }
 
 Object::Object(const String& name)
 	: mName(name)
 {
-
+	mGUID = MAKE_GUID(RandIntDist(0, MAX_WORLD), RandIntDist(0, MAX_TYPE));
 }
 
 Object::~Object()
@@ -29,7 +29,7 @@ bool Object::compareName(const String& name)
 	return mName == name;
 }
 
-const String& Object::getName() const
+String& Object::getName() const
 {
 	return mName;
 }
@@ -37,4 +37,14 @@ const String& Object::getName() const
 void Object::setName(const String& name)
 {
 	mName = name;
+}
+
+bool Object::compareGUID(const uint64 guid)
+{
+	return mGUID == guid;
+}
+
+uint64 Object::getGUID() const
+{
+	return mGUID;
 }

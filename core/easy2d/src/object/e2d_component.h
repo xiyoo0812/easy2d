@@ -13,6 +13,7 @@ namespace Easy2D
 	{
 	public:
 		Component();
+		Component(const String& name);
 		virtual ~Component();
 
 		void destroy();

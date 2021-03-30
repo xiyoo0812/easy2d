@@ -12,10 +12,6 @@ Scene::Scene(const String& name) : Object(name)
 
 Scene::~Scene()
 {
-	for(auto & entity : mEntitys)
-	{
-		safeDelete(entity);
-	}
 	mEntitys.clear();
 	// m_pCollisionManager = nullptr;
 }
@@ -29,10 +25,9 @@ void Scene::initialize()
 {
 	if(!mInitialized)
 	{
-		createEntitys();
 		if(mDefaultCamera == nullptr)
 		{
-			mDefaultCamera = new Camera();
+			mDefaultCamera = NewSPtr(new Camera());
 			addEntity(mDefaultCamera);
 		}
 		setActiveCamera(mDefaultCamera);
@@ -102,83 +97,60 @@ void Scene::onLowMemory()
 
 }
 
-void Scene::addEntity(Entity* pEntity)
+void Scene::addEntity(SPtr<Entity> pEntity)
 {
-	if(!pEntity)
+	if(pEntity)
 	{
-		LOG_ERROR << _T("Scene::addEntity: You can't add a nullptr object. Adding failed!");
-		return;
-	}
-	auto it = std::find(mEntitys.begin(), mEntitys.end(), pEntity);
-	if(it == mEntitys.end())
-	{
-		if(mInitialized)
+		if(isEntityNameExist(pEntity->GetName()))
 		{
-			pEntity->setScene(dynamic_pointer_cast<Scene>(shared_from_this(this)));
-			pEntity->initialize();
-		}
-		if(isObjectNameExist(pEntity->GetName()))
-		{
-			LOG_DEBUG << _T("Scene::addEntity: an object with the name '")
+			LOG_ERROR << _T("Scene::addEntity: an object with the name '")
 			<< pEntity->GetName() << _T("' already exists. Object gets added but beware, duplicate names can become the cause of problems.");
+			return;
 		}
-		mEntitys.push_back(pEntity);
+		pEntity->initialize();
+		pEntity->setScene(dynamic_pointer_cast<Scene>(shared_from_this(this)));
+		mEntitys.insert(std::make_pair(pEntity->getName(), pEntity)>);
 	}
 }
 
-void Scene::addEntity(Entity* pEntity, const String& name)
+void Scene::addEntity(SPtr<Entity> pEntity, const String& name)
 {
-	if(!pEntity)
+	if(pEntity)
 	{
-		LOG_ERROR << _T("Scene::addEntity: Trying to add a nullptr object.");
-		return;
+		pEntity->setName(name);
+		addEntity(pEntity);
 	}
-	pEntity->setName(name);
-	addEntity(pEntity);
 }
 
-void Scene::removeEntity(Entity* pEntity)
+void Scene::removeEntity(SPtr<Entity> pEntity)
 {
-	auto it = std::find(mEntitys.begin(), mEntitys.end(), pEntity);
-	if(it != mEntitys.end())
-	{
-		m_pGarbage.push_back(pEntity);
-	}
+	removeEntity(pEntity->getName());
 }
 
 void Scene::removeEntity(const String& name)
 {
-	for(auto pEntity : mEntitys)
+	auto it = mEntitys.find(name);
+	if(it != mEntitys.end())
 	{
-		if(pEntity->compareName(name))
-		{
-			removeEntity(pEntity);
-			return;
-		}
+		mEntitys.erase(it);
 	}
 }
 
 void Scene::setObjectDisabled(const String& name, bool disabled)
 {
-	for(auto pEntity : mEntitys)
+	auto it = mEntitys.find(name);
+	if(it != mEntitys.end())
 	{
-		if(pEntity->compareName(name))
-		{
-			pEntity->setDisabled(disabled);
-			return;
-		}
+		it.second->setDisabled(disabled);
 	}
 }
 
 void Scene::setObjectVisible(const String& name, bool visible)
 {
-	for(auto pEntity : mEntitys)
+	auto it = mEntitys.find(name);
+	if(it != mEntitys.end())
 	{
-		if(pEntity->compareName(name))
-		{
-			pEntity->setVisible(visible);
-			return;
-		}
+		it.second->setVisible(visible);
 	}
 }
 
@@ -204,7 +176,7 @@ void Scene::setGroupVisible(const String& tag, bool visible)
 	}
 }
 
-void Scene::getGroup(const String& tag, std::vector<Object*> & group)
+void Scene::getGroup(const String& tag, Vector<SPtr<Entity>>& group)
 {
 	for(auto pEntity : mEntitys)
 	{
@@ -215,7 +187,7 @@ void Scene::getGroup(const String& tag, std::vector<Object*> & group)
 	}
 }
 
-void Scene::setActiveCamera(Camera* pCamera)
+void Scene::setActiveCamera(SPtr<Camera> pCamera)
 {
 	if(!pCamera || mActiveCamera == pCamera)
 	{
@@ -225,7 +197,7 @@ void Scene::setActiveCamera(Camera* pCamera)
 	{
 		mActiveCamera->deactivate();
 	}
-	mActiveCamera = NewSPtr<Camera>(pCamera);
+	mActiveCamera = pCamera;
 	mActiveCamera->activate();
 }
 
@@ -244,11 +216,11 @@ bool Scene::isCullingEnabled()
 	return CULLING_IS_ENABLED;
 }
 
-bool Scene::isObjectNameExist(const String& name) const
+bool Scene::isEntityNameExist(const String& name) const
 {
-	for(auto object : mEntitys)
+	for(auto entity : mEntitys)
 	{
-		if(object->compareName(name))
+		if(entity->compareName(name))
 		{
 			return true;
 		}

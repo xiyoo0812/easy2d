@@ -31,9 +31,9 @@ namespace Easy2D
 		void setGroup(const String& group);
 		bool compareGroup(const String& group);
 
-		void addChild(Entity* pEntity);
+		void addChild(SPtr<Entity> pEntity);
 		void removeChild(const String& name);
-		void removeChild(const Entity* pEntity);
+		void removeChild(const SPtr<Entity> pEntity);
 		const UnorderedMap<String, SPtr<Entity>>& GetChildren() const;
 
 		void setChildDisabled(const String& name, bool disabled);
@@ -41,15 +41,16 @@ namespace Easy2D
 		void setChildrenDisabled(bool disable);
 		void setChildrenVisible(bool visible);
 
-		void addAction(Action * pAction);
-		void removeAction(Action *pAction);
+		void addAction(SPtr<Action> pAction);
+		void removeAction(const SPtr<Action> pAction);
 		void removeAction(const String& name);
 		void restartAction(const String& name);
 		void pauseAction(const String& name);
 		void resumeAction(const String& name);
 
-		void addComponent(Component* pComponent);
-		void removeComponent(Component * pComponent);
+		void addComponent(SPtr<Component> pComponent);
+		void removeComponent(const SPtr<Component> pComponent);
+		void removeComponent(const String& name);
 
 		void setVisible(bool visible);
 		void setDisabled(bool disabled);

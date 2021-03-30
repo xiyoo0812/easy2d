@@ -28,13 +28,13 @@ Entity::~Entity()
 
 void Entity::destroy()
 {
-	if(mParent)
+	if(mParent && mParent->expired())
 	{
-		mParent->removeChild(this);
+		mParent->removeChild(mName);
 	}
-	else
+	if(mScene && mScene->expired())
 	{
-		mScene->removeEntity(this);
+		mScene->removeEntity(mName);
 	}
 }
 
@@ -42,7 +42,6 @@ void Entity::initialize()
 {
 
 }
-
 
 void Entity::update(const uint32& escapeMs)
 {
@@ -139,7 +138,7 @@ void Entity::setGroup(const String& group)
 	mGroup = group;
 }
 
-void Entity::addChild(Entity* pChild)
+void Entity::addChild(SPtr<Entity> pChild)
 {
 	if(IsChildNameExist(pChild->getName()))
 	{
@@ -150,12 +149,13 @@ void Entity::addChild(Entity* pChild)
 	if (it != mChildren.end())
 	{
 		pChild->initialize();
+		pChild->setScene(mScene);
 		pChild->setParent(dynamic_pointer_cast<Entity>(shared_from_this(this)));
-		mChildren.insert(std::make_pair(pChild->getName(), pChild);
+		mChildren.insert(pChild->getName(), pChild);
 	}
 }
 
-void Entity::removeChild(const Entity* pEntity)
+void Entity::removeChild(const SPtr<Entity> pEntity)
 {
 	removeChild(pEntity->getName());
 }
@@ -209,7 +209,7 @@ void Entity::setChildrenVisible(bool visible)
 	}
 }
 
-void Entity::addAction(Action* pAction)
+void Entity::addAction(SPtr<Action> pAction)
 {
 	if(IsActionNameExist(pAction->getName()))
 	{
@@ -221,11 +221,11 @@ void Entity::addAction(Action* pAction)
 	{
 		pAction->initialize();
 		pAction->setMaster(dynamic_pointer_cast<Entity>(shared_from_this(this)));
-		mActions.insert(std::make_pair(pAction->getName(), pAction);
+		mActions.insert(pAction->getName(), pAction);
 	}
 }
 
-void Entity::removeAction(Action *pAction)
+void Entity::removeAction(const SPtr<Action> pAction)
 {
 	removeAction(pAction->getName());
 }
@@ -267,20 +267,25 @@ void Entity::resumeAction(const String& name)
 	}
 }
 
-void Entity::addComponent(Component *pComponent)
+void Entity::addComponent(SPtr<Component> pComponent)
 {
 	auto it = mComponents.find(pComponent->getName())
 	if (it != mComponents.end())
 	{
 		pComponent->initialize();
 		pComponent->setMaster(dynamic_pointer_cast<Entity>(shared_from_this(this)));
-		mComponents.insert(std::make_pair(pComponent->getName(), pComponent);
+		mComponents.insert(pComponent->getName(), pComponent);
 	}
-}	
+}
 
-void Entity::removeComponent(Component* pComponent)
+void Entity::removeComponent(const SPtr<Component> pComponent)
 {
-	auto it = mComponents.find(pComponent->getName())
+	removeComponent(pAction->getName());
+}
+
+void Entity::removeComponent(const String& name)
+{
+	auto it = mComponents.find(name)
 	if (it != mComponents.end())
 	{
 		it.second->setMaster(nullptr);
@@ -350,10 +355,13 @@ WPtr<Scene> Entity::getScene() const
 
 void Entity::setScene(SPtr<Scene> pScene)
 {
-	mScene = pScene;
-	for(auto child : mChildren)
+	if (mScene != pScene)
 	{
-		child->setScene(pScene);
+		mScene = pScene;
+		for(auto child : mChildren)
+		{
+			child->setScene(pScene);
+		}
 	}
 }
 

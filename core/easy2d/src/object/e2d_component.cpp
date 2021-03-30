@@ -8,6 +8,11 @@ Component::Component() : Object()
 {
 }
 
+Component::Component(const String& name): Object(name)
+{
+
+}
+
 Component::~Component()
 {
 }
@@ -16,7 +21,7 @@ void Component::destroy()
 {
 	if(mMaster && mMaster.expired())
 	{
-		mMaster->removeComponent(this);
+		mMaster->removeComponent(mName);
 	}
 }
 

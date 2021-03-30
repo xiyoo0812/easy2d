@@ -26,22 +26,22 @@ namespace Easy2D
 		virtual void onConfigurationChanged();
 		virtual void onLowMemory();
 
-		virtual void addEntity(Entity* pEntity); 
-		void addEntity(Entity* pEntity, const String& name); 
-		virtual void removeEntity(Entity* pEntity);
+		void addEntity(SPtr<Entity> pEntity); 
+		void addEntity(SPtr<Entity> pEntity, const String& name); 
 		void removeEntity(const String& name);
+		void removeEntity(SPtr<Entity> pEntity);
 
 		template <typename T>
-		T* getEntity(const String& name) const;
+		SPtr<T> getEntity(const String& name) const;
 
 		void setEntityDisabled(const String& name, bool disabled);
 		void setEntityVisible(const String& name, bool visible);
 
 		void setGroupDisabled(const String& tag, bool disabled);
 		void setGroupVisible(const String& tag, bool visable);
-		void getGroup(const String& tag, std::vector<Entity*> & group);
+		void getGroup(const String& tag, Vector<SPtr<Entity>> & group);
 
-		void setActiveCamera(Camera* pCamera);
+		void setActiveCamera(SPtr<Camera> pCamera);
 		SPtr<Camera> getActiveCamera() const;
 
 		static void setCullingIsEnabled(bool enabled);
@@ -53,12 +53,10 @@ namespace Easy2D
 		void setCullingOffset(int32 offsetX, int32 offsetY);
 
 	protected:
-		virtual void createEntitys() = 0;
-
 		//std::shared_ptr<CollisionManager> m_pCollisionManager;
 
-		std::vector<Entity*> mEntitys;
-		SPtr<Camera> *mDefaultCamera, *mActiveCamera;
+		UnorderedMap<String, SPtr<Entity>> mEntitys;
+		SPtr<Camera> mDefaultCamera, mActiveCamera;
 
 		int32 mCullingOffsetX, mCullingOffsetY;
 		static bool CULLING_IS_ENABLED;

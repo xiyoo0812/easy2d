@@ -10,7 +10,7 @@ Action::Action() : Object()
 
 }
 
-Action::Action(const tstring & name): Object(name)
+Action::Action(const String& name): Object(name)
 {
 
 }
@@ -18,6 +18,14 @@ Action::Action(const tstring & name): Object(name)
 Action::~Action()
 {
 
+}
+
+void Component::destroy()
+{
+	if(mMaster && mMaster.expired())
+	{
+		mMaster->removeAction(mName);
+	}
 }
 
 void Action::restart()

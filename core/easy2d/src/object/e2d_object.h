@@ -7,7 +7,7 @@
 namespace Easy2D
 {
 	// 子类需要调用shared_from_this()
-	class Object final : public enable_shared_from_this<Object>
+	class Object final : public std::enable_shared_from_this<Object>
 	{
 	public:
 		Object();
@@ -18,10 +18,14 @@ namespace Easy2D
 		void setName(String& name);
 		bool compareName(const String& name);
 
+		uint64 getGUID() const;
+		bool compareGUID(const uint64 guid);
+
 		bool isInitialized() const;
 		virtual void destroy() = 0;
 
 	protected:
+		uint64 mGUID = 0;
 		String mName = "";
 		bool mInitialized = false;
 	};
