@@ -15,17 +15,18 @@ namespace Easy2D
 	public:
 		friend Singleton<SceneManager>;
 
-		SPtr<Scene> GetActiveScene();
-		SPtr<Scene> GetScene(const String& name);
-		template <typename T>
-		T* GetScene(const String& name);
-		bool SetActiveScene(const String& name);
-		bool AddScene(Scene* scene);
-		bool AddScene(const String& name, Scene* scene);
-		bool RemoveScene(const String& name);
+		SPtr<Scene> getActiveScene();
+		template <typename T = Scene>
+		SPtr<T> getScene(const uint64 guid);
+		bool setActiveScene(const uint64 guid);
+		bool addScene(SPtr<Scene> scene);
+		bool addScene(const String& name, SPtr<Scene> scene);
+		bool removeScene(const uint64 guid);
 
-		void Update(const Context& context);
-		void Draw();
+		bool initialized();
+
+		void update(const uint32& escapeMs);
+		void draw();
 
 #ifdef ANDROID
 		void processActivityEvent(int32 pCommand, android_app* pApplication);
@@ -38,8 +39,9 @@ namespace Easy2D
 		SceneManager();
 		~SceneManager();
 
-		String mCurSceneName = "";
-		UnorderedMap<String, SPtr<Scene>> mScenes;
+		uint64 mCurSceneID = 0;
+		bool mInitialized = false;
+		UnorderedMap<uint64, SPtr<Scene>> mScenes;
 		bool mSwitchingScene = false, mDestroyRequested = false;
 		SPtr<Scene>	mActiveScene = nullptr, mNewActiveScene = nullptr;
 	};

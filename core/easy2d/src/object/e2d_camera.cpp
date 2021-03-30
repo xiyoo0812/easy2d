@@ -9,6 +9,11 @@ Camera::Camera(): Entity()
 	AddComponent(new CameraComponent());
 }
 
+Camera::Camera(const String& name): Entity(name)
+{
+	AddComponent(new CameraComponent());
+}
+
 Camera::~Camera()
 {
 }

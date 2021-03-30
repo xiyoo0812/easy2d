@@ -8,7 +8,8 @@ namespace Easy2D
 	class Camera : public Entity
 	{
 	public:
-		Camera(void);
+		Camera();
+		Camera(const String& name);
 		virtual ~Camera(void);
 
 		virtual void initialize();

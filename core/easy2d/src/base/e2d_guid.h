@@ -9,7 +9,7 @@ namespace Easy2D
     class Guid final : public Singleton<GUID>
     {
     public:
-        static uint64 newGuid(short world, short type);
+        static uint64 newGuid(short world = 0, short type = 0);
         static String toString(uint64 value);
         static uint64 toGuid(String& str);
 

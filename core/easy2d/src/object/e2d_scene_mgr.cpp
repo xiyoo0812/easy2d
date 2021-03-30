@@ -1,7 +1,5 @@
 #include "e2d_scene_mgr.h"
 
-#define INPUT_MANAGER (InputManager::GetInstance())
-
 /* Easy2D */
 using namespace Easy2D;
 
@@ -11,36 +9,22 @@ SceneManager::SceneManager()
 
 SceneManager::~SceneManager()
 {
-	for(auto scene : mScenes)
-	{
-		safeDelete(scene);
-	}
 	mScenes.clear();
 }
 
-SPtr<Scene> SceneManager::GetActiveScene()
+SPtr<Scene> SceneManager::getActiveScene()
 {
 	return mActiveScene;
 }
 
-SPtr<Scene> SceneManager::GetScene(const String& name)
+bool SceneManager::setActiveScene(const uint64 guid)
 {
-	auto it = mScenes.find(name);
-	if(it != mScenes.end())
+	if(mCurSceneID == guid)
 	{
-		return it.second;
-	}
-	return nullptr;
-}
-
-bool SceneManager::SetActiveScene(const String& name)
-{
-	if(mCurSceneName == name)
-	{
-		LOG_WARN << _T("SceneManager::SetActiveScene: Scene is already active!");
+		LOG_WARN << _T("SceneManager::setActiveScene: Scene is already active!");
 		return true;
 	}
-	auto it = mScenes.find(name);
+	auto it = mScenes.find(guid);
 	if(it != mScenes.end())
 	{
 		if(mActiveScene == nullptr)
@@ -50,8 +34,8 @@ bool SceneManager::SetActiveScene(const String& name)
 		mSwitchingScene = true;
 		mNewActiveScene = it.second;
 		mInitialized = mNewActiveScene->isInitialized();
-		mCurSceneName = name;
-		LOG_INGO << _T("Scene ") << name << _T(" is now Active");
+		mCurSceneID = guid;
+		LOG_INGO << _T("Scene ") << guid << _T(" is now Active");
 		return true;
 	}
 	else
@@ -62,41 +46,39 @@ bool SceneManager::SetActiveScene(const String& name)
 	return true;
 }
 
-bool SceneManager::AddScene(Scene* scene)
+bool SceneManager::addScene(SPtr<Scene> scene)
 {
-	if(!scene)
+	if(scene == nullptr)
 	{
-		LOG_ERROR << _T("SceneManager::AddScene: Trying to add a nullptr as a scene.");
+		LOG_ERROR << _T("SceneManager::addScene: Trying to add a nullptr as a scene.");
 		return false;
 	}
-	if (mScenes.find(scene->GetName()) == mScenes.end())
+	auto it = mScenes.find(scene->getGUID());
+	if (it != mScenes.end())
 	{
-		scene->Initialize();
-		mScenes.insert(std::make_pair(scene->GetName(), scene));
-		LOG_INGO << _T("SceneManager::AddScene: Adding scene");
-	}
-	else
-	{
-		LOG_WARN << _T("SceneManager::AddScene: Scene Already Exists");
+		LOG_WARN << _T("SceneManager::addScene: Scene Already Exists");
 		return false;
 	}
+	scene->initialize();
+	mScenes.insert(std::make_pair(scene->getGUID(), scene));
+	LOG_INGO << _T("SceneManager::addScene: Adding scene");
 	return true;
 }
 
-bool SceneManager::AddScene(const String& name, Scene* scene)
+bool SceneManager::addScene(const String& name, SPtr<Scene> scene)
 {
-	if(!scene)
+	if(scene == nullptr)
 	{
-		LOG_ERROR << _T("SceneManager::AddScene: Trying to add a nullptr as a scene.");
+		LOG_ERROR << _T("SceneManager::addScene: Trying to add a nullptr as a scene.");
 		return false;
 	}
-	scene->SetName(name);
-	return AddScene(scene);
+	scene->setName(name);
+	return addScene(scene);
 }
 
-bool SceneManager::RemoveScene(const String& name)
+bool SceneManager::removeScene(const uint64 guid)
 {
-	auto it = mScenes.find(name);
+	auto it = mScenes.find(guid);
 	if(it != mScenes.end())
 	{
 		mScenes.erase(it);
@@ -105,7 +87,7 @@ bool SceneManager::RemoveScene(const String& name)
 	return false;
 }
 
-bool SceneManager::InitializeCurScene(const Context& context)
+bool SceneManager::initialized()
 {
 	if(mInitialized)
 	{
@@ -115,25 +97,16 @@ bool SceneManager::InitializeCurScene(const Context& context)
 	{
 		return false;
 	}
-	LOG_INGO << _T("Initializing Scene :") << mCurSceneName;
-	mNewActiveScene->initialize();
+	LOG_INGO << _T("Initializing Scene :") << mCurSceneID;
 	mInitialized = mNewActiveScene->isInitialized();
 	return mInitialized;
 }
 
-void SceneManager::Update(const Context& context)
+void SceneManager::update(const uint32& escapeMs)
 {
-	if(mDestroyRequested)
-	{
-		return;
-	}
 	if(mSwitchingScene)
 	{
-		if(!mInitialized)
-		{
-			InitializeCurScene(context);
-		}
-		if(mActiveScene != nullptr)
+		if(mActiveScene)
 		{
 			mActiveScene->onDeactivate();
 		}
@@ -143,27 +116,38 @@ void SceneManager::Update(const Context& context)
 		mSwitchingScene = false;
 		return;
 	}
-	else if(mActiveScene != nullptr)
+	if(mActiveScene)
 	{
-		return mActiveScene->Update(context);
+		mActiveScene->update(escapeMs);
 	}
 }
 
-void SceneManager::Draw()
+void SceneManager::draw()
 {
-	if(mDestroyRequested)
-	{
-		return;
-	}
-	if(mActiveScene != nullptr)
+	if(mActiveScene)
 	{
 		mActiveScene->draw();
-		SpriteBatch::GetInstance()->Flush();
-		DebugDraw::GetInstance()->Flush();
+		SpriteBatch::getInstance()->flush();
+		DebugDraw::getInstance()->flush();
 	}
+}
+
+template <typename T>
+SPtr<T> SceneManager::getScene(const uint64 guid);
+{
+	auto it = mScenes.find(guid)
+	if (it != mScenes.end())
+	{
+		if(typeid(*it->second.get()) == typeid(T))
+		{
+			return dynamic_pointer_cast<T>(it->second));
+		}
+	}
+	return nullptr;
 }
 
 #ifdef ANDROID
+#define INPUT_MANAGER (InputManager::getInstance())
 void SceneManager::processActivityEvent(int32 pCommand, android_app* pApplication)
 {
 	if(mActiveScene == nullptr)
@@ -183,7 +167,7 @@ void SceneManager::processActivityEvent(int32 pCommand, android_app* pApplicatio
 		break;
 	case APP_CMD_SAVE_STATE:
 		LOG_INGO << _T("SceneManager : APP_CMD_SAVE_STATE");
-		mActiveScene->OnSaveState(&mApplicationPtr->savedState,&mApplicationPtr->savedStateSize);
+		mActiveScene->onSaveState(&mApplicationPtr->savedState,&mApplicationPtr->savedStateSize);
 		break;
 	}
 }
@@ -198,14 +182,14 @@ int32 SceneManager::processInputEvent(AInputEvent* pEvent)
 		switch (AInputEvent_getSource(pEvent))
 		{
 		case AINPUT_SOURCE_TOUCHSCREEN:
-			INPUT_MANAGER->OnTouchEvent(pEvent);
+			INPUT_MANAGER->onTouchEvent(pEvent);
 			return (true);
 		default:
 			return (false);
 		}
 		break;
 	case AINPUT_EVENT_TYPE_KEY:
-		return INPUT_MANAGER->OnKeyboardEvent(pEvent);
+		return INPUT_MANAGER->onKeyboardEvent(pEvent);
 	default:
 		return false;
 	}

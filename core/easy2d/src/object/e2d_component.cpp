@@ -21,7 +21,7 @@ void Component::destroy()
 {
 	if(mMaster && mMaster.expired())
 	{
-		mMaster->removeComponent(mName);
+		mMaster->removeComponent(mGUID);
 	}
 }
 

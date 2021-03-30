@@ -6,6 +6,14 @@ using namespace Easy2D;
 
 uint64 Guid::newGuid(short world, short type)
 {
+	if (world == 0)
+	{
+		world = RandIntDist(0, MAX_WORLD);
+	}
+	if (type == 0)
+	{
+		type = RandIntDist(0, MAX_TYPE);
+	}
 	type %= (MAX_TYPE + 1);
 	world %= (MAX_WORLD + 1);
 

@@ -28,14 +28,14 @@ namespace Easy2D
 
 		void addEntity(SPtr<Entity> pEntity); 
 		void addEntity(SPtr<Entity> pEntity, const String& name); 
-		void removeEntity(const String& name);
+		void removeEntity(const uint64 guid);
 		void removeEntity(SPtr<Entity> pEntity);
 
-		template <typename T>
-		SPtr<T> getEntity(const String& name) const;
+		template <typename T = Entity>
+		SPtr<T> getEntity(const uint64 guid) const;
 
-		void setEntityDisabled(const String& name, bool disabled);
-		void setEntityVisible(const String& name, bool visible);
+		void setEntityDisabled(const uint64 guid, bool disabled);
+		void setEntityVisible(const uint64 guid, bool visible);
 
 		void setGroupDisabled(const String& tag, bool disabled);
 		void setGroupVisible(const String& tag, bool visable);
@@ -55,7 +55,7 @@ namespace Easy2D
 	protected:
 		//std::shared_ptr<CollisionManager> m_pCollisionManager;
 
-		UnorderedMap<String, SPtr<Entity>> mEntitys;
+		UnorderedMap<uint64, SPtr<Entity>> mEntitys;
 		SPtr<Camera> mDefaultCamera, mActiveCamera;
 
 		int32 mCullingOffsetX, mCullingOffsetY;

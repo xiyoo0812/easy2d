@@ -3,11 +3,12 @@
 /* Easy2D */
 using namespace Easy2D;
 
-TransformComponent::TransformComponent():
+TransformComponent::TransformComponent()
+	: Component(TransformComponent::GUID)
 {
 }
 
-TransformComponent::~TransformComponent(void)
+TransformComponent::~TransformComponent()
 {
 }
 

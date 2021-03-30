@@ -31,26 +31,26 @@ namespace Easy2D
 		void setGroup(const String& group);
 		bool compareGroup(const String& group);
 
-		void addChild(SPtr<Entity> pEntity);
-		void removeChild(const String& name);
+		bool addChild(SPtr<Entity> pEntity);
+		void removeChild(const uint64 guid);
 		void removeChild(const SPtr<Entity> pEntity);
-		const UnorderedMap<String, SPtr<Entity>>& GetChildren() const;
+		const UnorderedMap<uint64, SPtr<Entity>>& GetChildren() const;
 
-		void setChildDisabled(const String& name, bool disabled);
-		void setChildVisible(const String& name, bool visible);
+		void setChildDisabled(const uint64 guid, bool disabled);
+		void setChildVisible(const uint64 guid, bool visible);
 		void setChildrenDisabled(bool disable);
 		void setChildrenVisible(bool visible);
 
-		void addAction(SPtr<Action> pAction);
+		bool addAction(SPtr<Action> pAction);
 		void removeAction(const SPtr<Action> pAction);
-		void removeAction(const String& name);
-		void restartAction(const String& name);
-		void pauseAction(const String& name);
-		void resumeAction(const String& name);
+		void removeAction(const uint64 guid);
+		void restartAction(const uint64 guid);
+		void pauseAction(const uint64 guid);
+		void resumeAction(const uint64 guid);
 
-		void addComponent(SPtr<Component> pComponent);
+		bool addComponent(SPtr<Component> pComponent);
 		void removeComponent(const SPtr<Component> pComponent);
-		void removeComponent(const String& name);
+		void removeComponent(const uint64 guid);
 
 		void setVisible(bool visible);
 		void setDisabled(bool disabled);
@@ -59,6 +59,7 @@ namespace Easy2D
 
 		bool isChildNameExist(const String& name) const;
 		bool isActionNameExist(const String& name) const;
+		bool isComponentNameExist(const String& name) const;
 		void Entity::recalculateDimensions()
 
 		int32 getZorder() const;
@@ -70,11 +71,11 @@ namespace Easy2D
 		SPtr<TransformComponent> getTransform() const;
 
 		template <typename T = Entity>
-		SPtr<T> getChild(const String& name) const;
+		SPtr<T> getChild(const uint64 guid) const;
 		template <typename T = Action>
-		SPtr<T> getAction(const String& name) const;
+		SPtr<T> getAction(const uint64 guid) const;
 		template <typename T = Component>
-		SPtr<T> getComponent(const String& name) const;
+		SPtr<T> getComponent(const String name) const;
 
 	protected:
 		virtual bool checkCulling(float32 left,float32 right,float32 top,float32 bottom);
@@ -86,9 +87,9 @@ namespace Easy2D
 		WPtr<Scene> mScene = nullptr;
 		WPtr<Entity> mParent = nullptr;
 		
-		UnorderedMap<String, SPtr<Action>> mActions;
-		UnorderedMap<String, SPtr<Entity>> mChildren;
-		UnorderedMap<String, SPtr<Component>> mComponents;
+		UnorderedMap<uint64 guid, SPtr<Action>> mActions;
+		UnorderedMap<uint64 guid, SPtr<Entity>> mChildren;
+		UnorderedMap<uint64 guid, SPtr<Component>> mComponents;
 	};
 }
 

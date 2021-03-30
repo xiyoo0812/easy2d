@@ -30,11 +30,11 @@ void Entity::destroy()
 {
 	if(mParent && mParent->expired())
 	{
-		mParent->removeChild(mName);
+		mParent->removeChild(mGUID);
 	}
 	if(mScene && mScene->expired())
 	{
-		mScene->removeEntity(mName);
+		mScene->removeEntity(mGUID);
 	}
 }
 
@@ -65,7 +65,7 @@ void Entity::update(const uint32& escapeMs)
 
 bool Entity::checkCulling(float32 left, float32 right, float32 top, float32 bottom)
 {
-	for ( auto component : mComponents)
+	for (auto component : mComponents)
 	{
 		if(component->checkCulling(left, right, top, bottom))
 		{
@@ -138,55 +138,52 @@ void Entity::setGroup(const String& group)
 	mGroup = group;
 }
 
-void Entity::addChild(SPtr<Entity> pChild)
+bool Entity::addChild(SPtr<Entity> pChild)
 {
 	if(IsChildNameExist(pChild->getName()))
 	{
-		LOG_DEBUG << _T("Entity::addChild: a child with the name '") << pChild->getName() << 
+		LOG_WARN << _T("Entity::addChild: a child with the name '") << pChild->getName() << 
 			_T("' already exists. Child gets added but beware, duplicate names can become the cause of problems.")
+		return false;
 	}
-	auto it = mChildren.find(pChild->getName())
-	if (it != mChildren.end())
-	{
-		pChild->initialize();
-		pChild->setScene(mScene);
-		pChild->setParent(dynamic_pointer_cast<Entity>(shared_from_this(this)));
-		mChildren.insert(pChild->getName(), pChild);
-	}
+	pChild->initialize();
+	pChild->setScene(mScene);
+	pChild->setParent(dynamic_pointer_cast<Entity>(shared_from_this(this)));
+	mChildren.insert(pChild->getGUID(), pChild);
+	return true;
 }
 
 void Entity::removeChild(const SPtr<Entity> pEntity)
 {
-	removeChild(pEntity->getName());
+	removeChild(pEntity->getGUID());
 }
 
-void Entity::removeChild(const String& name)
+void Entity::removeChild(const uint64 guid)
 {
-	auto it = mChildren.find(name)
+	auto it = mChildren.find(guid)
 	if (it != mChildren.end())
 	{
-		it.second->setParent(nullptr);
 		mChildren.erase(it);
 	}
 }
 
-const UnorderedMap<String, SPtr<Entity>>& Entity::getChildren() const
+const UnorderedMap<uint64, SPtr<Entity>>& Entity::getChildren() const
 {
 	return mChildren;
 }
 
-void Entity::setChildDisabled(const String& name, bool disabled)
+void Entity::setChildDisabled(const uint64 guid, bool disabled)
 {
-	auto it = mChildren.find(name)
+	auto it = mChildren.find(guid)
 	if (it != mChildren.end())
 	{
 		it->second->setDisabled(disabled);
 	}
 }
 
-void Entity::setChildVisible(const String& name, bool visible)
+void Entity::setChildVisible(const uint64 guid,, bool visible)
 {
-	auto it = mChildren.find(name)
+	auto it = mChildren.find(guid)
 	if (it != mChildren.end())
 	{
 		it->second->setVisible(disabled);
@@ -209,30 +206,28 @@ void Entity::setChildrenVisible(bool visible)
 	}
 }
 
-void Entity::addAction(SPtr<Action> pAction)
+bool Entity::addAction(SPtr<Action> pAction)
 {
 	if(IsActionNameExist(pAction->getName()))
 	{
-		LOG_DEBUG << _T("Entity::addAction: a child with the name '") << pAction->getName() << 
+		LOG_WARN << _T("Entity::addAction: a child with the name '") << pAction->getName() << 
 			_T("' already exists. Action gets added but beware, duplicate names can become the cause of problems.")
+		return false;
 	}
-	auto it = mActions.find(pAction->getName())
-	if (it != mActions.end())
-	{
-		pAction->initialize();
-		pAction->setMaster(dynamic_pointer_cast<Entity>(shared_from_this(this)));
-		mActions.insert(pAction->getName(), pAction);
-	}
+	pAction->initialize();
+	pAction->setMaster(dynamic_pointer_cast<Entity>(shared_from_this(this)));
+	mActions.insert(pAction->getGUID(), pAction);
+	return true;
 }
 
 void Entity::removeAction(const SPtr<Action> pAction)
 {
-	removeAction(pAction->getName());
+	removeAction(pAction->getGUID());
 }
 
-void Entity::removeAction(const String& name)
+void Entity::removeAction(const uint64 guid)
 {
-	auto it = mActions.find(name)
+	auto it = mActions.find(guid)
 	if (it != mActions.end())
 	{
 		it.second->setMaster(nullptr);
@@ -240,52 +235,55 @@ void Entity::removeAction(const String& name)
 	}
 }
 
-void Entity::restartAction(const String& name)
+void Entity::restartAction(const uint64 guid)
 {
-	auto it = mActions.find(name)
+	auto it = mActions.find(guid)
 	if (it != mActions.end())
 	{
 		it.second->restart();
 	}
 }
 
-void Entity::pauseAction(const String& name)
+void Entity::pauseAction(const uint64 guid)
 {
-	auto it = mActions.find(name)
+	auto it = mActions.find(guid)
 	if (it != mActions.end())
 	{
 		it.second->pause();
 	}
 }
 
-void Entity::resumeAction(const String& name)
+void Entity::resumeAction(const uint64 guid)
 {
-	auto it = pAction.find(name)
-	if (it != pAction.end())
+	auto it = mActions.find(guid);
+	if (it != mActions.end())
 	{
 		it.second->resume();
 	}
 }
 
-void Entity::addComponent(SPtr<Component> pComponent)
+bool Entity::addComponent(SPtr<Component> pComponent)
 {
-	auto it = mComponents.find(pComponent->getName())
-	if (it != mComponents.end())
+	if(IsActionNameExist(pComponent->getName()))
 	{
-		pComponent->initialize();
-		pComponent->setMaster(dynamic_pointer_cast<Entity>(shared_from_this(this)));
-		mComponents.insert(pComponent->getName(), pComponent);
+		LOG_WARN << _T("Entity::addComponent: a child with the name '") << pComponent->getName() << 
+			_T("' already exists. Component gets added but beware, duplicate names can become the cause of problems.")
+		return false;
 	}
+	pComponent->initialize();
+	pComponent->setMaster(dynamic_pointer_cast<Entity>(shared_from_this(this)));
+	mComponents.insert(pComponent->getGUID(), pComponent);
+	return true;
 }
 
 void Entity::removeComponent(const SPtr<Component> pComponent)
 {
-	removeComponent(pAction->getName());
+	removeComponent(pAction->getGUID());
 }
 
-void Entity::removeComponent(const String& name)
+void Entity::removeComponent(const uint64 guid)
 {
-	auto it = mComponents.find(name)
+	auto it = mComponents.find(guid)
 	if (it != mComponents.end())
 	{
 		it.second->setMaster(nullptr);
@@ -320,6 +318,18 @@ bool Entity::isActionNameExist(const String& name) const
 	for(auto pAction : mActions)
 	{
 		if(pAction->compareName(name))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool Entity::isComponentNameExist(const String& name) const
+{
+	for(auto pComponent : mComponents)
+	{
+		if(pComponent->compareName(name))
 		{
 			return true;
 		}
@@ -375,9 +385,12 @@ void Entity::setParent(SPtr<Entity> pEntity)
 	mParent = pEntity;
 }
 
-SPtr<TransformComponent> Entity::getTransform() const
+void Entity::reset()
 {
-	return getComponent<TransformComponent>(TransformComponent::GUID);
+	for(auto child : mChildren)
+	{
+		child->reset();
+	}
 }
 
 void Entity::recalculateDimensions()
@@ -402,18 +415,15 @@ void Entity::recalculateDimensions()
 	transform->setDimensions(dim);
 }
 
-void Entity::reset()
+SPtr<TransformComponent> Entity::getTransform() const
 {
-	for(auto child : mChildren)
-	{
-		child->reset();
-	}
+	return getComponent<TransformComponent>(TransformComponent::GUID);
 }
 
 template <typename T>
-SPtr<T> Entity::getChild(const String& name) const
+SPtr<T> Entity::getChild(const uint64 guid) const
 {
-	auto it = mChildren.find(name)
+	auto it = mChildren.find(guid)
 	if (it != mChildren.end())
 	{
 		if(typeid(*it->second.get()) == typeid(T))
@@ -425,12 +435,11 @@ SPtr<T> Entity::getChild(const String& name) const
 }
 
 template <typename T>
-SPtr<T> Entity::getAction(const String& name) const
+SPtr<T> Entity::getAction(const uint64 guid) const
 {
-	auto it = mActions.find(name)
+	auto it = mActions.find(guid)
 	if (it != mActions.end())
 	{
-		Action* action = it->second.get(); 
 		if(typeid(*it->second.get()) == typeid(T))
 		{
 			return dynamic_pointer_cast<T>(it->second));
@@ -442,12 +451,11 @@ SPtr<T> Entity::getAction(const String& name) const
 template <typename T>
 SPtr<T> Entity::getComponent(const String& name) const
 {
-	auto it = mComponents.find(name)
-	if (it != mComponents.end())
+	for(auto pComponent : mComponents)
 	{
-		if(typeid(*it->second.get()) == typeid(T))
+		if(pComponent->compareName(name) && typeid(pComponent.get()) == typeid(T))
 		{
-			return dynamic_pointer_cast<T>(it->second));
+			return dynamic_pointer_cast<T>(pComponent));
 		}
 	}
 	return nullptr;

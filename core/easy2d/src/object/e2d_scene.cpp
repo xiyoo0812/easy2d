@@ -18,7 +18,7 @@ Scene::~Scene()
 
 void Scene::destroy()
 {
-	SceneManager::getInstance()->RemoveScene(mName);
+	SceneManager::getInstance()->RemoveScene(mGUID);
 }
 
 void Scene::initialize()
@@ -109,7 +109,7 @@ void Scene::addEntity(SPtr<Entity> pEntity)
 		}
 		pEntity->initialize();
 		pEntity->setScene(dynamic_pointer_cast<Scene>(shared_from_this(this)));
-		mEntitys.insert(std::make_pair(pEntity->getName(), pEntity)>);
+		mEntitys.insert(std::make_pair(pEntity->getGUID(), pEntity)>);
 	}
 }
 
@@ -127,27 +127,27 @@ void Scene::removeEntity(SPtr<Entity> pEntity)
 	removeEntity(pEntity->getName());
 }
 
-void Scene::removeEntity(const String& name)
+void Scene::removeEntity(const uint64 guid)
 {
-	auto it = mEntitys.find(name);
+	auto it = mEntitys.find(guid);
 	if(it != mEntitys.end())
 	{
 		mEntitys.erase(it);
 	}
 }
 
-void Scene::setObjectDisabled(const String& name, bool disabled)
+void Scene::setObjectDisabled(const uint64 guid, bool disabled)
 {
-	auto it = mEntitys.find(name);
+	auto it = mEntitys.find(guid);
 	if(it != mEntitys.end())
 	{
 		it.second->setDisabled(disabled);
 	}
 }
 
-void Scene::setObjectVisible(const String& name, bool visible)
+void Scene::setObjectVisible(const uint64 guid, bool visible)
 {
-	auto it = mEntitys.find(name);
+	auto it = mEntitys.find(guid);
 	if(it != mEntitys.end())
 	{
 		it.second->setVisible(visible);
@@ -238,4 +238,18 @@ void Scene::setCullingOffset(int32 offsetX, int32 offsetY)
 {
 	mCullingOffsetX = offsetX;
 	mCullingOffsetY = offsetY;
+}
+
+template <typename T>
+SPtr<T> Scene::getEntity(const uint64 guid);
+{
+	auto it = mEntitys.find(guid)
+	if (it != mEntitys.end())
+	{
+		if(typeid(*it->second.get()) == typeid(T))
+		{
+			return dynamic_pointer_cast<T>(it->second));
+		}
+	}
+	return nullptr;
 }

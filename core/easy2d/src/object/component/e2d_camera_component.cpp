@@ -12,22 +12,11 @@
 namespace star
 {
 	CameraComponent::CameraComponent():
-		BaseComponent(),
-		m_Projection(),
-		m_View(),
-		m_ViewInverse(),
-		m_FarPlane(100.0f),
-		m_NearPlane(0.1f),
-		m_FOV(static_cast<float32>(PI/4.0f)),
-		m_Size(0.0f),
-		m_Zoom(1.0f),
-		m_bIsActive(false),
-		m_bPerspectiveProjection(false),
-		m_AspectRatio(1.0f)
+	: Component(CameraComponent::GUID)
 	{
 	}
 
-	CameraComponent::~CameraComponent(void)
+	CameraComponent::~CameraComponent()
 	{
 	}
 

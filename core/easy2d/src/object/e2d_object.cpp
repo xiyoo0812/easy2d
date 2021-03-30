@@ -5,13 +5,13 @@ using namespace Easy2D;
 
 Object::Object()
 {
-	mGUID = MAKE_GUID(RandIntDist(0, MAX_WORLD), RandIntDist(0, MAX_TYPE));
+	mGUID = NEW_GUID();
 }
 
 Object::Object(const String& name)
 	: mName(name)
 {
-	mGUID = MAKE_GUID(RandIntDist(0, MAX_WORLD), RandIntDist(0, MAX_TYPE));
+	mGUID = NEW_GUID();
 }
 
 Object::~Object()

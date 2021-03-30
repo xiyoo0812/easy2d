@@ -19,7 +19,7 @@ namespace Easy2D
 		};
 
 		TransformComponent();
-		~TransformComponent(void);
+		~TransformComponent();
 
 		virtual void initialize();
 
