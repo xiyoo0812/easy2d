@@ -72,6 +72,8 @@ namespace Easy2D
 
 		template <typename T = Entity>
 		SPtr<T> getChild(const uint64 guid) const;
+		template <typename T = Entity>
+		SPtr<T> getChild(const String& name) const;
 		template <typename T = Action>
 		SPtr<T> getAction(const uint64 guid) const;
 		template <typename T = Component>
@@ -82,6 +84,7 @@ namespace Easy2D
 
 		int32 mZorder = 0;
 		bool mVisible = true;
+		bool mDisable = false;
 		String mGroup = "default", mPhysics = "default";
 
 		WPtr<Scene> mScene = nullptr;

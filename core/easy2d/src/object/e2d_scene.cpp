@@ -246,9 +246,27 @@ SPtr<T> Scene::getEntity(const uint64 guid);
 	auto it = mEntitys.find(guid)
 	if (it != mEntitys.end())
 	{
-		if(typeid(*it->second.get()) == typeid(T))
+		return dynamic_pointer_cast<T>(it->second);
+	}
+	return nullptr;
+}
+
+template <typename T>
+SPtr<T> Scene::getEntity(const String& name)
+{
+	for(auto entity : mEntitys)
+	{
+		if(entity->compareName(name))
 		{
-			return dynamic_pointer_cast<T>(it->second));
+			return dynamic_pointer_cast<T>(entity);
+		}
+	}
+	for(auto entity : mEntitys)
+	{
+		auto pEntity = entity->getChild<T>(name);
+		if(pEntity)
+		{
+			return pEntity
 		}
 	}
 	return nullptr;

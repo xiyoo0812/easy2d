@@ -33,6 +33,8 @@ namespace Easy2D
 
 		template <typename T = Entity>
 		SPtr<T> getEntity(const uint64 guid) const;
+		template <typename T = Entity>
+		SPtr<T> getEntity(const String& name) const;
 
 		void setEntityDisabled(const uint64 guid, bool disabled);
 		void setEntityVisible(const uint64 guid, bool visible);

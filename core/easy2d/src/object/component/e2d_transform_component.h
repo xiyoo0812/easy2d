@@ -2,6 +2,7 @@
 #define TRANSFORM_COMPONENT_H
 
 #include "e2d_component.h"
+#include "e2d_pos.h"
 
 namespace Easy2D
 {
@@ -23,75 +24,74 @@ namespace Easy2D
 
 		virtual void initialize();
 
-		void Update(const Context& context);
-		void Draw();
-		void IsChanged(bool isChanged);
+		void draw();
+		void update(const uint32& escapeMs);
+		void setChanged(bool isChanged);
 
-		void Translate(const Vec2& translation);
-		void Translate(float32 x, float32 y);
-		void Translate(const Vec2& translation, lay l);
-		void Translate(float32 x, float32 y, lay l);
-		void Translate(const pos & pos2D);
-		void TranslateX(float32 x);
-		void TranslateY(float32 y);
-		void TranslateL(lay l);
+		void translate(const Vec2& translation);
+		void translate(float32 x, float32 y);
+		void translate(const Vec2& translation, lay l);
+		void translate(float32 x, float32 y, lay l);
+		void translate(const pos & pos2D);
+		void translateX(float32 x);
+		void translateY(float32 y);
+		void translateL(lay l);
 
-		void Move(const Vec2& translation);
-		void Move(float32 x, float32 y);
-		void MoveX(float32 x);
-		void MoveY(float32 y);
+		void move(const Vec2& translation);
+		void move(float32 x, float32 y);
+		void moveX(float32 x);
+		void moveY(float32 y);
 
-		void Rotate(float32 rotation);
-		void Rotate(float32 rotation, const Vec2& centerPoint);
+		void rotate(float32 rotation);
+		void rotate(float32 rotation, const Vec2& centerPoint);
 
-		void Scale(const Vec2& scale);
-		void Scale(float32 x, float32 y);
-		void Scale(float32 u);
-		void ScaleX(float32 x);
-		void ScaleY(float32 y);
+		void scale(const Vec2& scale);
+		void scale(float32 x, float32 y);
+		void scale(float32 u);
+		void scaleX(float32 x);
+		void scaleY(float32 y);
 
-		void Mirror(bool x, bool y);
-		void MirrorX(bool x);
-		void MirrorY(bool y);
+		void mirror(bool x, bool y);
+		void mirrorX(bool x);
+		void mirrorY(bool y);
 				
-		const pos& GetWorldPosition();
-		const pos& GetLocalPosition();
-		float32 GetWorldRotation();
-		float32 GetLocalRotation() const;
-		const Vec2& GetWorldScale();
-		const Vec2& GetLocalScale();
+		const pos& getWorldPosition();
+		const pos& getLocalPosition();
+		float32 getWorldRotation();
+		float32 getLocalRotation() const;
+		const Vec2& getWorldScale();
+		const Vec2& getLocalScale();
 
-		void SetCenterPoint(const Vec2 & centerPoint);
-		void SetCenterPoint(float32 x, float32 y);
-		void SetCenterX(float32 x);
-		void SetCenterY(float32 y);
+		void setCenterPoint(const Vec2 & centerPoint);
+		void setCenterPoint(float32 x, float32 y);
+		void setCenterX(float32 x);
+		void setCenterY(float32 y);
 
-		void SetDimensions(int32 x, int32 y);
-		void SetDimensions(const iVec2 & dimensions);
-		void SetDimensionsX(int32 x);
-		void SetDimensionsY(int32 y);
+		void setDimensions(int32 x, int32 y);
+		void setDimensions(const iVec2 & dimensions);
+		void setDimensionsX(int32 x);
+		void setDimensionsY(int32 y);
 
-		void SetDimensionsSafe(int32 x, int32 y);
-		void SetDimensionsSafe(const iVec2 & dimensions);
-		void SetDimensionsXSafe(int32 x);
-		void SetDimensionsYSafe(int32 y);
+		void setDimensionsSafe(int32 x, int32 y);
+		void setDimensionsSafe(const iVec2 & dimensions);
+		void setDimensionsXSafe(int32 x);
+		void setDimensionsYSafe(int32 y);
 
-		const Mat4& GetWorldMatrix() const;
+		const Mat4& getWorldMatrix() const;
 
 	private:
-		void CheckForUpdate(const bool force = false);
-		void CommonUpdate();
-		void SingleUpdate(Mat4& world);
+		void checkForUpdate(const bool force = false);
+		void commonUpdate();
+		void singleUpdate(Mat4& world);
 
-		suchar m_IsChanged;
-		bool m_Invalidate;
-
-		pos m_WorldPosition, m_LocalPosition;
-		float32 m_WorldRotation, m_LocalRotation;
-		Vec2 m_WorldScale, m_LocalScale, m_CenterPosition;
-		bool m_IsMirroredX;
-		bool m_IsMirroredY;
-		Mat4 m_World;
+		uchar mChanged;
+		Pos mWorldPosition, mLocalPosition;
+		float32 mWorldRotation, mLocalLayer;
+		float32 mWorldRotation, mLocalRotation;
+		Vec2 mWorldScale, mLocalScale, mCenterPosition;
+		bool mMirroredX;
+		bool mMirroredY;
+		Mat4 mWorld;
 
 		static const String GUID = "transform";
 	};

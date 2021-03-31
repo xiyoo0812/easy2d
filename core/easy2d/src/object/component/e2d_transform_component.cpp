@@ -14,8 +14,7 @@ TransformComponent::~TransformComponent()
 
 void TransformComponent::initialize()
 {
-	CheckForUpdate(true);
-	m_Invalidate = true;
+	checkForUpdate(true);
 }
 
 void TransformComponent::translate(const Vec2& translation)
@@ -102,7 +101,7 @@ void TransformComponent::rotate(float32 rotation)
 void TransformComponent::rotate(float32 rotation, const Vec2& centerPoint)
 {
 	mLocalRotation = rotation;
-	SetCenterPoint(centerPoint);
+	setCenterPoint(centerPoint);
 	mChanged |= TransformType::ROTATION;
 }
 
@@ -150,42 +149,42 @@ void TransformComponent::mirrorY(bool y)
 	mMirroredY = y;
 }
 
-const pos& TransformComponent::GetWorldPosition()
+const pos& TransformComponent::getWorldPosition()
 {
 	return mWorldPosition;
 }
 
-const pos& TransformComponent::GetLocalPosition()
+const pos& TransformComponent::getLocalPosition()
 {
 	return mLocalPosition;
 }
 
-float32 TransformComponent::GetWorldRotation()
+float32 TransformComponent::getWorldRotation()
 {
-	return m_WorldRotation;
+	return mWorldRotation;
 }
 
-float32 TransformComponent::GetLocalRotation() const
+float32 TransformComponent::getLocalRotation() const
 {
 	return mLocalRotation;
 }
 
-const Vec2& TransformComponent::GetWorldscale()
+const Vec2& TransformComponent::getWorldscale()
 {
-	return m_WorldScale;
+	return mWorldScale;
 }
 
-const Vec2& TransformComponent::GetLocalscale()
+const Vec2& TransformComponent::getLocalscale()
 {
 	return mLocalScale;
 }
 
-void TransformComponent::SetCenterPoint(const Vec2& centerPoint)
+void TransformComponent::setCenterPoint(const Vec2& centerPoint)
 {
 	mCenterPosition = centerPoint;
 }
 
-void TransformComponent::SetCenterPoint(float32 x, float32 y)
+void TransformComponent::setCenterPoint(float32 x, float32 y)
 {
 	mCenterPosition.x = x;
 	mCenterPosition.y = y;
@@ -201,39 +200,39 @@ void TransformComponent::SetCenterY(float32 y)
 	mCenterPosition.y = y;
 }
 
-void TransformComponent::SetDimensions(int32 x, int32 y)
+void TransformComponent::setDimensions(int32 x, int32 y)
 {
 	mDimensions.x = x;
 	mDimensions.y = y;
 }
 
-void TransformComponent::SetDimensions(const iVec2& dimensions)
+void TransformComponent::setDimensions(const Vec2& dimensions)
 {
 	mDimensions = dimensions;
 }
 
-void TransformComponent::SetDimensionsX(int32 x)
+void TransformComponent::setDimensionsX(int32 x)
 {
 	mDimensions.x = x;
 }
 
-void TransformComponent::SetDimensionsY(int32 y)
+void TransformComponent::setDimensionsY(int32 y)
 {
 	mDimensions.y = y;
 }
 
-void TransformComponent::SetDimensionsSafe(int32 x, int32 y)
+void TransformComponent::setDimensionsSafe(int32 x, int32 y)
 {
-	SetDimensionsXSafe(x);
-	SetDimensionsYSafe(y);
+	setDimensionsXSafe(x);
+	setDimensionsYSafe(y);
 }
 
-void TransformComponent::SetDimensionsSafe(const iVec2& dimensions)
+void TransformComponent::setDimensionsSafe(const Vec2& dimensions)
 {
-	SetDimensionsSafe(dimensions.x, dimensions.y);
+	setDimensionsSafe(dimensions.x, dimensions.y);
 }
 
-void TransformComponent::SetDimensionsXSafe(int32 x)
+void TransformComponent::setDimensionsXSafe(int32 x)
 {
 	if(x > mDimensions.x)
 	{
@@ -241,11 +240,11 @@ void TransformComponent::SetDimensionsXSafe(int32 x)
 	}
 	else if(x < mDimensions.x)
 	{
-		mMaster->RecalculateDimensions();
+		mMaster->recalculateDimensions();
 	}
 }
 
-void TransformComponent::SetDimensionsYSafe(int32 y)
+void TransformComponent::setDimensionsYSafe(int32 y)
 {
 	if(y > mDimensions.y)
 	{
@@ -253,74 +252,62 @@ void TransformComponent::SetDimensionsYSafe(int32 y)
 	}
 	else if(y < mDimensions.y)
 	{
-		mMaster->RecalculateDimensions();
+		mMaster->recalculateDimensions();
 	}
 }
 
-const mat4 & TransformComponent::GetWorldMatrix() const
+const Mat4& TransformComponent::getWorldMatrix() const
 {
-	return m_World;
+	return mWorld;
 }
 
-void TransformComponent::CheckForUpdate(bool force)
+void TransformComponent::checkForUpdate(bool force)
 {
-	if(mChanged == TransformType::NONE && !force && !m_Invalidate
-		&& !GraphicsManager::GetInstance()->GetHasWindowChanged())
+	if(mChanged == TransformType::NONE && !force && !GraphicsManager::getInstance()->getHasWindowChanged())
 	{
 		return;
 	}
-
-	CommonUpdate();
-
+	commonUpdate();
 	mChanged = TransformType::NONE;
-
-	m_Invalidate = false;
 }
 	
-void TransformComponent::CommonUpdate()
+void TransformComponent::commonUpdate()
 {
-	for(auto child : GetParent()->GetChildren())
+	for(auto child : getParent()->getChildren())
 	{
-		child->GetTransform()->IsChanged(true);
+		child->getTransform()->setChanged(mChanged);
 	}
-
-	SingleUpdate(m_World);
-
-	auto parent = mMaster->GetParent();
+	singleUpdate(mWorld);
+	auto parent = mMaster->getParent();
 	if(parent != nullptr)
 	{
-		m_World = parent->GetTransform()->GetWorldMatrix() * m_World;
+		mWorld = parent->getTransform()->getWorldMatrix() * mWorld;
 	}
-
-	DecomposeMatrix(m_World, mWorldPosition, m_WorldScale, m_WorldRotation);
-
+	DecomposeMatrix(mWorld, mWorldPosition, mWorldScale, mWorldRotation);
 	if(mMirroredX)
 	{
 		mWorldPosition.x -= mDimensions.x;
 	}
-
 	if(mMirroredY)
 	{
 		mWorldPosition.y -= mDimensions.y;
 	}
 }
 	
-void TransformComponent::SingleUpdate(mat4 & world)
+void TransformComponent::singleUpdate(Mat4& world)
 {
-	mat4 matRot, matTrans, matScale, matC, matCI;
-
-	matTrans = star::translate(mLocalPosition.pos3D());
-	matRot   = ToMat4(quat(vec3(0, 0, mLocalRotation)));
-	matScale = star::scale(vec3(mLocalScale.x, mLocalScale.y, 1.0f));
-	
-	vec3 centerPos(mCenterPosition.x, mCenterPosition.y, 0);
-	matC = star::translate(-centerPos);
+	Mat4 matRot, matTrans, matScale, matC, matCI;
+	matTrans = Easy2D::translate(mLocalPosition.pos3D());
+	matRot   = ToMat4(quat(Vec3(0, 0, mLocalRotation)));
+	matScale = Easy2D::scale(Vec3(mLocalScale.x, mLocalScale.y, 1.0f));
+	Vec3 centerPos(mCenterPosition.x, mCenterPosition.y, 0);
+	matC = Easy2D::translate(-centerPos);
 
 	world = matTrans * matRot * matScale * matC;
 
 	if(mMirroredX || mMirroredY)
 	{
-		world *= star::translate(
+		world *= Easy2D::translate(
 			mDimensions.x / 2.0f,
 			mDimensions.y / 2.0f,
 			0
@@ -330,19 +317,19 @@ void TransformComponent::SingleUpdate(mat4 & world)
 		{
 			if(mMirroredY)
 			{
-				world *= star::scale(vec3(-1,-1,1));
+				world *= Easy2D::scale(Vec3(-1,-1,1));
 			}
 			else
 			{
-				world *= star::scale(vec3(-1,1,1));
+				world *= Easy2D::scale(Vec3(-1,1,1));
 			}
 		}
 		else
 		{
-			world *= star::scale(vec3(1,-1,1));
+			world *= Easy2D::scale(Vec3(1,-1,1));
 		}
 
-		world *= star::translate(
+		world *= Easy2D::translate(
 			mDimensions.x / -2.0f,
 			mDimensions.y / -2.0f,
 			0
@@ -350,18 +337,18 @@ void TransformComponent::SingleUpdate(mat4 & world)
 	}
 }
 
-void TransformComponent::Update(const Context& context)
+void TransformComponent::update(const Context& context)
 {
-	CheckForUpdate();
+	checkForUpdate();
 }
 	
-void TransformComponent::Draw()
+void TransformComponent::draw()
 {
 
 }
 
-void TransformComponent::IsChanged(bool isChanged)
+void TransformComponent::setChanged(uchar changed)
 {
-	mChanged = isChanged;
+	mChanged = changed;
 }
 

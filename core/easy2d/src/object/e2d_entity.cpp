@@ -45,7 +45,7 @@ void Entity::initialize()
 
 void Entity::update(const uint32& escapeMs)
 {
-	if(!m_IsFrozen)
+	if(!mDisable)
 	{
 		for(auto action : mActions)
 		{
@@ -339,12 +339,12 @@ bool Entity::isComponentNameExist(const String& name) const
 
 void Entity::setDisabled(bool disabled)
 {
-	mVisible = !disabled;
+	mDisable = disabled;
 }
 
 bool Entity::isDisabled() const
 {
-	return !mVisible && m_IsFrozen;
+	return mDisable;
 }
 
 
@@ -426,9 +426,27 @@ SPtr<T> Entity::getChild(const uint64 guid) const
 	auto it = mChildren.find(guid)
 	if (it != mChildren.end())
 	{
-		if(typeid(*it->second.get()) == typeid(T))
+		return dynamic_pointer_cast<T>(it->second));
+	}
+	return nullptr;
+}
+
+template <typename T>
+SPtr<T> Entity::getChild(const String& name) const
+{
+	for(auto child : mChildren)
+	{
+		if(child->compareName(name))
 		{
 			return dynamic_pointer_cast<T>(it->second));
+		}
+	}
+	for(auto child : mChildren)
+	{
+		auto pChild = child->getChild<T>(name);
+		if(pChild)
+		{
+			return pChild
 		}
 	}
 	return nullptr;
@@ -440,10 +458,7 @@ SPtr<T> Entity::getAction(const uint64 guid) const
 	auto it = mActions.find(guid)
 	if (it != mActions.end())
 	{
-		if(typeid(*it->second.get()) == typeid(T))
-		{
-			return dynamic_pointer_cast<T>(it->second));
-		}
+		return dynamic_pointer_cast<T>(it->second));
 	}
 	return nullptr;
 }
@@ -453,7 +468,7 @@ SPtr<T> Entity::getComponent(const String& name) const
 {
 	for(auto pComponent : mComponents)
 	{
-		if(pComponent->compareName(name) && typeid(pComponent.get()) == typeid(T))
+		if(pComponent->compareName(name))
 		{
 			return dynamic_pointer_cast<T>(pComponent));
 		}
