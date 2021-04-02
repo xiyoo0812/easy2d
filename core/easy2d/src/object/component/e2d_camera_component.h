@@ -1,68 +1,59 @@
 #ifndef CAMERA_COMPONENT_H
 #define CAMERA_COMPONENT_H
 
-#include "e2d_component.h"
+#include "object/e2d_component.h"
 
 namespace Easy2D
 {
-	class CameraComponent : public Component
-	{
-	public:
-		CameraComponent();
-		virtual ~CameraComponent(void);
+    class CameraComponent : public Component
+    {
+    public:
+        CameraComponent();
+        virtual ~CameraComponent();
 
-		virtual void Update(const Context& context);
-		virtual void Draw();
-		
-		void SetFieldOfView(float32 fov);
-		void SetOrthoSize(float32 size);
-		void SetNearClippingPlane(float32 nearPlane);
-		void SetFarClippingPlane(float32 farPlane);
-		
-		void SetActive();
-		bool IsActive() const;
-		void Activate();
-		void Deactivate();
+        void draw();
+        void update(const uint32 &escapeMs);
+        virtual void initialize();
 
-		void SetZoom(float32 zoom);
-		float32 GetZoom() const;
+        void setFieldOfView(float32 fov);
+        void setOrthoSize(float32 size);
+        void setNearClippingPlane(float32 nearPlane);
+        void setFarClippingPlane(float32 farPlane);
 
-		const mat4 & GetView() const;
-		const mat4 & GetProjection() const;
-		const mat4 & GetViewInverse() const;
-		mat4 GetProjectionViewInverse() const;
+        void setActive();
+        bool isActive() const;
+        void activate();
+        void deactivate();
 
-		void Translate(const vec2& translation);
-		void Translate(float32 x, float32 y);
-		void TranslateX(float32 x);
-		void TranslateY(float32 y);
+        void setZoom(float32 zoom);
+        float32 getZoom() const;
 
-		void ConvertScreenToWorld(vec2 & posInOut);
+        const Mat4& getView() const;
+        const Mat4& getProjection() const;
+        const Mat4& getViewInverse() const;
+        Mat4 getProjectionViewInverse() const;
 
-	protected:
-		virtual void InitializeComponent();
+        void translate(const Vec2& translation);
+        void translate(float32 x, float32 y);
+        void translateX(float32 x);
+        void translateY(float32 y);
 
-	private:
-		mat4 MatrixPerspectiveFOV(float32 FovY, float32 ratio, float32 nearPlane, float32 farPlane);
-		mat4 MatrixOrtho(float32 width, float32 height, float32 nearPlane, float32 farPlane);
-		mat4 MatrixLookAt(const vec3& eye, const vec3& at, const vec3& up);
+        void convertScreenToWorld(Vec2& posInOut);
 
-		mat4	m_Projection,
-				m_View,
-				m_ViewInverse;
+    private:
+        Mat4 matrixPerspectiveFOV(float32 FovY, float32 ratio, float32 nearPlane, float32 farPlane);
+        Mat4 matrixOrtho(float32 width, float32 height, float32 nearPlane, float32 farPlane);
+        Mat4 matrixLookAt(const Vec3& eye, const Vec3& at, const Vec3& up);
 
-		float32	m_FarPlane,
-				m_NearPlane,
-				m_FOV,
-				m_Size,
-				m_Zoom,
-				m_AspectRatio;
+        Mat4 mProjection, mView, mViewInverse;
 
-		bool m_bIsActive, 
-			 m_bPerspectiveProjection;
-			 
-		static const String GUID = "camera";
-	};
+        float32 mFarPlane, mNearPlane, mFOV, mSize, mZoom, mAspectRatio;
+
+        bool mActive, mPerspectiveProjection;
+
+    public:
+        inline static String GUID = "camera";
+    };
 }
 
 #endif

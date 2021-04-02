@@ -147,16 +147,12 @@ const Color Color::Yellow(255, 255, 0);
 const Color Color::YellowGreen(154, 205, 50);
 
 Color::Color()
-    : r(1.0f)
-    , g(1.0f)
-    , b(1.0f)
-    , a(1.0f)
 {
 
 }
 
 
-Color::Color(float32 R, float32 G, float32 B, float32 A)
+Color::Color(byte R, byte G, byte B, byte A)
     : r(R)
     , g(G)
     , b(B)
@@ -184,16 +180,16 @@ Color::Color(Color&& yRef)
 
 }
 
-Color::Color(const Vec3& yRef)
+Color::Color(const Vec3i& yRef)
     : r(yRef.x)
     , g(yRef.y)
     , b(yRef.z)
-    , a(1.0f)
+    , a(255)
 {
 
 }
 
-Color::Color(const Vec4& yRef)
+Color::Color(const Vec4i& yRef)
     : r(yRef.x)
     , g(yRef.y)
     , b(yRef.z)
@@ -222,17 +218,17 @@ Color& Color::operator=(Color&& yRef)
     return *this;
 }
 
-Color& Color::operator=(const Vec3& yRef)
+Color& Color::operator=(const Vec3i& yRef)
 {
     r = yRef.x;
     g = yRef.y;
     b = yRef.z;
-    a = 1.0f;
+    a = 255;
 
     return *this;
 }
 
-Color& Color::operator=(const Vec4& yRef)
+Color& Color::operator=(const Vec4i& yRef)
 {
     r = yRef.x;
     g = yRef.y;
@@ -252,7 +248,7 @@ Color& Color::operator+=(const Color& yRef)
     return *this;
 }
 
-Color& Color::operator+=(const Vec3& yRef)
+Color& Color::operator+=(const Vec3i& yRef)
 {
     r += yRef.x;
     g += yRef.y;
@@ -261,7 +257,7 @@ Color& Color::operator+=(const Vec3& yRef)
     return *this;
 }
 
-Color& Color::operator+=(const Vec4& yRef)
+Color& Color::operator+=(const Vec4i& yRef)
 {
     r += yRef.x;
     g += yRef.y;
@@ -281,7 +277,7 @@ Color& Color::operator-=(const Color& yRef)
     return *this;
 }
 
-Color& Color::operator-=(const Vec3& yRef)
+Color& Color::operator-=(const Vec3i& yRef)
 {
     r -= yRef.x;
     g -= yRef.y;
@@ -290,7 +286,7 @@ Color& Color::operator-=(const Vec3& yRef)
     return *this;
 }
 
-Color& Color::operator-=(const Vec4& yRef)
+Color& Color::operator-=(const Vec4i& yRef)
 {
     r -= yRef.x;
     g -= yRef.y;
@@ -308,7 +304,7 @@ Color Color::operator+(const Color& yRef) const
     return color;
 }
 
-Color Color::operator+(const Vec3& yRef) const
+Color Color::operator+(const Vec3i& yRef) const
 {
     Color color(*this);
     color += yRef;
@@ -316,7 +312,7 @@ Color Color::operator+(const Vec3& yRef) const
     return color;
 }
 
-Color Color::operator+(const Vec4& yRef) const
+Color Color::operator+(const Vec4i& yRef) const
 {
     Color color(*this);
     color += yRef;
@@ -332,7 +328,7 @@ Color Color::operator-(const Color& yRef) const
     return color;
 }
 
-Color Color::operator-(const Vec3& yRef) const
+Color Color::operator-(const Vec3i& yRef) const
 {
     Color color(*this);
     color -= yRef;
@@ -340,7 +336,7 @@ Color Color::operator-(const Vec3& yRef) const
     return color;
 }
 
-Color Color::operator-(const Vec4& yRef) const
+Color Color::operator-(const Vec4i& yRef) const
 {
     Color color(*this);
     color -= yRef;
@@ -356,14 +352,14 @@ bool Color::operator==(const Color& yRef) const
         && a == yRef.a;
 }
 
-bool Color::operator==(const Vec3& yRef) const
+bool Color::operator==(const Vec3i& yRef) const
 {
     return r == yRef.x
         && g == yRef.y
         && b == yRef.z;
 }
 
-bool Color::operator==(const Vec4& yRef) const
+bool Color::operator==(const Vec4i& yRef) const
 {
     return r == yRef.x
         && g == yRef.y
@@ -376,17 +372,17 @@ bool Color::operator!=(const Color& yRef) const
     return !(*this == yRef);
 }
 
-bool Color::operator!=(const Vec3& yRef) const
+bool Color::operator!=(const Vec3i& yRef) const
 {
     return !(*this == yRef);
 }
 
-bool Color::operator!=(const Vec4& yRef) const
+bool Color::operator!=(const Vec4i& yRef) const
 {
     return !(*this == yRef);
 }
 
-Color operator+(const Vec3& yRef, const Color& op2)
+Color operator+(const Vec3i& yRef, const Color& op2)
 {
     Color color(op2);
     color += yRef;
@@ -394,7 +390,7 @@ Color operator+(const Vec3& yRef, const Color& op2)
     return color;
 }
 
-Color operator+(const Vec4& yRef, const Color& op2)
+Color operator+(const Vec4i& yRef, const Color& op2)
 {
     Color color(op2);
     color += yRef;
@@ -403,7 +399,7 @@ Color operator+(const Vec4& yRef, const Color& op2)
 }
 
 
-Color operator-(const Vec3& yRef, const Color& op2)
+Color operator-(const Vec3i& yRef, const Color& op2)
 {
     Color color(op2);
     color -= yRef;
@@ -411,7 +407,7 @@ Color operator-(const Vec3& yRef, const Color& op2)
     return color;
 }
 
-Color operator-(const Vec4& yRef, const Color& op2)
+Color operator-(const Vec4i& yRef, const Color& op2)
 {
     Color color(op2);
     color -= yRef;
@@ -419,7 +415,7 @@ Color operator-(const Vec4& yRef, const Color& op2)
     return color;
 }
 
-bool operator==(const Vec3& yRef, const Color& op2)
+bool operator==(const Vec3i& yRef, const Color& op2)
 {
     return op2.r == yRef.x
         && op2.g == yRef.y

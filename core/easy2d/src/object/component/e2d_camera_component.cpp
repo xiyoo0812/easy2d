@@ -1,282 +1,222 @@
 #include "e2d_camera_component.h"
-#include "../Graphics/GraphicsManager.h"
-#include "../Scenes/BaseScene.h"
-#include "../Objects/Object.h"
-#include "../Input/InputManager.h"
-#include "../Context.h"
-#include "../Logger.h"
-#include "../Helpers/Math.h"
-#include "../Objects/BaseCamera.h"
-#include "../Graphics/ScaleSystem.h"
+#include "e2d_transform_component.h"
+#include "object/e2d_camera.h"
+#include "object/e2d_scene.h"
+#include "math/e2d_math.h"
 
-namespace star
-{
-	CameraComponent::CameraComponent():
+
+/* Easy2D */
+using namespace Easy2D;
+
+CameraComponent::CameraComponent()
 	: Component(CameraComponent::GUID)
-	{
-	}
+{
+}
 
-	CameraComponent::~CameraComponent()
-	{
-	}
+CameraComponent::~CameraComponent()
+{
+}
 
-	void CameraComponent::InitializeComponent()
+void CameraComponent::initialize()
+{
+	mAspectRatio = 1.33;
+	//calc perspective matrix
+	if(mPerspectiveProjection)
 	{
-		m_AspectRatio = GraphicsManager::GetInstance()->GetViewportAspectRatio();
+		mProjection = matrixPerspectiveFOV(mFOV, mAspectRatio, mNearPlane, mFarPlane);
+	}
+	//calc ortho matrix
+	else
+	{
+		if(mSize <= 0)
+		{
+			mSize = 600;
+		}
+		mProjection = matrixOrtho(mSize * mAspectRatio * mZoom, mSize * mZoom, mNearPlane, mFarPlane);
+	}
+}
+
+void CameraComponent::update(const uint32& escapeMs)
+{
+	auto pos = getTransform()->getWorldPosition();
+	Vec3 eyeVec = Vec3(pos.pos2D(), 0);	
+	eyeVec.x /= (800 / 2.0f);
+	eyeVec.y /= (600 / 2.0f);
+
+	Vec3 lookAtVec, upVec;
+	Mat4 rotTransform;
+
+	float32 rotDegrees = getTransform()->getWorldRotation();
+	rotDegrees = radiansToDegrees(rotDegrees);
+	Quat rotation(Vec3(0, 0, rotDegrees));
+
+	rotTransform = toMat4(rotation);
+
+	//Only Vec4 * mat4  possible
+	Vec4 vLookTemp = Vec4(0,0,1,0) * transpose(rotTransform);
+	Vec4 vUpVecTemp = Vec4(0,1,0,0) * transpose(rotTransform);
+
+	//put them into a Vec3
+	lookAtVec = Vec3(vLookTemp.x, vLookTemp.y, vLookTemp.z);
+	upVec = Vec3(vUpVecTemp.x, vUpVecTemp.y, vUpVecTemp.z);
+
+	//Calculate the viewmatrix and inverse
+	mView = matrixLookAt(eyeVec, (eyeVec + lookAtVec), upVec);
+	mViewInverse = transpose(mView);
+}
+
+void CameraComponent::draw()
+{
+
+}
+
+void CameraComponent::setFieldOfView(float32 fov)
+{
+	mFOV = fov;
+}
+
+void CameraComponent::setOrthoSize(float32 size)
+{
+	mSize = size;
+}
+
+void CameraComponent::setNearClippingPlane(float32 nearPlane)
+{
+	mNearPlane = nearPlane;
+}
+
+void CameraComponent::setFarClippingPlane(float32 farPlane)
+{
+	mFarPlane = farPlane;
+}
 	
-		//Calc perspective matrix
-		if(m_bPerspectiveProjection)
-		{
-			m_Projection = MatrixPerspectiveFOV(m_FOV, 
-												m_AspectRatio, 
-												m_NearPlane, 
-												m_FarPlane);
-		}
-
-		//Calc ortho matrix
-		else
-		{
-			if(m_Size <= 0)
-			{
-				m_Size = static_cast<float32>(GraphicsManager::GetInstance()->GetViewportHeight());
-			}
-
-			m_Projection = MatrixOrtho(m_Size * m_AspectRatio * m_Zoom,
-										m_Size * m_Zoom, 
-										m_NearPlane, 
-										m_FarPlane);
-		}
-	}
-
-	void CameraComponent::Update(const Context& context)
+void CameraComponent::setActive()
+{
+	auto scene = getScene();
+	if(scene == nullptr)
 	{
-#ifdef DESKTOP
-		if(m_Size != GraphicsManager::GetInstance()->GetViewportHeight() || 
-			m_Size * m_AspectRatio != GraphicsManager::GetInstance()->GetViewportWidth())
-		{
-			m_AspectRatio = GraphicsManager::GetInstance()->GetViewportAspectRatio();
-			if(m_bPerspectiveProjection)
-			{
-				m_Projection = MatrixPerspectiveFOV(m_FOV, 
-													m_AspectRatio, 
-													m_NearPlane, 
-													m_FarPlane);
-			}
-			else
-			{
-				m_Size = static_cast<float32>(GraphicsManager::GetInstance()->GetViewportHeight());
-				m_Projection = MatrixOrtho(m_Size * m_AspectRatio * m_Zoom, 
-										   m_Size * m_Zoom, 
-										   m_NearPlane, 
-										   m_FarPlane);
-			}
-		}
-#endif
-#ifdef STAR2D
-		auto pos = m_pParentObject->GetTransform()->GetWorldPosition();
-		vec3 eyeVec = vec3(pos.pos2D(), 0);
-#else
-		vec3 eyeVec = m_pParentObject->GetTransform()->GetWorldPosition();
-#endif	
-		eyeVec.x /= (star::ScaleSystem::GetInstance()->GetWorkingResolution().x / 2.0f);
-		eyeVec.y /= (star::ScaleSystem::GetInstance()->GetWorkingResolution().y / 2.0f);
-
-		vec3 lookAtVec, upVec;
-		mat4 rotTransform;
-	
-#ifdef STAR2D
-		float32 rotDegrees = m_pParentObject->GetTransform()->GetWorldRotation();
-		rotDegrees = RadiansToDegrees(rotDegrees);
-		quat rotation(vec3(0, 0, rotDegrees));
-#else
-		quat rotation = m_pParentObject->GetTransform()->GetWorldRotation();
-#endif
-		rotTransform = ToMat4(rotation);
-
-		//Only vec4 * mat4  possible
-		vec4 vLookTemp = vec4(0,0,1,0) * Transpose(rotTransform);
-		vec4 vUpVecTemp = vec4(0,1,0,0) * Transpose(rotTransform);
-
-		//put them into a vec3
-		lookAtVec = vec3(vLookTemp.x, vLookTemp.y, vLookTemp.z);
-		upVec = vec3(vUpVecTemp.x, vUpVecTemp.y, vUpVecTemp.z);
-
-		//Calculate the viewmatrix and inverse
-		m_View = MatrixLookAt(eyeVec, (eyeVec + lookAtVec), upVec);
-		m_ViewInverse = Transpose(m_View);
+		LOG_ERROR << _T("Can't set camera active, add this camera to a scene first!");
 	}
-
-	void CameraComponent::Draw()
+	else
 	{
-
+		scene->setActiveCamera(std::dynamic_pointer_cast<Camera>(mMaster.lock()));
 	}
+}
 
-	void CameraComponent::SetFieldOfView(float32 fov)
-	{
-		m_FOV = fov;
-	}
+bool CameraComponent::isActive() const
+{
+	return mActive;
+}
 
-	void CameraComponent::SetOrthoSize(float32 size)
-	{
-		m_Size = size;
-	}
+void CameraComponent::activate()
+{
+	mActive = true;
+}
 
-	void CameraComponent::SetNearClippingPlane(float32 nearPlane)
-	{
-		m_NearPlane = nearPlane;
-	}
+void CameraComponent::deactivate()
+{
+	mActive = false;
+}
 
-	void CameraComponent::SetFarClippingPlane(float32 farPlane)
-	{
-		m_FarPlane = farPlane;
-	}
-		
-	void CameraComponent::SetActive()
-	{
-		auto scene = GetGameScene();
-	
-		if(scene == nullptr)
-		{
-			LOG( 
-				LogLevel::Error,
-				_T("Can't set camera active, add this camera to a scene first!"),
-				STARENGINE_LOG_TAG
-				);
-		}
-		else
-		{
-			scene->SetActiveCamera(dynamic_cast<BaseCamera*>(m_pParentObject));
-		}
-	}
+void CameraComponent::setZoom(float32 zoom)
+{
+	mZoom = zoom;
+	mProjection = matrixOrtho(mSize * mAspectRatio * mZoom, mSize * mZoom, mNearPlane, mFarPlane);
+}
 
-	bool CameraComponent::IsActive() const
-	{
-		return m_bIsActive;
-	}
+float32 CameraComponent::getZoom() const
+{
+	return mZoom;
+}
 
-	void CameraComponent::Activate()
-	{
-		m_bIsActive = true;
-	}
-	
-	void CameraComponent::Deactivate()
-	{
-		m_bIsActive = false;
-	}
+const Mat4& CameraComponent::getView() const
+{
+	return mView;
+}
 
-	void CameraComponent::SetZoom(float32 zoom)
-	{
-		m_Zoom = zoom;
-		m_Projection = MatrixOrtho(m_Size * m_AspectRatio * m_Zoom, 
-									m_Size * m_Zoom, 
-									m_NearPlane, 
-									m_FarPlane);
-	}
+const Mat4& CameraComponent::getProjection() const
+{
+	return mProjection;
+}
 
-	float32 CameraComponent::GetZoom() const
-	{
-		return m_Zoom;
-	}
+const Mat4& CameraComponent::getViewInverse() const
+{
+	return mViewInverse;
+}
 
-	const mat4 & CameraComponent::GetView() const
-	{
-		return m_View;
-	}
+Mat4 CameraComponent::getProjectionViewInverse() const
+{
+	return mProjection * mViewInverse;
+}
 
-	const mat4 & CameraComponent::GetProjection() const
-	{
-		return m_Projection;
-	}
-
-	const mat4 & CameraComponent::GetViewInverse() const
-	{
-		return m_ViewInverse;
-	}
-
-	mat4 CameraComponent::GetProjectionViewInverse() const
-	{
-		return m_Projection * m_ViewInverse;
-	}
-
-	mat4 CameraComponent::MatrixPerspectiveFOV(float32 FovY, float32 ratio, float32 nearPlane, float32 farPlane)
-	{
-		float32 viewSpaceWidth, viewSpaceHeight;
-		
-		viewSpaceHeight = Cotan(FovY/2);
-		viewSpaceWidth = viewSpaceHeight * ratio;
-
-		mat4 matPerspective 
-		(
+Mat4 CameraComponent::matrixPerspectiveFOV(float32 fovY, float32 ratio, float32 nearPlane, float32 farPlane)
+{
+	float32 viewSpaceWidth, viewSpaceHeight;
+	viewSpaceHeight = cotan(fovY/2);
+	viewSpaceWidth = viewSpaceHeight * ratio;
+	Mat4 matPerspective(
 		viewSpaceWidth, 0, 0, 0,
 		0, viewSpaceHeight, 0, 0,
 		0, 0, farPlane / (farPlane - nearPlane), 1,
 		0, 0, -nearPlane * farPlane / (farPlane - nearPlane), 0
-		);
+	);
+	return matPerspective;
+}
 
-		return matPerspective;
-	}
-
-	mat4 CameraComponent::MatrixOrtho(float32 width, float32 height, float32 nearPlane, float32 farPlane)
-	{
-		//opengl standard is -1 to 1 --> 2 width
-		mat4 matOrtho
-		(
+Mat4 CameraComponent::matrixOrtho(float32 width, float32 height, float32 nearPlane, float32 farPlane)
+{
+	//opengl standard is -1 to 1 --> 2 width
+	Mat4 matOrtho(
 		2 / width, 0, 0, -1,
 		0, 2 / height, 0, -1,
 		0, 0, 1 / (farPlane - nearPlane), 0,
 		0, 0, nearPlane / (nearPlane - farPlane), 1
-		);
+	);
+	return matOrtho;
+}
 
-		return matOrtho;
-	}
+Mat4 CameraComponent::matrixLookAt(const Vec3& eye, const Vec3& at, const Vec3& up)
+{
+	Vec3 xAxis, yAxis, zAxis;
+	zAxis = normalize(at - eye);
+	xAxis = normalize(cross(up, zAxis));
+	yAxis = cross(zAxis, xAxis);
+	Mat4 matLookAt (
+		xAxis.x, yAxis.x, zAxis.x, 0,
+		xAxis.y, yAxis.y, zAxis.y, 0,
+		xAxis.z, yAxis.z, zAxis.z, 0,
+		-dot(xAxis, eye),  -dot(yAxis, eye),  -dot(zAxis, eye),  1
+	);
+	return matLookAt;
+}
 
-	mat4 CameraComponent::MatrixLookAt(const vec3& eye, const vec3& at, const vec3& up)
-	{
-		vec3 xAxis, yAxis, zAxis;
+void CameraComponent::translate(const Vec2& translation)
+{
+	const Vec2& offset = Vec2(800, 600);
+	auto finalPos = translation - offset / 2.0f;
+	getTransform()->translate(finalPos);
+}
 
-		zAxis = Normalize(at - eye);
-		xAxis = Normalize(Cross(up, zAxis));
-		yAxis = Cross(zAxis, xAxis);
-		
-		mat4 matLookAt 
-		(
-			 xAxis.x, yAxis.x, zAxis.x, 0,
-			 xAxis.y, yAxis.y, zAxis.y, 0,
-			 xAxis.z, yAxis.z, zAxis.z, 0,
-			-Dot(xAxis, eye),  -Dot(yAxis, eye),  -Dot(zAxis, eye),  1
-		);
+void CameraComponent::translate(float32 x, float32 y)
+{
+	translate(Vec2(x, y));
+}
 
-		return matLookAt;
-	}
+void CameraComponent::translateX(float32 x)
+{
+	const Vec2& offset = Vec2(800, 600);
+	auto finalPos = x - offset.x / 2.0f;
+	getTransform()->translateX(finalPos);
+}
 
-	void CameraComponent::Translate(const vec2& translation)
-	{
-		const vec2 & offset = ScaleSystem::GetInstance()->GetWorkingResolution();
-		auto finalPos = translation - offset / 2.0f;
-		m_pParentObject->GetTransform()->Translate(finalPos);
-	}
+void CameraComponent::translateY(float32 y)
+{
+	const Vec2& offset = Vec2(800, 600);
+	auto finalPos = y - offset.y / 2.0f;
+	getTransform()->translateY(finalPos);
+}
 
-	void CameraComponent::Translate(float32 x, float32 y)
-	{
-		Translate(vec2(x, y));
-	}
-
-	void CameraComponent::TranslateX(float32 x)
-	{
-		const vec2 & offset = ScaleSystem::GetInstance()->GetWorkingResolution();
-		auto finalPos = x - offset.x / 2.0f;
-		m_pParentObject->GetTransform()->TranslateX(finalPos);
-	}
-
-	void CameraComponent::TranslateY(float32 y)
-	{
-		const vec2 & offset = ScaleSystem::GetInstance()->GetWorkingResolution();
-		auto finalPos = y - offset.y / 2.0f;
-		m_pParentObject->GetTransform()->TranslateY(finalPos);
-	}
-
-	void CameraComponent::ConvertScreenToWorld(vec2 & posInOut)
-	{
-		posInOut += GetTransform()->GetWorldPosition().pos2D();
-	}
+void CameraComponent::convertScreenToWorld(Vec2& posInOut)
+{
+	posInOut += getTransform()->getWorldPosition().pos2D();
 }

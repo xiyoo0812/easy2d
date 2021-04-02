@@ -1,4 +1,5 @@
 #include "e2d_camera.h"
+#include "component/e2d_camera_component.h"
 
 
 /* Easy2D */
@@ -6,12 +7,12 @@ using namespace Easy2D;
 
 Camera::Camera(): Entity()
 {
-	AddComponent(new CameraComponent());
+	addComponent(std::make_shared<CameraComponent>());
 }
 
 Camera::Camera(const String& name): Entity(name)
 {
-	AddComponent(new CameraComponent());
+    addComponent(std::make_shared<CameraComponent>());
 }
 
 Camera::~Camera()

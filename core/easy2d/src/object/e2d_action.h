@@ -26,7 +26,7 @@ namespace Easy2D
 
 	protected:
 		bool mPaused;
-		WPtr<Entity> mMaster = nullptr;
+        WPtr<Entity> mMaster{};
 	};
 }
 

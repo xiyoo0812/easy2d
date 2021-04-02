@@ -1,7 +1,7 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "e2d_object.h"
+#include "e2d_entity.h"
 
 namespace Easy2D
 {

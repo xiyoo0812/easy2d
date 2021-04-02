@@ -5,13 +5,12 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include <random>
 #include <functional>
 #include <filesystem>
 #include <unordered_map>
 //OpenGL Math Library
-#include "glm\glm.h"
-#include "glm\ext.hpp"
+#include "glm.h"
+#include "ext.hpp"
 
 namespace Easy2D
 {
@@ -53,15 +52,12 @@ namespace Easy2D
     typedef std::string             String;
     typedef std::filesystem::path   Path;
 
-    template <typename T> 
+    template <typename T>
     using WPtr = std::weak_ptr<T>;
-    using NewWPtr = std::make_weak<T>;
-    template <typename T> 
+    template <typename T>
     using SPtr = std::shared_ptr<T>;
-    using NewSPtr = std::make_shared<T>;
     template <typename T>
     using UPtr = std::unique_ptr<T>;
-    using NewUPtr = std::make_unique<T>;
     template <typename F>
     using Function = std::function<F>;
     template <typename T>
@@ -69,58 +65,33 @@ namespace Easy2D
     template <class Key, class T, class Hash = std::hash<Key>, class KeyEqual = std::equal_to<Key>>
     using UnorderedMap = std::unordered_map<Key, T, Hash, KeyEqual>;
 
-    using RandIntDist   = std::uniform_int_distribution<int>;
-
-    template <typename T>
-	inline void SafeDelete(T * &pointer)
-	{
-		if(pointer != nullptr)
-		{
-			delete pointer;
-			pointer = nullptr;
-		}
-	}
-
     using std::min;
     using std::max;
 
     //gl math library
-    typedef glm::ivec2 ivec2;
-    typedef glm::ivec3 ivec3;
-    typedef glm::ivec4 ivec4;
+    typedef glm::ivec2 Vec2i;
+    typedef glm::ivec3 Vec3i;
+    typedef glm::ivec4 Vec4i;
 
-    typedef glm::uvec2 uvec2;
-    typedef glm::uvec3 uvec3;
-    typedef glm::uvec4 uvec4;
+    typedef glm::fvec2 Vec2f;
+    typedef glm::fvec3 Vec3f;
+    typedef glm::fvec4 Vec4f;
 
-    typedef glm::fvec2 fvec2;
-    typedef glm::fvec3 fvec3;
-    typedef glm::fvec4 fvec4;
+    typedef glm::fquat Quatf;
 
-    typedef glm::dvec2 dvec2;
-    typedef glm::dvec3 dvec3;
-    typedef glm::dvec4 dvec4;
+    typedef glm::fmat2 Mat2f;
+    typedef glm::fmat3 Mat3f;
+    typedef glm::fmat4 Mat4f;
 
-    typedef glm::fquat fquat;
-    typedef glm::dquat dquat;
+    typedef Vec2f Vec2;
+    typedef Vec3f Vec3;
+    typedef Vec4f Vec4;
 
-    typedef glm::fmat2 fmat2;
-    typedef glm::fmat3 fmat3;
-    typedef glm::fmat4 fmat4;
+    typedef Quatf Quat;
 
-    typedef glm::dmat2 dmat2;
-    typedef glm::dmat3 dmat3;
-    typedef glm::dmat4 dmat4;
-
-    typedef fvec2 vec2;
-    typedef fvec3 vec3;
-    typedef fvec4 vec4;
-
-    typedef fquat quat;
-
-    typedef fmat2 mat2;
-    typedef fmat3 mat3;
-    typedef fmat4 mat4;
+    typedef Mat2f Mat2;
+    typedef Mat3f Mat3;
+    typedef Mat4f Mat4;
 
     const float64 PI = 3.14159265358979323846264338327950288;
     const float32 EPSILON = 0.0000001f;

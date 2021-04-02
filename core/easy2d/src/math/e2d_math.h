@@ -1,528 +1,298 @@
-#pragma once
+#ifndef MATH_H
+#define MATH_H
 
-#include "../defines.h"
-#include "../Objects/Object.h"
+#include "e2d_config.h"
+#include "e2d_pos.h"
+#include <random>
 
-namespace star
+namespace Easy2D
 {
-	float32 Cotan(float32 x);
-	float64 Cotan(float64 x);
-	float128 Cotan(float128 x);
+	class Pos;
+
+	float32 cotan(float32 x);
+	float64 cotan(float64 x);
+	float128 cotan(float128 x);
 
 	template <typename T>
-	T DegreesToRadians(T degrees);
+	T degreesToRadians(T degrees);
 
-	template float32 DegreesToRadians<float32>(float32);
-	template float64 DegreesToRadians<float64>(float64);
-	template float128 DegreesToRadians<float128>(float128);
+	template float32 degreesToRadians<float32>(float32);
+	template float64 degreesToRadians<float64>(float64);
+	template float128 degreesToRadians<float128>(float128);
 
-	fvec2 DegreesToRadians(const fvec2 & degrees);
-	fvec3 DegreesToRadians(const fvec3 & degrees);
-	fvec4 DegreesToRadians(const fvec4 & degrees);
+	Vec2f degreesToRadians(const Vec2f& degrees);
+	Vec3f degreesToRadians(const Vec3f& degrees);
+	Vec4f degreesToRadians(const Vec4f& degrees);
 
-	dvec2 DegreesToRadians(const dvec2 & degrees);
-	dvec3 DegreesToRadians(const dvec3 & degrees);
-	dvec4 DegreesToRadians(const dvec4 & degrees);
-
-	void DegreesToRadians(const fvec2 & degIn, fvec2 & degOut);
-	void DegreesToRadians(const fvec3 & degIn, fvec3 & degOut);
-	void DegreesToRadians(const fvec4 & degIn, fvec4 & degOut);
-
-	void DegreesToRadians(const dvec2 & degIn, dvec2 & degOut);
-	void DegreesToRadians(const dvec3 & degIn, dvec3 & degOut);
-	void DegreesToRadians(const dvec4 & degIn, dvec4 & degOut);
+	void degreesToRadians(const Vec2f& degIn, Vec2f& degOut);
+	void degreesToRadians(const Vec3f& degIn, Vec3f& degOut);
+	void degreesToRadians(const Vec4f& degIn, Vec4f& degOut);
 
 	template <typename T>
-	T RadiansToDegrees(T radians);
+	T radiansToDegrees(T radians);
 
-	template float32 RadiansToDegrees<float32>(float32);
-	template float64 RadiansToDegrees<float64>(float64);
-	template float128 RadiansToDegrees<float128>(float128);
+	template float32 radiansToDegrees<float32>(float32);
+	template float64 radiansToDegrees<float64>(float64);
+	template float128 radiansToDegrees<float128>(float128);
 
-	fvec2 RadiansToDegrees(const fvec2 & radians);
-	fvec3 RadiansToDegrees(const fvec3 & radians);
-	fvec4 RadiansToDegrees(const fvec4 & radians);
+	Vec2f radiansToDegrees(const Vec2f& radians);
+	Vec3f radiansToDegrees(const Vec3f& radians);
+	Vec4f radiansToDegrees(const Vec4f& radians);
 
-	dvec2 RadiansToDegrees(const dvec2 & radians);
-	dvec3 RadiansToDegrees(const dvec3 & radians);
-	dvec4 RadiansToDegrees(const dvec4 & radians);
-
-	void RadiansToDegrees(const fvec2 & radIn, fvec3 & radOut);
-	void RadiansToDegrees(const fvec3 & radIn, fvec4 & radOut);
-	void RadiansToDegrees(const fvec4 & radIn, fvec4 & radOut);
-
-	void RadiansToDegrees(const dvec2 & radIn, dvec2 & radOut);
-	void RadiansToDegrees(const dvec3 & radIn, dvec3 & radOut);
-	void RadiansToDegrees(const dvec4 & radIn, dvec4 & radOut);
+	void radiansToDegrees(const Vec2f& radIn, Vec3f& radOut);
+	void radiansToDegrees(const Vec3f& radIn, Vec4f& radOut);
+	void radiansToDegrees(const Vec4f& radIn, Vec4f& radOut);
 
 	template <typename T>
-	T Clamp(T x, T min, T max);
-	
-	template int16 Clamp<int16>(int16, int16, int16);
-	template uint16 Clamp<uint16>(uint16, uint16, uint16);
-	template uint32 Clamp<uint32>(uint32, uint32, uint32);
-	template int32 Clamp<int32>(int32, int32, int32);
-	template uint64 Clamp<uint64>(uint64, uint64, uint64);
-	template int64 Clamp<int64>(int64, int64, int64);
-	template float32 Clamp<float32>(float32, float32, float32);
-	template float64 Clamp<float64>(float64, float64, float64);
-	template float128 Clamp<float128>(float128, float128, float128);
+	T clamp(T x, T min, T max);
+	template int16 clamp<int16>(int16, int16, int16);
+	template uint16 clamp<uint16>(uint16, uint16, uint16);
+	template uint32 clamp<uint32>(uint32, uint32, uint32);
+	template int32 clamp<int32>(int32, int32, int32);
+	template uint64 clamp<uint64>(uint64, uint64, uint64);
+	template int64 clamp<int64>(int64, int64, int64);
+	template float32 clamp<float32>(float32, float32, float32);
+	template float64 clamp<float64>(float64, float64, float64);
+	template float128 clamp<float128>(float128, float128, float128);
 
 	template <typename T>
-	T Lerp(const T & start, const T & end, float32 percent);
+	T lerp(const T& start, const T& end, float32 percent);
 	
 	template <typename T>
-	T Lerp(const T & start, const T & end, float64 percent);
+	T lerp(const T& start, const T& end, float64 percent);
 	
-	fvec2 Slerp(const fvec2 & start, const fvec2 & end, float32 percent);
-	fvec3 Slerp(const fvec3 & start, const fvec3 & end, float32 percent);
-	fvec4 Slerp(const fvec4 & start, const fvec4 & end, float32 percent);
-	fquat Slerp(const fquat & start, const fquat & end, float32 percent);
+	Vec2f slerp(const Vec2f& start, const Vec2f& end, float32 percent);
+	Vec3f slerp(const Vec3f& start, const Vec3f& end, float32 percent);
+	Vec4f slerp(const Vec4f& start, const Vec4f& end, float32 percent);
+	Quatf slerp(const Quatf& start, const Quatf& end, float32 percent);
 	
-	dvec2 Slerp(const dvec2 & start, const dvec2 & end, float64 percent);
-	dvec3 Slerp(const dvec3 & start, const dvec3 & end, float64 percent);
-	dvec4 Slerp(const dvec4 & start, const dvec4 & end, float64 percent);
-	dquat Slerp(const dquat & start, const dquat & end, float64 percent);
+	Mat2f transpose(const Mat2f& matIn);
+	Mat3f transpose(const Mat3f& matIn);
+	Mat4f transpose(const Mat4f& matIn);
+	void transpose(const Mat2f& matIn, Mat2f& matOut);
+	void transpose(const Mat3f& matIn, Mat3f& matOut);
+	void transpose(const Mat4f& matIn, Mat4f& matOut);
 
-	fvec2 Nlerp(const fvec2 & start, const dvec2 & end, float32 percent);
-	fvec3 Nlerp(const fvec3 & start, const dvec3 & end, float32 percent);
-	fvec4 Nlerp(const fvec4 & start, const dvec4 & end, float32 percent);
-	fquat Nlerp(const fquat & start, const dquat & end, float32 percent);
-	
-	dvec2 Nlerp(const dvec2 & start, const dvec2 & end, float64 percent);
-	dvec3 Nlerp(const dvec3 & start, const dvec3 & end, float64 percent);
-	dvec4 Nlerp(const dvec4 & start, const dvec4 & end, float64 percent);
-	dquat Nlerp(const dquat & start, const dquat & end, float64 percent);
-	
-	fmat2 Transpose(const fmat2& matIn);
-	fmat3 Transpose(const fmat3& matIn);
-	fmat4 Transpose(const fmat4& matIn);
+	Mat2f inverse(const Mat2f& mat);
+	Mat3f inverse(const Mat3f& mat);
+	Mat4f inverse(const Mat4f& mat);
+	Quatf inverse(const Quatf& quat);
+	void inverse(const Mat2f& mat, Mat2f& out);
+	void inverse(const Mat3f& mat, Mat3f& out);
+	void inverse(const Mat4f& mat, Mat4f& out);
+	void inverse(const Quatf& quat, Quatf& out);
 
-	void Transpose(const fmat2& matIn, fmat2& matOut);
-	void Transpose(const fmat3& matIn, fmat3& matOut);
-	void Transpose(const fmat4& matIn, fmat4& matOut);
+	Mat4f lookAt(const Vec3f& eye, const Vec3f& center, const Vec3f& up);
+	void lookAt(const Vec3f& eye, const Vec3f& center, const Vec3f& up, Mat4f& out);
 
-	dmat2 Transpose(const dmat2& matIn);
-	dmat3 Transpose(const dmat3& matIn);
-	dmat4 Transpose(const dmat4& matIn);
+	Vec2f log(const Vec2f& vec);
+	Vec3f log(const Vec3f& vec);
+	Vec4f log(const Vec4f& vec);
+	Quatf log(const Quatf& quat);
+	void log(const Vec2f& vecIn, Vec2f& vecOut);
+	void log(const Vec3f& vecIn, Vec3f& vecOut);
+	void log(const Vec4f& vecIn, Vec4f& vecOut);
+	void log(const Quatf& quatIn, Quatf& quatOut);
 
-	void Transpose(const dmat3& matIn, dmat3& matOut);
-	void Transpose(const dmat3& matIn, dmat3& matOut);
-	void Transpose(const dmat3& matIn, dmat3& matOut);
+	Vec2f log2(const Vec2f& vec);
+	Vec3f log2(const Vec3f& vec);
+	Vec4f log2(const Vec4f& vec);
+	void log2(const Vec2f& vecIn, Vec2f& vecOut);
+	void log2(const Vec3f& vecIn, Vec3f& vecOut);
+	void log2(const Vec4f& vecIn, Vec4f& vecOut);
 
-	fmat2 Inverse(const fmat2 & mat);
-	fmat3 Inverse(const fmat3 & mat);
-	fmat4 Inverse(const fmat4 & mat);
-	fquat Inverse(const fquat & quat);
+	float32 getPitch(const Quatf& quaternion);
+	float32 getYaw(const Quatf& quaternion);
+	float32 getRoll(const Quatf& quaternion);
 
-	void Inverse(const fmat2 & mat, fmat2 & out);
-	void Inverse(const fmat3 & mat, fmat3 & out);
-	void Inverse(const fmat4 & mat, fmat4 & out);
-	void Inverse(const fquat & quat, fquat & out);
+	void getTranslation(const Mat4& matrix, Pos& translation);
+	void getScaling(const Mat4& matrix, Vec2& scaling);
+	void getRotation(const Mat4& matrix, float32& rotation);
+	void getRotationAndScaling(const Mat4& matrix, float32& rotation, Vec2& scaling);
+	void decomposeMatrix(const Mat4& matrix, Pos& position, Vec2& scaling, float32& rotation);
 
-	dmat2 Inverse(const dmat2 & mat);
-	dmat3 Inverse(const dmat3 & mat);
-	dmat4 Inverse(const dmat4 & mat);
-	dquat Inverse(const dquat & quat);
+	int32 random(int32 min, int32 max);
+	uint32 random(uint32 min, uint32 max);
+	float32 random(float32 min, float32 max);
+	float64 random(float64 min, float64 max);
+	float128 random(float128 min, float128 max);
 
-	void Inverse(const dmat2 & mat, dmat2 & out);
-	void Inverse(const dmat3 & mat, dmat3 & out);
-	void Inverse(const dmat4 & mat, dmat4 & out);
-	void Inverse(const dquat & quat, dquat & out);
+	float32 mag(const Vec2f& vec);
+	float32 mag(const Vec3f& vec);
+	float32 mag(const Vec4f& vec);
 
-	fmat4 LookAt(const fvec3 & eye, const fvec3 & center, const fvec3 & up);
-	dmat4 LookAt(const dvec3 & eye, const dvec3 & center, const dvec3 & up);
+	float32 dot(const Vec2f& vecA, const Vec2f& vecB);
+	float32 dot(const Vec3f& vecA, const Vec3f& vecB);
+	float32 dot(const Vec4f& vecA, const Vec4f& vecB);
 
-	void LookAt(const fvec3 & eye, const fvec3 & center, const fvec3 & up, fmat4 & out);
-	void LookAt(const dvec3 & eye, const dvec3 & center, const dvec3 & up, fmat4 & out);
+	float32 cross(const Vec2f& vecA, const Vec2f& vecB);
+	Vec3f cross(const Vec3f& vecA, const Vec3f& vecB);
+	void cross(const Vec2f& vecA, const Vec2f& vecB, Vec2f& vecOut);
 
-	fvec2 Log(const fvec2 & vec);
-	fvec3 Log(const fvec3 & vec);
-	fvec4 Log(const fvec4 & vec);
-	fquat Log(const fquat & quat);
+	Vec2f mul(const Vec2f& vec, const Mat2f& mat);
+	Vec3f mul(const Vec3f& vec, const Mat3f& mat);
+	Vec4f mul(const Vec4f& vec, const Mat4f& mat);
+	void mul(const Vec2f& vecIn, const Mat2f& mat, Vec2f& vecOut);
+	void mul(const Vec3f& vecIn, const Mat3f& mat, Vec3f& vecOut);
+	void mul(const Vec4f& vecIn, const Mat4f& mat, Vec4f& vecOut);
 
-	void Log(const fvec2 & vecIn, fvec2 & vecOut);
-	void Log(const fvec3 & vecIn, fvec3 & vecOut);
-	void Log(const fvec4 & vecIn, fvec4 & vecOut);
-	void Log(const fquat & quatIn, fquat & quatOut);
+	Vec2f normalize(const Vec2f& vec);
+	Vec3f normalize(const Vec3f& vec);
+	Vec4f normalize(const Vec4f& vec);
 
-	dvec2 Log(const dvec2 & vec);
-	dvec3 Log(const dvec3 & vec);
-	dvec4 Log(const dvec4 & vec);
-	dquat Log(const dquat & quat);
+	void normalize(const Vec2f& vecIn, Vec2f& vecOut);
+	void normalize(const Vec3f& vecIn, Vec3f& vecOut);
+	void normalize(const Vec4f& vecIn, Vec4f& vecOut);
 
-	void Log(const dvec2 & vecIn, dvec2 & vecOut);
-	void Log(const dvec3 & vecIn, dvec3 & vecOut);
-	void Log(const dvec4 & vecIn, dvec4 & vecOut);
-	void Log(const dquat & quatIn, dquat & quatOut);
+	float32 distance(const Vec2f& vecA, const Vec2f& vecB);
+	float32 distance(const Vec3f& vecA, const Vec3f& vecB);
+	float32 distance(const Vec4f& vecA, const Vec4f& vecB);
 
-	fvec2 Log2(const fvec2 & vec);
-	fvec3 Log2(const fvec3 & vec);
-	fvec4 Log2(const fvec4 & vec);
+	Mat3f toMat3(const Quatf& quaternion);
+	void toMat3(const Quatf& quaternion, Mat3f& out);
 
-	void Log2(const fvec2 & vecIn, fvec2 & vecOut);
-	void Log2(const fvec3 & vecIn, fvec3 & vecOut);
-	void Log2(const fvec4 & vecIn, fvec4 & vecOut);
+	Mat4f toMat4(const Quatf& quaternion);
+	void toMat4(const Quatf& quaternion, Mat4f& out);
 
-	dvec2 Log2(const dvec2 & vec);
-	dvec3 Log2(const dvec3 & vec);
-	dvec4 Log2(const dvec4 & vec);
+	Mat4f translate(const Mat4f& mat, const Vec3f& vec);
+	Mat4f translate(const Mat4f& mat, float32 x, float32 y, float32 z);
+	Mat4f translate(const Vec3f& vec);
+	Mat4f translate(float32 x, float32 y, float32 z);
+	void translate(const Mat4f& mat, const Vec3f& vec, Mat4f& out);
+	void translate(const Mat4f& mat, float32 x, float32 y, float32 z, Mat4f& out);
+	void translate(const Vec3f& vec, Mat4f& out);
+	void translate(float32 x, float32 y, float32 z, Mat4f& out);
 
-	void Log2(const dvec2 & vecIn, dvec2 & vecOut);
-	void Log2(const dvec3 & vecIn, dvec3 & vecOut);
-	void Log2(const dvec4 & vecIn, dvec4 & vecOut);
+	Mat4f scale(const Mat4f& mat, const Vec3f& vec);
+	Mat4f scale(const Mat4f& mat, float32 x, float32 y, float32 z);
+	Mat4f scale(const Vec3f& vec);
+	Mat4f scale(float32 x, float32 y, float32 z);
+	void scale(const Mat4f& mat, const Vec3f& vec, Mat4f& out);
+	void scale(const Mat4f& mat, float32 x, float32 y, float32 z, Mat4f& out);
+	void scale(const Vec3f& vec, Mat4f& out);
+	void scale(float32 x, float32 y, float32 z, Mat4f& out);
 
-	float32 GetPitch(const fquat & quaternion);
-	float32 GetYaw(const fquat & quaternion);
-	float32 GetRoll(const fquat & quaternion);
+	Vec2f rotate(const Vec2f& vec, float32 angle);
+	Vec3f rotate(const Vec3f& vec, float32 angle, const Vec3f& normal);
+	Vec4f rotate(const Vec4f& vec, float32 angle, const Vec3f& normal);
+	Mat4f rotate(const Mat4f& mat, float32 angle, float32 x, float32 y, float32 z);
+	Mat4f rotate(const Vec3f& vec, float32 angle);
+	Mat4f rotate(float32 angle, float32 x, float32 y, float32 z);
+	Vec3f rotate(const Quatf& quat, const Vec3f& vec);
+	Vec4f rotate(const Quatf& quat, const Vec4f& vec);
+	void rotate(const Vec2f& vec, float32 angle, Vec2f& out);
+	void rotate(const Vec3f& vec, float32 angle, const Vec3f& normal, Vec3f& out);
+	void rotate(const Vec4f& vec, float32 angle, const Vec3f& normal, Vec4f& out);
+	void rotate(const Mat4f& mat, float32 angle, float32 x, float32 y, float32 z, Mat4f& out);
+	void rotate(const Vec3f& vec, float32 angle, Mat4f& out);
+	void rotate(float32 angle, float32 x, float32 y, float32 z, Mat4f& out);
+	void rotate(const Quatf& quat, const Vec3f& vec, Vec3f& out);
+	void rotate(const Quatf& quat, const Vec4f& vec, Vec4f& out);
 
-	float64 GetPitch(const dquat & quaternion);
-	float64 GetYaw(const dquat & quaternion);
-	float64 GetRoll(const dquat & quaternion);
+	Vec2f step(const Vec2f& edge, const Vec2f& x);
+	Vec3f step(const Vec3f& edge, const Vec3f& x);
+	Vec4f step(const Vec4f& edge, const Vec4f& x);
 
-	void GetTranslation(const mat4& matrix, pos & translation);
-	void GetScaling(const mat4& matrix, vec2 & scaling);
-	void GetRotation(const mat4& matrix, float32 & rotation);
-	void GetRotationAndScaling(const mat4& matrix, float32 & rotation, vec2 & scaling);
-	void DecomposeMatrix(const mat4& matrix, pos & position,
-		vec2 & scaling, float32 & rotation);
+	Vec2f step(const Vec2f& edge, float32 x);
+	Vec3f step(const Vec3f& edge, float32 x);
+	Vec4f step(const Vec4f& edge, float32 x);
 
-	int32 GenerateRandomNumber(int32 min, int32 max);
-	uint32 GenerateRandomNumber(uint32 min, uint32 max);
-	float32 GenerateRandomNumber(float32 min, float32 max);
-	float64 GenerateRandomNumber(float64 min, float64 max);
-	float128 GenerateRandomNumber(float128 min, float128 max);
+	void step(const Vec2f& edge, const Vec2f& x, Vec2f& out);
+	void step(const Vec3f& edge, const Vec3f& x, Vec2f& out);
+	void step(const Vec4f& edge, const Vec4f& x, Vec2f& out);
 
-	float32 Mag(const fvec2 & vec);
-	float32 Mag(const fvec3 & vec);
-	float32 Mag(const fvec4 & vec);
-	
-	float64 Mag(const dvec2 & vec);
-	float64 Mag(const dvec3 & vec);
-	float64 Mag(const dvec4 & vec);
-
-	float32 Dot(const fvec2 & vecA, const fvec2 & vecB);
-	float32 Dot(const fvec3 & vecA, const fvec3 & vecB);
-	float32 Dot(const fvec4 & vecA, const fvec4 & vecB);
-
-	float64 Dot(const dvec2 & vecA, const dvec2 & vecB);
-	float64 Dot(const dvec3 & vecA, const dvec3 & vecB);
-	float64 Dot(const dvec4 & vecA, const dvec4 & vecB);
-
-	float32 Cross(const fvec2 & vecA, const fvec2 & vecB);
-	float64 Cross(const dvec2 & vecA, const dvec2 & vecB);
-	fvec3 Cross(const fvec3 & vecA, const fvec3 & vecB);
-	dvec3 Cross(const dvec3 & vecA, const dvec3 & vecB);
-
-	void Cross(const fvec2 & vecA, const fvec2 & vecB, fvec2 & vecOut);
-	void Cross(const dvec2 & vecA, const dvec2 & vecB, dvec2 & vecOut);
-
-	fvec2 Mul(const fvec2 & vec, const fmat2 & mat);
-	fvec3 Mul(const fvec3 & vec, const fmat3 & mat);
-	fvec4 Mul(const fvec4 & vec, const fmat4 & mat);
-
-	dvec2 Mul(const dvec2 & vec, const dmat2 & mat);
-	dvec3 Mul(const dvec3 & vec, const dmat3 & mat);
-	dvec4 Mul(const dvec4 & vec, const dmat4 & mat);
-
-	void Mul(const fvec2 & vecIn, const fmat2 & mat, fvec2 & vecOut);
-	void Mul(const fvec3 & vecIn, const fmat3 & mat, fvec3 & vecOut);
-	void Mul(const fvec4 & vecIn, const fmat4 & mat, fvec4 & vecOut);
-
-	void Mul(const dvec2 & vecIn, const dmat2 & mat, dvec2 & vecOut);
-	void Mul(const dvec3 & vecIn, const dmat3 & mat, dvec3 & vecOut);
-	void Mul(const dvec4 & vecIn, const dmat4 & mat, dvec4 & vecOut);
-
-	fvec2 Normalize(const fvec2 & vec);
-	fvec3 Normalize(const fvec3 & vec);
-	fvec4 Normalize(const fvec4 & vec);
-
-	void Normalize(const fvec2 & vecIn, fvec2 & vecOut);
-	void Normalize(const fvec3 & vecIn, fvec3 & vecOut);
-	void Normalize(const fvec4 & vecIn, fvec4 & vecOut);
-
-	dvec2 Normalize(const dvec2 & vec);
-	dvec3 Normalize(const dvec3 & vec);
-	dvec4 Normalize(const dvec4 & vec);
-
-	void Normalize(const dvec2 & vecIn, dvec2 & vecOut);
-	void Normalize(const dvec3 & vecIn, dvec3 & vecOut);
-	void Normalize(const dvec4 & vecIn, dvec4 & vecOut);
-
-	float32 Distance(const fvec2 & vecA, const fvec2 & vecB);
-	float32 Distance(const fvec3 & vecA, const fvec3 & vecB);
-	float32 Distance(const fvec4 & vecA, const fvec4 & vecB);
-
-	float64 Distance(const dvec2 & vecA, const dvec2 & vecB);
-	float64 Distance(const dvec3 & vecA, const dvec3 & vecB);
-	float64 Distance(const dvec4 & vecA, const dvec4 & vecB);
-
-	fmat3 ToMat3(const fquat & quaternion);
-	dmat3 ToMat3(const dquat & quaternion);
-
-	void ToMat3(const fquat & quaternion, fmat3 & out);
-	void ToMat3(const dquat & quaternion, dmat3 & out);
-
-	fmat4 ToMat4(const fquat & quaternion);
-	dmat4 ToMat4(const dquat & quaternion);
-
-	void ToMat4(const fquat & quaternion, fmat4 & out);
-	void ToMat4(const dquat & quaternion, dmat4 & out);
-
-	fmat4 Translate(const fmat4 & mat, const fvec3 & vec);
-	fmat4 Translate(const fmat4 & mat, float32 x, float32 y, float32 z);
-	fmat4 Translate(const fvec3 & vec);
-	fmat4 Translate(float32 x, float32 y, float32 z);
-
-	void Translate(const fmat4 & mat, const fvec3 & vec, fmat4 & out);
-	void Translate(const fmat4 & mat, float32 x, float32 y, float32 z, fmat4 & out);
-	void Translate(const fvec3 & vec, fmat4 & out);
-	void Translate(float32 x, float32 y, float32 z, fmat4 & out);
-
-	dmat4 Translate(const dmat4 & mat, const dvec3 & vec);
-	dmat4 Translate(const dmat4 & mat, float64 x, float64 y, float64 z);
-	dmat4 Translate(const dvec3 & vec);
-	dmat4 Translate(float64 x, float64 y, float64 z);
-
-	void Translate(const dmat4 & mat, const dvec3 & vec, dmat4 & out);
-	void Translate(const dmat4 & mat, float64 x, float64 y, float64 z, dmat4 & out);
-	void Translate(const dvec3 & vec, dmat4 & out);
-	void Translate(float64 x, float64 y, float64 z, dmat4 & out);
-
-	fmat4 Scale(const fmat4 & mat, const fvec3 & vec);
-	fmat4 Scale(const fmat4 & mat, float32 x, float32 y, float32 z);
-	fmat4 Scale(const fvec3 & vec);
-	fmat4 Scale(float32 x, float32 y, float32 z);
-
-	void Scale(const fmat4 & mat, const fvec3 & vec, fmat4 & out);
-	void Scale(const fmat4 & mat, float32 x, float32 y, float32 z, fmat4 & out);
-	void Scale(const fvec3 & vec, fmat4 & out);
-	void Scale(float32 x, float32 y, float32 z, fmat4 & out);
-
-	dmat4 Scale(const dmat4 & mat, const dvec3 & vec);
-	dmat4 Scale(const dmat4 & mat, float64 x, float64 y, float64 z);
-	dmat4 Scale(const dvec3 & vec);
-	dmat4 Scale(float64 x, float64 y, float64 z);
-
-	void Scale(const dmat4 & mat, const dvec3 & vec, dmat4 & out);
-	void Scale(const dmat4 & mat, float64 x, float64 y, float64 z, dmat4 & out);
-	void Scale(const dvec3 & vec, dmat4 & out);
-	void Scale(float64 x, float64 y, float64 z, dmat4 & out);
-
-	fvec2 Rotate(const fvec2 & vec, float32 angle);
-	fvec3 Rotate(const fvec3 & vec, float32 angle, const fvec3 & normal);
-	fvec4 Rotate(const fvec4 & vec, float32 angle, const fvec3 & normal);
-	fmat4 Rotate(const fmat4 & mat, float32 angle, float32 x, float32 y, float32 z);
-	fmat4 Rotate(const fvec3 & vec, float32 angle);
-	fmat4 Rotate(float32 angle, float32 x, float32 y, float32 z);
-	fvec3 Rotate(const fquat & quat, const fvec3 & vec);
-	fvec4 Rotate(const fquat & quat, const fvec4 & vec);
-
-	void Rotate(const fvec2 & vec, float32 angle, fvec2 & out);
-	void Rotate(const fvec3 & vec, float32 angle, const fvec3 & normal, fvec3 & out);
-	void Rotate(const fvec4 & vec, float32 angle, const fvec3 & normal, fvec4 & out);
-	void Rotate(const fmat4 & mat, float32 angle, float32 x, float32 y, float32 z, fmat4 & out);
-	void Rotate(const fvec3 & vec, float32 angle, fmat4 & out);
-	void Rotate(float32 angle, float32 x, float32 y, float32 z, fmat4 & out);
-	void Rotate(const fquat & quat, const fvec3 & vec, fvec3 & out);
-	void Rotate(const fquat & quat, const fvec4 & vec, fvec4 & out);
-
-	dvec2 Rotate(const dvec2 & vec, float64 angle);
-	dvec3 Rotate(const dvec3 & vec, float64 angle, const dvec3 & normal);
-	dvec4 Rotate(const dvec4 & vec, float64 angle, const dvec3 & normal);
-	dmat4 Rotate(const dmat4 & mat, float64 angle, float64 x, float64 y, float64 z);
-	dmat4 Rotate(const dvec3 & vec, float64 angle);
-	dmat4 Rotate(float64 angle, float64 x, float64 y, float64 z);
-	dvec3 Rotate(const dquat & quat, const dvec3 & vec);
-	dvec4 Rotate(const dquat & quat, const dvec4 & vec);
-
-	void Rotate(const dvec2 & vec, float64 angle, dvec2 & out);
-	void Rotate(const dvec3 & vec, float64 angle, const dvec3 & normal, dvec3 & out);
-	void Rotate(const dvec4 & vec, float64 angle, const dvec3 & normal, dvec4 & out);
-	void Rotate(const dmat4 & mat, float64 angle, float64 x, float64 y, float64 z, dmat4 & out);
-	void Rotate(const dvec3 & vec, float64 angle, dmat4 & out);
-	void Rotate(float64 angle, float64 x, float64 y, float64 z, dmat4 & out);
-	void Rotate(const dquat & quat, const dvec3 & vec, dvec3 & out);
-	void Rotate(const dquat & quat, const dvec4 & vec, dvec4 & out);
-
-	fvec2 Step(const fvec2 & edge, const fvec2 & x);
-	fvec3 Step(const fvec3 & edge, const fvec3 & x);
-	fvec4 Step(const fvec4 & edge, const fvec4 & x);
-
-	fvec2 Step(const fvec2 & edge, float32 x);
-	fvec3 Step(const fvec3 & edge, float32 x);
-	fvec4 Step(const fvec4 & edge, float32 x);
-
-	void Step(const fvec2 & edge, const fvec2 & x, fvec2 & out);
-	void Step(const fvec3 & edge, const fvec3 & x, fvec2 & out);
-	void Step(const fvec4 & edge, const fvec4 & x, fvec2 & out);
-
-	void Step(const fvec2 & edge, float32 x, fvec2 & out);
-	void Step(const fvec3 & edge, float32 x, fvec2 & out);
-	void Step(const fvec4 & edge, float32 x, fvec2 & out);
-
-	dvec2 Step(const dvec2 & edge, const dvec2 & x);
-	dvec3 Step(const dvec3 & edge, const dvec3 & x);
-	dvec4 Step(const dvec4 & edge, const dvec4 & x);
-
-	dvec2 Step(const dvec2 & edge, float64 x);
-	dvec3 Step(const dvec3 & edge, float64 x);
-	dvec4 Step(const dvec4 & edge, float64 x);
-
-	void Step(const dvec2 & edge, const dvec2 & x, dvec2 & out);
-	void Step(const dvec3 & edge, const dvec3 & x, dvec2 & out);
-	void Step(const dvec4 & edge, const dvec4 & x, dvec2 & out);
-
-	void Step(const dvec2 & edge, float64 x, dvec2 & out);
-	void Step(const dvec3 & edge, float64 x, dvec2 & out);
-	void Step(const dvec4 & edge, float64 x, dvec2 & out);
+	void step(const Vec2f& edge, float32 x, Vec2f& out);
+	void step(const Vec3f& edge, float32 x, Vec2f& out);
+	void step(const Vec4f& edge, float32 x, Vec2f& out);
 
 	template <typename T>
-	T Saturate(T x);
+	T saturate(T x);
 
-	fvec2 Saturate(const fvec2 & vec);
-	fvec3 Saturate(const fvec3 & vec);
-	fvec4 Saturate(const fvec4 & vec);
+	Vec2f saturate(const Vec2f& vec);
+	Vec3f saturate(const Vec3f& vec);
+	Vec4f saturate(const Vec4f& vec);
 
-	dvec2 Saturate(const dvec2 & vec);
-	dvec3 Saturate(const dvec3 & vec);
-	dvec4 Saturate(const dvec4 & vec);
+	void saturate(const Vec2f& vecIn, Vec2f& vecOut);
+	void saturate(const Vec3f& vecIn, Vec3f& vecOut);
+	void saturate(const Vec4f& vecIn, Vec4f& vecOut);
 
-	void Saturate(const fvec2 & vecIn, fvec2 & vecOut);
-	void Saturate(const fvec3 & vecIn, fvec3 & vecOut);
-	void Saturate(const fvec4 & vecIn, fvec4 & vecOut);
+	Vec2f refract(const Vec2f& I, const Vec2f& N, float32 eta);
+	Vec3f refract(const Vec3f& I, const Vec3f& N, float32 eta);
+	Vec4f refract(const Vec4f& I, const Vec4f& N, float32 eta);
 
-	void Saturate(const dvec2 & vecIn, dvec2 & vecOut);
-	void Saturate(const dvec3 & vecIn, dvec3 & vecOut);
-	void Saturate(const dvec4 & vecIn, dvec4 & vecOut);
+	void refract(const Vec2f& I, const Vec2f& N, float32 eta, Vec2f& out);
+	void refract(const Vec3f& I, const Vec3f& N, float32 eta, Vec3f& out);
+	void refract(const Vec4f& I, const Vec4f& N, float32 eta, Vec4f& out);
 
-	fvec2 Refract(const fvec2 & I, const fvec2 & N, float32 eta);
-	fvec3 Refract(const fvec3 & I, const fvec3 & N, float32 eta);
-	fvec4 Refract(const fvec4 & I, const fvec4 & N, float32 eta);
+	uint32 mod(uint32 x, uint32 y);
+	int32 mod(int32 x, int32 y);
+	float32 mod(float32 x, float32 y);
+	float64 mod(float64 x, float64 y);
 
-	void Refract(const fvec2 & I, const fvec2 & N, float32 eta, fvec2 & out);
-	void Refract(const fvec3 & I, const fvec3 & N, float32 eta, fvec3 & out);
-	void Refract(const fvec4 & I, const fvec4 & N, float32 eta, fvec4 & out);
+	Vec2f mod(const Vec2f& x, const Vec2f& y);
+	Vec3f mod(const Vec3f& x, const Vec3f& y);
+	Vec4f mod(const Vec4f& x, const Vec4f& y);
 
-	dvec2 Refract(const dvec2 & I, const dvec2 & N, float32 eta);
-	dvec3 Refract(const dvec3 & I, const dvec3 & N, float32 eta);
-	dvec4 Refract(const dvec4 & I, const dvec4 & N, float32 eta);
+	void mod(const Vec2f& x, const Vec2f& y, Vec2f& out);
+	void mod(const Vec3f& x, const Vec3f& y, Vec3f& out);
+	void mod(const Vec4f& x, const Vec4f& y, Vec4f& out);
 
-	void Refract(const dvec2 & I, const dvec2 & N, float32 eta, dvec2 & out);
-	void Refract(const dvec3 & I, const dvec3 & N, float32 eta, dvec3 & out);
-	void Refract(const dvec4 & I, const dvec4 & N, float32 eta, dvec4 & out);
+	Vec2f mod(const Vec2f& x, float32 y);
+	Vec3f mod(const Vec3f& x, float32 y);
+	Vec4f mod(const Vec4f& x, float32 y);
 
-	uint32 Mod(uint32 x, uint32 y);
-	int32 Mod(int32 x, int32 y);
-	float32 Mod(float32 x, float32 y);
-	float64 Mod(float64 x, float64 y);
+	void mod(const Vec2f& x, float32 y, Vec2f& out);
+	void mod(const Vec3f& x, float32 y, Vec3f& out);
+	void mod(const Vec4f& x, float32 y, Vec4f& out);
 
-	fvec2 Mod(const fvec2 & x, const fvec2 & y);
-	fvec3 Mod(const fvec3 & x, const fvec3 & y);
-	fvec4 Mod(const fvec4 & x, const fvec4 & y);
+	Mat3f reflect(const Mat3f& mat, const Vec3f& normal);
+	void reflect(const Mat3f& matIn, const Vec3f& normal, Mat3f& matOut);
 
-	dvec2 Mod(const dvec2 & x, const dvec2 & y);
-	dvec3 Mod(const dvec3 & x, const dvec3 & y);
-	dvec4 Mod(const dvec4 & x, const dvec4 & y);
+	Mat3f project(const Mat3f& mat, const Vec3f& normal);
+	void project(const Mat3f& matIn, const Vec3f& normal, Mat3f& matOut);
 
-	void Mod(const fvec2 & x, const fvec2 & y, fvec2 & out);
-	void Mod(const fvec3 & x, const fvec3 & y, fvec3 & out);
-	void Mod(const fvec4 & x, const fvec4 & y, fvec4 & out);
+	const float32* toPointer(const Mat2f& mat);
+	const float32* toPointer(const Mat3f& mat);
+	const float32* toPointer(const Mat4f& mat);
+	const float32* toPointer(const Vec2f& vec);
+	const float32* toPointer(const Vec3f& vec);
+	const float32* toPointer(const Vec4f& vec);
+	const float32* toPointer(const Quatf& quat);
 
-	void Mod(const dvec2 & x, const dvec2 & y, dvec2 & out);
-	void Mod(const dvec3 & x, const dvec3 & y, dvec3 & out);
-	void Mod(const dvec4 & x, const dvec4 & y, dvec4 & out);
+	Pos lerp(const Pos& start, const Pos& end, float32 percent);
+	Pos slerp(const Pos& start, const Pos& end, float32 percent);
+	Pos nlerp(const Pos& start, const Pos& end, float32 percent);
+	float32 mag(const Pos& pos);
+	float32 dot(const Pos& posA, const Pos& posB);
+	Pos mul(const Pos& position, const Mat2f& mat);
+	void mul(const Pos& posIn, const Mat2f& mat, Pos& posOut);
+	Pos normalize(const Pos& position);
+	void normalize(const Pos& posIn, Pos& posOut);
+	float32 distance(const Pos& posA, const Pos& posB);
+	Mat4f translate(const Pos& pos);
+	Mat4f translate(const Mat4f& mat, const Pos& pos);
+	void translate(const Pos& pos, Mat4f& out);
+	void translate(const Mat4f& mat, const Pos& pos, Mat4f& out);
+	Mat4f scale(const Pos& pos);
+	Mat4f scale(const Mat4f& mat, const Pos& pos);
+	void scale(const Pos& pos, Mat4f& out);
+	void scale(const Mat4f& mat, const Pos& pos, Mat4f& out);
+	Mat4f lookAt(const Pos& eye, const Pos& center);
+	void lookAt(const Pos& eye, const Pos& center, Mat4f& out);
+	Pos log(const Pos& pos);
+	void log(const Pos& posIn, Pos& posOut);
+	Pos log2(const Pos& pos);
+	void log2(const Pos& posIn, Pos& posOut);
+	Pos step(const Pos& pos, const Vec2f& x);
+	Pos step(const Pos& pos, float32 x);
+	void step(const Pos& posIn, const Vec2f& x, Pos& posOut);
+	void step(const Pos& posIn, float32 x, Pos& posOut);
+	Pos mod(const Pos& pos, const Vec2f& mod);
+	Pos mod(const Pos& pos, float32 mod);
+	void mod(const Pos& posIn, const Vec2f& mod, Pos& posOut);
+	void mod(const Pos& posIn, float32 mod, Pos& posOut);
 
-	fvec2 Mod(const fvec2 & x, float32 y);
-	fvec3 Mod(const fvec3 & x, float32 y);
-	fvec4 Mod(const fvec4 & x, float32 y);
-
-	dvec2 Mod(const dvec2 & x, float64 y);
-	dvec3 Mod(const dvec3 & x, float64 y);
-	dvec4 Mod(const dvec4 & x, float64 y);
-
-	void Mod(const fvec2 & x, float32 y, fvec2 & out);
-	void Mod(const fvec3 & x, float32 y, fvec3 & out);
-	void Mod(const fvec4 & x, float32 y, fvec4 & out);
-
-	void Mod(const dvec2 & x, float64 y, dvec2 & out);
-	void Mod(const dvec3 & x, float64 y, dvec3 & out);
-	void Mod(const dvec4 & x, float64 y, dvec4 & out);
-
-#ifdef STAR2D
-	fmat3 Reflect(const fmat3 & mat, const fvec3 & normal);
-	dmat3 Reflect(const dmat3 & mat, const dvec3 & normal);
-	void Reflect(const fmat3 & matIn, const fvec3 & normal, fmat3 & matOut);
-	void Reflect(const dmat3 & matIn, const dvec3 & normal, dmat3 & matOut);
-
-	fmat3 Project(const fmat3 & mat, const fvec3 & normal);
-	dmat3 Project(const dmat3 & mat, const dvec3 & normal);
-	void Project(const fmat3 & matIn, const fvec3 & normal, fmat3 & matOut);
-	void Project(const dmat3 & matIn, const dvec3 & normal, dmat3 & matOut);
-#else
-	fmat4 Reflect(const fmat4 & mat, const fvec4 & normal);
-	dmat4 Reflect(const dmat4 & mat, const dvec4 & normal);
-	void Reflect(const fmat4 & matIn, const fvec4 & normal, fmat4 & matOut);
-	void Reflect(const dmat4 & matIn, const dvec4 & normal, dmat4 & matOut);
-
-	fmat4 Project(const fmat4 & mat, const fvec4 & normal);
-	dmat4 Project(const dmat4 & mat, const dvec4 & normal);
-	void Project(const fmat4 & matIn, const fvec4 & normal, fmat4 & matOut);
-	void Project(const dmat4 & matIn, const dvec4 & normal, dmat4 & matOut);
-#endif
-
-	const float32 * ToPointerValue(const fmat2 & mat);
-	const float32 * ToPointerValue(const fmat3 & mat);
-	const float32 * ToPointerValue(const fmat4 & mat);
-
-	const float32 * ToPointerValue(const fvec2 & vec);
-	const float32 * ToPointerValue(const fvec3 & vec);
-	const float32 * ToPointerValue(const fvec4 & vec);
-	const float32 * ToPointerValue(const fquat & quat);
-
-	const float64 * ToPointerValue(const dmat2 & mat);
-	const float64 * ToPointerValue(const dmat3 & mat);
-	const float64 * ToPointerValue(const dmat4 & mat);
-
-	const float64 * ToPointerValue(const dvec2 & vec);
-	const float64 * ToPointerValue(const dvec3 & vec);
-	const float64 * ToPointerValue(const dvec4 & vec);
-	const float64 * ToPointerValue(const dquat & quat);
-
-#ifdef STAR2D
-	pos Lerp(const pos & start, const pos & end, float32 percent);
-	pos Slerp(const pos & start, const pos & end, float32 percent);
-	pos Nlerp(const pos & start, const pos & end, float32 percent);
-	float32 Mag(const pos & pos);
-	float32 Dot(const pos & posA, const pos & posB);
-	pos Mul(const pos & position, const fmat2 & mat);
-	void Mul(const pos & posIn, const fmat2 & mat, pos & posOut);
-	pos Normalize(const pos & position);
-	void Normalize(const pos & posIn, pos & posOut);
-	float32 Distance(const pos & posA, const pos & posB);
-	fmat4 Translate(const pos & pos);
-	fmat4 Translate(const fmat4 & mat, const pos & pos);
-	void Translate(const pos & pos, fmat4 & out);
-	void Translate(const fmat4 & mat, const pos & pos, fmat4 & out);
-	fmat4 Scale(const pos & pos);
-	fmat4 Scale(const fmat4 & mat, const pos & pos);
-	void Scale(const pos & pos, fmat4 & out);
-	void Scale(const fmat4 & mat, const pos & pos, fmat4 & out);
-	fmat4 LookAt(const pos & eye, const pos & center);
-	void LookAt(const pos & eye, const pos & center, fmat4 & out);
-	pos Log(const pos & pos);
-	void Log(const pos & posIn, pos & posOut);
-	pos Log2(const pos & pos);
-	void Log2(const pos & posIn, pos & posOut);
-	pos Step(const pos & pos, const fvec2 & x);
-	pos Step(const pos & pos, float32 x);
-	void Step(const pos & posIn, const fvec2 & x, pos & posOut);
-	void Step(const pos & posIn, float32 x, pos & posOut);
-	pos Mod(const pos & pos, const fvec2 & mod);
-	pos Mod(const pos & pos, float32 mod);
-	void Mod(const pos & posIn, const fvec2 & mod, pos & posOut);
-	void Mod(const pos & posIn, float32 mod, pos & posOut);
-#endif
+	inline static std::mt19937 mMt19937 = std::mt19937(std::random_device()());
 }
 
-#include "Math.inl"
+#endif

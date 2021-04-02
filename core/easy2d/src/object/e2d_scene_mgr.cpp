@@ -29,10 +29,10 @@ bool SceneManager::setActiveScene(const uint64 guid)
 	{
 		if(mActiveScene == nullptr)
 		{
-			mActiveScene = it.second;
+			mActiveScene = it->second;
 		}
 		mSwitchingScene = true;
-		mNewActiveScene = it.second;
+		mNewActiveScene = it->second;
 		mInitialized = mNewActiveScene->isInitialized();
 		mCurSceneID = guid;
 		LOG_INGO << _T("Scene ") << guid << _T(" is now Active");
@@ -127,21 +127,18 @@ void SceneManager::draw()
 	if(mActiveScene)
 	{
 		mActiveScene->draw();
-		SpriteBatch::getInstance()->flush();
-		DebugDraw::getInstance()->flush();
+// 		SpriteBatch::getInstance()->flush();
+// 		DebugDraw::getInstance()->flush();
 	}
 }
 
 template <typename T>
-SPtr<T> SceneManager::getScene(const uint64 guid);
+SPtr<T> SceneManager::getScene(const uint64 guid)
 {
-	auto it = mScenes.find(guid)
+    auto it = mScenes.find(guid);
 	if (it != mScenes.end())
 	{
-		if(typeid(*it->second.get()) == typeid(T))
-		{
-			return dynamic_pointer_cast<T>(it->second));
-		}
+		return std::dynamic_pointer_cast<T>(it->second);
 	}
 	return nullptr;
 }

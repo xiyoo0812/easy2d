@@ -6,8 +6,6 @@
 namespace Easy2D 
 {
 	class Camera;
-	class CameraComponent;
-
 	class Scene : public Object
 	{
 	public:
@@ -19,7 +17,7 @@ namespace Easy2D
 		virtual void initialize();
 		virtual void onActivate();
 		virtual void onDeactivate();
-		virtual void update(const uint32& escapeMs));
+		virtual void update(const uint32& escapeMs);
 		virtual void draw();
 
 		virtual void onSaveState(void** pData, size_t* pSize);
@@ -64,5 +62,7 @@ namespace Easy2D
 		static bool CULLING_IS_ENABLED;
 	};
 }
+
+#include "e2d_scene.inl"
 
 #endif

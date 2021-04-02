@@ -19,28 +19,10 @@
     <ClCompile Include="src\graphics\e2d_image.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\math\e2d_aabb.cpp">
-      <Filter>math</Filter>
-    </ClCompile>
-    <ClCompile Include="src\math\e2d_angel.cpp">
-      <Filter>math</Filter>
-    </ClCompile>
     <ClCompile Include="src\math\e2d_math.cpp">
       <Filter>math</Filter>
     </ClCompile>
-    <ClCompile Include="src\math\e2d_matrix.cpp">
-      <Filter>math</Filter>
-    </ClCompile>
     <ClCompile Include="src\math\e2d_rect.cpp">
-      <Filter>math</Filter>
-    </ClCompile>
-    <ClCompile Include="src\math\e2d_vector2d.cpp">
-      <Filter>math</Filter>
-    </ClCompile>
-    <ClCompile Include="src\math\e2d_vector3d.cpp">
-      <Filter>math</Filter>
-    </ClCompile>
-    <ClCompile Include="src\math\e2d_vector4d.cpp">
       <Filter>math</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics\e2d_shader.cpp">
@@ -60,6 +42,36 @@
     </ClCompile>
     <ClCompile Include="src\base\e2d_guid.cpp">
       <Filter>base</Filter>
+    </ClCompile>
+    <ClCompile Include="src\math\e2d_pos.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\object\e2d_object.cpp">
+      <Filter>object</Filter>
+    </ClCompile>
+    <ClCompile Include="src\object\e2d_action.cpp">
+      <Filter>object</Filter>
+    </ClCompile>
+    <ClCompile Include="src\object\e2d_component.cpp">
+      <Filter>object</Filter>
+    </ClCompile>
+    <ClCompile Include="src\object\e2d_entity.cpp">
+      <Filter>object</Filter>
+    </ClCompile>
+    <ClCompile Include="src\object\e2d_camera.cpp">
+      <Filter>object</Filter>
+    </ClCompile>
+    <ClCompile Include="src\object\e2d_scene.cpp">
+      <Filter>object</Filter>
+    </ClCompile>
+    <ClCompile Include="src\object\e2d_scene_mgr.cpp">
+      <Filter>object</Filter>
+    </ClCompile>
+    <ClCompile Include="src\object\component\e2d_camera_component.cpp">
+      <Filter>object\component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\object\component\e2d_transform_component.cpp">
+      <Filter>object\component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -96,28 +108,10 @@
     <ClInclude Include="src\base\e2d_singleton.h">
       <Filter>base</Filter>
     </ClInclude>
-    <ClInclude Include="src\math\e2d_aabb.h">
-      <Filter>math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\math\e2d_angel.h">
-      <Filter>math</Filter>
-    </ClInclude>
     <ClInclude Include="src\math\e2d_math.h">
       <Filter>math</Filter>
     </ClInclude>
-    <ClInclude Include="src\math\e2d_matrix.h">
-      <Filter>math</Filter>
-    </ClInclude>
     <ClInclude Include="src\math\e2d_rect.h">
-      <Filter>math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\math\e2d_vector2d.h">
-      <Filter>math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\math\e2d_vector3d.h">
-      <Filter>math</Filter>
-    </ClInclude>
-    <ClInclude Include="src\math\e2d_vector4d.h">
       <Filter>math</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\e2d_shader.h">
@@ -138,6 +132,39 @@
     <ClInclude Include="src\base\e2d_guid.h">
       <Filter>base</Filter>
     </ClInclude>
+    <ClInclude Include="src\math\e2d_pos.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\base\e2d_utils.h">
+      <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\object\e2d_object.h">
+      <Filter>object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\object\e2d_action.h">
+      <Filter>object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\object\e2d_component.h">
+      <Filter>object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\object\e2d_entity.h">
+      <Filter>object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\object\e2d_camera.h">
+      <Filter>object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\object\e2d_scene.h">
+      <Filter>object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\object\e2d_scene_mgr.h">
+      <Filter>object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\object\component\e2d_camera_component.h">
+      <Filter>object\component</Filter>
+    </ClInclude>
+    <ClInclude Include="src\object\component\e2d_transform_component.h">
+      <Filter>object\component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="base">
@@ -157,6 +184,12 @@
     </Filter>
     <Filter Include="windows">
       <UniqueIdentifier>{d1242290-f354-40cb-86b7-45153e68ba56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="object">
+      <UniqueIdentifier>{af2eec52-c3c1-43db-a968-8b5a7fbda322}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="object\component">
+      <UniqueIdentifier>{f89f21d6-dc08-41a8-a6c1-aad46b5146cb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

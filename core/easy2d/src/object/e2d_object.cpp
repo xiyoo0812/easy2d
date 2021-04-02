@@ -1,17 +1,18 @@
 #include "e2d_object.h"
+#include "base\e2d_guid.h"
 
 /* Easy2D */
 using namespace Easy2D;
 
 Object::Object()
 {
-	mGUID = NEW_GUID();
+	mGUID = BUILD_GUID();
 }
 
 Object::Object(const String& name)
 	: mName(name)
 {
-	mGUID = NEW_GUID();
+	mGUID = BUILD_GUID();
 }
 
 Object::~Object()
@@ -29,7 +30,7 @@ bool Object::compareName(const String& name)
 	return mName == name;
 }
 
-String& Object::getName() const
+const String& Object::getName() const
 {
 	return mName;
 }

@@ -20,11 +20,11 @@ Action::~Action()
 
 }
 
-void Component::destroy()
+void Action::destroy()
 {
-	if(mMaster && mMaster.expired())
+	if(mMaster.expired())
 	{
-		mMaster->removeAction(mGUID);
+		mMaster.lock()->removeAction(mGUID);
 	}
 }
 

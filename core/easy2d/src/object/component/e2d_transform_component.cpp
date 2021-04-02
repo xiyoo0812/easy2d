@@ -1,4 +1,6 @@
 #include "e2d_transform_component.h"
+#include "object/e2d_entity.h"
+#include "math/e2d_math.h"
 
 /* Easy2D */
 using namespace Easy2D;
@@ -42,7 +44,7 @@ void TransformComponent::translate(float32 x, float32 y, lay l)
 	translate(Vec2(x, y), l);
 }
 
-void TransformComponent::translate(const pos& pos2D)
+void TransformComponent::translate(const Pos& pos2D)
 {
 	mLocalPosition = pos2D;
 	mChanged |= TransformType::TRANSLATION;
@@ -149,12 +151,12 @@ void TransformComponent::mirrorY(bool y)
 	mMirroredY = y;
 }
 
-const pos& TransformComponent::getWorldPosition()
+const Pos& TransformComponent::getWorldPosition()
 {
 	return mWorldPosition;
 }
 
-const pos& TransformComponent::getLocalPosition()
+const Pos& TransformComponent::getLocalPosition()
 {
 	return mLocalPosition;
 }
@@ -169,12 +171,12 @@ float32 TransformComponent::getLocalRotation() const
 	return mLocalRotation;
 }
 
-const Vec2& TransformComponent::getWorldscale()
+const Vec2& TransformComponent::getWorlScale()
 {
 	return mWorldScale;
 }
 
-const Vec2& TransformComponent::getLocalscale()
+const Vec2& TransformComponent::getLocalScale()
 {
 	return mLocalScale;
 }
@@ -190,12 +192,12 @@ void TransformComponent::setCenterPoint(float32 x, float32 y)
 	mCenterPosition.y = y;
 }
 
-void TransformComponent::SetCenterX(float32 x)
+void TransformComponent::setCenterX(float32 x)
 {
 	mCenterPosition.x = x;
 }
 
-void TransformComponent::SetCenterY(float32 y)
+void TransformComponent::setCenterY(float32 y)
 {
 	mCenterPosition.y = y;
 }
@@ -240,7 +242,7 @@ void TransformComponent::setDimensionsXSafe(int32 x)
 	}
 	else if(x < mDimensions.x)
 	{
-		mMaster->recalculateDimensions();
+		mMaster.lock()->recalculateDimensions();
 	}
 }
 
@@ -252,7 +254,7 @@ void TransformComponent::setDimensionsYSafe(int32 y)
 	}
 	else if(y < mDimensions.y)
 	{
-		mMaster->recalculateDimensions();
+		mMaster.lock()->recalculateDimensions();
 	}
 }
 
@@ -263,7 +265,7 @@ const Mat4& TransformComponent::getWorldMatrix() const
 
 void TransformComponent::checkForUpdate(bool force)
 {
-	if(mChanged == TransformType::NONE && !force && !GraphicsManager::getInstance()->getHasWindowChanged())
+	if(mChanged == TransformType::NONE && !force)
 	{
 		return;
 	}
@@ -273,17 +275,17 @@ void TransformComponent::checkForUpdate(bool force)
 	
 void TransformComponent::commonUpdate()
 {
-	for(auto child : getParent()->getChildren())
+	for(auto child : getMaster()->getChildren())
 	{
-		child->getTransform()->setChanged(mChanged);
+		child.second->getTransform()->setChanged(mChanged);
 	}
 	singleUpdate(mWorld);
-	auto parent = mMaster->getParent();
+	auto parent = getMaster()->getParent();
 	if(parent != nullptr)
 	{
 		mWorld = parent->getTransform()->getWorldMatrix() * mWorld;
 	}
-	DecomposeMatrix(mWorld, mWorldPosition, mWorldScale, mWorldRotation);
+	decomposeMatrix(mWorld, mWorldPosition, mWorldScale, mWorldRotation);
 	if(mMirroredX)
 	{
 		mWorldPosition.x -= mDimensions.x;
@@ -298,7 +300,7 @@ void TransformComponent::singleUpdate(Mat4& world)
 {
 	Mat4 matRot, matTrans, matScale, matC, matCI;
 	matTrans = Easy2D::translate(mLocalPosition.pos3D());
-	matRot   = ToMat4(quat(Vec3(0, 0, mLocalRotation)));
+	matRot   = toMat4(Quat(Vec3(0, 0, mLocalRotation)));
 	matScale = Easy2D::scale(Vec3(mLocalScale.x, mLocalScale.y, 1.0f));
 	Vec3 centerPos(mCenterPosition.x, mCenterPosition.y, 0);
 	matC = Easy2D::translate(-centerPos);
@@ -307,11 +309,7 @@ void TransformComponent::singleUpdate(Mat4& world)
 
 	if(mMirroredX || mMirroredY)
 	{
-		world *= Easy2D::translate(
-			mDimensions.x / 2.0f,
-			mDimensions.y / 2.0f,
-			0
-			);
+		world *= Easy2D::translate(mDimensions.x / 2.0f, mDimensions.y / 2.0f, 0);
 
 		if(mMirroredX)
 		{
@@ -328,16 +326,11 @@ void TransformComponent::singleUpdate(Mat4& world)
 		{
 			world *= Easy2D::scale(Vec3(1,-1,1));
 		}
-
-		world *= Easy2D::translate(
-			mDimensions.x / -2.0f,
-			mDimensions.y / -2.0f,
-			0
-			);
+		world *= Easy2D::translate(mDimensions.x / -2.0f, mDimensions.y / -2.0f, 0);
 	}
 }
 
-void TransformComponent::update(const Context& context)
+void TransformComponent::update(const uint32& escapeMs)
 {
 	checkForUpdate();
 }

@@ -8,7 +8,7 @@ Component::Component() : Object()
 {
 }
 
-Component::Component(const String& name): Object(name)
+Component::Component(const String& name) : Object(name)
 {
 
 }
@@ -19,76 +19,76 @@ Component::~Component()
 
 void Component::destroy()
 {
-	if(mMaster && mMaster.expired())
-	{
-		mMaster->removeComponent(mGUID);
-	}
+    if (mMaster.expired())
+    {
+        mMaster.lock()->removeComponent(mGUID);
+    }
 }
 
-WPtr<Scene> Component::getScene() const
-{ 
-	if(mMaster && mMaster.expired())
-	{
-		return mMaster->getScene();
-	}
-	return nullptr;
+SPtr<Scene> Component::getScene() const
+{
+    if (mMaster.expired())
+    {
+        return mMaster.lock()->getScene();
+    }
+    return nullptr;
 }
 
 SPtr<TransformComponent> Component::getTransform() const
 {
-	if(mMaster && mMaster.expired())
-	{
-		mMaster->getTransform();
-	}
-	return nullptr;
+    if (mMaster.expired())
+    {
+        mMaster.lock()->getTransform();
+    }
+    return nullptr;
 }
 
-bool Component::checkCulling(float left,float right,float top,float bottom) const
+bool Component::checkCulling(float left, float right, float top, float bottom) const
 {
-	return false;
+    return false;
 }
 
 void Component::setEnabled(bool bEnabled)
 {
-	mEnabled = bEnabled;
+    mEnabled = bEnabled;
 }
 
 bool Component::isEnabled() const
 {
-	return mEnabled;
+    return mEnabled;
 }
 
 void Component::setVisible(bool bVisible)
 {
-	mVisible = bVisible;
+    mVisible = bVisible;
 }
 
 bool Component::isVisible() const
 {
-	return mVisible;
+    return mVisible;
 }
 
-const ivec2 & Component::getDimensions() const
+const Vec2& Component::getDimensions() const
 {
-	return mDimensions;
+    return mDimensions;
 }
 
-int32 Component::getWidth() const
+float32 Component::getWidth() const
 {
-	return mDimensions.x;
+    return mDimensions.x;
 }
 
-int32 Component::getHeight() const
+float32 Component::getHeight() const
 {
-	return mDimensions.y; 
+    return mDimensions.y;
 }
 
-WPtr<Entity> Component::getMaster() const
+SPtr<Entity> Component::getMaster() const
 {
-	return mMaster;
+    return mMaster.lock();
 }
 
-void Component::setMaster(SPtr<Entity>* pEntity)
+void Component::setMaster(SPtr<Entity> pEntity)
 {
-	mMaster = pEntity;
+    mMaster = pEntity;
 }
