@@ -43,8 +43,8 @@ namespace Easy2D
 
     protected:
         WPtr<Entity> mMaster = {};
-        Vec2	mDimensions{ Vec2::null };
-        bool	mEnabled = true, mVisible = true;
+        Vec2 mDimensions = {};
+        bool mEnabled = true, mVisible = true;
     };
 }
 

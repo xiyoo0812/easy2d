@@ -4,7 +4,7 @@
 #include "ft2build.h"
 #include "freetype/freetype.h"
 
-#include "math/e2d_math.h"
+#include "base/e2d_types.h"
 
 namespace Easy2D
 {
@@ -14,7 +14,7 @@ namespace Easy2D
     struct CharacterInfo
     {
         CharacterInfo() : vertexDimensions(), uvDimensions(), letterDimensions() { }
-        Vec2 vertexDimensions, uvDimensions, letterDimensions;
+        Vec2i vertexDimensions, uvDimensions, letterDimensions;
     };
 
     class Font
@@ -32,7 +32,7 @@ namespace Easy2D
         uint32 getFontSize() const;
 
         const CharacterInfo& getCharacterInfo(uchar character) const;
-        const std::unordered_map<uchar, CharacterInfo>& getCharacterInfoMap() const;
+        const UnorderedMap<uchar, CharacterInfo>& getCharacterInfoMap() const;
 
         int32 getMaxLetterHeight() const;
         int32 getMinLetterHeight() const;

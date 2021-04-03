@@ -6,29 +6,29 @@
 
 namespace Easy2D
 {
-	// 子类需要调用shared_from_this()
-	class Object : public std::enable_shared_from_this<Object>
-	{
-	public:
-		Object();
-		Object(const String& name);
-		virtual ~Object();
+    // 子类需要调用shared_from_this()
+    class Object : public std::enable_shared_from_this<Object>
+    {
+    public:
+        Object();
+        Object(const String& name);
+        virtual ~Object();
 
         const String& getName() const;
-		void setName(const String& name);
-		bool compareName(const String& name);
+        void setName(const String& name);
+        bool compareName(const String& name);
 
-		uint64 getGUID() const;
-		bool compareGUID(const uint64 guid);
+        uint64 getGUID() const;
+        bool compareGUID(const uint64 guid);
 
-		bool isInitialized() const;
-		virtual void destroy() = 0;
+        bool isInitialized() const;
+        virtual void destroy() = 0;
 
-	protected:
-		uint64 mGUID = 0;
-		String mName = "";
-		bool mInitialized = false;
-	};
+    protected:
+        uint64 mGUID = 0;
+        String mName = "";
+        bool mInitialized = false;
+    };
 }
 
 #endif

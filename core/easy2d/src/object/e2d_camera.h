@@ -10,7 +10,7 @@ namespace Easy2D
 	public:
 		Camera();
 		Camera(const String& name);
-		virtual ~Camera(void);
+		virtual ~Camera();
 
 		virtual void initialize();
 		virtual void translate(const Vec2& translation);

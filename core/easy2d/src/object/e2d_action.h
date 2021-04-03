@@ -5,29 +5,29 @@
 
 namespace Easy2D
 {
-	class Entity;
-	class Action : public Object
-	{
-	public:
-		Action();
-		Action(const String& name);
-		virtual ~Action();
+    class Entity;
+    class Action : public Object
+    {
+    public:
+        Action();
+        Action(const String& name);
+        virtual ~Action();
 
-		virtual void initialize() = 0;
-		virtual void update(const uint32& escapeMs) = 0;
+        virtual void initialize() = 0;
+        virtual void update(const uint32& escapeMs) = 0;
 
-		void destroy();
-		void restart();
-		void pause();
-		void resume();
+        void destroy();
+        void restart();
+        void pause();
+        void resume();
 
-		WPtr<Entity> getMaster() const;
-		void setMaster(SPtr<Entity> pMaster);
+        WPtr<Entity> getMaster() const;
+        void setMaster(SPtr<Entity> pMaster);
 
-	protected:
-		bool mPaused;
+    protected:
+        bool mPaused;
         WPtr<Entity> mMaster{};
-	};
+    };
 }
 
 #endif

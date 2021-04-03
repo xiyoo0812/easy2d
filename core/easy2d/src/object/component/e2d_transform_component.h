@@ -67,15 +67,15 @@ namespace Easy2D
         void setCenterX(float32 x);
         void setCenterY(float32 y);
 
-        void setDimensions(int32 x, int32 y);
+        void setDimensions(float32 x, float32 y);
         void setDimensions(const Vec2 & dimensions);
-        void setDimensionsX(int32 x);
-        void setDimensionsY(int32 y);
+        void setDimensionsX(float32 x);
+        void setDimensionsY(float32 y);
 
-        void setDimensionsSafe(int32 x, int32 y);
+        void setDimensionsSafe(float32 x, float32 y);
         void setDimensionsSafe(const Vec2 & dimensions);
-        void setDimensionsXSafe(int32 x);
-        void setDimensionsYSafe(int32 y);
+        void setDimensionsXSafe(float32 x);
+        void setDimensionsYSafe(float32 y);
 
         const Mat4& getWorldMatrix() const;
 
@@ -84,13 +84,12 @@ namespace Easy2D
         void commonUpdate();
         void singleUpdate(Mat4& world);
 
-        uchar mChanged;
-        Pos mWorldPosition, mLocalPosition;
-        float32 mWorldRotation, mLocalRotation;
-        Vec2 mWorldScale, mLocalScale, mCenterPosition;
-        bool mMirroredX;
-        bool mMirroredY;
-        Mat4 mWorld;
+        Mat4 mWorld = {};
+        uchar mChanged = 0;
+        bool mMirroredX = false, mMirroredY = false;
+        Pos mWorldPosition = {}, mLocalPosition = {};
+        float32 mWorldRotation = 0, mLocalRotation = 0;
+        Vec2 mWorldScale = {}, mLocalScale = {}, mCenterPosition = {};
 
     public:
         inline static String GUID = "transform";

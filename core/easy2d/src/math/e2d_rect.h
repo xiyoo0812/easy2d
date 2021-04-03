@@ -1,7 +1,7 @@
 #ifndef RECT_H
 #define RECT_H
 
-#include "e2d_math.h"
+#include "base\e2d_types.h"
 
 namespace Easy2D
 {

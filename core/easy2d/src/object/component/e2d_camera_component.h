@@ -49,7 +49,7 @@ namespace Easy2D
 
         float32 mFarPlane, mNearPlane, mFOV, mSize, mZoom, mAspectRatio;
 
-        bool mActive, mPerspectiveProjection;
+        bool mActive, mOrthoProjection;
 
     public:
         inline static String GUID = "camera";

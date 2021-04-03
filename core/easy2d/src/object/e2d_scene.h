@@ -3,66 +3,66 @@
 
 #include "e2d_entity.h"
 
-namespace Easy2D 
+namespace Easy2D
 {
-	class Camera;
-	class Scene : public Object
-	{
-	public:
-		explicit Scene(const String& name);
-		virtual ~Scene();
+    class Camera;
+    class Scene : public Object
+    {
+    public:
+        explicit Scene(const String& name);
+        virtual ~Scene();
 
-		void destroy();
-		
-		virtual void initialize();
-		virtual void onActivate();
-		virtual void onDeactivate();
-		virtual void update(const uint32& escapeMs);
-		virtual void draw();
+        void destroy();
 
-		virtual void onSaveState(void** pData, size_t* pSize);
-		virtual void onConfigurationChanged();
-		virtual void onLowMemory();
+        virtual void initialize();
+        virtual void onActivate();
+        virtual void onDeactivate();
+        virtual void update(const uint32& escapeMs);
+        virtual void draw();
 
-		void addEntity(SPtr<Entity> pEntity); 
-		void addEntity(SPtr<Entity> pEntity, const String& name); 
-		void removeEntity(const uint64 guid);
-		void removeEntity(SPtr<Entity> pEntity);
+        virtual void onSaveState(void** pData, size_t* pSize);
+        virtual void onConfigurationChanged();
+        virtual void onLowMemory();
 
-		template <typename T = Entity>
-		SPtr<T> getEntity(const uint64 guid) const;
-		template <typename T = Entity>
-		SPtr<T> getEntity(const String& name) const;
+        void addEntity(SPtr<Entity> pEntity);
+        void addEntity(SPtr<Entity> pEntity, const String& name);
+        void removeEntity(const uint64 guid);
+        void removeEntity(SPtr<Entity> pEntity);
 
-		void setEntityDisabled(const uint64 guid, bool disabled);
-		void setEntityVisible(const uint64 guid, bool visible);
+        template <typename T = Entity>
+        SPtr<T> getEntity(const uint64 guid) const;
+        template <typename T = Entity>
+        SPtr<T> getEntity(const String& name) const;
 
-		void setGroupDisabled(const String& tag, bool disabled);
-		void setGroupVisible(const String& tag, bool visable);
-		void getGroup(const String& tag, Vector<SPtr<Entity>> & group);
+        void setEntityDisabled(const uint64 guid, bool disabled);
+        void setEntityVisible(const uint64 guid, bool visible);
 
-		void setActiveCamera(SPtr<Camera> pCamera);
-		SPtr<Camera> getActiveCamera() const;
+        void setGroupDisabled(const String& tag, bool disabled);
+        void setGroupVisible(const String& tag, bool visable);
+        void getGroup(const String& tag, Vector<SPtr<Entity>> & group);
 
-		static void setCullingIsEnabled(bool enabled);
-		static bool isCullingEnabled();
+        void setActiveCamera(SPtr<Camera> pCamera);
+        SPtr<Camera> getActiveCamera() const;
 
-		bool isEntityNameExist(const String& name) const;
+        static void setCullingIsEnabled(bool enabled);
+        static bool isCullingEnabled();
 
-		void setCullingOffset(int32 offset);
-		void setCullingOffset(int32 offsetX, int32 offsetY);
+        bool isEntityNameExist(const String& name) const;
 
-	protected:
-		//std::shared_ptr<CollisionManager> m_pCollisionManager;
+        void setCullingOffset(int32 offset);
+        void setCullingOffset(int32 offsetX, int32 offsetY);
 
-		UnorderedMap<uint64, SPtr<Entity>> mEntitys;
-		SPtr<Camera> mDefaultCamera, mActiveCamera;
+    protected:
+        //std::shared_ptr<CollisionManager> m_pCollisionManager;
 
-		int32 mCullingOffsetX, mCullingOffsetY;
-		static bool CULLING_IS_ENABLED;
-	};
+        UnorderedMap<uint64, SPtr<Entity>> mEntitys;
+        SPtr<Camera> mDefaultCamera, mActiveCamera;
+
+        int32 mCullingOffsetX, mCullingOffsetY;
+        static bool CULLING_IS_ENABLED;
+    };
 }
 
-#include "e2d_scene.inl"
+#include "e2d_scene.hpp"
 
 #endif

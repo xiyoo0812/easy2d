@@ -6,13 +6,13 @@ using namespace Easy2D;
 
 Object::Object()
 {
-	mGUID = BUILD_GUID();
+    mGUID = BUILD_GUID();
 }
 
 Object::Object(const String& name)
-	: mName(name)
+    : mName(name)
 {
-	mGUID = BUILD_GUID();
+    mGUID = BUILD_GUID();
 }
 
 Object::~Object()
@@ -22,30 +22,30 @@ Object::~Object()
 
 bool Object::isInitialized() const
 {
-	return mInitialized;
+    return mInitialized;
 }
 
 bool Object::compareName(const String& name)
 {
-	return mName == name;
+    return mName == name;
 }
 
 const String& Object::getName() const
 {
-	return mName;
+    return mName;
 }
 
 void Object::setName(const String& name)
 {
-	mName = name;
+    mName = name;
 }
 
 bool Object::compareGUID(const uint64 guid)
 {
-	return mGUID == guid;
+    return mGUID == guid;
 }
 
 uint64 Object::getGUID() const
 {
-	return mGUID;
+    return mGUID;
 }

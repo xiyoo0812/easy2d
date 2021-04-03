@@ -1,5 +1,4 @@
 #include "e2d_math.h"
-#include "e2d_pos.h"
 
 using namespace Easy2D;
 
@@ -1174,40 +1173,4 @@ void mod(const Pos& posIn, float32 mod, Pos& posOut)
 {
     Vec2f pos2D = posIn.pos2D();
     posOut = Pos(Easy2D::mod(pos2D, mod), posIn.l);
-}
-
-template <typename T>
-T degreesToRadians(T degrees)
-{
-    return T(float64(degrees) * PI / 180);
-}
-
-template <typename T>
-T radiansToDegrees(T radians)
-{
-    return T(float64(radians) * 180 / PI);
-}
-
-template <typename T>
-T clamp(T x, T min, T max)
-{
-    return x < min ? min : (x > max ? max : x);
-}
-
-template <typename T>
-T lerp(const T & start, const T & end, float32 percent)
-{
-    return start + percent * (end - start);
-}
-
-template <typename T>
-T lerp(const T & start, const T & end, float64 percent)
-{
-    return start + percent * (end - start);
-}
-
-template <typename T>
-T saturate(T x)
-{
-    return glm::saturate<T>(x);
 }

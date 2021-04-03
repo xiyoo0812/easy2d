@@ -96,4 +96,6 @@ namespace Easy2D
     };
 }
 
+#include "e2d_entity.hpp"
+
 #endif

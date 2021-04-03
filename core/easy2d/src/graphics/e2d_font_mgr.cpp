@@ -18,10 +18,6 @@ FontManager::~FontManager()
 
 void FontManager::clear()
 {
-    for (const auto& font : mFontList)
-    {
-        delete font.second;
-    }
     mFontList.clear();
     FT_Done_FreeType(mLibrary);
 }
@@ -32,17 +28,13 @@ bool FontManager::loadFont(const String& path, const String& name, uint32 size)
     {
         return true;
     }
-    Font* tempFont = new Font();
-    if (tempFont->load(path, size, mLibrary))
+    auto font = std::make_shared<Font>();
+    if (font->load(path, size, mLibrary))
     {
-        mFontList[name] = tempFont;
+        mFontList.insert(std::make_pair(name, font));
+        return true;
     }
-    else
-    {
-        delete tempFont;
-        return false;
-    }
-    return true;
+    return false;
 }
 
 bool FontManager::removeFont(const String& name)
@@ -56,7 +48,12 @@ bool FontManager::removeFont(const String& name)
     return false;
 }
 
-const Font* FontManager::getFont(const String& name)
+const SPtr<Font> FontManager::getFont(const String& name)
 {
-    return mFontList[name];
+    auto it = mFontList.find(name);
+    if (it != mFontList.end())
+    {
+        return it->second;
+    }
+    return nullptr;
 }

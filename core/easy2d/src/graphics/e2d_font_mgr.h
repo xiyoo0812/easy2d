@@ -1,7 +1,7 @@
 #ifndef FONT_MANAGER_H
 #define FONT_MANAGER_H
 
-#include "e2d_font.h"
+#include "e2d_config.h"
 
 namespace Easy2D
 {
@@ -10,13 +10,13 @@ namespace Easy2D
 	public:
 		bool loadFont(const String& path, const String& name, uint32 size);
 
-		const Font* getFont(const String& name);
+		const SPtr<Font> getFont(const String& name);
 		bool removeFont(const String& name);
 		void clear();
 
 	private:
 		FT_Library mLibrary;
-		UnorderedMap<String, Font*> mFontList;
+		UnorderedMap<String, SPtr<Font>> mFontList;
 
 		FontManager();
 		~FontManager();

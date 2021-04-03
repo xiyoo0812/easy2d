@@ -10,7 +10,7 @@ Action::Action() : Object()
 
 }
 
-Action::Action(const String& name): Object(name)
+Action::Action(const String& name) : Object(name)
 {
 
 }
@@ -22,33 +22,33 @@ Action::~Action()
 
 void Action::destroy()
 {
-	if(mMaster.expired())
-	{
-		mMaster.lock()->removeAction(mGUID);
-	}
+    if (mMaster.expired())
+    {
+        mMaster.lock()->removeAction(mGUID);
+    }
 }
 
 void Action::restart()
 {
-	mPaused = false;
+    mPaused = false;
 }
 
 void Action::pause()
 {
-	mPaused = true;
+    mPaused = true;
 }
 
 void Action::resume()
 {
-	mPaused = false;
+    mPaused = false;
 }
 
 WPtr<Entity> Action::getMaster() const
 {
-	return mMaster;
+    return mMaster;
 }
 
 void Action::setMaster(SPtr<Entity> pEntity)
 {
-	mMaster = pEntity;
+    mMaster = pEntity;
 }

@@ -202,7 +202,7 @@ void Window::setFullScreen(HWND hWnd, bool fullscreen)
 
 void Window::setResolution(int32 width, int32 height, bool reset)
 {
-    //	GraphicsManager::GetInstance()->SetWindowDimensions(width, height);
+    //	GraphicsManager::getInstance()->SetWindowDimensions(width, height);
     clientResize(width, height);
     mWindowState.maximized = IsZoomed(mHandle);
     mWindowState.style = GetWindowLong(mHandle, GWL_STYLE);
@@ -247,8 +247,8 @@ bool Window::onMessage(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
         RECT clienRect;
         GetClientRect(hWnd, &clienRect);
-        // GraphicsManager::GetInstance()->SetHasWindowChanged(true);
-        // GraphicsManager::GetInstance()->SetWindowDimensions(clienRect.right - clienRect.left,clienRect.bottom - clienRect.top);
+        GraphicsManager::getInstance()->SetWindowChanged(true);
+        GraphicsManager::getInstance()->SetWindowDimensions(clienRect.right - clienRect.left,clienRect.bottom - clienRect.top);
     }
     break;
     }
@@ -260,7 +260,7 @@ Window::~Window()
     // InputManager::DeleteSingleton();
     delete (mE2dGame);
     mE2dGame = nullptr;
-    // delete StarEngine::GetInstance();
+    // delete StarEngine::getInstance();
 }
 
 const HDC& Window::GetHDC() const

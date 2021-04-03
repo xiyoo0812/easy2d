@@ -43,7 +43,7 @@ SPtr<TransformComponent> Component::getTransform() const
     return nullptr;
 }
 
-bool Component::checkCulling(float left, float right, float top, float bottom) const
+bool Component::checkCulling(float32 left, float32 right, float32 top, float32 bottom) const
 {
     return false;
 }
