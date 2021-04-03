@@ -10,13 +10,13 @@ namespace Easy2D
 	public:
 		friend Singleton<ScaleSystem>;
 
-		void setWorkingResolution(int32 xPixels, int32 yPixels);
+		void setWorkingResolution(float32 xPixels, float32 yPixels);
 
-		void setWorkingResolution(const Vec2i& pixels);
+		void setWorkingResolution(const Vec2& pixels);
 
-		const Vec2i& getWorkingResolution() const;
+		const Vec2& getWorkingResolution() const;
 
-		const Vec2i& getActualResolution() const;
+		const Vec2& getActualResolution() const;
 
 		float32 getScale() const;
 
@@ -27,7 +27,7 @@ namespace Easy2D
 		~ScaleSystem();
 
 		float32 mScale = 0;
-		Vec2i mWorkingRes = {};
+		Vec2 mWorkingRes = {};
 	};
 }
 

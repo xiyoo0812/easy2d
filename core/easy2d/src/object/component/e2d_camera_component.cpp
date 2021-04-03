@@ -194,7 +194,7 @@ Mat4 CameraComponent::matrixLookAt(const Vec3& eye, const Vec3& at, const Vec3& 
 
 void CameraComponent::translate(const Vec2& translation)
 {
-    const Vec2& offset = ScaleSystem::getInstance()->getWorkingResolution();
+    const Vec2i& offset = ScaleSystem::getInstance()->getWorkingResolution();
     auto finalPos = translation - offset / 2.0f;
     getTransform()->translate(finalPos);
 }
@@ -206,14 +206,14 @@ void CameraComponent::translate(float32 x, float32 y)
 
 void CameraComponent::translateX(float32 x)
 {
-    const Vec2& offset = ScaleSystem::getInstance()->getWorkingResolution();
+    const Vec2i& offset = ScaleSystem::getInstance()->getWorkingResolution();
     auto finalPos = x - offset.x / 2.0f;
     getTransform()->translateX(finalPos);
 }
 
 void CameraComponent::translateY(float32 y)
 {
-    const Vec2& offset = ScaleSystem::getInstance()->getWorkingResolution();
+    const Vec2i& offset = ScaleSystem::getInstance()->getWorkingResolution();
     auto finalPos = y - offset.y / 2.0f;
     getTransform()->translateY(finalPos);
 }

@@ -1,7 +1,7 @@
 #ifndef FONT_MANAGER_H
 #define FONT_MANAGER_H
 
-#include "e2d_config.h"
+#include "e2d_font.h"
 
 namespace Easy2D
 {

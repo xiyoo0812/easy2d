@@ -73,6 +73,12 @@
     <ClCompile Include="src\object\component\e2d_transform_component.cpp">
       <Filter>object\component</Filter>
     </ClCompile>
+    <ClCompile Include="src\graphics\e2d_graphics_mgr.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\e2d_scale_system.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\base\e2d_color.h">
@@ -173,6 +179,12 @@
     </ClInclude>
     <ClInclude Include="src\math\e2d_math.hpp">
       <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\e2d_graphics_mgr.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\e2d_scale_system.h">
+      <Filter>graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

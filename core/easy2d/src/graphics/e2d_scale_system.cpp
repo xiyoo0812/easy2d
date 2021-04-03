@@ -12,23 +12,23 @@ ScaleSystem::~ScaleSystem()
 {
 }
 
-void ScaleSystem::setWorkingResolution(int32 xPixels, int32 yPixels)
+void ScaleSystem::setWorkingResolution(float32 xPixels, float32 yPixels)
 {
-	Vec2i workingRes(xPixels, yPixels);
+	Vec2 workingRes(xPixels, yPixels);
 	setWorkingResolution(workingRes);
 }
 
-const Vec2i& ScaleSystem::getWorkingResolution() const
+const Vec2& ScaleSystem::getWorkingResolution() const
 {
 	return mWorkingRes;
 }
 
-const Vec2i& ScaleSystem::getActualResolution() const
+const Vec2& ScaleSystem::getActualResolution() const
 {
 	return GraphicsManager::getInstance()->getWindowResolution();
 }
 
-void ScaleSystem::setWorkingResolution(const Vec2i& pixels)
+void ScaleSystem::setWorkingResolution(const Vec2& pixels)
 {
 	mWorkingRes = pixels;
 	calculateScale();
@@ -41,5 +41,5 @@ float32 ScaleSystem::getScale() const
 
 void ScaleSystem::calculateScale()
 {
-	mScale = graphicsManager::getInstance()->getViewportResolution().x / mWorkingRes.x;
+	mScale = GraphicsManager::getInstance()->getViewportResolution().x / mWorkingRes.x;
 }

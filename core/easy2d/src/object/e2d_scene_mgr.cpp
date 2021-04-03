@@ -35,7 +35,7 @@ bool SceneManager::setActiveScene(const uint64 guid)
         mNewActiveScene = it->second;
         mInitialized = mNewActiveScene->isInitialized();
         mCurSceneID = guid;
-        LOG_INGO << _T("Scene ") << guid << _T(" is now Active");
+        LOG_INFO << _T("Scene ") << guid << _T(" is now Active");
         return true;
     }
     else
@@ -61,7 +61,7 @@ bool SceneManager::addScene(SPtr<Scene> scene)
     }
     scene->initialize();
     mScenes.insert(std::make_pair(scene->getGUID(), scene));
-    LOG_INGO << _T("SceneManager::addScene: Adding scene");
+    LOG_INFO << _T("SceneManager::addScene: Adding scene");
     return true;
 }
 
@@ -97,7 +97,7 @@ bool SceneManager::initialized()
     {
         return false;
     }
-    LOG_INGO << _T("Initializing Scene :") << mCurSceneID;
+    LOG_INFO << _T("Initializing Scene :") << mCurSceneID;
     mInitialized = mNewActiveScene->isInitialized();
     return mInitialized;
 }
@@ -156,14 +156,14 @@ void SceneManager::processActivityEvent(int32 pCommand, android_app* pApplicatio
     {
         //First save state - then Stop - then Start - then Resume - then gained focus
     case APP_CMD_STOP:
-        LOG_INGO << _T("SceneManager : APP_CMD_STOP");
+        LOG_INFO << _T("SceneManager : APP_CMD_STOP");
         break;
 
     case APP_CMD_GAINED_FOCUS:
-        LOG_INGO << _T("SceneManager : APP_CMD_GAINED_FOCUS");
+        LOG_INFO << _T("SceneManager : APP_CMD_GAINED_FOCUS");
         break;
     case APP_CMD_SAVE_STATE:
-        LOG_INGO << _T("SceneManager : APP_CMD_SAVE_STATE");
+        LOG_INFO << _T("SceneManager : APP_CMD_SAVE_STATE");
         mActiveScene->onSaveState(&mApplicationPtr->savedState, &mApplicationPtr->savedStateSize);
         break;
     }
