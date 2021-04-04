@@ -21,12 +21,12 @@ LRESULT CALLBACK wndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     return DefWindowProc(hWnd, message, wParam, lParam);
 }
 
-void Window::initialize(HINSTANCE instance, SPtr<E2DGame> pE2DGame, bool useConsole /* = false */)
+void Window::initialize(HINSTANCE instance, uint32 width /* = 800 */, uint32 height/* = 600 */, bool useConsole /* = false */)
 {
     if (!mInitialized)
     {
-        mE2dGame = pE2DGame;
-        log_service::default_instance()->start("./logs", "E2D_LOG");
+        mE2dEngine = SPtr<E2dEngine>(E2dEngine::getInstance());
+        log_service::default_instance()->start("./logs/", "E2D_LOG");
 
         WNDCLASSEX wndClass;
         wndClass.cbClsExtra = 0;
@@ -47,10 +47,9 @@ void Window::initialize(HINSTANCE instance, SPtr<E2DGame> pE2DGame, bool useCons
             return;
         }
 
-        int position_width = 800, position_height = 600;
         mHandle = CreateWindow(WNDCLASSNAME, "E2DGAME", WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX,
             GetSystemMetrics(SM_CXSCREEN) / 4, GetSystemMetrics(SM_CYSCREEN) / 4,
-            position_width, position_height, NULL, NULL, instance, NULL);
+            width, height, NULL, NULL, instance, NULL);
 
         if (mHandle == NULL)
         {
@@ -58,7 +57,7 @@ void Window::initialize(HINSTANCE instance, SPtr<E2DGame> pE2DGame, bool useCons
             return;
         }
         SetWindowLongPtr(mHandle, GWLP_USERDATA, (LONG_PTR)this);
-        setResolution(position_width, position_height, false);
+        setResolution(width, height, false);
         ShowWindow(mHandle, SW_SHOWNORMAL);
         UpdateWindow(mHandle);
 
@@ -100,17 +99,16 @@ void Window::initialize(HINSTANCE instance, SPtr<E2DGame> pE2DGame, bool useCons
             return;
         }
         //ShowCursor(!hide_cursor);
-        mE2dGame->load(position_width, position_height);
+        mE2dEngine->initialize(width, height);
 
         POINT pt;
-        pt.x = position_width / 2;
-        pt.y = position_height / 2;
+        pt.x = width / 2;
+        pt.y = height / 2;
         ClientToScreen(mHandle, &pt);
         SetCursorPos(pt.x, pt.y);
         mInitialized = true;
         mainLoop();
-        mE2dGame->stop();
-        delete this;
+        mE2dEngine->stop();
     }
 }
 
@@ -126,8 +124,8 @@ void Window::mainLoop()
         }
         else
         {
-            mE2dGame->update();
-            mE2dGame->draw();
+            mE2dEngine->update();
+            mE2dEngine->draw();
             SwapBuffers(Window::mHDC); // Swaps display buffers
         }
     }
@@ -201,7 +199,7 @@ void Window::setFullScreen(HWND hWnd, bool fullscreen)
     }
 }
 
-void Window::setResolution(int32 width, int32 height, bool reset)
+void Window::setResolution(uint32 width, uint32 height, bool reset /* = true */)
 {
     GraphicsManager::getInstance()->setWindowDimensions(width, height);
     clientResize(width, height);
@@ -220,15 +218,15 @@ void Window::setResolution(int32 width, int32 height, bool reset)
     UpdateWindow(mHandle);
 }
 
-void Window::clientResize(int32& width, int32& height)
+void Window::clientResize(uint32& width, uint32& height)
 {
-    int32 difX, difY;
+    uint32 difX, difY;
     getWindowDiffSize(difX, difY);
     width += difX;
     height += difY;
 }
 
-void Window::getWindowDiffSize(int32 & difX, int32 & difY)
+void Window::getWindowDiffSize(uint32 & difX, uint32 & difY)
 {
     RECT rcClient, rcWindow;
     GetClientRect(mHandle, &rcClient);
@@ -262,12 +260,12 @@ Window::~Window()
     // delete StarEngine::getInstance();
 }
 
-const HDC& Window::GetHDC() const
+const HDC& Window::getHDC() const
 {
     return mHDC;
 }
 
-const HWND& Window::GetHandle() const
+const HWND& Window::getHandle() const
 {
     return mHandle;
 }

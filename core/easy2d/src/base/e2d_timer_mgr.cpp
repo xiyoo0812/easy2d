@@ -5,8 +5,16 @@
 using namespace Easy2D;
 using namespace std::chrono;
 
-void TimerManager::update(const uint32& escapeMs)
+
+TimerManager::TimerManager()
 {
+    mLastTimMs = steadyTime();
+}
+
+uint32 TimerManager::update()
+{
+    uint32 nowTimeMs = steadyTime();
+    uint32 escapeMs = nowTimeMs - mLastTimMs;
     for (auto it = mTimers.begin(); it != mTimers.end(); )
     {
         Timer& timer = it->second;
@@ -34,6 +42,8 @@ void TimerManager::update(const uint32& escapeMs)
         }
         ++it;
     }
+    mLastTimMs = nowTimeMs;
+    return escapeMs;
 }
 
 bool TimerManager::createTimer(const String& name, uint32 interval, uint32 period, uint32 times, TimerFunc callback)

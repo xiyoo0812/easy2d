@@ -2,8 +2,7 @@
 #define WINDOW_H
 
 #ifdef WIN32
-#include "e2d_config.h"
-#include "base/e2d_game.h"
+#include "e2d_engine.h"
 #include "base/e2d_singleton.h"
 
 namespace Easy2D
@@ -14,12 +13,14 @@ namespace Easy2D
     class Window final : public Singleton<Window>
     {
     public:
+        friend Singleton<Window>;
+
         ~Window();
 
-        void initialize(HINSTANCE instance, SPtr<E2DGame> pE2DGame, bool useConsole = false);
+        void initialize(HINSTANCE instance, uint32 width = 800, uint32 height = 600, bool useConsole = false);
 
-        const HDC& GetHDC() const;
-        const HWND& GetHandle() const;
+        const HDC& getHDC() const;
+        const HWND& getHandle() const;
 
         bool isFullScreen() const;
         bool isInitialized() const;
@@ -27,7 +28,7 @@ namespace Easy2D
 
         void setFullScreen(HWND hWnd, bool fullscreen);
 
-        void setResolution(int32 width, int32 height, bool reset = true);
+        void setResolution(uint32 width, uint32 height, bool reset = true);
 
         bool onMessage(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
@@ -35,8 +36,8 @@ namespace Easy2D
         Window() {}
         void mainLoop();
 
-        void clientResize(int32 & width, int32 & height);
-        void getWindowDiffSize(int32 & difX, int32 & difY);
+        void clientResize(uint32 & width, uint32 & height);
+        void getWindowDiffSize(uint32 & difX, uint32 & difY);
 
         struct WindowState
         {
@@ -54,7 +55,7 @@ namespace Easy2D
         HDC mHDC = nullptr;
         HWND mHandle = nullptr;
         HGLRC mOGLContext = nullptr;
-        SPtr<E2DGame> mE2dGame = nullptr;
+        SPtr<E2dEngine> mE2dEngine = nullptr;
 
     };
 }

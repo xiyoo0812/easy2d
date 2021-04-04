@@ -35,12 +35,12 @@ void E2dEngine::initialize(SPtr<android_app> app)
     //DebugDraw::getInstance()->initialize();
 }
 
-void E2dEngine::update(const uint32& escapeMs)
+void E2dEngine::update()
 {
-    //mFPS.update(escapeMs);
-    TimerManager::getInstance()->update(escapeMs);
+    uint32 escapeMs = TimerManager::getInstance()->update();
     SceneManager::getInstance()->update(escapeMs);
     GraphicsManager::getInstance()->update();
+    //mFPS.update(escapeMs);
     //InputManager::getInstance()->Endupdate();
 }
 

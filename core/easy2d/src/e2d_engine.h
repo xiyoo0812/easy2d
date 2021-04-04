@@ -22,7 +22,7 @@ namespace Easy2D
 
         ~E2dEngine();
 
-        void update(const uint32& escapeMs);
+        void update();
         void draw();
         void stop();
 

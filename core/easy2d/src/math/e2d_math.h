@@ -37,8 +37,8 @@ namespace Easy2D
     Vec3f radiansToDegrees(const Vec3f& radians);
     Vec4f radiansToDegrees(const Vec4f& radians);
 
-    void radiansToDegrees(const Vec2f& radIn, Vec3f& radOut);
-    void radiansToDegrees(const Vec3f& radIn, Vec4f& radOut);
+    void radiansToDegrees(const Vec2f& radIn, Vec2f& radOut);
+    void radiansToDegrees(const Vec3f& radIn, Vec3f& radOut);
     void radiansToDegrees(const Vec4f& radIn, Vec4f& radOut);
 
     template <typename T>
@@ -125,7 +125,7 @@ namespace Easy2D
 
     float32 cross(const Vec2f& vecA, const Vec2f& vecB);
     Vec3f cross(const Vec3f& vecA, const Vec3f& vecB);
-    void cross(const Vec2f& vecA, const Vec2f& vecB, Vec2f& vecOut);
+    void cross(const Vec3f& vecA, const Vec3f& vecB, Vec3f& vecOut);
 
     Vec2f mul(const Vec2f& vec, const Mat2f& mat);
     Vec3f mul(const Vec3f& vec, const Mat3f& mat);
@@ -196,12 +196,12 @@ namespace Easy2D
     Vec4f step(const Vec4f& edge, float32 x);
 
     void step(const Vec2f& edge, const Vec2f& x, Vec2f& out);
-    void step(const Vec3f& edge, const Vec3f& x, Vec2f& out);
-    void step(const Vec4f& edge, const Vec4f& x, Vec2f& out);
+    void step(const Vec3f& edge, const Vec3f& x, Vec3f& out);
+    void step(const Vec4f& edge, const Vec4f& x, Vec4f& out);
 
     void step(const Vec2f& edge, float32 x, Vec2f& out);
-    void step(const Vec3f& edge, float32 x, Vec2f& out);
-    void step(const Vec4f& edge, float32 x, Vec2f& out);
+    void step(const Vec3f& edge, float32 x, Vec3f& out);
+    void step(const Vec4f& edge, float32 x, Vec4f& out);
 
     template <typename T>
     T saturate(T x);
