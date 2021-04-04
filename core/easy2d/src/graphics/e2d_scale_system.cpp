@@ -3,7 +3,7 @@
 
 using namespace Easy2D;
 
-ScaleSystem::ScaleSystem()
+ScaleSystem::ScaleSystem() : Singleton<ScaleSystem>()
 {
 }
 

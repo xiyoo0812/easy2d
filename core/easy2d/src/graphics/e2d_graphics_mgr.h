@@ -10,10 +10,11 @@ namespace Easy2D
     public:
         friend Singleton<GraphicsManager>;
 
-#ifdef _WIN32
+#ifdef WIN32
         void initialize(int32 screenWidth, int32 screenHeight);
-#else
-        void initialize(const android_app* pApplication);
+#endif
+#ifdef ANDROID
+        void initialize(SPtr<android_app> pApplication);
         void destroy();
 #endif
 

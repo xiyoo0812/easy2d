@@ -7,7 +7,8 @@ namespace Easy2D
 {
 	class FontManager final : public Singleton<FontManager> 
 	{
-	public:
+    public:
+        friend Singleton<FontManager>;
 		bool loadFont(const String& path, const String& name, uint32 size);
 
 		const SPtr<Font> getFont(const String& name);

@@ -59,7 +59,7 @@ namespace Easy2D
         const Pos& getLocalPosition();
         float32 getWorldRotation();
         float32 getLocalRotation() const;
-        const Vec2& getWorlScale();
+        const Vec2& getWorldScale();
         const Vec2& getLocalScale();
 
         void setCenterPoint(const Vec2 & centerPoint);

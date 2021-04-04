@@ -171,7 +171,7 @@ float32 TransformComponent::getLocalRotation() const
     return mLocalRotation;
 }
 
-const Vec2& TransformComponent::getWorlScale()
+const Vec2& TransformComponent::getWorldScale()
 {
     return mWorldScale;
 }

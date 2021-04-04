@@ -6,53 +6,57 @@
 
 namespace Easy2D
 {
-	class SpriteBatch final : public Singleton<SpriteBatch>
-	{
-	public:
-		enum SpriteSortingMode
-		{
-			BackToFront,
-			FrontToBack,
-			TextureID
-		};
+    class TextInfo;
+    class SpriteInfo;
+    class SpriteBatch final : public Singleton<SpriteBatch>
+    {
+    public:
+        friend Singleton<SpriteBatch>;
 
-		void initialize();
-		void flush();
-		void addTextToQueue(const TextInfo* text);
-		void addSpriteToQueue(const SpriteInfo* spriteInfo);
-		void setSpriteSortingMode(SpriteSortingMode mode);
+        enum SpriteSortingMode
+        {
+            BackToFront,
+            FrontToBack,
+            TextureID
+        };
 
-	private:
-		SpriteBatch();
-		~SpriteBatch();
+        void initialize();
+        void flush();
+        void addTextToQueue(SPtr<TextInfo> text);
+        void addSpriteToQueue(SPtr<SpriteInfo> spriteInfo);
+        void setSpriteSortingMode(SpriteSortingMode mode);
 
-		void begin();
-		void end();
-		void drawSprites();
-		void drawTextSprites();
-		void createTextQuads();
-		void createSpriteQuads();
-		void sortSprites(SpriteSortingMode mode);
-		void flushSprites(uint32 start, uint32 size, uint32 texture);
+    private:
+        SpriteBatch();
+        ~SpriteBatch();
 
-		static const uint32 BATCHSIZE = 50;
-		static const uint32 UV_AMOUNT = 12;
-		static const uint32 VERTEX_AMOUNT = 18;
-		static const uint32 FIRST_REAL_ASCII_CHAR = 31;
+        void begin();
+        void end();
+        void drawSprites();
+        void drawTextSprites();
+        void createTextQuads();
+        void createSpriteQuads();
+        void sortSprites(SpriteSortingMode mode);
+        void flushSprites(uint32 start, uint32 size, uint32 texture);
 
-		Vector<Vec4> mVertexBuffer;
-		Vector<Color> mColorBuffer;
-		Vector<float32> mIsHUDBuffer;
-		Vector<float32> mUvCoordBuffer;
-		Vector<const TextInfo*> mTextQueue;
-		Vector<const SpriteInfo*> mSpriteQueue;
-		
-		Shader* mShaderPtr = nullptr;	
-		GLuint mVertexID = 0, mUVID = 0, mIsHUDID = 0;
-		GLuint mTextureSamplerID = 0, mColorID = 0, mScalingID = 0, mViewInverseID = 0, mProjectionID = 0;
+        static const uint32 BATCHSIZE = 50;
+        static const uint32 UV_AMOUNT = 12;
+        static const uint32 VERTEX_AMOUNT = 18;
+        static const uint32 FIRST_REAL_ASCII_CHAR = 31;
 
-		SpriteSortingMode mSpriteSortingMode = BackToFront;
-	};
+        Vector<Vec4> mVertexBuffer;
+        Vector<Color> mColorBuffer;
+        Vector<float32> mIsHUDBuffer;
+        Vector<float32> mUvCoordBuffer;
+        Vector<SPtr<TextInfo>> mTextQueue;
+        Vector<SPtr<SpriteInfo>> mSpriteQueue;
+
+        SPtr<Shader> mShader = nullptr;
+        GLuint mVertexID = 0, mUVID = 0, mIsHUDID = 0;
+        GLuint mTextureSamplerID = 0, mColorID = 0, mScalingID = 0, mViewInverseID = 0, mProjectionID = 0;
+
+        SpriteSortingMode mSpriteSortingMode = BackToFront;
+    };
 }
 
 #endif

@@ -8,55 +8,55 @@
 
 namespace Easy2D
 {
-	class TimeManager;
-	class TextureManager;
+    class TimeManager;
+    class TextureManager;
 
-	class Window final : public Singleton<Window>
-	{
-	public:
-		~Window();
+    class Window final : public Singleton<Window>
+    {
+    public:
+        ~Window();
 
-		void initialize(HINSTANCE instance, E2DGame* pE2DGame, bool useConsole = false);
+        void initialize(HINSTANCE instance, SPtr<E2DGame> pE2DGame, bool useConsole = false);
 
-		const HDC& GetHDC() const;
-		const HWND& GetHandle() const;
+        const HDC& GetHDC() const;
+        const HWND& GetHandle() const;
 
-		bool isFullScreen() const;
-		bool isInitialized() const;
-		bool isFixResolution() const;
+        bool isFullScreen() const;
+        bool isInitialized() const;
+        bool isFixResolution() const;
 
-		void setFullScreen(HWND hWnd, bool fullscreen);
+        void setFullScreen(HWND hWnd, bool fullscreen);
 
-		void setResolution(int32 width, int32 height, bool reset = true);
-		
-		bool onMessage(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+        void setResolution(int32 width, int32 height, bool reset = true);
 
-	private:
-		Window() {}
-		void mainLoop();
+        bool onMessage(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
-		void clientResize(int32 & width, int32 & height);
-		void getWindowDiffSize(int32 & difX, int32 & difY);
+    private:
+        Window() {}
+        void mainLoop();
 
-		struct WindowState
+        void clientResize(int32 & width, int32 & height);
+        void getWindowDiffSize(int32 & difX, int32 & difY);
+
+        struct WindowState
         {
             RECT winRect;
-			BOOL maximized;
+            BOOL maximized;
             long style, exStyle;
-		};
+        };
 
-		WindowState mWindowState;
+        WindowState mWindowState;
 
-		bool mFullScreen = false;
-		bool mInitialized = false;
-		bool mFixResolution = false;
+        bool mFullScreen = false;
+        bool mInitialized = false;
+        bool mFixResolution = false;
 
-		HDC mHDC = nullptr;
-		HWND mHandle = nullptr;
-		HGLRC mOGLContext = nullptr;
-		E2DGame* mE2dGame = nullptr;
+        HDC mHDC = nullptr;
+        HWND mHandle = nullptr;
+        HGLRC mOGLContext = nullptr;
+        SPtr<E2DGame> mE2dGame = nullptr;
 
-	};
+    };
 }
 
 #endif

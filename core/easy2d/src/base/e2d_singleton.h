@@ -16,6 +16,15 @@ namespace Easy2D
             return mInatance;
         }
 
+        static void earseInstance()
+        {
+            if (mInatance != nullptr)
+            {
+                delete mInatance;
+                mInatance = nullptr;
+            }
+        }
+
     protected:
         Singleton() {}
         virtual ~Singleton() {}

@@ -8,7 +8,7 @@ TextureManager::~TextureManager()
     mPathList.clear();
 }
 
-TextureManager::TextureManager()
+TextureManager::TextureManager() : Singleton<TextureManager>()
 {
 
 }

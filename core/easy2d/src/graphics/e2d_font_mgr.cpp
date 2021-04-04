@@ -2,7 +2,7 @@
 
 using namespace Easy2D;
 
-FontManager::FontManager() : mLibrary(0)
+FontManager::FontManager() : Singleton<FontManager>(), mLibrary(0)
 {
     auto error = FT_Init_FreeType(&mLibrary);
     if (error)

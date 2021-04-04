@@ -9,6 +9,7 @@ namespace Easy2D
     class TextureManager final : public Singleton<TextureManager>
     {
     public:
+        friend Singleton<TextureManager>;
         void loadTexture(const String& path, const String& name);
         bool removeTexture(const String& name);
 

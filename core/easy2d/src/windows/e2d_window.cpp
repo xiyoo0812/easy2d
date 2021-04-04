@@ -1,4 +1,5 @@
 #include "e2d_window.h"
+#include "graphics/e2d_graphics_mgr.h"
 
 #ifdef WIN32
 #include <Shlobj.h>
@@ -20,7 +21,7 @@ LRESULT CALLBACK wndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     return DefWindowProc(hWnd, message, wParam, lParam);
 }
 
-void Window::initialize(HINSTANCE instance, E2DGame* pE2DGame, bool useConsole /* = false */)
+void Window::initialize(HINSTANCE instance, SPtr<E2DGame> pE2DGame, bool useConsole /* = false */)
 {
     if (!mInitialized)
     {
@@ -202,7 +203,7 @@ void Window::setFullScreen(HWND hWnd, bool fullscreen)
 
 void Window::setResolution(int32 width, int32 height, bool reset)
 {
-    //	GraphicsManager::getInstance()->SetWindowDimensions(width, height);
+    GraphicsManager::getInstance()->setWindowDimensions(width, height);
     clientResize(width, height);
     mWindowState.maximized = IsZoomed(mHandle);
     mWindowState.style = GetWindowLong(mHandle, GWL_STYLE);
@@ -247,8 +248,8 @@ bool Window::onMessage(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
         RECT clienRect;
         GetClientRect(hWnd, &clienRect);
-        GraphicsManager::getInstance()->SetWindowChanged(true);
-        GraphicsManager::getInstance()->SetWindowDimensions(clienRect.right - clienRect.left,clienRect.bottom - clienRect.top);
+        GraphicsManager::getInstance()->setWindowChanged(true);
+        GraphicsManager::getInstance()->setWindowDimensions(clienRect.right - clienRect.left,clienRect.bottom - clienRect.top);
     }
     break;
     }
@@ -258,8 +259,6 @@ bool Window::onMessage(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 Window::~Window()
 {
     // InputManager::DeleteSingleton();
-    delete (mE2dGame);
-    mE2dGame = nullptr;
     // delete StarEngine::getInstance();
 }
 

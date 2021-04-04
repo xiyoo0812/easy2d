@@ -81,14 +81,14 @@ void Font::make_D_List(FT_Face face, uchar ch, GLuint* tex_base)
 
     FT_Bitmap& bitmap = face->glyph->bitmap;
 
-    int32 width = nextPowerOfTwo(bitmap.width);
-    int32 height = nextPowerOfTwo(bitmap.rows);
+    uint32 width = nextPowerOfTwo(bitmap.width);
+    uint32 height = nextPowerOfTwo(bitmap.rows);
 
     GLubyte* expanded_data = new GLubyte[2 * width * height];
 
-    for (int32 j = 0; j < height; ++j)
+    for (uint32 j = 0; j < height; ++j)
     {
-        for (int32 i = 0; i < width; ++i)
+        for (uint32 i = 0; i < width; ++i)
         {
             expanded_data[2 * (i + j * width)] = 255;
             expanded_data[2 * (i + j * width) + 1] = (i >= bitmap.width || j >= bitmap.rows) ? 0 : bitmap.buffer[i + bitmap.width * j];
@@ -140,9 +140,9 @@ uint32 Font::getFontSize() const
     return mSize;
 }
 
-int32 Font::nextPowerOfTwo(int32 number) const
+uint32 Font::nextPowerOfTwo(uint32 number) const
 {
-    int32 rval = 1;
+    uint32 rval = 1;
     while (rval < number)
     {
         rval <<= 1;
@@ -163,12 +163,12 @@ const CharacterInfo& Font::getCharacterInfo(uchar character) const
     return mCharacterInfoMap.at(character);
 }
 
-int32 Font::getMaxLetterHeight() const
+uint32 Font::getMaxLetterHeight() const
 {
     return mMaxLetterHeight;
 }
 
-int32 Font::getMinLetterHeight() const
+uint32 Font::getMinLetterHeight() const
 {
     return mMinLetterHeight;
 }

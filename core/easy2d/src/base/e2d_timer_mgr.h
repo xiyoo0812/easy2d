@@ -5,8 +5,9 @@
 namespace Easy2D
 {
     typedef Function<void(uint64)> TimerFunc;
-    struct Timer
+    class Timer
     {
+    public:
         String mName;
         int32 mEscape;		//下次执行时间
         uint32 mPeriod;		//周期

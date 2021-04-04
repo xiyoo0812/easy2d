@@ -79,6 +79,18 @@
     <ClCompile Include="src\graphics\e2d_scale_system.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
+    <ClCompile Include="src\object\component\e2d_sprite_component.cpp">
+      <Filter>object\component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\object\component\e2d_text_component.cpp">
+      <Filter>object\component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\e2d_sprite_batch.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\e2d_engine.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\base\e2d_color.h">
@@ -91,7 +103,7 @@
       <Filter>base</Filter>
     </ClInclude>
     <ClInclude Include="src\e2d_config.h">
-      <Filter>inc</Filter>
+      <Filter>engine</Filter>
     </ClInclude>
     <ClInclude Include="src\resource\e2d_resource.h">
       <Filter>resource</Filter>
@@ -186,13 +198,22 @@
     <ClInclude Include="src\graphics\e2d_scale_system.h">
       <Filter>graphics</Filter>
     </ClInclude>
+    <ClInclude Include="src\object\component\e2d_sprite_component.h">
+      <Filter>object\component</Filter>
+    </ClInclude>
+    <ClInclude Include="src\object\component\e2d_text_component.h">
+      <Filter>object\component</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\e2d_sprite_batch.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\e2d_engine.h">
+      <Filter>engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="base">
       <UniqueIdentifier>{ef4f5a4f-700f-489f-960c-77d5c984794e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="inc">
-      <UniqueIdentifier>{eb742b04-8bcc-416d-8d29-2d35a7dd660a}</UniqueIdentifier>
     </Filter>
     <Filter Include="resource">
       <UniqueIdentifier>{ad794501-1da9-41f5-a357-0cb63aebfa4c}</UniqueIdentifier>
@@ -211,6 +232,9 @@
     </Filter>
     <Filter Include="object\component">
       <UniqueIdentifier>{f89f21d6-dc08-41a8-a6c1-aad46b5146cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine">
+      <UniqueIdentifier>{eb742b04-8bcc-416d-8d29-2d35a7dd660a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

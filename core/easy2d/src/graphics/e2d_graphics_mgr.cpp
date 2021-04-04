@@ -85,8 +85,9 @@ void GraphicsManager::initialize(int32 screenWidth, int32 screenHeight)
     //DEPTH_TEST is default disabled
     initializeOpenGLStates();
 }
-#else
-void GraphicsManager::initialize(const android_app* pApplication)
+#endif
+#ifdef ANDROID
+void GraphicsManager::initialize(SPtr<android_app> pApplication)
 {
     LOG_INFO << _T("Graphics Manager : Initializing OpenGL");
     EGLint lFormat, lNumConfigs, lErrorResult;
