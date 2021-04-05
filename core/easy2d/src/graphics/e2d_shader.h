@@ -2,16 +2,17 @@
 #define SHADER_H
 
 #include "e2d_config.h"
+#include "resource/e2d_resource.h"
 
 namespace Easy2D
 {
-    class Shader final
+    class Shader final : public Resource
     {
     public:
-        Shader(const String& vsFile, const String& fsFile);
-        Shader(const GLchar* inlineVert, const GLchar* inlineFrag);
+        Shader(const Path& sFile, GLenum type);
         ~Shader();
 
+        bool load();
         void bind();
         void unbind();
 
@@ -21,27 +22,15 @@ namespace Easy2D
 
         GLuint getAttribLocation(const GLchar* nameInShader) const;
 
-        void printActiveAttribs() const;
-
-        void printActiveUniforms() const;
-
     private:
-        bool init(const String& vsFile, const String& fsFile);
-        bool init(const GLchar* inlineVert, const GLchar* inlineFrag);
-
-        bool compileShader(GLuint* shader, GLenum type, const String& file);
-
-        bool compileShader(GLuint* shader, GLenum type, const GLchar* inlineFile);
+        bool compileShader();
+        bool compileShader(GLchar* nameInShader);
 
         bool glInit();
 
+        GLenum mType = 0;
         GLuint mProgramID = 0;
-        GLuint mVertexShader = 0;
-        GLuint mFragmentShader = 0;
-
-#ifdef ANDROID
-        static const int32 ANDROID_ERROR_SIZE = 4096;
-#endif
+        GLuint mShader = 0;
     };
 }
 

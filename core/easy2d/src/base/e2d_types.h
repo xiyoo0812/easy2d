@@ -49,8 +49,11 @@ namespace Easy2D
     typedef long double         float128;
 
     //std
-    typedef std::string             String;
-    typedef std::filesystem::path   Path;
+    using std::min;
+    using std::max;
+	using String = std::string
+	using Bytes = std::vector<Byte>;
+	using Path = std::filesystem::path;
 
     template <typename T>
     using WPtr = std::weak_ptr<T>;
@@ -64,9 +67,6 @@ namespace Easy2D
     using Vector = std::vector<T>;
     template <class Key, class T, class Hash = std::hash<Key>, class KeyEqual = std::equal_to<Key>>
     using UnorderedMap = std::unordered_map<Key, T, Hash, KeyEqual>;
-
-    using std::min;
-    using std::max;
 
     //gl math library
     typedef glm::ivec2 Vec2i;

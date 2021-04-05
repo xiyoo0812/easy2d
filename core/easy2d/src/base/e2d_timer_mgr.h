@@ -38,12 +38,8 @@ namespace Easy2D
         void resumeTimer(const String& name);
         void pauseTimer(const String& name);
 
-        time_t steadyTime() const;
-        time_t steadyTimeMs() const;
         time_t systemTime() const;
         time_t systemTimeMs() const;
-        time_t highResolutionTime() const;
-        time_t highResolutionTimeMs() const;
 
     private:
         TimerManager();

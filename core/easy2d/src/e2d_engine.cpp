@@ -6,6 +6,7 @@
 #include "graphics/e2d_scale_system.h"
 #include "graphics/e2d_graphics_mgr.h"
 #include "graphics/e2d_sprite_batch.h"
+#include "resource/e2d_asset_mgr.h"
 
 /* Easy2D */
 using namespace Easy2D;
@@ -22,6 +23,7 @@ E2dEngine::~E2dEngine()
 #ifdef WIN32
 void E2dEngine::initialize(uint32 window_width, uint32 window_height)
 {
+    AssetManager::getInstance()->setPath(Path("res"));
     GraphicsManager::getInstance()->initialize(window_width, window_height);
 #endif
 #ifdef ANDROID

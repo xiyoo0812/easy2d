@@ -98,16 +98,6 @@ void TimerManager::resumeTimer(const String& name)
     }
 }
 
-time_t TimerManager::steadyTime() const
-{
-    return duration_cast<seconds>(steady_clock::now().time_since_epoch()).count();
-}
-
-time_t TimerManager::steadyTimeMs() const
-{
-    return duration_cast<milliseconds>(steady_clock::now().time_since_epoch()).count();
-}
-
 time_t TimerManager::systemTime() const
 {
     return duration_cast<seconds>(system_clock::now().time_since_epoch()).count();
@@ -116,14 +106,4 @@ time_t TimerManager::systemTime() const
 time_t TimerManager::systemTimeMs() const
 {
     return duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-}
-
-time_t TimerManager::highResolutionTime() const
-{
-    return duration_cast<seconds>(high_resolution_clock::now().time_since_epoch()).count();
-}
-
-time_t TimerManager::highResolutionTimeMs() const
-{
-    return duration_cast<milliseconds>(high_resolution_clock::now().time_since_epoch()).count();
 }
