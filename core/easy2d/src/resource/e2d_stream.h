@@ -5,29 +5,30 @@
 
 namespace Easy2D
 {
-	class DataStream
-	{
-	public:
-		DataStream(const Bytes& data);
-		DataStream(const BYTE* data, size_t size);
-		virtual ~DataStream();
-		virtual size_t tell() const;
-		virtual size_t read(Bytes& dst, size_t size = 0);
-		virtual void seek(uint64 pos, int whence);
-		virtual void set(const BYTE* data, size_t size);
+    class DataStream
+    {
+    public:
+        DataStream();
+        DataStream(const Bytes& data);
+        DataStream(const BYTE* data, size_t size);
+        virtual ~DataStream();
+        virtual size_t tell() const;
+        virtual size_t read(Bytes& dst, size_t size = 0);
+        virtual void seek(uint64 pos, int whence);
+        virtual void set(const BYTE* data, size_t size);
 
-	private:
-		Bytes mData = {};
-		size_t mDataSize = 0;
-		size_t mCurPos = 0;
-	};
+    protected:
+        Bytes mData = {};
+        size_t mDataSize = 0;
+        size_t mCurPos = 0;
+    };
 
-	class FileStream : public DataStream
-	{
-	public:
-		FileStream(const Path& path);
-		virtual ~FileStream();
-	};
+    class FileStream : public DataStream
+    {
+    public:
+        FileStream(const Path& path);
+        virtual ~FileStream();
+    };
 }
 
 #endif

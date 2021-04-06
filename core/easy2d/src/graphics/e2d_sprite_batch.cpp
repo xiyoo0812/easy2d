@@ -19,18 +19,19 @@ SpriteBatch::~SpriteBatch()
 void SpriteBatch::initialize()
 {
     //Set Shader and shader variables
-    String vShader(_T("Shaders/VertexPosColTexShader.vert"));
-    String fShader(_T("Shaders/VertexPosColTexShader.frag"));
+    Path vShader(_T("shader/VertexPosColTexShader.vert"));
+    Path fShader(_T("shader/VertexPosColTexShader.frag"));
 
-    mShader = std::make_shared<Shader>(vShader, fShader);
-    mUVID = mShader->getAttribLocation("texCoord");
-    mIsHUDID = mShader->getAttribLocation("isHUD");
-    mVertexID = mShader->getAttribLocation("position");
-    mColorID = mShader->getAttribLocation("colorMultiplier");
-    mScalingID = mShader->getUniformLocation("scaleMatrix");
-    mProjectionID = mShader->getUniformLocation("projectionMatrix");
-    mViewInverseID = mShader->getUniformLocation("viewInverseMatrix");
-    mTextureSamplerID = mShader->getUniformLocation("textureSampler");
+    mVertShader = std::make_shared<Shader>(vShader, GL_VERTEX_SHADER);
+    mFragShader = std::make_shared<Shader>(fShader, GL_FRAGMENT_SHADER);
+    mUVID = mVertShader->getAttribLocation("texCoord");
+    mIsHUDID = mVertShader->getAttribLocation("isHUD");
+    mVertexID = mVertShader->getAttribLocation("position");
+    mColorID = mVertShader->getAttribLocation("colorMultiplier");
+    mScalingID = mVertShader->getUniformLocation("scaleMatrix");
+    mProjectionID = mVertShader->getUniformLocation("projectionMatrix");
+    mViewInverseID = mVertShader->getUniformLocation("viewInverseMatrix");
+    mTextureSamplerID = mFragShader->getUniformLocation("textureSampler");
 }
 
 void SpriteBatch::flush()
@@ -48,7 +49,8 @@ void SpriteBatch::flush()
 
 void SpriteBatch::begin()
 {
-    mShader->bind();
+    mVertShader->bind();
+    mFragShader->bind();
     //[TODO] Test android!
     glEnableVertexAttribArray(mVertexID);
     glEnableVertexAttribArray(mUVID);
@@ -110,7 +112,8 @@ void SpriteBatch::end()
     glDisableVertexAttribArray(mUVID);
     glDisableVertexAttribArray(mIsHUDID);
     glDisableVertexAttribArray(mColorID);
-    mShader->unbind();
+    mVertShader->unbind();
+    mFragShader->unbind();
     mSpriteQueue.clear();
     mTextQueue.clear();
     mVertexBuffer.clear();

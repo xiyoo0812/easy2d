@@ -7,9 +7,6 @@
     <ClCompile Include="src\base\e2d_blend.cpp">
       <Filter>base</Filter>
     </ClCompile>
-    <ClCompile Include="src\resource\e2d_resource_group.cpp">
-      <Filter>resource</Filter>
-    </ClCompile>
     <ClCompile Include="src\graphics\e2d_texture2d.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
@@ -91,6 +88,18 @@
     <ClCompile Include="src\e2d_engine.cpp">
       <Filter>engine</Filter>
     </ClCompile>
+    <ClCompile Include="src\resource\e2d_asset_mgr.cpp">
+      <Filter>resource</Filter>
+    </ClCompile>
+    <ClCompile Include="src\resource\e2d_filesystem.cpp">
+      <Filter>resource</Filter>
+    </ClCompile>
+    <ClCompile Include="src\resource\e2d_stream.cpp">
+      <Filter>resource</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base\e2d_stopwatch.cpp">
+      <Filter>base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\base\e2d_color.h">
@@ -106,12 +115,6 @@
       <Filter>engine</Filter>
     </ClInclude>
     <ClInclude Include="src\resource\e2d_resource.h">
-      <Filter>resource</Filter>
-    </ClInclude>
-    <ClInclude Include="src\resource\e2d_resource_group.h">
-      <Filter>resource</Filter>
-    </ClInclude>
-    <ClInclude Include="src\resource\e2d_resource_manager.h">
       <Filter>resource</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\e2d_texture2d.h">
@@ -209,6 +212,18 @@
     </ClInclude>
     <ClInclude Include="src\e2d_engine.h">
       <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\resource\e2d_asset_mgr.h">
+      <Filter>resource</Filter>
+    </ClInclude>
+    <ClInclude Include="src\resource\e2d_filesystem.h">
+      <Filter>resource</Filter>
+    </ClInclude>
+    <ClInclude Include="src\resource\e2d_stream.h">
+      <Filter>resource</Filter>
+    </ClInclude>
+    <ClInclude Include="src\base\e2d_stopwatch.h">
+      <Filter>base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

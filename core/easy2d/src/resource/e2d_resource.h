@@ -5,18 +5,17 @@
 
 namespace Easy2D
 {
-	class Resource
-	{
-	public:
-		Resource(String path);
-		virtual ~Resource() {}
+    class Resource
+    {
+    public:
+        Resource(const Path& path) :mPath(path){}
 
-		virtual bool load() = 0;
-		String& getPath() const { return mPath; }
+        virtual bool load() = 0;
+        const Path& getPath() const { return mPath; }
 
-	private:
-		String mPath;
-	};
+    protected:
+        Path mPath;
+    };
 }
 
 #endif

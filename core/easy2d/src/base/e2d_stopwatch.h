@@ -5,51 +5,49 @@
 
 namespace Easy2D
 {
-	class Stopwatch 
-	{
-	public:
-		Stopwatch(bool startup = true);
+    class Stopwatch
+    {
+    public:
+        Stopwatch(bool startup = true);
 
-		void start();
-		void pause();
-		void reset();
+        void start();
+        void reset();
 
-		time_t elapsedSeconds() const;
-		time_t elapsedMillSeconds() const;
-		time_t elapsedSecondsNow() const;
-		time_t elapsedMillSecondsNow() const;
+        time_t elapsedSeconds();
+        time_t elapsedMillSeconds();
+        time_t elapsedSecondsNow();
+        time_t elapsedMillSecondsNow();
 
-	private:
-		bool mbRunning = false;
-		time_t mElapsedTime = 0;
-		std::chrono::time_point<std::chrono::high_resolution_clock> mStartTime;
-	};
+    private:
+        bool mbRunning = false;
+        std::chrono::time_point<std::chrono::high_resolution_clock> mStartTime;
+    };
 
-	class StopwatchAvg
-	{
-	public:
-		enum class Mode
-		{
-			Average,
-			Latest
-		};
+    class StopwatchAvg
+    {
+    public:
+        enum class Mode
+        {
+            Average,
+            Latest
+        };
 
-		explicit StopwatchAvg(int samples = 30);
-		void beginSample();
-		void endSample();
+        explicit StopwatchAvg(int samples = 30);
+        void beginSample();
+        void endSample();
 
-		time_t elapsedMillSeconds(Mode mode) const;
+        time_t elapsedMillSeconds(Mode mode) const;
 
-	private:
-		int mSamples = 30;
-		int msTakenAvgSamples = 0;
+    private:
+        int mSamples = 30;
+        int msTakenAvgSamples = 0;
 
-		std::chrono::time_point<std::chrono::high_resolution_clock> mStartTime;
+        std::chrono::time_point<std::chrono::high_resolution_clock> mStartTime;
 
-		time_t msTaken = 0;
-		time_t msTakenAvg = 0;
-		time_t msTakenAvgAccum = 0;
-	};
+        time_t msTaken = 0;
+        time_t msTakenAvg = 0;
+        time_t msTakenAvgAccum = 0;
+    };
 }
 
 #endif

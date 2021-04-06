@@ -24,7 +24,7 @@ namespace Easy2D
 
     private:
         bool compileShader();
-        bool compileShader(GLchar* nameInShader);
+        bool compileShader(const GLchar* nameInShader);
 
         bool glInit();
 

@@ -51,8 +51,8 @@ namespace Easy2D
     //std
     using std::min;
     using std::max;
-	using String = std::string
-	using Bytes = std::vector<Byte>;
+    using String = std::string;
+	using Bytes = std::vector<byte>;
 	using Path = std::filesystem::path;
 
     template <typename T>

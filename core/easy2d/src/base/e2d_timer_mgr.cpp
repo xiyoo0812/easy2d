@@ -8,13 +8,10 @@ using namespace std::chrono;
 
 TimerManager::TimerManager()
 {
-    mLastTimMs = steadyTime();
 }
 
-uint32 TimerManager::update()
+void TimerManager::update(const uint32& escapeMs)
 {
-    uint32 nowTimeMs = steadyTime();
-    uint32 escapeMs = nowTimeMs - mLastTimMs;
     for (auto it = mTimers.begin(); it != mTimers.end(); )
     {
         Timer& timer = it->second;
@@ -42,8 +39,6 @@ uint32 TimerManager::update()
         }
         ++it;
     }
-    mLastTimMs = nowTimeMs;
-    return escapeMs;
 }
 
 bool TimerManager::createTimer(const String& name, uint32 interval, uint32 period, uint32 times, TimerFunc callback)

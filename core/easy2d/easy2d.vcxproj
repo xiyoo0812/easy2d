@@ -114,6 +114,7 @@
     <ClCompile Include="src\base\e2d_blend.cpp" />
     <ClCompile Include="src\base\e2d_color.cpp" />
     <ClCompile Include="src\base\e2d_guid.cpp" />
+    <ClCompile Include="src\base\e2d_stopwatch.cpp" />
     <ClCompile Include="src\base\e2d_timer_mgr.cpp" />
     <ClCompile Include="src\e2d_engine.cpp" />
     <ClCompile Include="src\graphics\e2d_font.cpp" />
@@ -139,7 +140,9 @@
     <ClCompile Include="src\object\e2d_object.cpp" />
     <ClCompile Include="src\object\e2d_scene.cpp" />
     <ClCompile Include="src\object\e2d_scene_mgr.cpp" />
-    <ClCompile Include="src\resource\e2d_resource_group.cpp" />
+    <ClCompile Include="src\resource\e2d_asset_mgr.cpp" />
+    <ClCompile Include="src\resource\e2d_filesystem.cpp" />
+    <ClCompile Include="src\resource\e2d_stream.cpp" />
     <ClCompile Include="src\windows\e2d_window.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -147,6 +150,7 @@
     <ClInclude Include="src\base\e2d_color.h" />
     <ClInclude Include="src\base\e2d_guid.h" />
     <ClInclude Include="src\base\e2d_singleton.h" />
+    <ClInclude Include="src\base\e2d_stopwatch.h" />
     <ClInclude Include="src\base\e2d_timer_mgr.h" />
     <ClInclude Include="src\base\e2d_types.h" />
     <ClInclude Include="src\base\e2d_utils.h" />
@@ -178,9 +182,10 @@
     <ClInclude Include="src\object\e2d_scene.h" />
     <ClInclude Include="src\object\e2d_scene.hpp" />
     <ClInclude Include="src\object\e2d_scene_mgr.h" />
+    <ClInclude Include="src\resource\e2d_asset_mgr.h" />
+    <ClInclude Include="src\resource\e2d_filesystem.h" />
     <ClInclude Include="src\resource\e2d_resource.h" />
-    <ClInclude Include="src\resource\e2d_resource_group.h" />
-    <ClInclude Include="src\resource\e2d_resource_manager.h" />
+    <ClInclude Include="src\resource\e2d_stream.h" />
     <ClInclude Include="src\windows\e2d_window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

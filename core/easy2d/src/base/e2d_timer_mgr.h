@@ -29,7 +29,7 @@ namespace Easy2D
 
         ~TimerManager() {}
 
-        uint32 update();
+        void update(const uint32& escapeMs);
 
         bool createTimer(const String& name, uint32 interval, uint32 period, uint32 times, TimerFunc callback);
         bool once(const String& name, uint32 interval, TimerFunc callback);
@@ -43,7 +43,6 @@ namespace Easy2D
 
     private:
         TimerManager();
-        time_t mLastTimMs = 0;
         UnorderedMap<String, Timer> mTimers;
     };
 }

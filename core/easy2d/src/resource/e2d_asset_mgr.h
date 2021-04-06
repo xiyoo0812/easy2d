@@ -6,23 +6,23 @@
 
 namespace Easy2D
 {
-	class AssetManager final : public Singleton<AssetManager>
+    class AssetManager final : public Singleton<AssetManager>
     {
     public:
         friend Singleton<AssetManager>;
-		~AssetManager() {}
-		
-		String& getPath() const { return mBasePath; }
-		const setPath(const String& path) { mBasePath = path; }
+        ~AssetManager() {}
 
-		SPtr<DataStream> loadAsset(const Path& path);
-		
-		SPtr<DataStream> asyncAsset(const Path& path);
+        const Path& getPath() const { return mBasePath; }
+        void setPath(const Path& path) { mBasePath = path; }
 
-	private:
-		AssetManager();
-		Path& mBasePath;
-	};
+        SPtr<DataStream> loadAsset(const Path& path);
+
+        SPtr<DataStream> asyncAsset(const Path& path);
+
+    private:
+        AssetManager();
+        Path mBasePath;
+    };
 }
 
 #endif

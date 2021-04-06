@@ -5,59 +5,60 @@ using namespace std::chrono;
 
 Stopwatch::Stopwatch(bool startup)
 {
-	if (startup) 
-	{
-		start();
-	}
+    if (startup)
+    {
+        start();
+    }
 }
 
 void Stopwatch::start()
 {
-	if (!mbRunning) 
-	{
-		mbRunning = true;
-		mStartTime = high_resolution_clock::now();
-	}
-}
-
-void Stopwatch::pause()
-{
-	if (mbRunning)
-	{
-		mbRunning = false;
-		mElapsedTime += high_resolution_clock::now() - mStartTime;
-	}
+    if (!mbRunning)
+    {
+        mbRunning = true;
+        mStartTime = high_resolution_clock::now();
+    }
 }
 
 void Stopwatch::reset()
 {
-	mElapsedTime = 0;
+    mbRunning = false;
 }
 
-time_t Stopwatch::elapsedSeconds() const
+time_t Stopwatch::elapsedSeconds()
 {
-	return duration_cast<seconds>(mElapsedTime).count();
+    if (mbRunning)
+    {
+        mbRunning = false;
+        return duration_cast<seconds>(high_resolution_clock::now() - mStartTime).count();
+    }
+    return 0;
 }
 
-time_t Stopwatch::elapsedMillSeconds() const
+time_t Stopwatch::elapsedMillSeconds()
 {
-	return duration_cast<milliseconds>(mElapsedTime).count();
+    if (mbRunning)
+    {
+        mbRunning = false;
+        return duration_cast<milliseconds>(high_resolution_clock::now() - mStartTime).count();
+    }
+    return 0;
 }
 
-time_t Stopwatch::elapsedSecondsNow() const
+time_t Stopwatch::elapsedSecondsNow()
 {
-	auto now = high_resolution_clock::now()
-	mElapsedTime = now - mStartTime;
-	mStartTime = now
-	return duration_cast<seconds>(mElapsedTime).count();
+    auto nowTime = high_resolution_clock::now();
+    auto elapsedTime = nowTime - mStartTime;
+    mStartTime = nowTime;
+    return duration_cast<seconds>(elapsedTime).count();
 }
 
-time_t Stopwatch::elapsedMillSecondsNow() const
+time_t Stopwatch::elapsedMillSecondsNow()
 {
-	auto now = high_resolution_clock::now()
-	mElapsedTime = now - mStartTime;
-	mStartTime = now
-	return duration_cast<milliseconds>(mElapsedTime).count();
+    auto nowTime = high_resolution_clock::now();
+    auto elapsedTime = nowTime - mStartTime;
+    mStartTime = nowTime;
+    return duration_cast<milliseconds>(elapsedTime).count();
 }
 
 StopwatchAvg::StopwatchAvg(int samples) : mSamples(samples)
@@ -66,25 +67,25 @@ StopwatchAvg::StopwatchAvg(int samples) : mSamples(samples)
 
 void StopwatchAvg::beginSample()
 {
-	mStartTime = high_resolution_clock::now();
+    mStartTime = high_resolution_clock::now();
 }
 
 void StopwatchAvg::endSample()
 {
-	auto now = high_resolution_clock::now();
-	msTaken = duration_cast<milliseconds>(now - mStartTime).count();
+    auto now = high_resolution_clock::now();
+    msTaken = duration_cast<milliseconds>(now - mStartTime).count();
 
-	msTakenAvgSamples++;
-	msTakenAvgAccum += msTaken;
-	if (msTakenAvgSamples >= mSamples)
-	{
-		msTakenAvg = int(msTakenAvgAccum / msTakenAvgSamples);
-		msTakenAvgSamples = 0;
-		msTakenAvgAccum = 0;
-	}
+    msTakenAvgSamples++;
+    msTakenAvgAccum += msTaken;
+    if (msTakenAvgSamples >= mSamples)
+    {
+        msTakenAvg = int(msTakenAvgAccum / msTakenAvgSamples);
+        msTakenAvgSamples = 0;
+        msTakenAvgAccum = 0;
+    }
 }
 
 int64_t StopwatchAvg::elapsedMillSeconds(Mode mode) const
 {
-	return mode == Mode::Average ? msTakenAvg : msTaken;
+    return mode == Mode::Average ? msTakenAvg : msTaken;
 }

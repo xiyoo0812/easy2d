@@ -23,7 +23,8 @@ E2dEngine::~E2dEngine()
 #ifdef WIN32
 void E2dEngine::initialize(uint32 window_width, uint32 window_height)
 {
-    AssetManager::getInstance()->setPath(Path("res"));
+    mStopWatch = std::make_shared<Stopwatch>();
+    AssetManager::getInstance()->setPath("res");
     GraphicsManager::getInstance()->initialize(window_width, window_height);
 #endif
 #ifdef ANDROID
@@ -39,7 +40,8 @@ void E2dEngine::initialize(SPtr<android_app> app)
 
 void E2dEngine::update()
 {
-    uint32 escapeMs = TimerManager::getInstance()->update();
+    uint32 escapeMs = mStopWatch->elapsedMillSecondsNow();
+    TimerManager::getInstance()->update(escapeMs);
     SceneManager::getInstance()->update(escapeMs);
     GraphicsManager::getInstance()->update();
     //mFPS.update(escapeMs);

@@ -2,6 +2,7 @@
 #define ENGINE_H
 
 #include "e2d_config.h"
+#include "base\e2d_stopwatch.h"
 
 namespace Easy2D
 {
@@ -49,6 +50,7 @@ namespace Easy2D
         String mTitle = "";
         String mSubTitle = "";
         bool mTitleHasUpdated = false;
+        SPtr<Stopwatch> mStopWatch = nullptr;
     };
 }
 

@@ -16,7 +16,7 @@ Shader::~Shader()
 
 bool Shader::load()
 {
-    if (!compileShader(&mVertexShader, mType, mPath))
+    if (!compileShader())
     {
         return false;
     }
@@ -66,13 +66,13 @@ bool Shader::compileShader()
         {
             return compileShader((GLchar*)result.data());
         }
-
     }
+    return false;
 }
 
 bool Shader::compileShader(const GLchar* sData)
 {
-    mShader = glCreateShader(type);
+    mShader = glCreateShader(mType);
     glShaderSource(mShader, 1, &sData, NULL);
     glCompileShader(mShader);
     GLint status;
@@ -85,7 +85,7 @@ bool Shader::compileShader(const GLchar* sData)
         {
             char* buf = new char[infolength];
             String stringType;
-            switch (type)
+            switch (mType)
             {
             case GL_VERTEX_SHADER:
                 stringType = _T("GL_VERTEX_SHADER");
@@ -102,7 +102,7 @@ bool Shader::compileShader(const GLchar* sData)
             delete buf;
         }
         glDeleteShader(mShader);
-        shader = 0;
+        mShader = 0;
         return false;
     }
     return true;

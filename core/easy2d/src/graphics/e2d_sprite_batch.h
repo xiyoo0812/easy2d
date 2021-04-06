@@ -51,7 +51,8 @@ namespace Easy2D
         Vector<SPtr<TextInfo>> mTextQueue;
         Vector<SPtr<SpriteInfo>> mSpriteQueue;
 
-        SPtr<Shader> mShader = nullptr;
+        SPtr<Shader> mVertShader = nullptr;
+        SPtr<Shader> mFragShader = nullptr;
         GLuint mVertexID = 0, mUVID = 0, mIsHUDID = 0;
         GLuint mTextureSamplerID = 0, mColorID = 0, mScalingID = 0, mViewInverseID = 0, mProjectionID = 0;
 
