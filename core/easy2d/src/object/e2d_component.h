@@ -34,16 +34,11 @@ namespace Easy2D
         void setVisible(bool bVisible);
         bool isVisible() const;
 
-        const Vec2& getDimensions() const;
-        virtual float32 getWidth() const;
-        virtual float32 getHeight() const;
-
         SPtr<Entity> getMaster() const;
         void setMaster(SPtr<Entity> pMaster);
 
     protected:
         WPtr<Entity> mMaster = {};
-        Vec2 mDimensions = {};
         bool mEnabled = true, mVisible = true;
     };
 }

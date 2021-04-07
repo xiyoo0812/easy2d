@@ -10,8 +10,8 @@ namespace Easy2D
     class TextInfo
     {
     public:
-        SPtr<Font> font = nullptr;
-        SPtr<TransformComponent> transform = nullptr;
+        WPtr<Font> font = nullptr;
+        WPtr<TransformComponent> transform = nullptr;
         Color colorMultiplier = Color::White;
         Vector<int32> horizontalTextOffset = {};
         int32 verticalSpacing = 0;
@@ -23,7 +23,7 @@ namespace Easy2D
     class TextComponent : public Component
     {
     public:
-        TextComponent(const String& fontName);
+        TextComponent();
 
         virtual ~TextComponent();
 
@@ -40,6 +40,10 @@ namespace Easy2D
         void setColor(const Color& color);
 
         const Color& getColor() const;
+
+        void setFont(const SPtr<Font> font);
+
+        const SPtr<Font> getFont() const;
 
         void setWrapWidth(int32 width);
 
@@ -58,13 +62,6 @@ namespace Easy2D
         void alignTextRight();
 
     protected:
-        enum class HorizontalAlignment : byte
-        {
-            left = 0,
-            center,
-            right
-        };
-
         virtual void initialize();
 
         void calculateTextDimensions();
@@ -87,14 +84,17 @@ namespace Easy2D
         void splitString(PointerArray<String, uint32>& words, String str, char delimiter);
 
         int32 mWrapWidth = 10;
-        uint32	mFontSize = 10, mStringLength = 0;
-        String mFontName = "", mOrigText = "", mEditText = "";
+        uint32 mStringLength = 0;
+        String mOrigText = "", mEditText = "";
 
         SPtr<Font> mFont = nullptr;
         SPtr<TextInfo> mTextInfo = nullptr;
-        Color mTextColor = Color::White;
         HorizontalAlignment mTextAlignment = HorizontalAlignment::center;
+
+    public:
+        inline static String GUID = "text";
     };
+    
 }
 
 #endif

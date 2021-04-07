@@ -5,17 +5,15 @@
 /* Easy2D */
 using namespace Easy2D;
 
-TextComponent::TextComponent(const String& fontName) : Component()
+TextComponent::TextComponent() : Component(TextComponent::GUID)
 {
-    mFontName = fontName;
-    mFont = FontManager::getInstance()->getFont(fontName);
-    mFontSize = mFont->getFontSize();
     mTextInfo = std::make_shared<TextInfo>();
 }
 
 TextComponent::~TextComponent()
 {
-
+    mFont->reset();
+    mTextInfo->reset();
 }
 
 void TextComponent::initialize()
@@ -34,9 +32,9 @@ void TextComponent::initialize()
 
 void TextComponent::fillTextInfo()
 {
-    mTextInfo->font = mFont;
+    mTextInfo->font = mFont.lock();
+    mTextInfo->transform = getTransform().lock();
     mTextInfo->colorMultiplier = mTextColor;
-    mTextInfo->transform = getTransform();
 }
 
 void TextComponent::calculateTextDimensions()
@@ -269,12 +267,22 @@ const String& TextComponent::getText() const
 
 void TextComponent::setColor(const Color& color)
 {
-    mTextColor = color;
+    mTextInfo->colorMultiplier = color;
 }
 
 const Color& TextComponent::getColor() const
 {
-    return mTextColor;
+    return mTextInfo->colorMultiplier;
+}
+
+void TextComponent::setFont(const SPtr<Font>& font)
+{
+    mFont = font;
+}
+
+const SPtr<Font> TextComponent::getFont() const
+{
+    return mFont;
 }
 
 void TextComponent::setWrapWidth(int32 width)

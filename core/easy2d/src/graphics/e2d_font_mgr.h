@@ -9,14 +9,17 @@ namespace Easy2D
 	{
     public:
         friend Singleton<FontManager>;
-		bool loadFont(const String& path, const String& name, uint32 size);
+
+        void initialize(const String& path);
+        const SPtr<Font> loadFont(const String& name, const String& fontName, uint32 size = 12);
 
 		const SPtr<Font> getFont(const String& name);
 		bool removeFont(const String& name);
 		void clear();
 
 	private:
-		FT_Library mLibrary;
+        FT_Library mLibrary = nullptr;
+        UnorderedMap<String, Path> mFontFiles;
 		UnorderedMap<String, SPtr<Font>> mFontList;
 
 		FontManager();

@@ -7,6 +7,20 @@ namespace Easy2D
     static const String TAB = _T("    ");
     static const String EMPTY_STRING = _T("");
 
+    enum class HorizontalAlignment : byte
+	{
+		Left = 0,
+		Center,
+		Right
+	};
+
+	enum class VerticalAlignment : byte
+	{
+		Bottom = 0,
+		Center,
+		Top
+	};
+
     template <typename T, typename U = uint8>
     struct PointerArray
     {

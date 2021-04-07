@@ -5,6 +5,7 @@
 #include "freetype/freetype.h"
 
 #include "e2d_config.h"
+#include "resource/e2d_resource.h"
 
 namespace Easy2D
 {
@@ -17,17 +18,14 @@ namespace Easy2D
         Vec2 vertexDimensions, uvDimensions, letterDimensions;
     };
 
-    class Font
+    class Font final : public Resource
     {
     public:
-        Font() {}
+        Font(const Path& path, uint32 size, FT_Library library);
         ~Font();
 
-        bool load(const String& path, uint32 size, FT_Library& library);
-        void unload();
-
-        const String& getFontPath() const;
-
+        bool load();
+        
         GLuint* getTextures() const;
         uint32 getFontSize() const;
 
@@ -39,19 +37,16 @@ namespace Easy2D
         uint32 getStringLength(const String& string) const;
 
     private:
+        void unload();
         void make_D_List(FT_Face face, uchar ch, GLuint* tex_base);
         uint32 nextPowerOfTwo(uint32 number) const;
 
         uint32  mSize = 0;
-        String  mFontPath = "";
         FT_Face mFace = nullptr;
         GLuint* mTextures = nullptr;
+        FT_Library mFTLibrary = nullptr;
         uint32 mMaxLetterHeight = 0, mMinLetterHeight = 0;
         UnorderedMap<uchar, CharacterInfo> mCharacterInfoMap;
-
-#ifdef ANDROID
-        BYTE* mFontBuffer;
-#endif
     };
 }
 

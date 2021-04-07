@@ -20,10 +20,17 @@ void SpriteBatch::initialize()
 {
     //Set Shader and shader variables
     Path vShader(_T("shader/VertexPosColTexShader.vert"));
-    Path fShader(_T("shader/VertexPosColTexShader.frag"));
-
     mVertShader = std::make_shared<Shader>(vShader, GL_VERTEX_SHADER);
+    if (!mVertShader->load())
+    {
+        LOG_ERROR << _T("SpriteBatch initialize load shader VertexPosColTexShader failed");
+    }
+    Path fShader(_T("shader/VertexPosColTexShader.frag"));
     mFragShader = std::make_shared<Shader>(fShader, GL_FRAGMENT_SHADER);
+    if (!mFragShader->load())
+    {
+        LOG_ERROR << _T("SpriteBatch initialize load shader VertexPosColTexShader failed");
+    }
     mUVID = mVertShader->getAttribLocation("texCoord");
     mIsHUDID = mVertShader->getAttribLocation("isHUD");
     mVertexID = mVertShader->getAttribLocation("position");

@@ -240,18 +240,22 @@ bool Window::onMessage(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     switch (message)
     {
     case WM_DESTROY:
+    {
         PostQuitMessage(0);
-        break;
+        return true;
+    }
+    break;
     case WM_SIZE:
     {
         RECT clienRect;
         GetClientRect(hWnd, &clienRect);
         GraphicsManager::getInstance()->setWindowChanged(true);
         GraphicsManager::getInstance()->setWindowDimensions(clienRect.right - clienRect.left,clienRect.bottom - clienRect.top);
+        return true;
     }
     break;
     }
-    return true;
+    return false;
 }
 
 Window::~Window()

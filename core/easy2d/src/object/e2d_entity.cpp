@@ -45,6 +45,61 @@ void Entity::initialize()
 
 }
 
+void Entity::translate(const Vec2& translation)
+{
+	getTransform()->translate(translation);
+}
+
+void Entity::translate(float32 x, float32 y)
+{
+	getTransform()->translate(x, y);
+}
+
+void Entity::translate(const Vec2& translation, lay l)
+{
+	getTransform()->translate(translation, l);
+}
+
+void Entity::translate(float32 x, float32 y, lay l)
+{
+	getTransform()->translate(x, y, l);
+}
+
+void Entity::translate(const Pos& pos2D)
+{
+	getTransform()->translate(pos2D);
+}
+
+void Entity::translateX(float32 x)
+{
+	getTransform()->translateX(x);
+}
+
+void Entity::translateY(float32 y)
+{
+	getTransform()->translateY(y);
+}
+
+void Entity::translateL(lay l)
+{
+	getTransform()->translateL(l);
+}
+
+const Pos& Entity::getWorldPosition() const
+{
+	return getTransform()->getWorldPosition();
+}
+
+const Pos& Entity::getLocalPosition() const
+{
+	return getTransform()->getLocalPosition();
+}
+
+const Vec2& Entity::getDimensions() const
+{
+	return getTransform()->getDimensions();
+}
+
 void Entity::update(const uint32& escapeMs)
 {
 	if(!mDisable)

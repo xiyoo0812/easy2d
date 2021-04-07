@@ -1,14 +1,11 @@
 #include "e2d_font_mgr.h"
+#include "resource\e2d_asset_mgr.h"
 
 using namespace Easy2D;
 
 FontManager::FontManager() : Singleton<FontManager>(), mLibrary(0)
 {
-    auto error = FT_Init_FreeType(&mLibrary);
-    if (error)
-    {
-        // log
-    }
+    
 }
 
 FontManager::~FontManager()
@@ -22,19 +19,42 @@ void FontManager::clear()
     FT_Done_FreeType(mLibrary);
 }
 
-bool FontManager::loadFont(const String& path, const String& name, uint32 size)
+void FontManager::initialize(const String& path)
 {
-    if (mFontList.find(name) != mFontList.end())
+    auto error = FT_Init_FreeType(&mLibrary);
+    if (error)
     {
-        return true;
+        LOG_ERROR << _T("FontManager::setPath FT_Init_FreeType failed! code: ") << error;
     }
-    auto font = std::make_shared<Font>();
-    if (font->load(path, size, mLibrary))
+    for (Path fpath : AssetManager::getInstance()->enumerateDirectory(Path(path)))
     {
-        mFontList.insert(std::make_pair(name, font));
-        return true;
+        String name = fpath.filename().string();
+        mFontFiles.insert(std::make_pair(name, fpath));
     }
-    return false;
+}
+
+const SPtr<Font> FontManager::loadFont(const String& name, const String& fontName, uint32 size /* = 12 */)
+{
+    auto it = mFontList.find(name);
+    if (it != mFontList.end())
+    {
+        return it->second;
+    }
+    auto pit = mFontFiles.find(fontName);
+    if (pit == mFontFiles.end())
+    {
+        LOG_ERROR << _T("FontManager::loadFont font file not exist! name: ") << fontName;
+        return nullptr;
+    }
+    Path& path = pit->second;
+    auto font = std::make_shared<Font>(path, size, mLibrary);
+    if (!font->load())
+    {
+        LOG_ERROR << _T("FontManager::loadFont font load failed! name: ") << fontName;
+        return nullptr;
+    }
+    mFontList.insert(std::make_pair(name, font));
+    return font;
 }
 
 bool FontManager::removeFont(const String& name)

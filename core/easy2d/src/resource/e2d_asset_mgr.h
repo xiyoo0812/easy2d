@@ -13,9 +13,12 @@ namespace Easy2D
         ~AssetManager() {}
 
         const Path& getPath() const { return mBasePath; }
-        void setPath(const Path& path) { mBasePath = path; }
+        void initialize(const Path& path) { mBasePath = path; }
+
+        Vector<Path> enumerateDirectory(const Path& path);
 
         SPtr<DataStream> loadAsset(const Path& path);
+        bool loadAssetData(const Path& path, Bytes& data);
 
         SPtr<DataStream> asyncAsset(const Path& path);
 

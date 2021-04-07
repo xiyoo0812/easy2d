@@ -6,33 +6,23 @@
 /* Easy2D */
 using namespace Easy2D;
 
-SpriteComponent::SpriteComponent(const String& filepath, const String& spriteName, uint32 widthSegments, uint32 heightSegments)
-    : Component(), mFilePath(filepath), mSpriteName(spriteName)
+SpriteComponent::SpriteComponent(uint32 widthSegments, uint32 heightSegments)
+    : Component(SpriteComponent::GUID), mWidthSegments(widthSegments), mHeightSegments(heightSegments)
 {
     mSpriteInfo = std::make_shared<SpriteInfo>();
 }
 
 SpriteComponent::~SpriteComponent()
 {
-}
-
-void SpriteComponent::initialize()
-{
-    TextureManager::getInstance()->loadTexture(mFilePath.string(), mSpriteName);
-
-    mDimensions.x = TextureManager::getInstance()->getTextureDimensions(mSpriteName).x / mWidthSegments;
-    mDimensions.y = TextureManager::getInstance()->getTextureDimensions(mSpriteName).y / mHeightSegments;
-
-    getTransform()->setDimensionsSafe(mDimensions);
-
-    createUVCoords();
-    fillSpriteInfo();
+    mTexture->reset()
+    mSpriteInfo->reset();
 }
 
 void SpriteComponent::fillSpriteInfo()
 {
-    mSpriteInfo->transform = getTransform();
-    mSpriteInfo->textureID = TextureManager::getInstance()->getTextureID(mSpriteName);
+    mSpriteInfo->colorMultiplier = mTextColor;
+    mSpriteInfo->textureID = mTexture->getTextureID();
+    mSpriteInfo->transform = getTransform()->lock();
     mSpriteInfo->vertices = Vec2(mDimensions.x, mDimensions.y);
 }
 
@@ -70,33 +60,19 @@ bool SpriteComponent::checkCulling(float32 left, float32 right, float32 top, flo
     {
         return true;
     }
-
     float32 spriteWidth, spriteHeight;
-
     Pos objectPos = getTransform()->getWorldPosition();
-
     if (mSpriteInfo->bIsHud)
     {
         objectPos.x += left;
         objectPos.y += bottom;
     }
-
     spriteWidth = float32(getWidth()) * getTransform()->getWorldScale().x;
     spriteHeight = float32(getHeight()) * getTransform()->getWorldScale().y;
     float32 objRight = objectPos.x + spriteWidth;
     float32 objTop = objectPos.y + spriteHeight;
 
     return (objectPos.x <= right && objRight >= left) && (objectPos.y <= top && objTop >= bottom);
-}
-
-const Path& SpriteComponent::getFilePath() const
-{
-    return mFilePath;
-}
-
-const String& SpriteComponent::getName() const
-{
-    return mSpriteName;
 }
 
 void SpriteComponent::setCurrentSegment(uint32 widthSegment, uint32 heightSegment)
@@ -106,9 +82,14 @@ void SpriteComponent::setCurrentSegment(uint32 widthSegment, uint32 heightSegmen
     createUVCoords();
 }
 
-void SpriteComponent::setColorMultiplier(const Color & color)
+void SpriteComponent::setColor(const Color & color)
 {
     mSpriteInfo->colorMultiplier = color;
+}
+
+const Color& SpriteComponent::getColor() const
+{
+    return mSpriteInfo->colorMultiplier;
 }
 
 void SpriteComponent::setHUDOptionEnabled(bool enabled)
@@ -121,7 +102,7 @@ bool SpriteComponent::isHUDOptionEnabled() const
     return mSpriteInfo->bIsHud;
 }
 
-void SpriteComponent::setTexture(const String& filepath, const String& spriteName, uint32 widthSegments /* = 1 */, uint32 heightSegments /* = 1 */)
+void SpriteComponent::setTexture(SPtr<Texture2D> texture, uint32 widthSegments /* = 1 */, uint32 heightSegments /* = 1 */)
 {
     mDimensions.x = 0;
     mWidthSegments = widthSegments;
@@ -129,12 +110,10 @@ void SpriteComponent::setTexture(const String& filepath, const String& spriteNam
     mDimensions.y = 0;
     mHeightSegments = heightSegments;
     mCurrentHeightSegment = 0;
-    mFilePath = filepath;
-    mSpriteName = spriteName;
+    mTexture = texture;
 
-    TextureManager::getInstance()->loadTexture(mFilePath.string(), mSpriteName);
-    mDimensions.x = TextureManager::getInstance()->getTextureDimensions(mSpriteName).x / mWidthSegments;
-    mDimensions.y = TextureManager::getInstance()->getTextureDimensions(mSpriteName).y / mHeightSegments;
+    mDimensions.x = texture->getWidth() / mWidthSegments;
+    mDimensions.y = texture->getHeight() / mHeightSegments;
 
     getTransform()->setDimensionsSafe(mDimensions);
 

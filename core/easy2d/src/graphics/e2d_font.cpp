@@ -1,6 +1,15 @@
 #include "e2d_font.h"
+#include "resource\e2d_asset_mgr.h"
 
 using namespace Easy2D;
+
+Font::Font(const Path& path, uint32 size, FT_Library library)
+    : Resource(path)
+    , mFTLibrary(library)
+    , mSize(size)
+{
+
+}
 
 Font::~Font()
 {
@@ -8,62 +17,47 @@ Font::~Font()
     mCharacterInfoMap.clear();
 }
 
-bool Font::load(const String& path, uint32 size, FT_Library& library)
+bool Font::load()
 {
-    mSize = size;
-    mFontPath = path;
-    mTextures = new GLuint[FONT_TEXTURES];
-
-#ifdef WIN32
-    //Convert from wstring to const schar* trough sstring
-    FT_Error error = FT_New_Face(library, path.c_str(), 0, &mFace);
-#else
-    Resource resource(path);
-    if (!resource.Open())
+    if (!mbLoad)
     {
-        return false;
-    }
-
-    int32 length = resource.GetLength();
-    mFontBuffer = new BYTE[length]();
-
-    if (!resource.Read(mFontBuffer, length))
-    {
-        resource.Close();
-        return false;
-    }
-
-    auto error = FT_New_Memory_Face(library, mFontBuffer, length, 0, &mFace);
-    resource.Close();
-#endif
-    if (error == FT_Err_Unknown_File_Format)
-    {
-        return (false);
-    }
-    else if (error)
-    {
-        return (false);
-    }
-    int32 iSize = int32(size);
-    FT_Set_Char_Size(mFace, iSize << 6, iSize << 6, FONT_DPI, FONT_DPI);
-
-    glGenTextures(FONT_TEXTURES, mTextures);
-    for (uchar i = 0; i < FONT_TEXTURES; ++i)
-    {
-        mCharacterInfoMap.insert(std::make_pair(i, CharacterInfo()));
-        make_D_List(mFace, i, mTextures);
-    }
-    FT_Done_Face(mFace);
+        Bytes fontData;
+        if (!AssetManager::getInstance()->loadAssetData(mPath, fontData))
+        {
+            LOG_ERROR << _T("Font::load loadAssetData failed!");
+            return false;
+        }
+        FT_Error error = FT_New_Memory_Face(mFTLibrary, fontData.data(), fontData.size(), 0, &mFace);
+        if (error == FT_Err_Unknown_File_Format)
+        {
+            LOG_ERROR << _T("Font::load FT_New_Memory_Face file format error!");
+            return false;
+        }
+        else if (error)
+        {
+            LOG_ERROR << _T("Font::load FT_New_Memory_Face file error! code: ") << error;
+            return false;
+        }
+        FT_Set_Char_Size(mFace, mSize << 6, mSize << 6, FONT_DPI, FONT_DPI);
+        mTextures = new GLuint[FONT_TEXTURES];
+        glGenTextures(FONT_TEXTURES, mTextures);
+        for (uchar i = 0; i < FONT_TEXTURES; ++i)
+        {
+            mCharacterInfoMap.insert(std::make_pair(i, CharacterInfo()));
+            make_D_List(mFace, i, mTextures);
+        }
+        FT_Done_Face(mFace);
+        mbLoad = true;
+    }    
     return true;
 }
 
 void Font::unload()
 {
+    mFace = nullptr;
+    mFTLibrary = nullptr;
     glDeleteTextures(FONT_TEXTURES, mTextures);
-    delete[] mTextures;
-#ifdef ANDROID
-    delete[] mFontBuffer;
-#endif
+    safeDeleteArray(mTextures);
 }
 
 void Font::make_D_List(FT_Face face, uchar ch, GLuint* tex_base)
@@ -71,11 +65,13 @@ void Font::make_D_List(FT_Face face, uchar ch, GLuint* tex_base)
     auto error = FT_Load_Char(face, ch, FT_LOAD_DEFAULT);
     if (error)
     {
+        LOG_ERROR << _T("Font::make_D_List FT_Load_Char error! ch: ") << ch;
         return;
     }
     error = FT_Render_Glyph(face->glyph, FT_RENDER_MODE_NORMAL);
     if (error)
     {
+        LOG_ERROR << _T("Font::make_D_List FT_Render_Glyph error! ch: ") << ch;
         return;
     }
 
@@ -125,10 +121,6 @@ void Font::make_D_List(FT_Face face, uchar ch, GLuint* tex_base)
     mCharacterInfoMap.at(ch).uvDimensions = Vec2(x, y);
 }
 
-const String& Font::getFontPath() const
-{
-    return mFontPath;
-}
 
 GLuint* Font::getTextures() const
 {

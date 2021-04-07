@@ -31,8 +31,12 @@ size_t DataStream::read(Bytes& dst, size_t size)
         size = mDataSize;
     }
     size_t readSize = std::min(size, mDataSize - mCurPos);
-    dst.resize(readSize);
-    memcpy((char*)dst[0], (char*)mData[mCurPos], readSize);
+    if (readSize > 0)
+    {
+        dst.resize(readSize);
+        memcpy((char*)dst.data(), (char*)(mData.data()) + mCurPos, readSize);
+        mCurPos + readSize;
+    }
     return readSize;
 }
 
@@ -58,16 +62,20 @@ size_t DataStream::tell() const
 
 void DataStream::set(const BYTE* data, size_t size)
 {
-    mData.clear();
-    mData.resize(size);
-    memcpy((char*)mData[0], data, size);
-    mDataSize = size;
-    mCurPos = 0;
+    if (size > 0)
+    {
+        mData.clear();
+        mData.resize(size);
+        memcpy((char*)mData.data(), data, size);
+        mDataSize = size;
+        mCurPos = 0;
+    }
 }
 
 FileStream::FileStream(const Path& path)
 {
     mData = FileSystem::readFile(path);
+    mDataSize = mData.size();
 }
 
 FileStream::~FileStream()

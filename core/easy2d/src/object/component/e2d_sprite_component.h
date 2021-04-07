@@ -14,13 +14,13 @@ namespace Easy2D
         bool bIsHud = false;
         uint32 textureID = 0;
         Color colorMultiplier = Color::White;
-        SPtr<TransformComponent> transform = nullptr;
+        WPtr<TransformComponent> transform = {};
     };
 
     class SpriteComponent : public Component
     {
     public:
-        SpriteComponent(const String& filepath, const String& spriteName, uint32 widthSegments = 1, uint32 heightSegments = 1);
+        SpriteComponent(uint32 widthSegments = 1, uint32 heightSegments = 1);
 
         virtual ~SpriteComponent();
 
@@ -30,22 +30,19 @@ namespace Easy2D
 
         virtual bool checkCulling(float32 left, float32 right, float32 top, float32 bottom) const;
 
-        const Path& getFilePath() const;
-
-        const String& getName() const;
-
         void setCurrentSegment(uint32 widthSegment, uint32 heightSegment);
 
-        void setColorMultiplier(const Color& color);
+        void setColor(const Color& color);
+        
+        const Color& getColor() const;
 
         void setHUDOptionEnabled(bool enabled);
 
         bool isHUDOptionEnabled() const;
 
-        void setTexture(const String& filepath, const String& spriteName, uint32 widthSegments = 1, uint32 heightSegments = 1);
+        void setTexture(SPtr<Texture2D> mTexture, uint32 widthSegments = 1, uint32 heightSegments = 1);
 
     protected:
-        virtual void initialize();
         virtual void createUVCoords();
         void setUVCoords(const Vec4& coords);
         virtual void fillSpriteInfo();
@@ -54,9 +51,11 @@ namespace Easy2D
         uint32 mCurrentWidthSegment = 0, mCurrentHeightSegment = 0;
 
     private:
-        Path mFilePath;
-        String mSpriteName = "";
+        SPtr<Texture2D> mTexture = nullptr;
         SPtr<SpriteInfo> mSpriteInfo = nullptr;
+
+    public:
+        inline static String GUID = "sprite";
     };
 }
 

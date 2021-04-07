@@ -68,21 +68,6 @@ bool Component::isVisible() const
     return mVisible;
 }
 
-const Vec2& Component::getDimensions() const
-{
-    return mDimensions;
-}
-
-float32 Component::getWidth() const
-{
-    return mDimensions.x;
-}
-
-float32 Component::getHeight() const
-{
-    return mDimensions.y;
-}
-
 SPtr<Entity> Component::getMaster() const
 {
     return mMaster.lock();

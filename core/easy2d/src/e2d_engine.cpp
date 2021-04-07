@@ -24,7 +24,10 @@ E2dEngine::~E2dEngine()
 void E2dEngine::initialize(uint32 window_width, uint32 window_height)
 {
     mStopWatch = std::make_shared<Stopwatch>();
-    AssetManager::getInstance()->setPath("res");
+    //初始化asset资源路径
+    AssetManager::getInstance()->initialize("res");
+    //初始化font资源路径，基于asset的路径
+    FontManager::getInstance()->initialize("font");
     GraphicsManager::getInstance()->initialize(window_width, window_height);
 #endif
 #ifdef ANDROID

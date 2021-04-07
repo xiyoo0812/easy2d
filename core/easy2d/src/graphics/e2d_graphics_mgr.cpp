@@ -181,7 +181,7 @@ void GraphicsManager::destroy()
 void GraphicsManager::initializeOpenGLStates()
 {
     //glDisable(GL_DEPTH_TEST);
-    glClearColor(0.f, 0.f, 0.f, 1.0f);
+    glClearColor(0.0f, 0.5f, 0.5f, 1.0f);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
 }

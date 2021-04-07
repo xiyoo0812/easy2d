@@ -11,10 +11,12 @@ namespace Easy2D
         Resource(const Path& path) :mPath(path){}
 
         virtual bool load() = 0;
+        bool isLoad() const { return mbLoad; }
         const Path& getPath() const { return mPath; }
 
     protected:
         Path mPath;
+        bool mbLoad;
     };
 }
 

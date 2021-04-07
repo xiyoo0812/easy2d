@@ -9,10 +9,10 @@ namespace Easy2D
     {
     public:
         String mName;
-        int32 mEscape;		//下次执行时间
-        uint32 mPeriod;		//周期
-        uint32 mTimes;		//执行次数
-        TimerFunc mCallback;	//回调函数
+        int32 mEscape;      //下次执行时间
+        uint32 mPeriod;     //周期
+        uint32 mTimes;      //执行次数
+        TimerFunc mCallback;    //回调函数
         bool mPause = false;
 
         Timer(const String& name, uint32 interval, uint32 period, uint32 times, TimerFunc callback)

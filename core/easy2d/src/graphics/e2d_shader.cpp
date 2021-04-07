@@ -16,11 +16,15 @@ Shader::~Shader()
 
 bool Shader::load()
 {
-    if (!compileShader())
+    if (!mbLoad)
     {
-        return false;
+        if (!compileShader())
+        {
+            return false;
+        }
+        mbLoad = glInit();
     }
-    return glInit();
+    return mbLoad;
 }
 
 bool Shader::glInit()
@@ -46,7 +50,6 @@ bool Shader::glInit()
             glGetProgramInfoLog(mProgramID, infoLen, NULL, infoLog);
             LOG_ERROR << _T("Shader::GLInit: Failed to link program: ") << infoLog;
             delete infoLog;
-
         }
         glDeleteProgram(mProgramID);
         return false;
@@ -58,16 +61,18 @@ bool Shader::glInit()
 bool Shader::compileShader()
 {
     auto stream = AssetManager::getInstance()->loadAsset(mPath);
-    if (stream)
+    if (stream = nullptr)
     {
-        Bytes result;
-        size_t size = stream->read(result);
-        if (size > 0)
-        {
-            return compileShader((GLchar*)result.data());
-        }
+        LOG_ERROR << _T("Shader::compileShader loadAsset failed!");
+        return false;
     }
-    return false;
+    Bytes result;
+    if (stream->read(result) <= 0)
+    {
+        LOG_ERROR << _T("Shader::compileShader read data failed!");
+        return false;
+    }
+    return compileShader((GLchar*)result.data());
 }
 
 bool Shader::compileShader(const GLchar* sData)

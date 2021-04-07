@@ -23,6 +23,18 @@ namespace Easy2D
         virtual void update(const uint32& escapeMs);
         virtual void drawWithCulling(float32 left, float32 right, float32 top, float32 bottom);
 
+        virtual void translate(const Vec2& translation);
+		virtual void translate(float32 x, float32 y);
+		virtual void translate(const Vec2& translation, lay l);
+		virtual void translate(float32 x, float32 y, lay l);
+		virtual void translate(const Pos& pos2D);
+		virtual void translateX(float32 x);
+		virtual void translateY(float32 y);
+		virtual void translateL(lay l);
+		
+        const Vec2& getDimensions() const;
+        const Pos& getWorldPosition() const;
+        const Pos& getLocalPosition() const;
         const String& getPhysics() const;
         void setPhysics(const String& physics);
         bool comparePhysics(const String& physics);
