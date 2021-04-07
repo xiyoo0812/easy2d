@@ -12,8 +12,6 @@ TextComponent::TextComponent() : Component(TextComponent::GUID)
 
 TextComponent::~TextComponent()
 {
-    mFont->reset();
-    mTextInfo->reset();
 }
 
 void TextComponent::initialize()
@@ -32,9 +30,8 @@ void TextComponent::initialize()
 
 void TextComponent::fillTextInfo()
 {
-    mTextInfo->font = mFont.lock();
-    mTextInfo->transform = getTransform().lock();
-    mTextInfo->colorMultiplier = mTextColor;
+    mTextInfo->font = mFont;
+    mTextInfo->transform = getTransform();
 }
 
 void TextComponent::calculateTextDimensions()
@@ -79,7 +76,7 @@ void TextComponent::cleanUpText(const String& str)
 void TextComponent::calculateHorizontalTextOffset()
 {
     mTextInfo->horizontalTextOffset.clear();
-    if (mTextAlignment == HorizontalAlignment::center)
+    if (mTextAlignment == HorizontalAlignment::Center)
     {
         uint32 counter(0);
         uint32 length = getLongestLine(mEditText);
@@ -123,7 +120,7 @@ void TextComponent::calculateHorizontalTextOffset()
             mTextInfo->horizontalTextOffset.push_back(diff);
         }
     }
-    else if (mTextAlignment == HorizontalAlignment::right)
+    else if (mTextAlignment == HorizontalAlignment::Right)
     {
         uint32 counter(0);
         uint32 length = getLongestLine(mEditText);
@@ -275,7 +272,7 @@ const Color& TextComponent::getColor() const
     return mTextInfo->colorMultiplier;
 }
 
-void TextComponent::setFont(const SPtr<Font>& font)
+void TextComponent::setFont(const SPtr<Font> font)
 {
     mFont = font;
 }
@@ -398,18 +395,18 @@ bool TextComponent::isHUDOptionEnabled() const
 
 void TextComponent::alignTextLeft()
 {
-    mTextAlignment = HorizontalAlignment::left;
+    mTextAlignment = HorizontalAlignment::Left;
     calculateHorizontalTextOffset();
 }
 
 void TextComponent::alignTextCenter()
 {
-    mTextAlignment = HorizontalAlignment::center;
+    mTextAlignment = HorizontalAlignment::Center;
     calculateHorizontalTextOffset();
 }
 
 void TextComponent::alignTextRight()
 {
-    mTextAlignment = HorizontalAlignment::right;
+    mTextAlignment = HorizontalAlignment::Right;
     calculateHorizontalTextOffset();
 }

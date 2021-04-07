@@ -10,14 +10,14 @@ namespace Easy2D
     class TextInfo
     {
     public:
-        WPtr<Font> font = nullptr;
-        WPtr<TransformComponent> transform = nullptr;
+        String text = "";
+        bool bIsHud = false;
+        int32 textHeight = 10;
+        int32 verticalSpacing = 0;
         Color colorMultiplier = Color::White;
         Vector<int32> horizontalTextOffset = {};
-        int32 verticalSpacing = 0;
-        int32 textHeight = 10;
-        bool bIsHud = false;
-        String text = "";
+        SPtr<TransformComponent> transform = nullptr;
+        SPtr<Font> font = nullptr;
     };
 
     class TextComponent : public Component
@@ -89,7 +89,7 @@ namespace Easy2D
 
         SPtr<Font> mFont = nullptr;
         SPtr<TextInfo> mTextInfo = nullptr;
-        HorizontalAlignment mTextAlignment = HorizontalAlignment::center;
+        HorizontalAlignment mTextAlignment = HorizontalAlignment::Center;
 
     public:
         inline static String GUID = "text";

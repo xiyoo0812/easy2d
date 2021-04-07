@@ -7,35 +7,36 @@
 
 namespace Easy2D
 {
-	class TextComponent;
-	class UITextField : public UIWidget
-	{
-	public:
-		UITextField(const String& name, const String& text, const Color& color);
-		UITextField(const String& name, const String& text, const Color& color, SPtr<Font> font);
+    class TextComponent;
+    class UITextField : public UIWidget
+    {
+    public:
+        UITextField(const String& name);
 
-		virtual ~UITextField(void);
+        virtual ~UITextField();
 
-		virtual void setHorizontalAlignment(HorizontalAlignment alignment,bool redefineCenter = true);
-		virtual void setVerticalAlignment(VerticalAlignment alignment,bool redefineCenter = true);
+        virtual void initialize();
 
-		void setText(const String& text);
-		const String& getText() const;
+        virtual void setHorizontalAlignment(HorizontalAlignment alignment, bool redefineCenter = true);
+        virtual void setVerticalAlignment(VerticalAlignment alignment, bool redefineCenter = true);
 
-		void setColor(const Color& color);
+        void setText(const String& text);
+        const String& getText() const;
+
+        void setColor(const Color& color);
         const Color& getColor() const;
-		
+
         void setFont(const SPtr<Font> font);
         const SPtr<Font> getFont() const;
 
-		virtual Vec2 getDimensions() const;
+        virtual Vec2 getDimensions() const;
 
-		int32 getWidth() const;
-		int32 getHeight() const;
+        int32 getWidth() const;
+        int32 getHeight() const;
 
-	protected:
-		SPtr<TextComponent> mTextComponent;
-	};
+    protected:
+        SPtr<TextComponent> mTextComponent;
+    };
 }
 
 #endif

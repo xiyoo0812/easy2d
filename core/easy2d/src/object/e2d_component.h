@@ -37,7 +37,12 @@ namespace Easy2D
         SPtr<Entity> getMaster() const;
         void setMaster(SPtr<Entity> pMaster);
 
+        const Vec2& getDimensions() const;
+        float32 getWidth() const;
+        float32 getHeight() const;
+
     protected:
+        Vec2 mDimensions = {};
         WPtr<Entity> mMaster = {};
         bool mEnabled = true, mVisible = true;
     };

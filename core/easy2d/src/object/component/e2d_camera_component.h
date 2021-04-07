@@ -47,9 +47,9 @@ namespace Easy2D
 
         Mat4 mProjection, mView, mViewInverse;
 
-        float32 mFarPlane, mNearPlane, mFOV, mSize, mZoom, mAspectRatio;
+        float32 mFarPlane = 1000, mNearPlane = 10, mFOV = 60, mSize = 0, mZoom = 100, mAspectRatio = 0;
 
-        bool mActive, mOrthoProjection;
+        bool mActive = true, mOrthoProjection = true;
 
     public:
         inline static String GUID = "camera";

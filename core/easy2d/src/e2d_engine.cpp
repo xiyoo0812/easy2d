@@ -39,6 +39,8 @@ void E2dEngine::initialize(SPtr<android_app> app)
     GraphicsManager::getInstance()->calculateViewPort();
     SpriteBatch::getInstance()->initialize();
     //DebugDraw::getInstance()->initialize();
+    auto scene = std::make_shared<Scene>("test");
+    SceneManager::getInstance()->addScene(scene);
 }
 
 void E2dEngine::update()

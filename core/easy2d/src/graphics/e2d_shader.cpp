@@ -60,19 +60,13 @@ bool Shader::glInit()
 
 bool Shader::compileShader()
 {
-    auto stream = AssetManager::getInstance()->loadAsset(mPath);
-    if (stream = nullptr)
+    Bytes shaderData;
+    if (!AssetManager::getInstance()->loadAssetData(mPath, shaderData))
     {
-        LOG_ERROR << _T("Shader::compileShader loadAsset failed!");
+        LOG_ERROR << _T("Shader::compileShader loadAssetData failed!");
         return false;
     }
-    Bytes result;
-    if (stream->read(result) <= 0)
-    {
-        LOG_ERROR << _T("Shader::compileShader read data failed!");
-        return false;
-    }
-    return compileShader((GLchar*)result.data());
+    return compileShader((GLchar*)shaderData.data());
 }
 
 bool Shader::compileShader(const GLchar* sData)

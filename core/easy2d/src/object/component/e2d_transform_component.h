@@ -79,10 +79,6 @@ namespace Easy2D
 
         const Mat4& getWorldMatrix() const;
 
-        const Vec2& getDimensions() const;
-        float32 getWidth() const;
-        float32 getHeight() const;
-
     private:
         void checkForUpdate(const bool force = false);
         void commonUpdate();
@@ -90,7 +86,6 @@ namespace Easy2D
 
         Mat4 mWorld = {};
         uchar mChanged = 0;
-        Vec2 mDimensions = {};
         bool mMirroredX = false, mMirroredY = false;
         Pos mWorldPosition = {}, mLocalPosition = {};
         float32 mWorldRotation = 0, mLocalRotation = 0;

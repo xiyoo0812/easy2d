@@ -111,9 +111,9 @@ void Scene::addEntity(SPtr<Entity> pEntity)
                 << pEntity->getName() << _T("' already exists. Object gets added but beware, duplicate names can become the cause of problems.");
             return;
         }
-        pEntity->initialize();
         pEntity->setScene(std::dynamic_pointer_cast<Scene>(shared_from_this()));
         mEntitys.insert(std::make_pair(pEntity->getGUID(), pEntity));
+        pEntity->initialize();
     }
 }
 

@@ -3,6 +3,7 @@
 
 #include "base/e2d_color.h"
 #include "object/e2d_component.h"
+#include "graphics/e2d_texture2d.h"
 
 namespace Easy2D
 {
@@ -14,7 +15,7 @@ namespace Easy2D
         bool bIsHud = false;
         uint32 textureID = 0;
         Color colorMultiplier = Color::White;
-        WPtr<TransformComponent> transform = {};
+        SPtr<TransformComponent> transform = nullptr;
     };
 
     class SpriteComponent : public Component

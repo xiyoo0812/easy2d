@@ -19,7 +19,7 @@ Component::~Component()
 
 void Component::destroy()
 {
-    if (mMaster.expired())
+    if (!mMaster.expired())
     {
         mMaster.lock()->removeComponent(mGUID);
     }
@@ -27,7 +27,7 @@ void Component::destroy()
 
 SPtr<Scene> Component::getScene() const
 {
-    if (mMaster.expired())
+    if (!mMaster.expired())
     {
         return mMaster.lock()->getScene();
     }
@@ -36,9 +36,9 @@ SPtr<Scene> Component::getScene() const
 
 SPtr<TransformComponent> Component::getTransform() const
 {
-    if (mMaster.expired())
+    if (!mMaster.expired())
     {
-        mMaster.lock()->getTransform();
+        return mMaster.lock()->getTransform();
     }
     return nullptr;
 }
@@ -76,4 +76,19 @@ SPtr<Entity> Component::getMaster() const
 void Component::setMaster(SPtr<Entity> pEntity)
 {
     mMaster = pEntity;
+}
+
+const Vec2& Component::getDimensions() const
+{
+    return mDimensions;
+}
+
+float32 Component::getWidth() const
+{
+    return mDimensions.x;
+}
+
+float32 Component::getHeight() const
+{
+    return mDimensions.y;
 }

@@ -1,7 +1,6 @@
 #include "e2d_sprite_component.h"
 #include "e2d_transform_component.h"
 #include "graphics/e2d_sprite_batch.h"
-#include "graphics/e2d_texture_mgr.h"
 
 /* Easy2D */
 using namespace Easy2D;
@@ -14,15 +13,12 @@ SpriteComponent::SpriteComponent(uint32 widthSegments, uint32 heightSegments)
 
 SpriteComponent::~SpriteComponent()
 {
-    mTexture->reset()
-    mSpriteInfo->reset();
 }
 
 void SpriteComponent::fillSpriteInfo()
 {
-    mSpriteInfo->colorMultiplier = mTextColor;
     mSpriteInfo->textureID = mTexture->getTextureID();
-    mSpriteInfo->transform = getTransform()->lock();
+    mSpriteInfo->transform = getTransform();
     mSpriteInfo->vertices = Vec2(mDimensions.x, mDimensions.y);
 }
 

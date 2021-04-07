@@ -34,7 +34,7 @@ size_t DataStream::read(Bytes& dst, size_t size)
     if (readSize > 0)
     {
         dst.resize(readSize);
-        memcpy((char*)dst.data(), (char*)(mData.data()) + mCurPos, readSize);
+        memcpy((char*)dst.data(), (char*)(mData.data() + mCurPos), readSize);
         mCurPos + readSize;
     }
     return readSize;

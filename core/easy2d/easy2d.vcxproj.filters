@@ -4,9 +4,6 @@
     <ClCompile Include="src\base\e2d_color.cpp">
       <Filter>base</Filter>
     </ClCompile>
-    <ClCompile Include="src\base\e2d_blend.cpp">
-      <Filter>base</Filter>
-    </ClCompile>
     <ClCompile Include="src\graphics\e2d_texture2d.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
@@ -100,12 +97,15 @@
     <ClCompile Include="src\base\e2d_stopwatch.cpp">
       <Filter>base</Filter>
     </ClCompile>
+    <ClCompile Include="src\gui\e2d_text_field.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gui\e2d_widget.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\base\e2d_color.h">
-      <Filter>base</Filter>
-    </ClInclude>
-    <ClInclude Include="src\base\e2d_blend.h">
       <Filter>base</Filter>
     </ClInclude>
     <ClInclude Include="src\base\e2d_types.h">
@@ -225,6 +225,15 @@
     <ClInclude Include="src\base\e2d_stopwatch.h">
       <Filter>base</Filter>
     </ClInclude>
+    <ClInclude Include="src\gui\e2d_text_field.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gui\e2d_widget.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\object\e2d_scene_mgr.hpp">
+      <Filter>object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="base">
@@ -250,6 +259,9 @@
     </Filter>
     <Filter Include="engine">
       <UniqueIdentifier>{eb742b04-8bcc-416d-8d29-2d35a7dd660a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="gui">
+      <UniqueIdentifier>{a77163a5-675c-44b5-b3df-3e4f6516d1c9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

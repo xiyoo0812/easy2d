@@ -1,4 +1,5 @@
 #include "e2d_scene_mgr.h"
+#include "graphics/e2d_sprite_batch.h"
 
 /* Easy2D */
 using namespace Easy2D;
@@ -62,6 +63,10 @@ bool SceneManager::addScene(SPtr<Scene> scene)
     scene->initialize();
     mScenes.insert(std::make_pair(scene->getGUID(), scene));
     LOG_INFO << _T("SceneManager::addScene: Adding scene");
+    if (mCurSceneID == 0)
+    {
+        setActiveScene(scene->getGUID());
+    }
     return true;
 }
 
@@ -127,20 +132,9 @@ void SceneManager::draw()
     if (mActiveScene)
     {
         mActiveScene->draw();
-        // 		SpriteBatch::getInstance()->flush();
+        SpriteBatch::getInstance()->flush();
         // 		DebugDraw::getInstance()->flush();
     }
-}
-
-template <typename T>
-SPtr<T> SceneManager::getScene(const uint64 guid)
-{
-    auto it = mScenes.find(guid);
-    if (it != mScenes.end())
-    {
-        return std::dynamic_pointer_cast<T>(it->second);
-    }
-    return nullptr;
 }
 
 #ifdef ANDROID

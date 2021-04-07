@@ -22,7 +22,7 @@ Action::~Action()
 
 void Action::destroy()
 {
-    if (mMaster.expired())
+    if (!mMaster.expired())
     {
         mMaster.lock()->removeAction(mGUID);
     }

@@ -1,6 +1,7 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
+#include "math/e2d_pos.h"
 #include "e2d_object.h"
 #include "e2d_action.h"
 #include "e2d_component.h"

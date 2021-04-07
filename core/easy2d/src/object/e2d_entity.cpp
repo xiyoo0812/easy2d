@@ -7,18 +7,15 @@ using namespace Easy2D;
 
 Entity::Entity(void) : Object()
 {
-	addComponent(std::make_shared<TransformComponent>());
 }
 
 Entity::Entity(const String& name) : Object(name)
 {
-    addComponent(std::make_shared<TransformComponent>());
 }
 
 Entity::Entity(const String& name, const String& group)
 	: Object(name), mGroup(group)
 {
-    addComponent(std::make_shared<TransformComponent>());
 }
 
 Entity::~Entity()
@@ -30,11 +27,11 @@ Entity::~Entity()
 
 void Entity::destroy()
 {
-	if(mParent.expired())
+	if(!mParent.expired())
 	{
 		mParent.lock()->removeChild(mGUID);
 	}
-	if(mScene.expired())
+	if(!mScene.expired())
 	{
 		mScene.lock()->removeEntity(mGUID);
 	}
@@ -42,7 +39,7 @@ void Entity::destroy()
 
 void Entity::initialize()
 {
-
+	addComponent(std::make_shared<TransformComponent>());
 }
 
 void Entity::translate(const Vec2& translation)
@@ -203,10 +200,10 @@ bool Entity::addChild(SPtr<Entity> pChild)
             _T("' already exists. Child gets added but beware, duplicate names can become the cause of problems.");
 		return false;
 	}
-	pChild->initialize();
 	pChild->setScene(mScene.lock());
 	pChild->setParent(std::dynamic_pointer_cast<Entity>(shared_from_this()));
 	mChildren.insert(std::make_pair(pChild->getGUID(), pChild));
+	pChild->initialize();
 	return true;
 }
 
@@ -271,9 +268,9 @@ bool Entity::addAction(SPtr<Action> pAction)
             _T("' already exists. Action gets added but beware, duplicate names can become the cause of problems.");
 		return false;
 	}
+	pAction->setMaster(std::dynamic_pointer_cast<Entity>(shared_from_this()));
+	mActions.insert(std::make_pair(pAction->getGUID(), pAction));
 	pAction->initialize();
-    pAction->setMaster(std::dynamic_pointer_cast<Entity>(shared_from_this()));
-    mActions.insert(std::make_pair(pAction->getGUID(), pAction));
 	return true;
 }
 
@@ -327,9 +324,9 @@ bool Entity::addComponent(SPtr<Component> pComponent)
             _T("' already exists. Component gets added but beware, duplicate names can become the cause of problems.");
 		return false;
 	}
-	pComponent->initialize();
-    pComponent->setMaster(std::dynamic_pointer_cast<Entity>(shared_from_this()));
+	pComponent->setMaster(std::dynamic_pointer_cast<Entity>(shared_from_this()));
 	mComponents.insert(std::make_pair(pComponent->getGUID(), pComponent));
+	pComponent->initialize();
 	return true;
 }
 

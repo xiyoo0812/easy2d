@@ -202,21 +202,6 @@ void TransformComponent::setCenterY(float32 y)
     mCenterPosition.y = y;
 }
 
-const Vec2& TransformComponent::getDimensions() const
-{
-    return mDimensions;
-}
-
-float32 TransformComponent::getWidth() const
-{
-    return mDimensions.x;
-}
-
-float32 TransformComponent::getHeight() const
-{
-    return mDimensions.y;
-}
-
 void TransformComponent::setDimensions(float32 x, float32 y)
 {
     mDimensions.x = x;

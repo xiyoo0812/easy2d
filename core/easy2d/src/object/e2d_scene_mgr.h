@@ -47,4 +47,6 @@ namespace Easy2D
     };
 }
 
+#include "e2d_scene_mgr.hpp"
+
 #endif

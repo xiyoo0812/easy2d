@@ -4,181 +4,147 @@
 /* Easy2D */
 using namespace Easy2D;
 
-uint64 UIObject::UNIQUE_ID_COUNTER = 0;
-
-UIObject::UIObject(const tstring & name)
-	: Object(name, _T("UI"))
-	, mPosition()
-	, mHorizontalAlignment(HorizontalAlignment::Left)
-	, mVerticalAlignment(VerticalAlignment::Bottom)
-	, m_UniqueUIObjectID(
-		_T("UIObject") +
-		string_cast<tstring>(UNIQUE_ID_COUNTER++)
-		)
-	, m_pParent(nullptr)
-	, m_DebugDrawColor()
-	, mDebugDrawFilled(false)
-	, mDebugDraw(false)
+UIWidget::UIWidget(const String& name) : Entity(name)
 {
 
 }
 
-UIObject::~UIObject()
+UIWidget::~UIWidget()
 {
 }
 
-void UIObject::initialize()
+void UIWidget::initialize()
 {
-	reposition();
-	repositionChildren();
+    reposition();
+    repositionChildren();
 }
 
 
-void UIObject::setHorizontalAlignment(HorizontalAlignment alignment,bool redefineCenter)
+void UIWidget::setHorizontalAlignment(HorizontalAlignment alignment, bool redefineCenter)
 {
-	mHorizontalAlignment = alignment;
-	translateXUI(mPosition.x, getDockDimensions());
+    mHorizontalAlignment = alignment;
+    //translateUIX(mPosition.x);
 }
 
-void UIObject::setVerticalAlignment(VerticalAlignment alignment,bool redefineCenter)
+void UIWidget::setVerticalAlignment(VerticalAlignment alignment, bool redefineCenter)
 {
-	mVerticalAlignment = alignment;
-	translateYUI(mPosition.y, getDockDimensions());
+    mVerticalAlignment = alignment;
+    //translateUIX(mPosition.y);
 }
 
-void UIObject::setAlignmentCentered(bool redefineCenter)
+void UIWidget::setAlignmentCentered(bool redefineCenter)
 {
-	setHorizontalAlignment(HorizontalAlignment::Center, redefineCenter);
-	setVerticalAlignment(VerticalAlignment::Center, redefineCenter);
+    setHorizontalAlignment(HorizontalAlignment::Center, redefineCenter);
+    setVerticalAlignment(VerticalAlignment::Center, redefineCenter);
 }
 
-void UIObject::reposition()
+void UIWidget::reposition()
 {
-	translate();
+    //translate();
 }
 
-void UIObject::update(const uint32& escapeMs)
+void UIWidget::update(const uint32& escapeMs)
 {
-	Object::update(escapeMs);
+    Entity::update(escapeMs);
 }
 
-void UIObject::draw()
+void UIWidget::draw()
 {
-	UIObject::draw();
+    Entity::draw();
 }
 
-UIObject * UIObject::getRootParent() const
+void UIWidget::setRootWidget()
 {
-	UIObject *pParent(nullptr);
-	UIObject *pChild = const_cast<UIObject*>(this);
-
-	do
-	{
-		pChild = pChild->getUIParent();
-		if(pChild != nullptr)
-		{
-			pParent = pChild;
-		}
-	} while(pChild != nullptr);
-
-	return pParent;
+    mbRootWidget = true;
 }
 
-void UIObject:setRootWidget();
+Vec2 UIWidget::getDockDimensions() const
 {
-	mbRootWidget = true;
+    if (mbRootWidget)
+    {
+        return GraphicsManager::getInstance()->getScreenResolution();
+    }
+    if (mParent.expired())
+    {
+        return Vec2(0, 0);
+    }
+    return mParent.lock()->getDimensions();
 }
 
-Vec2 UIObject::getDockDimensions() const
+void UIWidget::translate(const Vec2& translation)
 {
-	if (mbRootWidget)
-	{
-		return GraphicsManager::getInstance()->getScreenResolution();
-	}
-	if(mRoot.expired())
-	{
-		dimensions = mParent.lock()->getDimensions();
-	}
-	return mDimensions;
+    Entity::translate(translateUIX(translation.x), translateUIY(translation.y));
 }
 
-void UIObject::translateUI(Pos& pos)
+void UIWidget::translate(float32 x, float32 y)
 {
-	
+    Entity::translate(translateUIX(x), translateUIY(y));
 }
 
-void UIObject::translate(const Vec2& translation)
+void UIWidget::translate(const Vec2& translation, lay l)
 {
-	getTransform()->translate(translation);
+    Entity::translate(translateUIX(translation.x), translateUIY(translation.y), l);
 }
 
-void UIObject::translate(float32 x, float32 y)
+void UIWidget::translate(float32 x, float32 y, lay l)
 {
-	getTransform()->translate(x, y);
+    Entity::translate(translateUIX(x), translateUIY(y), l);
 }
 
-void UIObject::translate(const Vec2& translation, lay l)
+void UIWidget::translate(const Pos& pos2D)
 {
-	getTransform()->translate(translation, l);
+    Entity::translate(translateUIX(pos2D.x), translateUIY(pos2D.y));
 }
 
-void UIObject::translate(float32 x, float32 y, lay l)
+void UIWidget::translateX(float32 x)
 {
-	getTransform()->translate(x, y, l);
+    Entity::translateY(translateUIX(x));
 }
 
-void UIObject::translate(const Pos& pos2D)
+void UIWidget::translateY(float32 y)
 {
-	getTransform()->translate(pos2D);
+    Entity::translateY(translateUIY(y));
 }
 
-void UIObject::translateX(float32 x)
+float32 UIWidget::translateUIX(float32 x)
 {
-	getTransform()->translateX(x);
+    Vec2 dimensions = getDockDimensions();
+    switch (mHorizontalAlignment)
+    {
+    case HorizontalAlignment::Center:
+        x += dimensions.x / 2;
+        break;
+    case HorizontalAlignment::Right:
+        x += dimensions.x;
+        break;
+    }
+    return x;
 }
 
-void UIObject::translateY(float32 y)
+float32 UIWidget::translateUIY(float32 y)
 {
-	getTransform()->translateY(y);
+    Vec2 dimensions = getDockDimensions();
+    switch (mVerticalAlignment)
+    {
+    case VerticalAlignment::Center:
+        y += dimensions.y / 2;
+        break;
+    case VerticalAlignment::Top:
+        y += dimensions.y;
+        break;
+    }
+    return y;
 }
 
-void UIObject::translateXUI(float32 x, const Vec2 & dimensions)
+void UIWidget::repositionChildren()
 {
-	switch(mHorizontalAlignment)
-	{
-		case HorizontalAlignment::Center:
-			x += dimensions.x / 2;
-			break;
-		case HorizontalAlignment::Right:
-			x += dimensions.x;
-			break;
-	}
-	Entity::translateX(x);
-}
-
-void UIObject::translateYUI(float32 y, const Vec2 & dimensions)
-{
-	switch(mVerticalAlignment)
-	{
-		case VerticalAlignment::Center:
-			y += dimensions.y / 2;
-			break;
-		case VerticalAlignment::Top:
-			y += dimensions.y;
-			break;
-	}
-	Entity::translateY(y);
-}
-
-void UIObject::repositionChildren()
-{
-	for(auto child : mChildren)
-	{
-		auto element = dynamic_cast<UIObject*>(child);
-		if(element != nullptr)
-		{
-			element->reposition();
-		}
-	}
+    for (auto child : mChildren)
+    {
+        auto element = std::dynamic_pointer_cast<UIWidget>(child.second);
+        if (element != nullptr)
+        {
+            element->reposition();
+        }
+    }
 }
 
