@@ -15,6 +15,7 @@ UIWidget::~UIWidget()
 
 void UIWidget::initialize()
 {
+    Entity::initialize();
     reposition();
     repositionChildren();
 }
@@ -23,13 +24,13 @@ void UIWidget::initialize()
 void UIWidget::setHorizontalAlignment(HorizontalAlignment alignment, bool redefineCenter)
 {
     mHorizontalAlignment = alignment;
-    //translateUIX(mPosition.x);
+    translateX(0);
 }
 
 void UIWidget::setVerticalAlignment(VerticalAlignment alignment, bool redefineCenter)
 {
     mVerticalAlignment = alignment;
-    //translateUIX(mPosition.y);
+    translateY(0);
 }
 
 void UIWidget::setAlignmentCentered(bool redefineCenter)
@@ -98,7 +99,7 @@ void UIWidget::translate(const Pos& pos2D)
 
 void UIWidget::translateX(float32 x)
 {
-    Entity::translateY(translateUIX(x));
+    Entity::translateX(translateUIX(x));
 }
 
 void UIWidget::translateY(float32 y)

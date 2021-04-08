@@ -26,10 +26,11 @@ void FontManager::initialize(const String& path)
     {
         LOG_ERROR << _T("FontManager::setPath FT_Init_FreeType failed! code: ") << error;
     }
-    for (Path fpath : AssetManager::getInstance()->enumerateDirectory(Path(path)))
+    Path fontPath = Path(path);
+    for (Path filePath : AssetManager::getInstance()->enumerateDirectory(fontPath, false))
     {
-        String name = fpath.filename().string();
-        mFontFiles.insert(std::make_pair(name, fpath));
+        Path fullPath = fontPath / filePath;
+        mFontFiles.insert(std::make_pair(filePath.string(), fullPath));
     }
 }
 

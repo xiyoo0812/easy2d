@@ -10,14 +10,13 @@ namespace Easy2D
     {
     public:
         friend Singleton<TextureManager>;
-        void loadTexture(const String& path, const String& name);
+        SPtr<Texture2D> loadTexture(const String& path, const String& name);
         bool removeTexture(const String& name);
 
         GLuint getTextureID(const String& name);
         Vec2 getTextureDimensions(const String& name);
 
         void clear();
-        bool reload();
 
     private:
         UnorderedMap<String, String> mPathList;

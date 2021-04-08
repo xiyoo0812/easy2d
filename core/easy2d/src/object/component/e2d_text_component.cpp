@@ -16,7 +16,7 @@ TextComponent::~TextComponent()
 
 void TextComponent::initialize()
 {
-    if (mWrapWidth == NO_WRAPPING)
+    /*if (mWrapWidth == NO_WRAPPING)
     {
         cleanUpText(mOrigText);
         calculateTextDimensions();
@@ -25,7 +25,7 @@ void TextComponent::initialize()
     {
         cleanUpText(checkWrapping(mOrigText, mWrapWidth));
     }
-    fillTextInfo();
+    fillTextInfo();*/
 }
 
 void TextComponent::fillTextInfo()
@@ -361,10 +361,9 @@ String TextComponent::checkWrapping(const String& stringIn, int32 wrapWidth)
 
 void TextComponent::splitString(PointerArray<String, uint32>& words, String str, char delimiter)
 {
-    words.amount = std::count(str.begin(), str.end(), delimiter);
+    words.amount = std::count(str.begin(), str.end(), delimiter) + 1;
     words.elements = new String[words.amount];
-    size_t pos(0);
-    uint32 n(0);
+    size_t n = 0, pos = 0;
     for (; n < words.amount - 1; ++n)
     {
         pos = str.find(delimiter);

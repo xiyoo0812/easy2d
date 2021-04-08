@@ -1,20 +1,20 @@
-#ifndef IMAGE_H
-#define IMAGE_H
+#ifndef PICTURE_H
+#define PICTURE_H
 
 #include "base/e2d_color.h"
 
 namespace Easy2D
 {
-    class Image
+    class Picture
     {
     public:
         //constructors
-        Image();
-        Image(int width, int height, int bits, bool set_default_color = false, const Color& color = Color(255, 255, 255, 255));
+        Picture();
+        Picture(int width, int height, int bits, bool set_default_color = false, const Color& color = Color(255, 255, 255, 255));
         //destructor
-        ~Image();
+        ~Picture();
         //load a image from file
-        bool loadImage(const String& path);
+        bool loadPicture(const String& path);
         bool loadFromData(BYTE* data, int size);
         //save in a file
         bool save(const String& path);
@@ -48,11 +48,11 @@ namespace Easy2D
         }
 
         //returna a sub immage
-        static Image* getImage(Image* surce, int x, int y, int width, int height);
+        static Picture* getPicture(Picture* surce, int x, int y, int width, int height);
         // return openGL bite format
         static BYTE& pixel(BYTE* bytes, int width, int x, int y, int c);
         // save a openGL screen
-        static Image* getScreenshot(int width, int height);
+        static Picture* getScreenshot(int width, int height);
 
     private:
         //fields

@@ -10,9 +10,6 @@
     <ClCompile Include="src\graphics\e2d_font.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphics\e2d_image.cpp">
-      <Filter>graphics</Filter>
-    </ClCompile>
     <ClCompile Include="src\math\e2d_math.cpp">
       <Filter>math</Filter>
     </ClCompile>
@@ -103,6 +100,12 @@
     <ClCompile Include="src\gui\e2d_widget.cpp">
       <Filter>gui</Filter>
     </ClCompile>
+    <ClCompile Include="src\graphics\e2d_picture.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gui\e2d_image.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\base\e2d_color.h">
@@ -121,9 +124,6 @@
       <Filter>graphics</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\e2d_font.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphics\e2d_image.h">
       <Filter>graphics</Filter>
     </ClInclude>
     <ClInclude Include="src\base\e2d_singleton.h">
@@ -233,6 +233,12 @@
     </ClInclude>
     <ClInclude Include="src\object\e2d_scene_mgr.hpp">
       <Filter>object</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\e2d_picture.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gui\e2d_image.h">
+      <Filter>gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -8,6 +8,9 @@
 #include "graphics/e2d_sprite_batch.h"
 #include "resource/e2d_asset_mgr.h"
 
+#include "gui/e2d_text_field.h"
+#include "gui/e2d_image.h"
+
 /* Easy2D */
 using namespace Easy2D;
 
@@ -36,11 +39,31 @@ void E2dEngine::initialize(SPtr<android_app> app)
     GraphicsManager::getInstance()->initialize(app);
 #endif
     //AudioManager::getInstance()->start();
+    ScaleSystem::getInstance()->setWorkingResolution(window_width, window_height);
     GraphicsManager::getInstance()->calculateViewPort();
     SpriteBatch::getInstance()->initialize();
     //DebugDraw::getInstance()->initialize();
+
     auto scene = std::make_shared<Scene>("test");
     SceneManager::getInstance()->addScene(scene);
+
+    auto tex = TextureManager::getInstance()->loadTexture("image/bg.png", "bg");
+    auto image = std::make_shared<UIImage>("image");
+    scene->addEntity(image);
+    image->setTexture(tex);
+    image->setHorizontalAlignment(HorizontalAlignment::Center);
+    image->setVerticalAlignment(VerticalAlignment::Center);
+
+    /*auto font = FontManager::getInstance()->loadFont("felt_12", "felt.ttf", 12);
+    
+    auto txt = std::make_shared<UITextField>("text");
+    scene->addEntity(txt);
+    txt->setFont(font);
+    txt->setText("abcv");
+    txt->setRootWidget();
+    txt->setHorizontalAlignment(HorizontalAlignment::Center);
+    txt->setVerticalAlignment(VerticalAlignment::Center);*/
+
 }
 
 void E2dEngine::update()

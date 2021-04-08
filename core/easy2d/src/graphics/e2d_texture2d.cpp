@@ -1,28 +1,13 @@
 #include "e2d_texture2d.h"
-#include "e2d_image.h"
+#include "e2d_picture.h"
+#include "resource\e2d_asset_mgr.h"
 
 using namespace Easy2D;
 
 Texture2D::Texture2D(const String& pPath)
-    : mPath(pPath)
-#ifdef ANDROID
-    , mResource(pPath)
-#endif
+    : Resource(pPath)
 {
-    load();
 }
-
-#ifdef ANDROID
-void Texture2D::CallbackRead(png_structp png, png_bytep data, png_size_t size)
-{
-    Resource& lReader = *((Resource*)png_get_io_ptr(png));
-    if (!lReader.Read(data, size))
-    {
-        lReader.Close();
-        png_error(png, "Error while reading PNG file");
-    }
-}
-#endif
 
 Texture2D::~Texture2D()
 {
@@ -36,29 +21,35 @@ Texture2D::~Texture2D()
     mFormat = 0;
 }
 
-void Texture2D::load()
+bool Texture2D::load()
 {
-    Image image;
-    if (image.loadImage(mPath))
+    if (!mbLoad)
     {
-        mWidth = image.getWidth();
-        mHeight = image.getHeight();
-        mFormat = image.getFormat();
-        glGenTextures(1, &mTextureId);
-        glBindTexture(GL_TEXTURE_2D, mTextureId);
+        Bytes fileData;
+        if (!AssetManager::getInstance()->loadAssetData(mPath, fileData))
+        {
+            LOG_ERROR << _T("Texture2D::load loadAssetData failed!");
+            return false;
+        }
+        Picture picture;
+        if (picture.loadFromData(fileData.data(), fileData.size()))
+        {
+            mWidth = picture.getWidth();
+            mHeight = picture.getHeight();
+            mFormat = picture.getFormat();
+            glGenTextures(1, &mTextureId);
+            glBindTexture(GL_TEXTURE_2D, mTextureId);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, mFormat, mWidth, mHeight, 0, mFormat, GL_UNSIGNED_BYTE, image.getBuffer());
-    }
-}
-
-const String& Texture2D::getPath() const
-{
-    return mPath;
+            glTexImage2D(GL_TEXTURE_2D, 0, mFormat, mWidth, mHeight, 0, mFormat, GL_UNSIGNED_BYTE, picture.getBuffer());
+        }
+        mbLoad = true;
+    }    
+    return true;
 }
 
 int32 Texture2D::getHeight() const

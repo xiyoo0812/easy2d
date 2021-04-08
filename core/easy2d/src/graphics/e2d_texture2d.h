@@ -2,24 +2,23 @@
 #define TEXTURE2D_H
 
 #include "e2d_config.h"
+#include "resource/e2d_resource.h"
 
 namespace Easy2D
 {
-    class Texture2D final
+    class Texture2D final : public Resource
     {
     public:
         Texture2D(const String& pPath);
         ~Texture2D();
 
+        bool load();
+
         int32 getHeight() const;
         int32 getWidth() const;
         GLuint getTextureID() const;
-        const String& getPath() const;
 
     private:
-        void load();
-
-        String  mPath = "";
         GLint   mFormat = 0;
         GLuint  mTextureId = 0;
         int32   mWidth = 0, mHeight = 0;

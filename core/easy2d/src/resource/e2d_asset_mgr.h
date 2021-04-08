@@ -15,7 +15,7 @@ namespace Easy2D
         const Path& getPath() const { return mBasePath; }
         void initialize(const Path& path) { mBasePath = path; }
 
-        Vector<Path> enumerateDirectory(const Path& path);
+        Vector<Path> enumerateDirectory(const Path& path, bool full = true);
 
         SPtr<DataStream> loadAsset(const Path& path);
         bool loadAssetData(const Path& path, Bytes& data);

@@ -119,7 +119,6 @@ void SceneManager::update(const uint32& escapeMs)
         mActiveScene->onActivate();
         mNewActiveScene = nullptr;
         mSwitchingScene = false;
-        return;
     }
     if (mActiveScene)
     {

@@ -102,7 +102,7 @@ Bytes FileSystem::readFile(const Path& path)
     return result;
 }
 
-Vector<Path> FileSystem::enumerateDirectory(const Path& dir)
+Vector<Path> FileSystem::enumerateDirectory(const Path& dir, bool full)
 {
     Vector<Path> result;
     if (exists(dir))
@@ -114,7 +114,7 @@ Vector<Path> FileSystem::enumerateDirectory(const Path& dir)
             Path fullPath = i->path();
             if (is_regular_file(fullPath.native()))
             {
-                result.push_back(Path(fullPath.lexically_relative(dir)));
+                result.push_back(full ? fullPath : fullPath.lexically_relative(dir));
             }
         }
     }

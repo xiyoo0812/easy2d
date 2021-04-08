@@ -25,7 +25,9 @@ namespace Easy2D
 
         virtual ~SpriteComponent();
 
-        void draw();
+        virtual void draw();
+
+        virtual void initialize();
 
         virtual void update(const uint32& escapeMs);
 

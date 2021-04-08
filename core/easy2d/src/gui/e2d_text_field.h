@@ -31,8 +31,8 @@ namespace Easy2D
 
         virtual Vec2 getDimensions() const;
 
-        int32 getWidth() const;
-        int32 getHeight() const;
+        float32 getWidth() const;
+        float32 getHeight() const;
 
     protected:
         SPtr<TextComponent> mTextComponent;

@@ -11,8 +11,8 @@ namespace Easy2D
         CameraComponent();
         virtual ~CameraComponent();
 
-        void draw();
-        void update(const uint32 &escapeMs);
+        virtual void draw();
+        virtual void update(const uint32 &escapeMs);
         virtual void initialize();
 
         void setFieldOfView(float32 fov);
@@ -47,7 +47,7 @@ namespace Easy2D
 
         Mat4 mProjection, mView, mViewInverse;
 
-        float32 mFarPlane = 1000, mNearPlane = 10, mFOV = 60, mSize = 0, mZoom = 100, mAspectRatio = 0;
+        float32 mFarPlane = 100.0f, mNearPlane = 0.1f, mFOV = PI/4.0f, mSize = 0, mZoom = 1, mAspectRatio = 1;
 
         bool mActive = true, mOrthoProjection = true;
 

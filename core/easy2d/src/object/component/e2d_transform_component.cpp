@@ -16,7 +16,7 @@ TransformComponent::~TransformComponent()
 
 void TransformComponent::initialize()
 {
-    checkForUpdate(true);
+    //checkForUpdate(true);
 }
 
 void TransformComponent::translate(const Vec2& translation)

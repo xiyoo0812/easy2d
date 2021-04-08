@@ -8,7 +8,8 @@ using namespace Easy2D;
 UITextField::UITextField(const String& name)
     : UIWidget(name)
 {
-    
+    mTextComponent = std::make_shared<TextComponent>();
+    addComponent(mTextComponent);
 }
 
 UITextField::~UITextField(void)
@@ -18,8 +19,6 @@ UITextField::~UITextField(void)
 void UITextField::initialize()
 {
     Entity::initialize();
-    mTextComponent = std::make_shared<TextComponent>();
-    addComponent(mTextComponent);
     mTextComponent->setHUDOptionEnabled(true);
 }
 
@@ -101,12 +100,12 @@ Vec2 UITextField::getDimensions() const
     return Vec2(getWidth(), getHeight());
 }
 
-int32 UITextField::getWidth() const
+float32 UITextField::getWidth() const
 {
     return mTextComponent->getWidth();
 }
 
-int32 UITextField::getHeight() const
+float32 UITextField::getHeight() const
 {
     return mTextComponent->getHeight();
 }

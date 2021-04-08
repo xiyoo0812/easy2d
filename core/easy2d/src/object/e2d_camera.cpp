@@ -7,10 +7,12 @@ using namespace Easy2D;
 
 Camera::Camera() : Entity()
 {
+    addComponent(std::make_shared<CameraComponent>());
 }
 
 Camera::Camera(const String& name) : Entity(name)
 {
+    addComponent(std::make_shared<CameraComponent>());
 }
 
 Camera::~Camera()
@@ -20,7 +22,6 @@ Camera::~Camera()
 void Camera::initialize()
 {
     Entity::initialize();
-    addComponent(std::make_shared<CameraComponent>());
 }
 
 void Camera::translate(const Vec2& translation)

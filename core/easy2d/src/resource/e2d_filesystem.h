@@ -24,7 +24,7 @@ namespace Easy2D
         static void writeFile(const Path& path, const String& data);
         static Bytes readFile(const Path& path);
 
-        static Vector<Path> enumerateDirectory(const Path& path);
+        static Vector<Path> enumerateDirectory(const Path& path, bool full = true);
 
         static Path getRelative(const Path& path, const Path& parentPath);
         static Path getAbsolute(const Path& path);

@@ -33,10 +33,10 @@ bool AssetManager::loadAssetData(const Path& path, Bytes& data)
     return true;
 }
 
-Vector<Path> AssetManager::enumerateDirectory(const Path& path)
+Vector<Path> AssetManager::enumerateDirectory(const Path& path, bool full)
 {
     Path fullPath = mBasePath / path;
-    return FileSystem::enumerateDirectory(fullPath);
+    return FileSystem::enumerateDirectory(fullPath, full);
 }
 
 SPtr<DataStream> AssetManager::asyncAsset(const Path& path)

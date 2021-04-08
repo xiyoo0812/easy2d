@@ -7,7 +7,7 @@
 /* Easy2D */
 using namespace Easy2D;
 
-bool Scene::CULLING_IS_ENABLED = true;
+bool Scene::CULLING_IS_ENABLED = false;
 
 Scene::Scene(const String& name) : Object(name)
 {

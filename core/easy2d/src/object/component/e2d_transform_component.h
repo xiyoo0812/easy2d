@@ -89,7 +89,7 @@ namespace Easy2D
         bool mMirroredX = false, mMirroredY = false;
         Pos mWorldPosition = {}, mLocalPosition = {};
         float32 mWorldRotation = 0, mLocalRotation = 0;
-        Vec2 mWorldScale = {}, mLocalScale = {}, mCenterPosition = {};
+        Vec2 mWorldScale{ 1,1 }, mLocalScale {1,1}, mCenterPosition = {};
 
     public:
         inline static String GUID = "transform";

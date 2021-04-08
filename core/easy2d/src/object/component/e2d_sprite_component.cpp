@@ -15,6 +15,10 @@ SpriteComponent::~SpriteComponent()
 {
 }
 
+void SpriteComponent::initialize()
+{
+}
+
 void SpriteComponent::fillSpriteInfo()
 {
     mSpriteInfo->textureID = mTexture->getTextureID();

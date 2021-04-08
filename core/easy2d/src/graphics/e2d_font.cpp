@@ -56,8 +56,11 @@ void Font::unload()
 {
     mFace = nullptr;
     mFTLibrary = nullptr;
-    glDeleteTextures(FONT_TEXTURES, mTextures);
-    safeDeleteArray(mTextures);
+    if (mTextures)
+    {
+        glDeleteTextures(FONT_TEXTURES, mTextures);
+        safeDeleteArray(mTextures);
+    }
 }
 
 void Font::make_D_List(FT_Face face, uchar ch, GLuint* tex_base)

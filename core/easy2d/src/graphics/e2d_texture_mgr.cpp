@@ -13,11 +13,12 @@ TextureManager::TextureManager() : Singleton<TextureManager>()
 
 }
 
-void TextureManager::loadTexture(const String& path, const String& name)
+SPtr<Texture2D> TextureManager::loadTexture(const String& path, const String& name)
 {
-    if (mTextureMap.find(name) != mTextureMap.end())
+    auto it = mTextureMap.find(name);
+    if (it != mTextureMap.end())
     {
-        return;
+        return it->second;
     }
     auto pathit = mPathList.find(path);
     if (pathit != mPathList.end())
@@ -26,14 +27,20 @@ void TextureManager::loadTexture(const String& path, const String& name)
         auto nameit = mTextureMap.find(nameOld);
         if (nameit != mTextureMap.end())
         {
-            mTextureMap[name] = nameit->second;
-            return;
+            mTextureMap.insert(std::make_pair(name, nameit->second));
+            return nameit->second;
         }
         mPathList.erase(pathit);
-        return;
     }
-    mTextureMap[name] = std::make_shared<Texture2D>(path);
-    mPathList[path] = name;
+    auto texture = std::make_shared<Texture2D>(path);
+    if (!texture->load())
+    {
+        LOG_ERROR << _T("TextureManager::loadTexture texture load failed! path: ") << path;
+        return nullptr;
+    }
+    mTextureMap.insert(std::make_pair(name, texture));
+    mPathList.insert(std::make_pair(path, name));
+    return texture;
 }
 
 bool TextureManager::removeTexture(const String& name)
@@ -49,9 +56,10 @@ bool TextureManager::removeTexture(const String& name)
 
 GLuint TextureManager::getTextureID(const String& name)
 {
-    if (mTextureMap.find(name) != mTextureMap.end())
+    auto it = mTextureMap.find(name);
+    if (it != mTextureMap.end())
     {
-        return mTextureMap[name]->getTextureID();
+        return it->second->getTextureID();
     }
     return 0;
 }
@@ -72,12 +80,3 @@ void TextureManager::clear()
     mPathList.clear();
 }
 
-bool TextureManager::reload()
-{
-    mTextureMap.clear();
-    for (auto it = mPathList.begin(); it != mPathList.end(); ++it)
-    {
-        mTextureMap[it->second] = std::make_shared<Texture2D>(it->first);
-    }
-    return true;
-}

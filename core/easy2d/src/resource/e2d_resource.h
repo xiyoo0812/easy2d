@@ -15,8 +15,8 @@ namespace Easy2D
         const Path& getPath() const { return mPath; }
 
     protected:
-        Path mPath;
-        bool mbLoad;
+        Path mPath = "";
+        bool mbLoad = false;
     };
 }
 

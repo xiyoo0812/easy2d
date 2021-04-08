@@ -27,7 +27,9 @@ namespace Easy2D
 
         virtual ~TextComponent();
 
-        void draw();
+        virtual void draw();
+
+        virtual void initialize();
 
         virtual void update(const uint32& escapeMs);
 
@@ -62,8 +64,6 @@ namespace Easy2D
         void alignTextRight();
 
     protected:
-        virtual void initialize();
-
         void calculateTextDimensions();
 
         void calculateWrappedTextDimensions(uint8 lines);

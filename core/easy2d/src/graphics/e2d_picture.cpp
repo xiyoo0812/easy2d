@@ -5,17 +5,17 @@
 #include "stb_image.h"
 #include "stb_image_write.h"
 #include "stb_image_resize.h"
-#include "e2d_image.h"
+#include "e2d_picture.h"
 
 //using name space
 using namespace Easy2D;
 
 //costruttore
-Image::Image()
+Picture::Picture()
 {
 }
 
-Image::Image(int width, int height, int bits, bool set_default_color/* =false */, const Color& color/* = Color(255,255,255,255) */)
+Picture::Picture(int width, int height, int bits, bool set_default_color/* =false */, const Color& color/* = Color(255,255,255,255) */)
     :mWidth(width), mHeight(height), mChannels(bits)
 {
     mBuffer = (BYTE*)malloc(width * height * mChannels * sizeof(BYTE));
@@ -26,13 +26,13 @@ Image::Image(int width, int height, int bits, bool set_default_color/* =false */
 }
 
 //distruttore
-Image::~Image()
+Picture::~Picture()
 {
     clear();
 }
 
 //carica immagini
-bool Image::loadImage(const String& path)
+bool Picture::loadPicture(const String& path)
 {
     mName = path;
     stbi_set_flip_vertically_on_load(true);
@@ -41,7 +41,7 @@ bool Image::loadImage(const String& path)
     return false;
 }
 
-bool Image::loadFromData(BYTE* data, int size)
+bool Picture::loadFromData(BYTE* data, int size)
 {
     stbi_set_flip_vertically_on_load(true);
     mBuffer = stbi_load_from_memory(data, size, &mWidth, &mHeight, &mChannels, 0);
@@ -49,7 +49,7 @@ bool Image::loadFromData(BYTE* data, int size)
     return false;
 }
 
-bool Image::save(const String& path)
+bool Picture::save(const String& path)
 {
     Path filePath(path);
     stbi_set_flip_vertically_on_load(true);
@@ -74,7 +74,7 @@ bool Image::save(const String& path)
 }
 
 //cancella
-void Image::clear()
+void Picture::clear()
 {
     if (mBuffer)
     {
@@ -86,7 +86,7 @@ void Image::clear()
 }
 
 //restituisci un pixel
-Color Image::getPixel(int x, int y)
+Color Picture::getPixel(int x, int y)
 {
     int alpha = 255;
     if (mChannels != 3)
@@ -95,7 +95,7 @@ Color Image::getPixel(int x, int y)
 }
 
 //imposta un pixel
-void Image::setPixel(int x, int y, const Color& pixel)
+void Picture::setPixel(int x, int y, const Color& pixel)
 {
     mBuffer[(y * mWidth + x) * mChannels] = pixel.r;
     mBuffer[(y * mWidth + x) * mChannels + 1] = pixel.g;
@@ -104,8 +104,8 @@ void Image::setPixel(int x, int y, const Color& pixel)
         mBuffer[(y * mWidth + x) * 4 + 3] = pixel.a;
 }
 
-//restituisci subImage
-Image* Image::getImage(Image* surce, int x, int y, int width, int height)
+//restituisci subPicture
+Picture* Picture::getPicture(Picture* surce, int x, int y, int width, int height)
 {
     int _x, _y;
     Color RGBA;
@@ -113,7 +113,7 @@ Image* Image::getImage(Image* surce, int x, int y, int width, int height)
     BYTE* bytes = (BYTE*)malloc(width * height * surce->mChannels * sizeof(BYTE));
 
     //creo una nuova immagine
-    Image* out_img = new Image();
+    Picture* out_img = new Picture();
 
     for (_y = y; _y < (height + y); _y++)
     {
@@ -137,7 +137,7 @@ Image* Image::getImage(Image* surce, int x, int y, int width, int height)
 }
 
 //scale image:
-bool Image::scale(int newWidth, int newHeight)
+bool Picture::scale(int newWidth, int newHeight)
 {
     BYTE* newbytes = (BYTE*)malloc(mChannels * newWidth * newHeight);
     if (stbir_resize(mBuffer, mWidth, mHeight, 0, newbytes, newWidth, newHeight, 0, STBIR_TYPE_UINT8, mChannels, STBIR_ALPHA_CHANNEL_NONE, 0,
@@ -154,15 +154,15 @@ bool Image::scale(int newWidth, int newHeight)
 }
 
 // OpenGL bite format
-BYTE& Image::pixel(BYTE* bytes, int width, int x, int y, int c)
+BYTE& Picture::pixel(BYTE* bytes, int width, int x, int y, int c)
 {
     return bytes[(y * width + x) * 3 + c];
 }
 
 // OpenGL screen save
-Image* Image::getScreenshot(int width, int height)
+Picture* Picture::getScreenshot(int width, int height)
 {
-    Image* out_img = new Image();
+    Picture* out_img = new Picture();
     out_img->mWidth = width;
     out_img->mHeight = height;
     out_img->mChannels = 4;
