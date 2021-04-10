@@ -2,7 +2,7 @@
 #define SPRITEVATCH_H
 
 #include "base/e2d_color.h"
-#include "e2d_shader.h"
+#include "e2d_program.h"
 
 namespace Easy2D
 {
@@ -51,9 +51,9 @@ namespace Easy2D
         Vector<SPtr<TextInfo>> mTextQueue;
         Vector<SPtr<SpriteInfo>> mSpriteQueue;
 
-        SPtr<Shader> mVertShader = nullptr;
-        SPtr<Shader> mFragShader = nullptr;
-        GLuint mVertexID = 0, mUVID = 0, mIsHUDID = 0;
+        SPtr<Program> mProgram = nullptr;
+        SPtr<Program> mProgramTest = nullptr;
+        GLuint mVBO = 0, mVertexID = 0, mUVID = 0, mIsHUDID = 0, mVertexID1 = 0;
         GLuint mTextureSamplerID = 0, mColorID = 0, mScalingID = 0, mViewInverseID = 0, mProjectionID = 0;
 
         SpriteSortingMode mSpriteSortingMode = BackToFront;

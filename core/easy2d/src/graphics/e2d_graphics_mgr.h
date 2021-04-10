@@ -75,6 +75,7 @@ namespace Easy2D
         Vec2 mScreenResolution = {}, mViewportResolution = {};
         int32 mHorizontalViewportOffset = 0, mVerticalViewportOffset = 0;
         bool mbWindowChanged = false;
+        bool mbInitialize = false;
 
 #ifdef ANDROID
         EGLDisplay mDisplay = {};

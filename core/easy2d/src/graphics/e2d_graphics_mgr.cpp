@@ -17,30 +17,33 @@ GraphicsManager::~GraphicsManager()
 
 void GraphicsManager::calculateViewPort()
 {
-    Vec2 screenRes = getWindowResolution();
-    Vec2 workingRes = ScaleSystem::getInstance()->getWorkingResolution();
-    float32 width = screenRes.x / workingRes.x;
-    float32 height = screenRes.y / workingRes.y;
+    if (mbInitialize)
+    {
+        Vec2 screenRes = getWindowResolution();
+        Vec2 workingRes = ScaleSystem::getInstance()->getWorkingResolution();
+        float32 width = screenRes.x / workingRes.x;
+        float32 height = screenRes.y / workingRes.y;
 
-    float32 aspectRatio(0);
-    if (width > height)
-    {
-        height = screenRes.y;
-        aspectRatio = (workingRes.x / workingRes.y);
-        width = height * aspectRatio;
-        mHorizontalViewportOffset = static_cast<int32>((screenRes.x - width) / 2);
+        float32 aspectRatio(0);
+        if (width > height)
+        {
+            height = screenRes.y;
+            aspectRatio = (workingRes.x / workingRes.y);
+            width = height * aspectRatio;
+            mHorizontalViewportOffset = static_cast<int32>((screenRes.x - width) / 2);
+        }
+        else
+        {
+            width = screenRes.x;
+            aspectRatio = (workingRes.y / workingRes.x);
+            height = width * aspectRatio;
+            mVerticalViewportOffset = static_cast<int32>((screenRes.y - height) / 2);
+        }
+        glViewport(mHorizontalViewportOffset, mVerticalViewportOffset, static_cast<int32>(width), static_cast<int32>(height));
+        mViewportResolution.x = width;
+        mViewportResolution.y = height;
+        ScaleSystem::getInstance()->calculateScale();
     }
-    else
-    {
-        width = screenRes.x;
-        aspectRatio = (workingRes.y / workingRes.x);
-        height = width * aspectRatio;
-        mVerticalViewportOffset = static_cast<int32>((screenRes.y - height) / 2);
-    }
-    glViewport(mHorizontalViewportOffset, mVerticalViewportOffset, static_cast<int32>(width), static_cast<int32>(height));
-    mViewportResolution.x = width;
-    mViewportResolution.y = height;
-    ScaleSystem::getInstance()->calculateScale();
 }
 
 void GraphicsManager::setVSync(bool vSync)
@@ -84,6 +87,7 @@ void GraphicsManager::initialize(int32 screenWidth, int32 screenHeight)
     //Initializes base GL state.
     //DEPTH_TEST is default disabled
     initializeOpenGLStates();
+    mbInitialize = true;
 }
 #endif
 #ifdef ANDROID
@@ -192,7 +196,8 @@ void GraphicsManager::startDraw()
 }
 
 void GraphicsManager::stopDraw()
-{
+{   
+    glFlush();
 #ifdef ANDROID
     if (eglSwapBuffers(mDisplay, mSurface) != EGL_TRUE)
     {
@@ -220,7 +225,6 @@ void GraphicsManager::update()
                 mViewInverseMatrix = viewInverse;
                 mViewProjectionMatrix = projection * viewInverse;
             }
-
         }
     }
 }

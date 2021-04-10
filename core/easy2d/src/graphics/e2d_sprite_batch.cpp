@@ -5,6 +5,8 @@
 #include "object/component/e2d_sprite_component.h"
 #include "object/component/e2d_transform_component.h"
 
+//http://ogldev.atspace.co.uk/index.html
+
 /* Easy2D */
 using namespace Easy2D;
 
@@ -20,44 +22,66 @@ void SpriteBatch::initialize()
 {
     //Set Shader and shader variables
     Path vShader(_T("shader/VertexPosColTexShader.vert"));
-    mVertShader = std::make_shared<Shader>(vShader, GL_VERTEX_SHADER);
-    if (!mVertShader->load())
-    {
-        LOG_ERROR << _T("SpriteBatch initialize load shader VertexPosColTexShader failed");
-    }
     Path fShader(_T("shader/VertexPosColTexShader.frag"));
-    mFragShader = std::make_shared<Shader>(fShader, GL_FRAGMENT_SHADER);
-    if (!mFragShader->load())
+    mProgram = std::make_shared<Program>();
+    if (!mProgram->load(vShader, fShader))
     {
-        LOG_ERROR << _T("SpriteBatch initialize load shader VertexPosColTexShader failed");
+        LOG_ERROR << _T("SpriteBatch initialize load Program failed");
     }
-    mUVID = mVertShader->getAttribLocation("texCoord");
-    mIsHUDID = mVertShader->getAttribLocation("isHUD");
-    mVertexID = mVertShader->getAttribLocation("position");
-    mColorID = mVertShader->getAttribLocation("colorMultiplier");
-    mScalingID = mVertShader->getUniformLocation("scaleMatrix");
-    mProjectionID = mVertShader->getUniformLocation("projectionMatrix");
-    mViewInverseID = mVertShader->getUniformLocation("viewInverseMatrix");
-    mTextureSamplerID = mFragShader->getUniformLocation("textureSampler");
+    Path vShader1(_T("shader/shader.vs"));
+    Path fShader2(_T("shader/shader.fs"));
+    mProgramTest = std::make_shared<Program>();
+    if (!mProgramTest->load(vShader1, fShader2))
+    {
+        LOG_ERROR << _T("SpriteBatch initialize load Program failed");
+    }
+
+    mUVID = mProgram->getAttribLocation("texCoord");
+    mIsHUDID = mProgram->getAttribLocation("isHUD");
+    mVertexID = mProgram->getAttribLocation("position");
+    mColorID = mProgram->getAttribLocation("colorMultiplier");
+    mScalingID = mProgram->getUniformLocation("scaleMatrix");
+    mProjectionID = mProgram->getUniformLocation("projectionMatrix");
+    mViewInverseID = mProgram->getUniformLocation("viewInverseMatrix");
+    mTextureSamplerID = mProgram->getUniformLocation("textureSampler");
+
+    mVertexID1 = mProgramTest->getAttribLocation("Position");
+
+    mVertexBuffer.push_back(Vec4(-1.0f, -1.0f, 0.0f, 1.0f));
+    mVertexBuffer.push_back(Vec4(1.0f, -1.0f, 0.0f, 1.0f));
+    mVertexBuffer.push_back(Vec4(0.0f, 1.0f, 0.0f, 1.0f));
+    glGenBuffers(1, &mVBO);
+    // 绑定GL_ARRAY_BUFFER缓冲器
+    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+    // 绑定顶点数据
+    glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(Vec4), reinterpret_cast<GLvoid*>(&mVertexBuffer.at(0)), GL_STATIC_DRAW);
 }
 
 void SpriteBatch::flush()
 {
-    begin();
-    drawSprites();
-    //Clear vertex, uv, color and isHud buffer
-    mVertexBuffer.clear();
-    mUvCoordBuffer.clear();
-    mIsHUDBuffer.clear();
-    mColorBuffer.clear();
-    drawTextSprites();
-    end();
+    mProgramTest->bind();
+    glEnableVertexAttribArray(mVertexID1);
+    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+    glVertexAttribPointer(mVertexID1, 3, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+
+    glDisableVertexAttribArray(mVertexID1);
+    mProgramTest->unbind();
+    //begin();
+    //drawSprites();
+    ////Clear vertex, uv, color and isHud buffer
+    //mVertexBuffer.clear();
+    //mUvCoordBuffer.clear();
+    //mIsHUDBuffer.clear();
+    //mColorBuffer.clear();
+    //drawTextSprites();
+    //end();
 }
 
 void SpriteBatch::begin()
 {
-    mVertShader->bind();
-    mFragShader->bind();
+    mProgram->bind();
     //[TODO] Test android!
     glEnableVertexAttribArray(mVertexID);
     glEnableVertexAttribArray(mUVID);
@@ -119,8 +143,7 @@ void SpriteBatch::end()
     glDisableVertexAttribArray(mUVID);
     glDisableVertexAttribArray(mIsHUDID);
     glDisableVertexAttribArray(mColorID);
-    mVertShader->unbind();
-    mFragShader->unbind();
+    mProgram->unbind();
     mSpriteQueue.clear();
     mTextQueue.clear();
     mVertexBuffer.clear();

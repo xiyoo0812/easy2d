@@ -11,7 +11,10 @@ Shader::Shader(const Path& sFile, GLenum type)
 
 Shader::~Shader()
 {
-    glDeleteProgram(mProgramID);
+    if (mShader != 0)
+    {
+        glDeleteShader(mShader);
+    }
 }
 
 bool Shader::load()
@@ -22,40 +25,9 @@ bool Shader::load()
         {
             return false;
         }
-        mbLoad = glInit();
+        mbLoad = true;
     }
     return mbLoad;
-}
-
-bool Shader::glInit()
-{
-    mProgramID = glCreateProgram();
-    if (mProgramID == 0)
-    {
-        return false;
-    }
-
-    glAttachShader(mProgramID, mShader);
-
-    glLinkProgram(mProgramID);
-    GLint status;
-    glGetProgramiv(mProgramID, GL_LINK_STATUS, &status);
-    if (!status)
-    {
-        GLint infoLen(0);
-        glGetProgramiv(mProgramID, GL_INFO_LOG_LENGTH, &infoLen);
-        if (infoLen > 1)
-        {
-            char* infoLog = new char[infoLen];
-            glGetProgramInfoLog(mProgramID, infoLen, NULL, infoLog);
-            LOG_ERROR << _T("Shader::GLInit: Failed to link program: ") << infoLog;
-            delete infoLog;
-        }
-        glDeleteProgram(mProgramID);
-        return false;
-    }
-    glDeleteShader(mShader);
-    return true;
 }
 
 bool Shader::compileShader()
@@ -100,34 +72,13 @@ bool Shader::compileShader(const GLchar* sData)
             LOG_ERROR << _T("Shader::CompileShader: Could not compile shader of type ") << stringType << buf;
             delete buf;
         }
-        glDeleteShader(mShader);
         mShader = 0;
         return false;
     }
     return true;
 }
 
-void Shader::bind()
+const GLuint Shader::getShader() const
 {
-    glUseProgram(mProgramID);
-}
-
-void Shader::unbind()
-{
-    glUseProgram(0);
-}
-
-const GLuint Shader::getProgramID() const
-{
-    return mProgramID;
-}
-
-GLuint Shader::getUniformLocation(const GLchar* nameInShader) const
-{
-    return glGetUniformLocation(mProgramID, nameInShader);
-}
-
-GLuint Shader::getAttribLocation(const GLchar* nameInShader) const
-{
-    return glGetAttribLocation(mProgramID, nameInShader);
+    return mShader;
 }

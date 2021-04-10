@@ -13,23 +13,14 @@ namespace Easy2D
         ~Shader();
 
         bool load();
-        void bind();
-        void unbind();
 
-        const GLuint getProgramID() const;
-
-        GLuint getUniformLocation(const GLchar* nameInShader) const;
-
-        GLuint getAttribLocation(const GLchar* nameInShader) const;
+        const GLuint getShader() const;
 
     private:
         bool compileShader();
         bool compileShader(const GLchar* nameInShader);
 
-        bool glInit();
-
         GLenum mType = 0;
-        GLuint mProgramID = 0;
         GLuint mShader = 0;
     };
 }

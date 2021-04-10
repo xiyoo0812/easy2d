@@ -201,7 +201,6 @@ void Window::setFullScreen(HWND hWnd, bool fullscreen)
 
 void Window::setResolution(uint32 width, uint32 height, bool reset /* = true */)
 {
-    GraphicsManager::getInstance()->setWindowDimensions(width, height);
     clientResize(width, height);
     mWindowState.maximized = IsZoomed(mHandle);
     mWindowState.style = GetWindowLong(mHandle, GWL_STYLE);

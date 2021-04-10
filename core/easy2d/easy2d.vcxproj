@@ -120,6 +120,7 @@
     <ClCompile Include="src\graphics\e2d_font_mgr.cpp" />
     <ClCompile Include="src\graphics\e2d_graphics_mgr.cpp" />
     <ClCompile Include="src\graphics\e2d_picture.cpp" />
+    <ClCompile Include="src\graphics\e2d_program.cpp" />
     <ClCompile Include="src\graphics\e2d_scale_system.cpp" />
     <ClCompile Include="src\graphics\e2d_shader.cpp" />
     <ClCompile Include="src\graphics\e2d_sprite_batch.cpp" />
@@ -161,6 +162,7 @@
     <ClInclude Include="src\graphics\e2d_font_mgr.h" />
     <ClInclude Include="src\graphics\e2d_graphics_mgr.h" />
     <ClInclude Include="src\graphics\e2d_picture.h" />
+    <ClInclude Include="src\graphics\e2d_program.h" />
     <ClInclude Include="src\graphics\e2d_scale_system.h" />
     <ClInclude Include="src\graphics\e2d_shader.h" />
     <ClInclude Include="src\graphics\e2d_sprite_batch.h" />

@@ -63,7 +63,6 @@ void E2dEngine::initialize(SPtr<android_app> app)
     txt->setRootWidget();
     txt->setHorizontalAlignment(HorizontalAlignment::Center);
     txt->setVerticalAlignment(VerticalAlignment::Center);*/
-
 }
 
 void E2dEngine::update()
