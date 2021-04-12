@@ -52,8 +52,9 @@ namespace Easy2D
         Vector<SPtr<SpriteInfo>> mSpriteQueue;
 
         SPtr<Program> mProgram = nullptr;
-        SPtr<Program> mProgramTest = nullptr;
-        GLuint mVBO = 0, mVertexID = 0, mUVID = 0, mIsHUDID = 0, mVertexID1 = 0;
+        //GLuint mVBO = 0, mVertexID1 = 0;
+        //SPtr<Program> mProgramTest = nullptr;
+        GLuint mVertexID = 0, mUVID = 0, mIsHUDID = 0;
         GLuint mTextureSamplerID = 0, mColorID = 0, mScalingID = 0, mViewInverseID = 0, mProjectionID = 0;
 
         SpriteSortingMode mSpriteSortingMode = BackToFront;

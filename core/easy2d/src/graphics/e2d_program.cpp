@@ -37,17 +37,11 @@ bool Program::load(const Path& vFile, const Path& fFile)
     glLinkProgram(mProgramID);
     GLint status;
     glGetProgramiv(mProgramID, GL_LINK_STATUS, &status);
-    if (!status)
+    if (status == 0)
     {
-        GLint infoLen(0);
-        glGetProgramiv(mProgramID, GL_INFO_LOG_LENGTH, &infoLen);
-        if (infoLen > 1)
-        {
-            char* infoLog = new char[infoLen];
-            glGetProgramInfoLog(mProgramID, infoLen, NULL, infoLog);
-            LOG_ERROR << _T("Program::load: Failed to link program: ") << infoLog;
-            delete infoLog;
-        }
+        GLchar infoLog[1024];
+        glGetProgramInfoLog(mProgramID, 1024, NULL, infoLog);
+        LOG_ERROR << _T("Program::load: Failed to link program: ") << infoLog;
         return false;
     }
     return true;

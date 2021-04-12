@@ -5,8 +5,6 @@
 #include "object/component/e2d_sprite_component.h"
 #include "object/component/e2d_transform_component.h"
 
-//http://ogldev.atspace.co.uk/index.html
-
 /* Easy2D */
 using namespace Easy2D;
 
@@ -28,13 +26,6 @@ void SpriteBatch::initialize()
     {
         LOG_ERROR << _T("SpriteBatch initialize load Program failed");
     }
-    Path vShader1(_T("shader/shader.vs"));
-    Path fShader2(_T("shader/shader.fs"));
-    mProgramTest = std::make_shared<Program>();
-    if (!mProgramTest->load(vShader1, fShader2))
-    {
-        LOG_ERROR << _T("SpriteBatch initialize load Program failed");
-    }
 
     mUVID = mProgram->getAttribLocation("texCoord");
     mIsHUDID = mProgram->getAttribLocation("isHUD");
@@ -45,38 +36,42 @@ void SpriteBatch::initialize()
     mViewInverseID = mProgram->getUniformLocation("viewInverseMatrix");
     mTextureSamplerID = mProgram->getUniformLocation("textureSampler");
 
+    /*
+    Path vShader1(_T("shader/shader.vs"));
+    Path fShader2(_T("shader/shader.fs"));
+    mProgramTest = std::make_shared<Program>();
+    if (!mProgramTest->load(vShader1, fShader2))
+    {
+        LOG_ERROR << _T("SpriteBatch initialize load Program failed");
+    }
     mVertexID1 = mProgramTest->getAttribLocation("Position");
-
     mVertexBuffer.push_back(Vec4(-1.0f, -1.0f, 0.0f, 1.0f));
     mVertexBuffer.push_back(Vec4(1.0f, -1.0f, 0.0f, 1.0f));
     mVertexBuffer.push_back(Vec4(0.0f, 1.0f, 0.0f, 1.0f));
-    glGenBuffers(1, &mVBO);
-    // 绑定GL_ARRAY_BUFFER缓冲器
-    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    // 绑定顶点数据
-    glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(Vec4), reinterpret_cast<GLvoid*>(&mVertexBuffer.at(0)), GL_STATIC_DRAW);
+    */
 }
 
 void SpriteBatch::flush()
 {
+    /*
     mProgramTest->bind();
     glEnableVertexAttribArray(mVertexID1);
-    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    glVertexAttribPointer(mVertexID1, 3, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glVertexAttribPointer(mVertexID1, 4, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<GLvoid*>(&mVertexBuffer.at(0)));
 
     glDrawArrays(GL_TRIANGLES, 0, 3);
 
     glDisableVertexAttribArray(mVertexID1);
-    mProgramTest->unbind();
-    //begin();
-    //drawSprites();
-    ////Clear vertex, uv, color and isHud buffer
-    //mVertexBuffer.clear();
-    //mUvCoordBuffer.clear();
-    //mIsHUDBuffer.clear();
-    //mColorBuffer.clear();
-    //drawTextSprites();
-    //end();
+    mProgramTest->unbind();*/
+    begin();
+    drawSprites();
+    //Clear vertex, uv, color and isHud buffer
+    mVertexBuffer.clear();
+    mUvCoordBuffer.clear();
+    mIsHUDBuffer.clear();
+    mColorBuffer.clear();
+    drawTextSprites();
+    end();
 }
 
 void SpriteBatch::begin()
@@ -87,6 +82,7 @@ void SpriteBatch::begin()
     glEnableVertexAttribArray(mUVID);
     glEnableVertexAttribArray(mIsHUDID);
     glEnableVertexAttribArray(mColorID);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
     //Create Vertexbuffer
     sortSprites(mSpriteSortingMode);
     createSpriteQuads();

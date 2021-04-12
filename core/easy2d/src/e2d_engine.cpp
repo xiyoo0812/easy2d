@@ -54,15 +54,15 @@ void E2dEngine::initialize(SPtr<android_app> app)
     image->setHorizontalAlignment(HorizontalAlignment::Center);
     image->setVerticalAlignment(VerticalAlignment::Center);
 
-    /*auto font = FontManager::getInstance()->loadFont("felt_12", "felt.ttf", 12);
-    
+    auto font = FontManager::getInstance()->loadFont("felt_12", "felt.ttf", 12);
+
     auto txt = std::make_shared<UITextField>("text");
     scene->addEntity(txt);
     txt->setFont(font);
     txt->setText("abcv");
     txt->setRootWidget();
     txt->setHorizontalAlignment(HorizontalAlignment::Center);
-    txt->setVerticalAlignment(VerticalAlignment::Center);*/
+    txt->setVerticalAlignment(VerticalAlignment::Center);
 }
 
 void E2dEngine::update()

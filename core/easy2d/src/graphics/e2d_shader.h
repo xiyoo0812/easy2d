@@ -18,7 +18,6 @@ namespace Easy2D
 
     private:
         bool compileShader();
-        bool compileShader(const GLchar* nameInShader);
 
         GLenum mType = 0;
         GLuint mShader = 0;

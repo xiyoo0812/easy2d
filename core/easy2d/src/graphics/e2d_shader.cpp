@@ -38,40 +38,19 @@ bool Shader::compileShader()
         LOG_ERROR << _T("Shader::compileShader loadAssetData failed!");
         return false;
     }
-    return compileShader((GLchar*)shaderData.data());
-}
-
-bool Shader::compileShader(const GLchar* sData)
-{
     mShader = glCreateShader(mType);
-    glShaderSource(mShader, 1, &sData, NULL);
+    GLint length = shaderData.size();
+    const GLchar* data = (GLchar*)shaderData.data();
+    glShaderSource(mShader, 1, &data, &length);
     glCompileShader(mShader);
     GLint status;
     glGetShaderiv(mShader, GL_COMPILE_STATUS, &status);
     if (status == 0)
     {
-        GLint infolength;
-        glGetShaderiv(mShader, GL_INFO_LOG_LENGTH, &infolength);
-        if (infolength > 1)
-        {
-            char* buf = new char[infolength];
-            String stringType;
-            switch (mType)
-            {
-            case GL_VERTEX_SHADER:
-                stringType = _T("GL_VERTEX_SHADER");
-                break;
-            case GL_FRAGMENT_SHADER:
-                stringType = _T("GL_FRAGMENT_SHADER");
-                break;
-            default:
-                stringType = _T("UNKNOWN_SHADER_TYPE");
-                break;
-            }
-            glGetShaderInfoLog(mShader, infolength, NULL, buf);
-            LOG_ERROR << _T("Shader::CompileShader: Could not compile shader of type ") << stringType << buf;
-            delete buf;
-        }
+        GLchar InfoLog[1024];
+        glGetShaderInfoLog(mShader, 1024, NULL, InfoLog);
+        LOG_ERROR << _T("Shader::CompileShader: Could not compile shader:") << mPath << _T(", err:") << InfoLog;
+        glDeleteShader(mShader);
         mShader = 0;
         return false;
     }
