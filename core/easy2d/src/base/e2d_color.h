@@ -7,7 +7,7 @@ namespace Easy2D
 {
     struct Color final
     {
-        byte r = 0, g = 0, b = 0, a = 1;
+        float r = 0.0f, g = 0.0f, b = 0.0f, a = 1.0f;
 
         static const Color
             AliceBlue,
@@ -164,29 +164,8 @@ namespace Easy2D
         Color& operator=(const Vec3i& yRef);
         Color& operator=(const Vec4i& yRef);
 
-        Color& operator+=(const Color& yRef);
-        Color& operator+=(const Vec3i& yRef);
-        Color& operator+=(const Vec4i& yRef);
-
-        Color& operator-=(const Color& yRef);
-        Color& operator-=(const Vec3i& yRef);
-        Color& operator-=(const Vec4i& yRef);
-
-        Color operator+(const Color& yRef) const;
-        Color operator+(const Vec3i& yRef) const;
-        Color operator+(const Vec4i& yRef) const;
-
-        Color operator-(const Color& yRef) const;
-        Color operator-(const Vec3i& yRef) const;
-        Color operator-(const Vec4i& yRef) const;
-
         bool operator==(const Color& yRef) const;
-        bool operator==(const Vec3i& yRef) const;
-        bool operator==(const Vec4i& yRef) const;
-
         bool operator!=(const Color& yRef) const;
-        bool operator!=(const Vec3i& yRef) const;
-        bool operator!=(const Vec4i& yRef) const;
     };
 };
 

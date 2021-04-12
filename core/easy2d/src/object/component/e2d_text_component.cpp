@@ -333,23 +333,18 @@ String TextComponent::checkWrapping(const String& stringIn, int32 wrapWidth)
         }
         else
         {
-            int32 w = mFont->getStringLength(
-                line + words.elements[i]
-            );
-
+            int32 w = mFont->getStringLength(line + words.elements[i]);
             if (w > mDimensions.x)
             {
                 mDimensions.x = w;
                 getTransform()->setDimensionsXSafe(mDimensions.x);
             }
-
             if (w > wrapWidth)
             {
                 returnString += line + _T("\n");
                 ++lines;
                 line = EMPTY_STRING;
             }
-
             line += words.elements[i] + _T(" ");
         }
     }

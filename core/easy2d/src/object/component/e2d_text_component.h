@@ -83,7 +83,7 @@ namespace Easy2D
 
         void splitString(PointerArray<String, uint32>& words, String str, char delimiter);
 
-        int32 mWrapWidth = 10;
+        int32 mWrapWidth = NO_WRAPPING;
         uint32 mStringLength = 0;
         String mOrigText = "", mEditText = "";
 

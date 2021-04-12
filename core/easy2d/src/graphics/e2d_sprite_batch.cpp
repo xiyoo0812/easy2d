@@ -19,50 +19,25 @@ SpriteBatch::~SpriteBatch()
 void SpriteBatch::initialize()
 {
     //Set Shader and shader variables
-    Path vShader(_T("shader/VertexPosColTexShader.vert"));
-    Path fShader(_T("shader/VertexPosColTexShader.frag"));
+    Path vShader(_T("shader/shader.vs"));
+    Path fShader(_T("shader/shader.fs"));
     mProgram = std::make_shared<Program>();
     if (!mProgram->load(vShader, fShader))
     {
         LOG_ERROR << _T("SpriteBatch initialize load Program failed");
     }
-
-    mUVID = mProgram->getAttribLocation("texCoord");
-    mIsHUDID = mProgram->getAttribLocation("isHUD");
+    mHUDID = mProgram->getAttribLocation("isHUD");
+    mColorID = mProgram->getAttribLocation("color");
     mVertexID = mProgram->getAttribLocation("position");
-    mColorID = mProgram->getAttribLocation("colorMultiplier");
-    mScalingID = mProgram->getUniformLocation("scaleMatrix");
-    mProjectionID = mProgram->getUniformLocation("projectionMatrix");
-    mViewInverseID = mProgram->getUniformLocation("viewInverseMatrix");
-    mTextureSamplerID = mProgram->getUniformLocation("textureSampler");
-
-    /*
-    Path vShader1(_T("shader/shader.vs"));
-    Path fShader2(_T("shader/shader.fs"));
-    mProgramTest = std::make_shared<Program>();
-    if (!mProgramTest->load(vShader1, fShader2))
-    {
-        LOG_ERROR << _T("SpriteBatch initialize load Program failed");
-    }
-    mVertexID1 = mProgramTest->getAttribLocation("Position");
-    mVertexBuffer.push_back(Vec4(-1.0f, -1.0f, 0.0f, 1.0f));
-    mVertexBuffer.push_back(Vec4(1.0f, -1.0f, 0.0f, 1.0f));
-    mVertexBuffer.push_back(Vec4(0.0f, 1.0f, 0.0f, 1.0f));
-    */
+    mTexCoordID = mProgram->getAttribLocation("texCoord");
+    mScaleID = mProgram->getUniformLocation("matScale");
+    mProjID = mProgram->getUniformLocation("matProj");
+    mViewID = mProgram->getUniformLocation("matView");
+    mTexSamplerID = mProgram->getUniformLocation("texSampler");
 }
 
 void SpriteBatch::flush()
 {
-    /*
-    mProgramTest->bind();
-    glEnableVertexAttribArray(mVertexID1);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glVertexAttribPointer(mVertexID1, 4, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<GLvoid*>(&mVertexBuffer.at(0)));
-
-    glDrawArrays(GL_TRIANGLES, 0, 3);
-
-    glDisableVertexAttribArray(mVertexID1);
-    mProgramTest->unbind();*/
     begin();
     drawSprites();
     //Clear vertex, uv, color and isHud buffer
@@ -79,22 +54,22 @@ void SpriteBatch::begin()
     mProgram->bind();
     //[TODO] Test android!
     glEnableVertexAttribArray(mVertexID);
-    glEnableVertexAttribArray(mUVID);
-    glEnableVertexAttribArray(mIsHUDID);
+    glEnableVertexAttribArray(mTexCoordID);
+    glEnableVertexAttribArray(mHUDID);
     glEnableVertexAttribArray(mColorID);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     //Create Vertexbuffer
     sortSprites(mSpriteSortingMode);
     createSpriteQuads();
     //Set uniforms
-    glUniform1i(mTextureSamplerID, 0);
+    glUniform1i(mTexSamplerID, 0);
     float scaleValue = ScaleSystem::getInstance()->getScale();
     Mat4 scaleMat = scale(scaleValue, scaleValue, 0);
-    glUniformMatrix4fv(mScalingID, 1, GL_FALSE, toPointer(scaleMat));
+    glUniformMatrix4fv(mScaleID, 1, GL_FALSE, toPointer(scaleMat));
     const Mat4& viewInverseMat = GraphicsManager::getInstance()->getViewInverseMatrix();
-    glUniformMatrix4fv(mViewInverseID, 1, GL_FALSE, toPointer(viewInverseMat));
+    glUniformMatrix4fv(mViewID, 1, GL_FALSE, toPointer(viewInverseMat));
     const Mat4& projectionMat = GraphicsManager::getInstance()->getProjectionMatrix();
-    glUniformMatrix4fv(mProjectionID, 1, GL_FALSE, toPointer(projectionMat));
+    glUniformMatrix4fv(mProjID, 1, GL_FALSE, toPointer(projectionMat));
 }
 
 void SpriteBatch::drawSprites()
@@ -124,10 +99,10 @@ void SpriteBatch::flushSprites(uint32 start, uint32 size, uint32 texture)
         //[TODO] Check if this can be optimized
         glBindTexture(GL_TEXTURE_2D, texture);
         //Set attributes and buffers
-        glVertexAttribPointer(mVertexID, 4, GL_FLOAT, 0, 0, reinterpret_cast<GLvoid*>(&mVertexBuffer.at(0)));
-        glVertexAttribPointer(mUVID, 2, GL_FLOAT, 0, 0, reinterpret_cast<GLvoid*>(&mUvCoordBuffer.at(0)));
-        glVertexAttribPointer(mIsHUDID, 1, GL_FLOAT, 0, 0, reinterpret_cast<GLvoid*>(&mIsHUDBuffer.at(0)));
+        glVertexAttribPointer(mHUDID, 1, GL_FLOAT, 0, 0, reinterpret_cast<GLvoid*>(&mIsHUDBuffer.at(0)));
         glVertexAttribPointer(mColorID, 4, GL_FLOAT, 0, 0, reinterpret_cast<GLvoid*>(&mColorBuffer.at(0)));
+        glVertexAttribPointer(mVertexID, 4, GL_FLOAT, 0, 0, reinterpret_cast<GLvoid*>(&mVertexBuffer.at(0)));
+        glVertexAttribPointer(mTexCoordID, 2, GL_FLOAT, 0, 0, reinterpret_cast<GLvoid*>(&mUvCoordBuffer.at(0)));
         glDrawArrays(GL_TRIANGLES, start * 6, size * 6);
     }
 }
@@ -135,10 +110,10 @@ void SpriteBatch::flushSprites(uint32 start, uint32 size, uint32 texture)
 void SpriteBatch::end()
 {
     //Unbind attributes and buffers
-    glDisableVertexAttribArray(mVertexID);
-    glDisableVertexAttribArray(mUVID);
-    glDisableVertexAttribArray(mIsHUDID);
+    glDisableVertexAttribArray(mHUDID);
     glDisableVertexAttribArray(mColorID);
+    glDisableVertexAttribArray(mVertexID);
+    glDisableVertexAttribArray(mTexCoordID);
     mProgram->unbind();
     mSpriteQueue.clear();
     mTextQueue.clear();
@@ -153,7 +128,7 @@ void SpriteBatch::drawTextSprites()
     createTextQuads();
     //flushText once per TextComponent (same font)
     //Check per text how many characters -> Forloop drawing
-    int32 startIndex(0);
+    int startIndex(0);
     for (auto text : mTextQueue)
     {
         GLuint* textures = text->font->getTextures();
@@ -164,10 +139,10 @@ void SpriteBatch::drawTextSprites()
             {
                 glBindTexture(GL_TEXTURE_2D, textures[start_line[i]]);
                 //Set attributes and buffers
-                glVertexAttribPointer(mVertexID, 4, GL_FLOAT, 0, 0, reinterpret_cast<GLvoid*>(&mVertexBuffer.at(0)));
-                glVertexAttribPointer(mUVID, 2, GL_FLOAT, 0, 0, reinterpret_cast<GLvoid*>(&mUvCoordBuffer.at(0)));
-                glVertexAttribPointer(mIsHUDID, 1, GL_FLOAT, 0, 0, reinterpret_cast<GLvoid*>(&mIsHUDBuffer.at(0)));
+                glVertexAttribPointer(mHUDID, 1, GL_FLOAT, 0, 0, reinterpret_cast<GLvoid*>(&mIsHUDBuffer.at(0)));
                 glVertexAttribPointer(mColorID, 4, GL_FLOAT, 0, 0, reinterpret_cast<GLvoid*>(&mColorBuffer.at(0)));
+                glVertexAttribPointer(mVertexID, 4, GL_FLOAT, 0, 0, reinterpret_cast<GLvoid*>(&mVertexBuffer.at(0)));
+                glVertexAttribPointer(mTexCoordID, 2, GL_FLOAT, 0, 0, reinterpret_cast<GLvoid*>(&mUvCoordBuffer.at(0)));
                 glDrawArrays(GL_TRIANGLES, startIndex * 6, 6);
             }
             ++startIndex;
