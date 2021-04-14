@@ -20,8 +20,8 @@ namespace Easy2D
         virtual void setHorizontalAlignment(HorizontalAlignment alignment, bool redefineCenter = true);
         virtual void setVerticalAlignment(VerticalAlignment alignment, bool redefineCenter = true);
 
-        void setText(const String& text);
-        const String& getText() const;
+        void setText(const Wtring& text);
+        const Wtring& getText() const;
 
         void setColor(const Color& color);
         const Color& getColor() const;

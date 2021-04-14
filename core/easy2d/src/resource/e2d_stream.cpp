@@ -3,28 +3,27 @@
 
 using namespace Easy2D;
 
-DataStream::DataStream()
+Stream::Stream()
 {
 
 }
 
-DataStream::DataStream(const Bytes& data)
+Stream::Stream(const Bytes& data)
 {
-    mData = data;
-    mDataSize = mData.size();
+    set(data.data(), data.size());
 }
 
-DataStream::DataStream(const BYTE* data, size_t size)
+Stream::Stream(const uchar* data, size_t size)
 {
     set(data, size);
 }
 
-DataStream::~DataStream()
+Stream::~Stream()
 {
-    mData.clear();
+    safeDeleteArray(mData);
 }
 
-size_t DataStream::read(Bytes& dst, size_t size)
+size_t Stream::read(Bytes& dst, size_t size)
 {
     if (size == 0)
     {
@@ -34,13 +33,24 @@ size_t DataStream::read(Bytes& dst, size_t size)
     if (readSize > 0)
     {
         dst.resize(readSize);
-        memcpy((char*)dst.data(), (char*)(mData.data() + mCurPos), readSize);
-        mCurPos + readSize;
+        memcpy((char*)dst.data(), (char*)(mData + mCurPos), readSize);
+        mCurPos += readSize;
     }
     return readSize;
 }
 
-void DataStream::seek(uint64 pos, int whence)
+
+uchar* Stream::data() const
+{
+    return mData;
+}
+
+size_t Stream::size() const
+{
+    return mDataSize;
+}
+
+void Stream::seek(uint64 pos, int whence)
 {
     switch (whence) {
     case SEEK_SET:
@@ -55,18 +65,18 @@ void DataStream::seek(uint64 pos, int whence)
     }
 }
 
-size_t DataStream::tell() const
+size_t Stream::tell() const
 {
     return mCurPos;
 }
 
-void DataStream::set(const BYTE* data, size_t size)
+void Stream::set(const BYTE* data, size_t size)
 {
     if (size > 0)
     {
-        mData.clear();
-        mData.resize(size);
-        memcpy((char*)mData.data(), data, size);
+        safeDeleteArray(mData);
+        mData = new uchar[size];
+        memcpy(mData, data, size);
         mDataSize = size;
         mCurPos = 0;
     }
@@ -74,8 +84,8 @@ void DataStream::set(const BYTE* data, size_t size)
 
 FileStream::FileStream(const Path& path)
 {
-    mData = FileSystem::readFile(path);
-    mDataSize = mData.size();
+    auto data = FileSystem::readFile(path);
+    set(data.data(), data.size());
 }
 
 FileStream::~FileStream()

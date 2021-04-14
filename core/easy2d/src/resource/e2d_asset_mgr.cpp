@@ -7,12 +7,12 @@ AssetManager::AssetManager()
 {
 }
 
-SPtr<DataStream> AssetManager::loadAsset(const Path& path)
+SPtr<Stream> AssetManager::loadAsset(const Path& path)
 {
 #ifdef WIN32
     Path fullPath = mBasePath / path;
     auto stream = std::make_shared<FileStream>(fullPath);
-    return std::dynamic_pointer_cast<DataStream>(stream);
+    return std::dynamic_pointer_cast<Stream>(stream);
 #endif
     return nullptr;
 }
@@ -39,7 +39,7 @@ Vector<Path> AssetManager::enumerateDirectory(const Path& path, bool full)
     return FileSystem::enumerateDirectory(fullPath, full);
 }
 
-SPtr<DataStream> AssetManager::asyncAsset(const Path& path)
+SPtr<Stream> AssetManager::asyncAsset(const Path& path)
 {
     return nullptr;
 }

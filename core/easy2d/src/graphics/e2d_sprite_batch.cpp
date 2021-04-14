@@ -128,26 +128,25 @@ void SpriteBatch::drawTextSprites()
     createTextQuads();
     //flushText once per TextComponent (same font)
     //Check per text how many characters -> Forloop drawing
-    int startIndex(0);
+    uint32 batchStart(0);
+    uint32 batchSize(0);
+    GLuint texture(0);
     for (auto text : mTextQueue)
     {
-        GLuint* textures = text->font->getTextures();
-        const char* start_line = text->text.c_str();
-        for (int32 i = 0; start_line[i] != 0; ++i)
+        for (auto it : text->text)
         {
-            if (start_line[i] > FIRST_REAL_ASCII_CHAR)
+            auto fChar = text->font->getFontChar(it);
+            if (texture != fChar->texId)
             {
-                glBindTexture(GL_TEXTURE_2D, textures[start_line[i]]);
-                //Set attributes and buffers
-                glVertexAttribPointer(mHUDID, 1, GL_FLOAT, 0, 0, reinterpret_cast<GLvoid*>(&mIsHUDBuffer.at(0)));
-                glVertexAttribPointer(mColorID, 4, GL_FLOAT, 0, 0, reinterpret_cast<GLvoid*>(&mColorBuffer.at(0)));
-                glVertexAttribPointer(mVertexID, 4, GL_FLOAT, 0, 0, reinterpret_cast<GLvoid*>(&mVertexBuffer.at(0)));
-                glVertexAttribPointer(mTexCoordID, 2, GL_FLOAT, 0, 0, reinterpret_cast<GLvoid*>(&mUvCoordBuffer.at(0)));
-                glDrawArrays(GL_TRIANGLES, startIndex * 6, 6);
+                flushSprites(batchStart, batchSize, texture);
+                batchStart += batchSize;
+                batchSize = 0;
+                texture = fChar->texId;
             }
-            ++startIndex;
+            batchSize++;
         }
     }
+    flushSprites(batchStart, batchSize, texture);
 }
 
 void SpriteBatch::createSpriteQuads()
@@ -246,19 +245,19 @@ void SpriteBatch::createTextQuads()
         int32 fontHeight(text->font->getMaxLetterHeight() + text->font->getMinLetterHeight());
         for (auto it : text->text)
         {
-            const CharacterInfo& charInfo = text->font->getCharacterInfo(static_cast<uchar>(it));
-            offsetMatrix = translate(Vec3(offsetX, offsetY + charInfo.letterDimensions.y + text->textHeight - fontHeight, 0));
-            offsetX += charInfo.letterDimensions.x;
+            auto fChar = text->font->getFontChar(it);
+            offsetMatrix = translate(Vec3(offsetX, offsetY + fChar->letterDimensions.y + text->textHeight - fontHeight, 0));
+            offsetX += fChar->letterDimensions.x;
 
             transformMat = transpose(worldMat * offsetMatrix);
 
-            Vec4 TL = Vec4(0, charInfo.vertexDimensions.y, 0, 1);
+            Vec4 TL = Vec4(0, fChar->vertexDimensions.y, 0, 1);
             mul(TL, transformMat, TL);
-            Vec4 TR = Vec4(charInfo.vertexDimensions.x, charInfo.vertexDimensions.y, 0, 1);
+            Vec4 TR = Vec4(fChar->vertexDimensions.x, fChar->vertexDimensions.y, 0, 1);
             mul(TR, transformMat, TR);
             Vec4 BL = Vec4(0, 0, 0, 1);
             mul(BL, transformMat, BL);
-            Vec4 BR = Vec4(charInfo.vertexDimensions.x, 0, 0, 1);
+            Vec4 BR = Vec4(fChar->vertexDimensions.x, 0, 0, 1);
             mul(BR, transformMat, BR);
             //0
             mVertexBuffer.push_back(TL);
@@ -275,23 +274,23 @@ void SpriteBatch::createTextQuads()
 
             //Push back all uv's
             //0
-            mUvCoordBuffer.push_back(0);
-            mUvCoordBuffer.push_back(0);
+            mUvCoordBuffer.push_back(fChar->uvCoordTL.x);
+            mUvCoordBuffer.push_back(fChar->uvCoordTL.y);
             //1
-            mUvCoordBuffer.push_back(charInfo.uvDimensions.x);
-            mUvCoordBuffer.push_back(0);
+            mUvCoordBuffer.push_back(fChar->uvCoordBR.x);
+            mUvCoordBuffer.push_back(fChar->uvCoordTL.y);
             //2
-            mUvCoordBuffer.push_back(0);
-            mUvCoordBuffer.push_back(charInfo.uvDimensions.y);
+            mUvCoordBuffer.push_back(fChar->uvCoordTL.x);
+            mUvCoordBuffer.push_back(fChar->uvCoordBR.y);
             //1
-            mUvCoordBuffer.push_back(charInfo.uvDimensions.x);
-            mUvCoordBuffer.push_back(0);
+            mUvCoordBuffer.push_back(fChar->uvCoordBR.x);
+            mUvCoordBuffer.push_back(fChar->uvCoordTL.y);
             //3
-            mUvCoordBuffer.push_back(charInfo.uvDimensions.x);
-            mUvCoordBuffer.push_back(charInfo.uvDimensions.y);
+            mUvCoordBuffer.push_back(fChar->uvCoordBR.x);
+            mUvCoordBuffer.push_back(fChar->uvCoordBR.y);
             //2
-            mUvCoordBuffer.push_back(0);
-            mUvCoordBuffer.push_back(charInfo.uvDimensions.y);
+            mUvCoordBuffer.push_back(fChar->uvCoordTL.x);
+            mUvCoordBuffer.push_back(fChar->uvCoordBR.y);
 
             //bool & color buffer
             for (uint32 i = 0; i < 6; ++i)
@@ -308,6 +307,16 @@ void SpriteBatch::createTextQuads()
             }
         }
     }
+}
+
+uint32 Font::nextPowerOfTwo(uint32 number) const
+{
+    uint32 rval = 1;
+    while (rval < number)
+    {
+        rval <<= 1;
+    }
+    return rval;
 }
 
 void SpriteBatch::sortSprites(SpriteSortingMode mode)

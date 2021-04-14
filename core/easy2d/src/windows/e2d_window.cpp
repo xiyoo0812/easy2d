@@ -8,7 +8,7 @@
 using namespace Easy2D;
 
 #define IDI_STARGAMEICON 201
-#define WNDCLASSNAME "E2DWindow"
+#define WNDCLASSNAME _T("E2DWindow")
 #define KEYDOWN(vkCode) ((GetAsyncKeyState(vkCode) & 0x8000) ? 1 : 0)
 
 LRESULT CALLBACK wndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -47,7 +47,7 @@ void Window::initialize(HINSTANCE instance, uint32 width /* = 800 */, uint32 hei
             return;
         }
 
-        mHandle = CreateWindow(WNDCLASSNAME, "E2DGAME", WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX,
+        mHandle = CreateWindow(WNDCLASSNAME, _T("E2DGAME"), WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX,
             GetSystemMetrics(SM_CXSCREEN) / 4, GetSystemMetrics(SM_CYSCREEN) / 4,
             width, height, NULL, NULL, instance, NULL);
 

@@ -17,10 +17,10 @@ namespace Easy2D
 
         Vector<Path> enumerateDirectory(const Path& path, bool full = true);
 
-        SPtr<DataStream> loadAsset(const Path& path);
+        SPtr<Stream> loadAsset(const Path& path);
         bool loadAssetData(const Path& path, Bytes& data);
 
-        SPtr<DataStream> asyncAsset(const Path& path);
+        SPtr<Stream> asyncAsset(const Path& path);
 
     private:
         AssetManager();

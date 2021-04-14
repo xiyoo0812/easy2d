@@ -6,16 +6,17 @@
 
 #include "e2d_config.h"
 #include "resource/e2d_resource.h"
+#include "resource/e2d_stream.h"
 
 namespace Easy2D
 {
-#define FONT_DPI 96
-#define FONT_TEXTURES 128
-
-    struct CharacterInfo
+    class FontChar
     {
-        CharacterInfo() : vertexDimensions(), uvDimensions(), letterDimensions() { }
-        Vec2 vertexDimensions, uvDimensions, letterDimensions;
+    public:
+        GLuint texId = 0;
+        Vec2 vertexDimensions = Vec2(0, 0);
+        Vec2 letterDimensions = Vec2(0, 0);
+        Vec2 uvCoordTL = Vec2(0, 0), uvCoordBR = Vec2(1, 1);
     };
 
     class Font final : public Resource
@@ -25,28 +26,32 @@ namespace Easy2D
         ~Font();
 
         bool load();
-        
-        GLuint* getTextures() const;
+
         uint32 getFontSize() const;
 
-        const CharacterInfo& getCharacterInfo(uchar character) const;
-        const UnorderedMap<uchar, CharacterInfo>& getCharacterInfoMap() const;
+        const SPtr<FontChar> getFontChar(wchar_t ch);
 
         uint32 getMaxLetterHeight() const;
         uint32 getMinLetterHeight() const;
-        uint32 getStringLength(const String& string) const;
+        uint32 getStringLength(const Wtring& string);
 
     private:
         void unload();
-        void make_D_List(FT_Face face, uchar ch, GLuint* tex_base);
         uint32 nextPowerOfTwo(uint32 number) const;
+        SPtr<FontChar> loadFontChar(wchar_t ch);
 
-        uint32  mSize = 0;
+        GLuint* mTextures = 0;
+        GLuint mTextureIndex = 0;
         FT_Face mFace = nullptr;
-        GLuint* mTextures = nullptr;
         FT_Library mFTLibrary = nullptr;
+        SPtr<Stream> mFontData = nullptr;
+        uint32 mFontDpi = 72, mFontSize = 0;
+        float32 mTextureX = 0, mTextureY = 0, mTextureLineY = 0;
         uint32 mMaxLetterHeight = 0, mMinLetterHeight = 0;
-        UnorderedMap<uchar, CharacterInfo> mCharacterInfoMap;
+        UnorderedMap<wchar_t, SPtr<FontChar>> mFontCharMap;
+
+        inline static uint32 FONT_TEXTURE_NUM = 8;
+        inline static uint32 FONT_TEXTURE_SIZE = 1024;
     };
 }
 

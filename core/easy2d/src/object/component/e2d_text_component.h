@@ -10,7 +10,7 @@ namespace Easy2D
     class TextInfo
     {
     public:
-        String text = "";
+        Wtring text = L"";
         bool bIsHud = false;
         int32 textHeight = 10;
         int32 verticalSpacing = 0;
@@ -35,9 +35,9 @@ namespace Easy2D
 
         virtual bool checkCulling(float32 left, float32 right, float32 top, float32 bottom) const;
 
-        void setText(const String& text);
+        void setText(const Wtring& text);
 
-        const String& getText() const;
+        const Wtring& getText() const;
 
         void setColor(const Color& color);
 
@@ -70,22 +70,22 @@ namespace Easy2D
 
         void calculateTextHeight();
 
-        void cleanUpText(const String & str);
+        void cleanUpText(const Wtring& str);
 
         void calculateHorizontalTextOffset();
 
-        int32 getLongestLine(const String & str);
+        int32 getLongestLine(const Wtring& str);
 
         virtual void fillTextInfo();
 
     private:
-        String checkWrapping(const String& stringIn, int32 wrapWidth);
+        Wtring checkWrapping(const Wtring& stringIn, int32 wrapWidth);
 
-        void splitString(PointerArray<String, uint32>& words, String str, char delimiter);
+        void splitString(PointerArray<Wtring, uint32>& words, Wtring str, char delimiter);
 
         int32 mWrapWidth = NO_WRAPPING;
         uint32 mStringLength = 0;
-        String mOrigText = "", mEditText = "";
+        Wtring mOrigText = L"", mEditText = L"";
 
         SPtr<Font> mFont = nullptr;
         SPtr<TextInfo> mTextInfo = nullptr;

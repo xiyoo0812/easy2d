@@ -6,7 +6,7 @@ using namespace Easy2D;
 Font::Font(const Path& path, uint32 size, FT_Library library)
     : Resource(path)
     , mFTLibrary(library)
-    , mSize(size)
+    , mFontSize(size)
 {
 
 }
@@ -14,20 +14,20 @@ Font::Font(const Path& path, uint32 size, FT_Library library)
 Font::~Font()
 {
     unload();
-    mCharacterInfoMap.clear();
+    mFontCharMap.clear();
 }
 
 bool Font::load()
 {
     if (!mbLoad)
     {
-        Bytes fontData;
-        if (!AssetManager::getInstance()->loadAssetData(mPath, fontData))
+        mFontData = AssetManager::getInstance()->loadAsset(mPath);
+        if (mFontData == nullptr || mFontData->size() <= 0)
         {
-            LOG_ERROR << _T("Font::load loadAssetData failed!");
+            LOG_ERROR << _T("Font::load loadAsset failed!");
             return false;
         }
-        FT_Error error = FT_New_Memory_Face(mFTLibrary, fontData.data(), fontData.size(), 0, &mFace);
+        FT_Error error = FT_New_Memory_Face(mFTLibrary, mFontData->data(), mFontData->size(), 0, &mFace);
         if (error == FT_Err_Unknown_File_Format)
         {
             LOG_ERROR << _T("Font::load FT_New_Memory_Face file format error!");
@@ -38,15 +38,18 @@ bool Font::load()
             LOG_ERROR << _T("Font::load FT_New_Memory_Face file error! code: ") << error;
             return false;
         }
-        FT_Set_Char_Size(mFace, mSize << 6, mSize << 6, FONT_DPI, FONT_DPI);
-        mTextures = new GLuint[FONT_TEXTURES];
-        glGenTextures(FONT_TEXTURES, mTextures);
-        for (uchar i = 0; i < FONT_TEXTURES; ++i)
+
+        FT_Set_Char_Size(mFace, mFontSize << 6, mFontSize << 6, mFontDpi, mFontDpi);
+        mTextures = new GLuint[FONT_TEXTURE_NUM];
+        glGenTextures(FONT_TEXTURE_NUM, mTextures);
+        for (int i = 0; i < FONT_TEXTURE_NUM; ++i)
         {
-            mCharacterInfoMap.insert(std::make_pair(i, CharacterInfo()));
-            make_D_List(mFace, i, mTextures);
+            glBindTexture(GL_TEXTURE_2D, mTextures[i]);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA, FONT_TEXTURE_SIZE, FONT_TEXTURE_SIZE, 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, 0);
         }
-        FT_Done_Face(mFace);
+        mTextureIndex = 0;
         mbLoad = true;
     }    
     return true;
@@ -54,37 +57,39 @@ bool Font::load()
 
 void Font::unload()
 {
-    mFace = nullptr;
-    mFTLibrary = nullptr;
+    if (mFace)
+    {
+        FT_Done_Face(mFace);
+        mFace = nullptr;
+    }
     if (mTextures)
     {
-        glDeleteTextures(FONT_TEXTURES, mTextures);
+        glDeleteTextures(FONT_TEXTURE_NUM, mTextures);
         safeDeleteArray(mTextures);
     }
+    mFTLibrary = nullptr;
 }
 
-void Font::make_D_List(FT_Face face, uchar ch, GLuint* tex_base)
+SPtr<FontChar> Font::loadFontChar(wchar_t ch)
 {
-    auto error = FT_Load_Char(face, ch, FT_LOAD_DEFAULT);
+    auto error = FT_Load_Char(mFace, ch, FT_LOAD_DEFAULT);
     if (error)
     {
         LOG_ERROR << _T("Font::make_D_List FT_Load_Char error! ch: ") << ch;
-        return;
+        return nullptr;
     }
-    error = FT_Render_Glyph(face->glyph, FT_RENDER_MODE_NORMAL);
+    error = FT_Render_Glyph(mFace->glyph, FT_RENDER_MODE_NORMAL);
     if (error)
     {
         LOG_ERROR << _T("Font::make_D_List FT_Render_Glyph error! ch: ") << ch;
-        return;
+        return nullptr;
     }
-
-    FT_Bitmap& bitmap = face->glyph->bitmap;
+    FT_Bitmap& bitmap = mFace->glyph->bitmap;
 
     uint32 width = nextPowerOfTwo(bitmap.width);
     uint32 height = nextPowerOfTwo(bitmap.rows);
 
     GLubyte* expanded_data = new GLubyte[2 * width * height];
-
     for (uint32 j = 0; j < height; ++j)
     {
         for (uint32 i = 0; i < width; ++i)
@@ -93,69 +98,57 @@ void Font::make_D_List(FT_Face face, uchar ch, GLuint* tex_base)
             expanded_data[2 * (i + j * width) + 1] = (i >= bitmap.width || j >= bitmap.rows) ? 0 : bitmap.buffer[i + bitmap.width * j];
         }
     }
-
-    glBindTexture(GL_TEXTURE_2D, tex_base[ch]);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-#ifdef WIN32
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, expanded_data);
-#else
-    //For android "internal format" must be the same as "format" in glTexImage2D
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE_ALPHA, width, height, 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, expanded_data);
-#endif
-    delete[] expanded_data;
-
-    //uvs
-    float32 x = static_cast<float32>(bitmap.width) / static_cast<float32>(width);
-    float32 y = static_cast<float32>(bitmap.rows) / static_cast<float32>(height);
     //letter height
-    int32 dimX = (face->glyph->metrics.horiAdvance / 64);
-    int32 dimY = ((face->glyph->metrics.horiBearingY) - (face->glyph->metrics.height)) / 64;
-    if (mMaxLetterHeight < face->glyph->bitmap_top)
+    int32 dimX = (mFace->glyph->metrics.horiAdvance / 64);
+    int32 dimY = ((mFace->glyph->metrics.horiBearingY) - (mFace->glyph->metrics.height)) / 64;
+    if (mMaxLetterHeight < mFace->glyph->bitmap_top)
     {
-        mMaxLetterHeight = face->glyph->bitmap_top;
+        mMaxLetterHeight = mFace->glyph->bitmap_top;
     }
     if (mMinLetterHeight > dimY)
     {
         mMinLetterHeight = dimY;
     }
-    mCharacterInfoMap.at(ch).letterDimensions = Vec2(dimX, dimY);
-    mCharacterInfoMap.at(ch).vertexDimensions = Vec2(bitmap.width, bitmap.rows);
-    mCharacterInfoMap.at(ch).uvDimensions = Vec2(x, y);
+    mTextureLineY = (mTextureLineY < height) ? height : mTextureLineY;
+    if (mTextureX + width >= FONT_TEXTURE_SIZE)
+    {
+        mTextureX = 0;
+        mTextureY += mTextureLineY;
+    }
+    if (mTextureY + height >= FONT_TEXTURE_SIZE)
+    {
+        mTextureIndex++;
+        mTextureX = mTextureY = 0;
+    }
+    auto fChar = std::make_shared<FontChar>();
+    fChar->texId = mTextures[mTextureIndex];
+    fChar->letterDimensions = Vec2(dimX, dimY);
+    fChar->vertexDimensions = Vec2(bitmap.width, bitmap.rows);
+    fChar->uvCoordTL = Vec2(mTextureX / FONT_TEXTURE_SIZE, mTextureY / FONT_TEXTURE_SIZE);
+    fChar->uvCoordBR = Vec2((mTextureX + width) / FONT_TEXTURE_SIZE, (mTextureY + height) / FONT_TEXTURE_SIZE);
+    glBindTexture(GL_TEXTURE_2D, mTextures[mTextureIndex]);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, mTextureX, mTextureY, width, height, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, expanded_data);
+    mTextureX += width;
+    mFontCharMap.insert(std::make_pair(ch, fChar));
+    safeDeleteArray(expanded_data);
+    return fChar;
 }
 
-
-GLuint* Font::getTextures() const
-{
-    return mTextures;
-}
 
 uint32 Font::getFontSize() const
 {
-    return mSize;
+    return mFontSize;
 }
 
-uint32 Font::nextPowerOfTwo(uint32 number) const
+
+const SPtr<FontChar> Font::getFontChar(wchar_t ch)
 {
-    uint32 rval = 1;
-    while (rval < number)
+    auto it = mFontCharMap.find(ch);
+    if (it != mFontCharMap.end())
     {
-        rval <<= 1;
+        return it->second;
     }
-    return rval;
-}
-
-const UnorderedMap<uchar, CharacterInfo>& Font::getCharacterInfoMap() const
-{
-    return mCharacterInfoMap;
-}
-
-const CharacterInfo& Font::getCharacterInfo(uchar character) const
-{
-    //[COMMENT] Performing a good check here 
-    //with std::find will only slow things down
-    //If the map.at has an unknown value, it will throw an exception anyway
-    return mCharacterInfoMap.at(character);
+    return loadFontChar(ch);
 }
 
 uint32 Font::getMaxLetterHeight() const
@@ -168,13 +161,17 @@ uint32 Font::getMinLetterHeight() const
     return mMinLetterHeight;
 }
 
-uint32 Font::getStringLength(const String& string) const
+
+uint32 Font::getStringLength(const Wtring& string)
 {
-    int32 length = 0;
-    const char* line = string.c_str();
-    for (uint32 i = 0; line[i] != 0; ++i)
+    uint32 length = 0;
+    for (auto it : string)
     {
-        length += mCharacterInfoMap.at(line[i]).letterDimensions.x;
+        auto fChar = getFontChar(it);
+        if (fChar != nullptr)
+        {
+            length += fChar->letterDimensions.x;
+        }
     }
     return length;
 }

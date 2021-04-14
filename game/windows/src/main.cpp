@@ -1,12 +1,10 @@
-// Demo.h : ¶¨ÒåÓ¦ÓÃ³ÌÐòµÄÈë¿Úµã¡£
+// Demo.h : å®šä¹‰åº”ç”¨ç¨‹åºçš„å…¥å£ç‚¹ã€‚
 #include "windows/e2d_window.h"
 
 using namespace Easy2D;
 
 int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow)
 {
-    LPCTSTR WinTile = "Blaze Demo";
-
     CoInitialize(NULL);
     Window* pWindow = Window::getInstance();
     pWindow->initialize(hInstance);

@@ -65,12 +65,12 @@ void UITextField::setVerticalAlignment(VerticalAlignment alignment, bool redefin
     UIWidget::setVerticalAlignment(alignment, redefineCenter);
 }
 
-void UITextField::setText(const String& text)
+void UITextField::setText(const Wtring& text)
 {
     mTextComponent->setText(text);
 }
 
-const String& UITextField::getText() const
+const Wtring& UITextField::getText() const
 {
     return mTextComponent->getText();
 }

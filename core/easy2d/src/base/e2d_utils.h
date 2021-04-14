@@ -4,8 +4,8 @@
 namespace Easy2D
 {
     static const int32 NO_WRAPPING = -1;
-    static const String TAB = _T("    ");
-    static const String EMPTY_STRING = _T("");
+    static const Wtring TAB = L"    ";
+    static const Wtring EMPTY_STRING = L"";
 
     enum class HorizontalAlignment : byte
 	{

@@ -55,13 +55,13 @@ void TextComponent::calculateTextHeight()
     getTransform()->setDimensionsYSafe(mDimensions.y);
 }
 
-void TextComponent::cleanUpText(const String& str)
+void TextComponent::cleanUpText(const Wtring& str)
 {
     size_t length = str.length();
     mEditText = EMPTY_STRING;
     for (size_t i = 0; i < length; ++i)
     {
-        if (str[i] == _T('\t'))
+        if (str[i] == L'\t')
         {
             mEditText += TAB;
         }
@@ -87,12 +87,12 @@ void TextComponent::calculateHorizontalTextOffset()
         else
         {
             mTextInfo->text = EMPTY_STRING;
-            String substr(EMPTY_STRING);
+            Wtring substr(EMPTY_STRING);
             for (size_t i = 0; i < mEditText.length(); ++i)
             {
-                if (mEditText[i] == _T('\n'))
+                if (mEditText[i] == L'\n')
                 {
-                    mTextInfo->text += substr + _T('\n');
+                    mTextInfo->text += substr + L'\n';
 
                     uint32 diff = length - mFont->getStringLength(substr);
                     if (diff > 0)
@@ -131,12 +131,12 @@ void TextComponent::calculateHorizontalTextOffset()
         else
         {
             mTextInfo->text = EMPTY_STRING;
-            String substr(EMPTY_STRING);
+            Wtring substr(EMPTY_STRING);
             for (size_t i = 0; i < mEditText.length(); ++i)
             {
-                if (mEditText[i] == _T('\n'))
+                if (mEditText[i] == L'\n')
                 {
-                    mTextInfo->text += substr + _T('\n');
+                    mTextInfo->text += substr + L'\n';
 
                     uint32 diff = length - mFont->getStringLength(substr);
                     mTextInfo->horizontalTextOffset.push_back(diff);
@@ -170,10 +170,10 @@ void TextComponent::calculateHorizontalTextOffset()
     }
 }
 
-int32 TextComponent::getLongestLine(const String& str)
+int32 TextComponent::getLongestLine(const Wtring& str)
 {
     int32 length(0);
-    String substr(EMPTY_STRING);
+    Wtring substr(EMPTY_STRING);
     for (size_t i = 0; i < str.length(); ++i)
     {
         if (str[i] == _T('\n'))
@@ -242,7 +242,7 @@ bool TextComponent::checkCulling(float32 left, float32 right, float32 top, float
 }
 
 
-void TextComponent::setText(const String& text)
+void TextComponent::setText(const Wtring& text)
 {
     mOrigText = text;
     if (mWrapWidth != NO_WRAPPING)
@@ -257,7 +257,7 @@ void TextComponent::setText(const String& text)
     mStringLength = mFont->getStringLength(mOrigText);
 }
 
-const String& TextComponent::getText() const
+const Wtring& TextComponent::getText() const
 {
     return mOrigText;
 }
@@ -302,11 +302,11 @@ int32 TextComponent::getWrapWidth() const
     return mWrapWidth;
 }
 
-String TextComponent::checkWrapping(const String& stringIn, int32 wrapWidth)
+Wtring TextComponent::checkWrapping(const Wtring& stringIn, int32 wrapWidth)
 {
-    String line(EMPTY_STRING), returnString(EMPTY_STRING);
+    Wtring line(EMPTY_STRING), returnString(EMPTY_STRING);
 
-    PointerArray<String, uint32> words;
+    PointerArray<Wtring, uint32> words;
     splitString(words, stringIn, _T(' '));
 
     mDimensions.y = mFont->getMaxLetterHeight();
@@ -316,12 +316,12 @@ String TextComponent::checkWrapping(const String& stringIn, int32 wrapWidth)
 
     for (uint32 i = 0; i < words.amount; ++i)
     {
-        size_t n_count = words.elements[i].find(_T('\n'));
+        size_t n_count = words.elements[i].find(L'\n');
         if (n_count != String::npos)
         {
-            if (words.elements[i][0] == _T('\n'))
+            if (words.elements[i][0] == L'\n')
             {
-                returnString += line + _T('\n');
+                returnString += line + L'\n';
                 line = words.elements[i].substr(0, words.elements[i].size() - 1);
             }
             else
@@ -341,11 +341,11 @@ String TextComponent::checkWrapping(const String& stringIn, int32 wrapWidth)
             }
             if (w > wrapWidth)
             {
-                returnString += line + _T("\n");
+                returnString += line + L"\n";
                 ++lines;
                 line = EMPTY_STRING;
             }
-            line += words.elements[i] + _T(" ");
+            line += words.elements[i] + L" ";
         }
     }
 
@@ -354,10 +354,10 @@ String TextComponent::checkWrapping(const String& stringIn, int32 wrapWidth)
     return returnString + line;
 }
 
-void TextComponent::splitString(PointerArray<String, uint32>& words, String str, char delimiter)
+void TextComponent::splitString(PointerArray<Wtring, uint32>& words, Wtring str, char delimiter)
 {
     words.amount = std::count(str.begin(), str.end(), delimiter) + 1;
-    words.elements = new String[words.amount];
+    words.elements = new Wtring[words.amount];
     size_t n = 0, pos = 0;
     for (; n < words.amount - 1; ++n)
     {

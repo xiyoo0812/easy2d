@@ -29,7 +29,6 @@ namespace Easy2D
     typedef unsigned int        uchar32;
 
     //bit types
-    typedef unsigned char       BYTE;
     typedef unsigned char       byte;
     typedef unsigned short      byte16;
     typedef int8_t              lay;
@@ -52,6 +51,7 @@ namespace Easy2D
     using std::min;
     using std::max;
     using String = std::string;
+    using Wtring = std::wstring;
 	using Bytes = std::vector<byte>;
 	using Path = std::filesystem::path;
 
