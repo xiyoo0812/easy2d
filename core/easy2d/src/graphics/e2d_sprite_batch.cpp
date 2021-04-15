@@ -246,8 +246,8 @@ void SpriteBatch::createTextQuads()
         for (auto it : text->text)
         {
             auto fChar = text->font->getFontChar(it);
-            offsetMatrix = translate(Vec3(offsetX, offsetY + fChar->letterDimensions.y + text->textHeight - fontHeight, 0));
-            offsetX += fChar->letterDimensions.x;
+            offsetMatrix = translate(Vec3(offsetX + fChar->letterDimensions.x, offsetY + fChar->letterDimensions.y + text->textHeight - fontHeight, 0));
+            offsetX += fChar->advence;
 
             transformMat = transpose(worldMat * offsetMatrix);
 

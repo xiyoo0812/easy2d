@@ -3,9 +3,9 @@
 
 using namespace Easy2D;
 
-FontManager::FontManager() : Singleton<FontManager>(), mLibrary(0)
+FontManager::FontManager() : Singleton<FontManager>()
 {
-    
+
 }
 
 FontManager::~FontManager()
@@ -48,7 +48,19 @@ const SPtr<Font> FontManager::loadFont(const String& name, const String& fontNam
         return nullptr;
     }
     Path& path = pit->second;
-    auto font = std::make_shared<Font>(path, size, mLibrary);
+    SPtr<Stream> fontData = nullptr;
+    auto dit = mFontDatas.find(path.string());
+    if (dit == mFontDatas.end())
+    {
+        fontData = AssetManager::getInstance()->loadAsset(path);
+        if (fontData == nullptr || fontData->size() <= 0)
+        {
+            LOG_ERROR << _T("FontManager::loadFont loadAsset failed!");
+            return false;
+        }
+        mFontDatas.insert(std::make_pair(path.string(), fontData));
+    }
+    auto font = std::make_shared<Font>(path, size);
     if (!font->load())
     {
         LOG_ERROR << _T("FontManager::loadFont font load failed! name: ") << fontName;
@@ -69,10 +81,26 @@ bool FontManager::removeFont(const String& name)
     return false;
 }
 
+
+FT_Library FontManager::getLibrary()
+{
+    return mLibrary;
+}
+
 const SPtr<Font> FontManager::getFont(const String& name)
 {
     auto it = mFontList.find(name);
     if (it != mFontList.end())
+    {
+        return it->second;
+    }
+    return nullptr;
+}
+
+const SPtr<Stream> FontManager::getStream(const Path& path)
+{
+    auto it = mFontDatas.find(path.string());
+    if (it != mFontDatas.end())
     {
         return it->second;
     }
