@@ -1,6 +1,6 @@
 #include "e2d_sprite_component.h"
 #include "e2d_transform_component.h"
-#include "graphics/e2d_sprite_batch.h"
+#include "graphics/e2d_render_batch.h"
 
 /* Easy2D */
 using namespace Easy2D;
@@ -8,7 +8,7 @@ using namespace Easy2D;
 SpriteComponent::SpriteComponent(uint32 widthSegments, uint32 heightSegments)
     : Component(SpriteComponent::GUID), mWidthSegments(widthSegments), mHeightSegments(heightSegments)
 {
-    mSpriteInfo = std::make_shared<SpriteInfo>();
+    mSpriteInfo = std::make_shared<RenderSprite>();
 }
 
 SpriteComponent::~SpriteComponent()
@@ -21,9 +21,9 @@ void SpriteComponent::initialize()
 
 void SpriteComponent::fillSpriteInfo()
 {
-    mSpriteInfo->textureID = mTexture->getTextureID();
-    mSpriteInfo->transform = getTransform();
-    mSpriteInfo->vertices = Vec2(mDimensions.x, mDimensions.y);
+    mSpriteInfo->mTransform = getTransform();
+    mSpriteInfo->mTextureID = mTexture->getTextureID();
+    mSpriteInfo->mVertices = Vec2(mDimensions.x, mDimensions.y);
 }
 
 void SpriteComponent::createUVCoords()
@@ -38,12 +38,12 @@ void SpriteComponent::createUVCoords()
 
 void SpriteComponent::setUVCoords(const Vec4& coords)
 {
-    mSpriteInfo->uvCoords = coords;
+    mSpriteInfo->mUvCoords = coords;
 }
 
 void SpriteComponent::draw()
 {
-    SpriteBatch::getInstance()->addSpriteToQueue(mSpriteInfo);
+    RenderBatch::getInstance()->addRenderQueue(mSpriteInfo);
 }
 
 void SpriteComponent::update(const uint32& escapeMs)
@@ -56,13 +56,13 @@ void SpriteComponent::update(const uint32& escapeMs)
 bool SpriteComponent::checkCulling(float32 left, float32 right, float32 top, float32 bottom) const
 {
     //Always draw hudObjects
-    if (mSpriteInfo->bIsHud)
+    if (mSpriteInfo->mbHud)
     {
         return true;
     }
     float32 spriteWidth, spriteHeight;
     Pos objectPos = getTransform()->getWorldPosition();
-    if (mSpriteInfo->bIsHud)
+    if (mSpriteInfo->mbHud)
     {
         objectPos.x += left;
         objectPos.y += bottom;
@@ -84,22 +84,22 @@ void SpriteComponent::setCurrentSegment(uint32 widthSegment, uint32 heightSegmen
 
 void SpriteComponent::setColor(const Color & color)
 {
-    mSpriteInfo->colorMultiplier = color;
+    mSpriteInfo->mColor = color;
 }
 
 const Color& SpriteComponent::getColor() const
 {
-    return mSpriteInfo->colorMultiplier;
+    return mSpriteInfo->mColor;
 }
 
 void SpriteComponent::setHUDOptionEnabled(bool enabled)
 {
-    mSpriteInfo->bIsHud = enabled;
+    mSpriteInfo->mbHud = enabled;
 }
 
 bool SpriteComponent::isHUDOptionEnabled() const
 {
-    return mSpriteInfo->bIsHud;
+    return mSpriteInfo->mbHud;
 }
 
 void SpriteComponent::setTexture(SPtr<Texture2D> texture, uint32 widthSegments /* = 1 */, uint32 heightSegments /* = 1 */)

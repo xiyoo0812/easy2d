@@ -121,7 +121,7 @@ SPtr<FontChar> Font::loadFontChar(wchar_t ch)
         mTextureX = mTextureY = 0;
     }
     auto fChar = std::make_shared<FontChar>();
-    fChar->texId = mTextures[mTextureIndex];
+    fChar->textureID = mTextures[mTextureIndex];
     fChar->letterDimensions = Vec2(dimX, dimY);
     fChar->vertexDimensions = Vec2(width, height);
     fChar->advence = (mFace->glyph->metrics.horiAdvance / 64);

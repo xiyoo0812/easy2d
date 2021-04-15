@@ -1,13 +1,13 @@
 #include "e2d_text_component.h"
 #include "e2d_transform_component.h"
-#include "graphics/e2d_sprite_batch.h"
+#include "graphics/e2d_render_batch.h"
 
 /* Easy2D */
 using namespace Easy2D;
 
 TextComponent::TextComponent() : Component(TextComponent::GUID)
 {
-    mTextInfo = std::make_shared<TextInfo>();
+    mTextInfo = std::make_shared<RenderText>();
 }
 
 TextComponent::~TextComponent()
@@ -30,8 +30,9 @@ void TextComponent::initialize()
 
 void TextComponent::fillTextInfo()
 {
-    mTextInfo->font = mFont;
-    mTextInfo->transform = getTransform();
+    mTextInfo->mFont = mFont;
+    mTextInfo->mTransform = getTransform();
+    mTextInfo->mType = RenderObjectType::RENDER_TEXT;
 }
 
 void TextComponent::calculateTextDimensions()
@@ -42,7 +43,7 @@ void TextComponent::calculateTextDimensions()
 
 void TextComponent::calculateWrappedTextDimensions(uint8 lines)
 {
-    mDimensions.y = (mFont->getMaxLetterHeight() * lines) + (mTextInfo->verticalSpacing * (lines - 1));
+    mDimensions.y = (mFont->getMaxLetterHeight() * lines) + (mTextInfo->mSpacing * (lines - 1));
     getTransform()->setDimensionsYSafe(mDimensions.y);
 }
 
@@ -50,8 +51,8 @@ void TextComponent::calculateTextHeight()
 {
     auto count = std::count(mEditText.begin(), mEditText.end(), _T('\n'));
     ++count;
-    mDimensions.y = (mFont->getMaxLetterHeight() * count) + (mTextInfo->verticalSpacing * (count - 1));
-    mTextInfo->textHeight = mDimensions.y;
+    mDimensions.y = (mFont->getMaxLetterHeight() * count) + (mTextInfo->mSpacing * (count - 1));
+    mTextInfo->mTextHeight = mDimensions.y;
     getTransform()->setDimensionsYSafe(mDimensions.y);
 }
 
@@ -75,31 +76,31 @@ void TextComponent::cleanUpText(const Wtring& str)
 
 void TextComponent::calculateHorizontalTextOffset()
 {
-    mTextInfo->horizontalTextOffset.clear();
+    mTextInfo->mTextOffset.clear();
     if (mTextAlignment == HorizontalAlignment::Center)
     {
         uint32 counter(0);
         uint32 length = getLongestLine(mEditText);
         if (length == 0)
         {
-            mTextInfo->text = mEditText;
+            mTextInfo->mText = mEditText;
         }
         else
         {
-            mTextInfo->text = EMPTY_STRING;
+            mTextInfo->mText = EMPTY_STRING;
             Wtring substr(EMPTY_STRING);
             for (size_t i = 0; i < mEditText.length(); ++i)
             {
                 if (mEditText[i] == L'\n')
                 {
-                    mTextInfo->text += substr + L'\n';
+                    mTextInfo->mText += substr + L'\n';
 
                     uint32 diff = length - mFont->getStringLength(substr);
                     if (diff > 0)
                     {
                         diff /= 2;
                     }
-                    mTextInfo->horizontalTextOffset.push_back(diff);
+                    mTextInfo->mTextOffset.push_back(diff);
 
                     substr = EMPTY_STRING;
                     counter = 0;
@@ -110,14 +111,14 @@ void TextComponent::calculateHorizontalTextOffset()
                     ++counter;
                 }
             }
-            mTextInfo->text += substr;
+            mTextInfo->mText += substr;
 
             uint32 diff = length - mFont->getStringLength(substr);
             if (diff > 0)
             {
                 diff /= 2;
             }
-            mTextInfo->horizontalTextOffset.push_back(diff);
+            mTextInfo->mTextOffset.push_back(diff);
         }
     }
     else if (mTextAlignment == HorizontalAlignment::Right)
@@ -126,20 +127,20 @@ void TextComponent::calculateHorizontalTextOffset()
         uint32 length = getLongestLine(mEditText);
         if (length == 0)
         {
-            mTextInfo->text = mEditText;
+            mTextInfo->mText = mEditText;
         }
         else
         {
-            mTextInfo->text = EMPTY_STRING;
+            mTextInfo->mText = EMPTY_STRING;
             Wtring substr(EMPTY_STRING);
             for (size_t i = 0; i < mEditText.length(); ++i)
             {
                 if (mEditText[i] == L'\n')
                 {
-                    mTextInfo->text += substr + L'\n';
+                    mTextInfo->mText += substr + L'\n';
 
                     uint32 diff = length - mFont->getStringLength(substr);
-                    mTextInfo->horizontalTextOffset.push_back(diff);
+                    mTextInfo->mTextOffset.push_back(diff);
 
                     substr = EMPTY_STRING;
                     counter = 0;
@@ -151,21 +152,21 @@ void TextComponent::calculateHorizontalTextOffset()
                 }
             }
 
-            mTextInfo->text += substr;
+            mTextInfo->mText += substr;
 
             uint32 diff = length - mFont->getStringLength(substr);
-            mTextInfo->horizontalTextOffset.push_back(diff);
+            mTextInfo->mTextOffset.push_back(diff);
         }
     }
     else
     {
         getLongestLine(mEditText);
-        mTextInfo->text = mEditText;
-        mTextInfo->horizontalTextOffset.push_back(0);
+        mTextInfo->mText = mEditText;
+        mTextInfo->mTextOffset.push_back(0);
         auto n = std::count(mEditText.begin(), mEditText.end(), _T('\n'));
         for (; n > 0; --n)
         {
-            mTextInfo->horizontalTextOffset.push_back(0);
+            mTextInfo->mTextOffset.push_back(0);
         }
     }
 }
@@ -206,11 +207,11 @@ int32 TextComponent::getLongestLine(const Wtring& str)
 
 void TextComponent::draw()
 {
-    if (mTextInfo->text.size() == 0)
+    if (mTextInfo->mText.size() == 0)
     {
         return;
     }
-    SpriteBatch::getInstance()->addTextToQueue(mTextInfo);
+    RenderBatch::getInstance()->addRenderQueue(mTextInfo);
 }
 
 void TextComponent::update(const uint32& escapeMs)
@@ -223,7 +224,7 @@ bool TextComponent::checkCulling(float32 left, float32 right, float32 top, float
     float32 textWidth, textHeight, textW, textH;
     Pos objectPos = getTransform()->getWorldPosition();
 
-    if (mTextInfo->bIsHud)
+    if (mTextInfo->mbHud)
     {
         objectPos.x += left;
         objectPos.y += bottom;
@@ -264,12 +265,12 @@ const Wtring& TextComponent::getText() const
 
 void TextComponent::setColor(const Color& color)
 {
-    mTextInfo->colorMultiplier = color;
+    mTextInfo->mColor = color;
 }
 
 const Color& TextComponent::getColor() const
 {
-    return mTextInfo->colorMultiplier;
+    return mTextInfo->mColor;
 }
 
 void TextComponent::setFont(const SPtr<Font> font)
@@ -370,7 +371,7 @@ void TextComponent::splitString(PointerArray<Wtring, uint32>& words, Wtring str,
 
 void TextComponent::setVerticalSpacing(uint32 spacing)
 {
-    mTextInfo->verticalSpacing = spacing;
+    mTextInfo->mSpacing = spacing;
     if (mWrapWidth != NO_WRAPPING)
     {
         cleanUpText(checkWrapping(mOrigText, mWrapWidth));
@@ -379,12 +380,12 @@ void TextComponent::setVerticalSpacing(uint32 spacing)
 
 void TextComponent::setHUDOptionEnabled(bool enabled)
 {
-    mTextInfo->bIsHud = enabled;
+    mTextInfo->mbHud = enabled;
 }
 
 bool TextComponent::isHUDOptionEnabled() const
 {
-    return mTextInfo->bIsHud;
+    return mTextInfo->mbHud;
 }
 
 void TextComponent::alignTextLeft()

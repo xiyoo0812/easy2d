@@ -4,20 +4,10 @@
 #include "base/e2d_color.h"
 #include "object/e2d_component.h"
 #include "graphics/e2d_texture2d.h"
+#include "graphics/e2d_render_object.h"
 
 namespace Easy2D
 {
-    class SpriteInfo
-    {
-    public:
-        Vec2 vertices = {};
-        Vec4 uvCoords = {};
-        bool bIsHud = false;
-        uint32 textureID = 0;
-        Color colorMultiplier = Color::White;
-        SPtr<TransformComponent> transform = nullptr;
-    };
-
     class SpriteComponent : public Component
     {
     public:
@@ -55,7 +45,7 @@ namespace Easy2D
 
     private:
         SPtr<Texture2D> mTexture = nullptr;
-        SPtr<SpriteInfo> mSpriteInfo = nullptr;
+        SPtr<RenderSprite> mSpriteInfo = nullptr;
 
     public:
         inline static String GUID = "sprite";

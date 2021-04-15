@@ -12,7 +12,7 @@ namespace Easy2D
     class FontChar
     {
     public:
-        GLuint texId = 0;
+        GLuint textureID = 0;
         uint8 advence = 0;
         Vec2 vertexDimensions = Vec2(0, 0);
         Vec2 letterDimensions = Vec2(0, 0);
@@ -37,7 +37,6 @@ namespace Easy2D
 
     private:
         void unload();
-        uint32 nextPowerOfTwo(uint32 number) const;
         SPtr<FontChar> loadFontChar(wchar_t ch);
 
         GLuint* mTextures = 0;

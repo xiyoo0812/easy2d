@@ -5,7 +5,7 @@
 #include "graphics/e2d_texture_mgr.h"
 #include "graphics/e2d_scale_system.h"
 #include "graphics/e2d_graphics_mgr.h"
-#include "graphics/e2d_sprite_batch.h"
+#include "graphics/e2d_render_batch.h"
 #include "resource/e2d_asset_mgr.h"
 
 #include "gui/e2d_text_field.h"
@@ -41,7 +41,7 @@ void E2dEngine::initialize(SPtr<android_app> app)
     //AudioManager::getInstance()->start();
     ScaleSystem::getInstance()->setWorkingResolution(window_width, window_height);
     GraphicsManager::getInstance()->calculateViewPort();
-    SpriteBatch::getInstance()->initialize();
+    RenderBatch::getInstance()->initialize();
     //DebugDraw::getInstance()->initialize();
 
     auto scene = std::make_shared<Scene>("test");
@@ -54,6 +54,7 @@ void E2dEngine::initialize(SPtr<android_app> app)
     image->setHorizontalAlignment(HorizontalAlignment::Center);
     image->setVerticalAlignment(VerticalAlignment::Center);
     image->translate(400, 300);
+    image->translateL(1);
 
     auto font = FontManager::getInstance()->loadFont("felt-12", "fzy4k.ttf", 18);
 
@@ -63,6 +64,7 @@ void E2dEngine::initialize(SPtr<android_app> app)
     txt->setColor(Color::Red);
     txt->setText(L"fabcdeFfg");
     txt->setRootWidget();
+    txt->translateL(2);
     txt->setHorizontalAlignment(HorizontalAlignment::Center);
     txt->setVerticalAlignment(VerticalAlignment::Center);
 }
@@ -93,7 +95,7 @@ void E2dEngine::stop()
     TimerManager::earseInstance();
     ScaleSystem::earseInstance();
     FontManager::earseInstance();
-    SpriteBatch::earseInstance();
+    RenderBatch::earseInstance();
     SceneManager::earseInstance();
     TextureManager::earseInstance();
     GraphicsManager::earseInstance();

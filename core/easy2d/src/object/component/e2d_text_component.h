@@ -4,22 +4,10 @@
 #include "base/e2d_color.h"
 #include "object/e2d_component.h"
 #include "graphics/e2d_font_mgr.h"
+#include "graphics/e2d_render_object.h"
 
 namespace Easy2D
 {
-    class TextInfo
-    {
-    public:
-        Wtring text = L"";
-        bool bIsHud = false;
-        int32 textHeight = 10;
-        int32 verticalSpacing = 0;
-        Color colorMultiplier = Color::White;
-        Vector<int32> horizontalTextOffset = {};
-        SPtr<TransformComponent> transform = nullptr;
-        SPtr<Font> font = nullptr;
-    };
-
     class TextComponent : public Component
     {
     public:
@@ -88,7 +76,7 @@ namespace Easy2D
         Wtring mOrigText = L"", mEditText = L"";
 
         SPtr<Font> mFont = nullptr;
-        SPtr<TextInfo> mTextInfo = nullptr;
+        SPtr<RenderText> mTextInfo = nullptr;
         HorizontalAlignment mTextAlignment = HorizontalAlignment::Center;
 
     public:

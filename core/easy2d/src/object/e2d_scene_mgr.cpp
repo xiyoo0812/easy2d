@@ -1,5 +1,5 @@
 #include "e2d_scene_mgr.h"
-#include "graphics/e2d_sprite_batch.h"
+#include "graphics/e2d_render_batch.h"
 
 /* Easy2D */
 using namespace Easy2D;
@@ -131,7 +131,7 @@ void SceneManager::draw()
     if (mActiveScene)
     {
         mActiveScene->draw();
-        SpriteBatch::getInstance()->flush();
+        RenderBatch::getInstance()->flush();
         // 		DebugDraw::getInstance()->flush();
     }
 }

@@ -1,5 +1,5 @@
 #include "e2d_graphics_mgr.h"
-#include "e2d_sprite_batch.h"
+#include "e2d_render_batch.h"
 #include "e2d_scale_system.h"
 #include "object/e2d_camera.h"
 #include "object/e2d_scene_mgr.h"

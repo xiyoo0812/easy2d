@@ -2,6 +2,7 @@
 #include "e2d_camera.h"
 #include "e2d_scene_mgr.h"
 #include "math/e2d_pos.h"
+#include "graphics/e2d_graphics_mgr.h"
 #include "component/e2d_transform_component.h"
 
 /* Easy2D */
@@ -73,8 +74,8 @@ void Scene::draw()
     else
     {
         Pos camPos = mDefaultCamera->getTransform()->getWorldPosition();
-        int32 screenWidth = 800;
-        int32 screenHeight = 600;
+        int32 screenWidth = GraphicsManager::getInstance()->getWindowResolution().x;
+        int32 screenHeight = GraphicsManager::getInstance()->getWindowResolution().y;
         float32 left = camPos.pos2D().x - mCullingOffsetX;
         float32 right = camPos.pos2D().x + screenWidth + mCullingOffsetX;
         float32 top = camPos.pos2D().y + screenHeight + mCullingOffsetY;

@@ -1,4 +1,4 @@
-#include "e2d_sprite_batch.h"
+#include "e2d_render_batch.h"
 #include "e2d_scale_system.h"
 #include "e2d_graphics_mgr.h"
 #include "object/component/e2d_text_component.h"
@@ -8,15 +8,15 @@
 /* Easy2D */
 using namespace Easy2D;
 
-SpriteBatch::SpriteBatch() : Singleton<SpriteBatch>()
+RenderBatch::RenderBatch() : Singleton<RenderBatch>()
 {
 }
 
-SpriteBatch::~SpriteBatch()
+RenderBatch::~RenderBatch()
 {
 }
 
-void SpriteBatch::initialize()
+void RenderBatch::initialize()
 {
     //Set Shader and shader variables
     Path vShader(_T("shader/shader.vs"));
@@ -36,20 +36,66 @@ void SpriteBatch::initialize()
     mTexSamplerID = mProgram->getUniformLocation("texSampler");
 }
 
-void SpriteBatch::flush()
+void RenderBatch::sort()
 {
+    switch (mSortingMode)
+    {
+    case RenderSortingMode::BACK_FRONT:
+        std::sort(mRenderQueue.begin(), mRenderQueue.end(), [](SPtr<RenderObject> a, SPtr<RenderObject> b) -> bool
+        {
+            return a->mTransform->getWorldPosition().l < b->mTransform->getWorldPosition().l;
+        });
+        break;
+    case RenderSortingMode::FRONT_BACK:
+        std::sort(mRenderQueue.begin(), mRenderQueue.end(), [](SPtr<RenderObject> a, SPtr<RenderObject> b) -> bool
+        {
+            return a->mTransform->getWorldPosition().l > b->mTransform->getWorldPosition().l;
+        });
+        break;
+    default:
+        break;
+    }
+}
+
+void RenderBatch::addRenderQueue(SPtr<RenderObject> object)
+{
+    mRenderQueue.push_back(object);
+}
+
+void RenderBatch::setSortingMode(RenderSortingMode mode)
+{
+    mSortingMode = mode;
+}
+
+void RenderBatch::flush()
+{
+    sort();
+    build();
     begin();
-    drawSprites();
-    //Clear vertex, uv, color and isHud buffer
-    mVertexBuffer.clear();
-    mUvCoordBuffer.clear();
-    mIsHUDBuffer.clear();
-    mColorBuffer.clear();
-    drawTextSprites();
+    draw();
     end();
 }
 
-void SpriteBatch::begin()
+void RenderBatch::build()
+{
+    //Create Vertexbuffer
+    for (auto object : mRenderQueue)
+    {
+        switch (object->mType)
+        {
+        case RenderObjectType::RENDER_SPRITE:
+            createSpriteQuad(object);
+            break;
+        case RenderObjectType::RENDER_TEXT:
+            createTextQuad(object);
+            break;
+        default:
+            break;
+        }
+    }
+}
+
+void RenderBatch::begin()
 {
     mProgram->bind();
     //[TODO] Test android!
@@ -58,9 +104,6 @@ void SpriteBatch::begin()
     glEnableVertexAttribArray(mHUDID);
     glEnableVertexAttribArray(mColorID);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    //Create Vertexbuffer
-    sortSprites(mSpriteSortingMode);
-    createSpriteQuads();
     //Set uniforms
     glUniform1i(mTexSamplerID, 0);
     float scaleValue = ScaleSystem::getInstance()->getScale();
@@ -72,27 +115,26 @@ void SpriteBatch::begin()
     glUniformMatrix4fv(mProjID, 1, GL_FALSE, toPointer(projectionMat));
 }
 
-void SpriteBatch::drawSprites()
+void RenderBatch::draw()
 {
-    uint32 batchStart(0);
-    uint32 batchSize(0);
-    GLuint texture(0);
-    for (auto currentSprite : mSpriteQueue)
+    GLuint curTexture = 0;
+    uint32 batchStart = 0, batchSize = 0;
+    for (auto texture : mTextureQueue)
     {
         //If != -> flush
-        if (texture != currentSprite->textureID)
+        if (texture != curTexture)
         {
-            flushSprites(batchStart, batchSize, texture);
+            drawTexture(batchStart, batchSize, curTexture);
             batchStart += batchSize;
+            curTexture = texture;
             batchSize = 0;
-            texture = currentSprite->textureID;
         }
         ++batchSize;
     }
-    flushSprites(batchStart, batchSize, texture);
+    drawTexture(batchStart, batchSize, curTexture);
 }
 
-void SpriteBatch::flushSprites(uint32 start, uint32 size, uint32 texture)
+void RenderBatch::drawTexture(uint32 start, uint32 size, uint32 texture)
 {
     if (size > 0)
     {
@@ -107,7 +149,7 @@ void SpriteBatch::flushSprites(uint32 start, uint32 size, uint32 texture)
     }
 }
 
-void SpriteBatch::end()
+void RenderBatch::end()
 {
     //Unbind attributes and buffers
     glDisableVertexAttribArray(mHUDID);
@@ -115,41 +157,16 @@ void SpriteBatch::end()
     glDisableVertexAttribArray(mVertexID);
     glDisableVertexAttribArray(mTexCoordID);
     mProgram->unbind();
-    mSpriteQueue.clear();
-    mTextQueue.clear();
     mVertexBuffer.clear();
     mUvCoordBuffer.clear();
     mIsHUDBuffer.clear();
     mColorBuffer.clear();
+    mTextureQueue.clear();
+    mRenderQueue.clear();
 }
 
-void SpriteBatch::drawTextSprites()
-{
-    createTextQuads();
-    //flushText once per TextComponent (same font)
-    //Check per text how many characters -> Forloop drawing
-    uint32 batchStart(0);
-    uint32 batchSize(0);
-    GLuint texture(0);
-    for (auto text : mTextQueue)
-    {
-        for (auto it : text->text)
-        {
-            auto fChar = text->font->getFontChar(it);
-            if (texture != fChar->texId)
-            {
-                flushSprites(batchStart, batchSize, texture);
-                batchStart += batchSize;
-                batchSize = 0;
-                texture = fChar->texId;
-            }
-            batchSize++;
-        }
-    }
-    flushSprites(batchStart, batchSize, texture);
-}
 
-void SpriteBatch::createSpriteQuads()
+void RenderBatch::createSpriteQuad(SPtr<RenderObject> object)
 {
     //for every sprite that has to be drawn, push back all vertices 
     //(VERTEX_AMOUNT per sprite) into the vertexbuffer and all uvcoords 
@@ -164,18 +181,18 @@ void SpriteBatch::createSpriteQuads()
     *   2----3
     *  BL    BR
     */
-
-    for (auto sprite : mSpriteQueue)
+    auto sprite = std::dynamic_pointer_cast<RenderSprite>(object);
+    if (sprite != nullptr)
     {
         //Push back all vertices
-        Mat4 transformMat = transpose(sprite->transform->getWorldMatrix());
-        Vec4 TL = Vec4(0, sprite->vertices.y, 0, 1);
+        Mat4 transformMat = transpose(sprite->mTransform->getWorldMatrix());
+        Vec4 TL = Vec4(0, sprite->mVertices.y, 0, 1);
         mul(TL, transformMat, TL);
-        Vec4 TR = Vec4(sprite->vertices.x, sprite->vertices.y, 0, 1);
+        Vec4 TR = Vec4(sprite->mVertices.x, sprite->mVertices.y, 0, 1);
         mul(TR, transformMat, TR);
         Vec4 BL = Vec4(0, 0, 0, 1);
         mul(BL, transformMat, BL);
-        Vec4 BR = Vec4(sprite->vertices.x, 0, 0, 1);
+        Vec4 BR = Vec4(sprite->mVertices.x, 0, 0, 1);
         mul(BR, transformMat, BR);
         //0
         mVertexBuffer.push_back(TL);
@@ -192,34 +209,36 @@ void SpriteBatch::createSpriteQuads()
 
         //Push back all uv's
         //0
-        mUvCoordBuffer.push_back(sprite->uvCoords.x);
-        mUvCoordBuffer.push_back(sprite->uvCoords.y + sprite->uvCoords.w);
+        mUvCoordBuffer.push_back(sprite->mUvCoords.x);
+        mUvCoordBuffer.push_back(sprite->mUvCoords.y + sprite->mUvCoords.w);
         //1
-        mUvCoordBuffer.push_back(sprite->uvCoords.x + sprite->uvCoords.z);
-        mUvCoordBuffer.push_back(sprite->uvCoords.y + sprite->uvCoords.w);
+        mUvCoordBuffer.push_back(sprite->mUvCoords.x + sprite->mUvCoords.z);
+        mUvCoordBuffer.push_back(sprite->mUvCoords.y + sprite->mUvCoords.w);
         //2
-        mUvCoordBuffer.push_back(sprite->uvCoords.x);
-        mUvCoordBuffer.push_back(sprite->uvCoords.y);
+        mUvCoordBuffer.push_back(sprite->mUvCoords.x);
+        mUvCoordBuffer.push_back(sprite->mUvCoords.y);
         //1
-        mUvCoordBuffer.push_back(sprite->uvCoords.x + sprite->uvCoords.z);
-        mUvCoordBuffer.push_back(sprite->uvCoords.y + sprite->uvCoords.w);
+        mUvCoordBuffer.push_back(sprite->mUvCoords.x + sprite->mUvCoords.z);
+        mUvCoordBuffer.push_back(sprite->mUvCoords.y + sprite->mUvCoords.w);
         //3
-        mUvCoordBuffer.push_back(sprite->uvCoords.x + sprite->uvCoords.z);
-        mUvCoordBuffer.push_back(sprite->uvCoords.y);
+        mUvCoordBuffer.push_back(sprite->mUvCoords.x + sprite->mUvCoords.z);
+        mUvCoordBuffer.push_back(sprite->mUvCoords.y);
         //2
-        mUvCoordBuffer.push_back(sprite->uvCoords.x);
-        mUvCoordBuffer.push_back(sprite->uvCoords.y);
+        mUvCoordBuffer.push_back(sprite->mUvCoords.x);
+        mUvCoordBuffer.push_back(sprite->mUvCoords.y);
+        //tex
+        mTextureQueue.push_back(sprite->mTextureID);
         //bool & color buffer
         for (uint32 i = 0; i < 6; ++i)
         {
-            mIsHUDBuffer.push_back(float32(sprite->bIsHud));
+            mIsHUDBuffer.push_back(float32(sprite->mbHud));
             //rgba
-            mColorBuffer.push_back(sprite->colorMultiplier);
+            mColorBuffer.push_back(sprite->mColor);
         }
     }
 }
 
-void SpriteBatch::createTextQuads()
+void RenderBatch::createTextQuad(SPtr<RenderObject> object)
 {
     //for every sprite that has to be drawn, push back all vertices 
     //(VERTEX_AMOUNT per sprite) into the vertexbuffer and all uvcoords 
@@ -234,19 +253,20 @@ void SpriteBatch::createTextQuads()
     *   2----3
     *  BL    BR
     */
-    for (auto text : mTextQueue)
+    auto text = std::dynamic_pointer_cast<RenderText>(object);
+    if (text != nullptr)
     {
         //Variables per textcomponent
         Mat4 transformMat, offsetMatrix;
-        const Mat4& worldMat = text->transform->getWorldMatrix();
+        const Mat4& worldMat = text->mTransform->getWorldMatrix();
         int32 line_counter(0);
-        int32 offsetX(text->horizontalTextOffset.at(line_counter));
+        int32 offsetX(text->mTextOffset.at(line_counter));
         int32 offsetY(0);
-        int32 fontHeight(text->font->getMaxLetterHeight() + text->font->getMinLetterHeight());
-        for (auto it : text->text)
+        int32 fontHeight(text->mFont->getMaxLetterHeight() + text->mFont->getMinLetterHeight());
+        for (auto it : text->mText)
         {
-            auto fChar = text->font->getFontChar(it);
-            offsetMatrix = translate(Vec3(offsetX + fChar->letterDimensions.x, offsetY + fChar->letterDimensions.y + text->textHeight - fontHeight, 0));
+            auto fChar = text->mFont->getFontChar(it);
+            offsetMatrix = translate(Vec3(offsetX + fChar->letterDimensions.x, offsetY + fChar->letterDimensions.y + text->mTextHeight - fontHeight, 0));
             offsetX += fChar->advence;
 
             transformMat = transpose(worldMat * offsetMatrix);
@@ -292,71 +312,22 @@ void SpriteBatch::createTextQuads()
             mUvCoordBuffer.push_back(fChar->uvCoordTL.x);
             mUvCoordBuffer.push_back(fChar->uvCoordBR.y);
 
+            //tex
+            mTextureQueue.push_back(fChar->textureID);
+
             //bool & color buffer
             for (uint32 i = 0; i < 6; ++i)
             {
-                mIsHUDBuffer.push_back(float32(text->bIsHud));
+                mIsHUDBuffer.push_back(float32(text->mbHud));
                 //rgba
-                mColorBuffer.push_back(text->colorMultiplier);
+                mColorBuffer.push_back(text->mColor);
             }
             if (it == _T('\n'))
             {
-                offsetY -= text->font->getMaxLetterHeight() + text->verticalSpacing;
+                offsetY -= text->mFont->getMaxLetterHeight() + text->mSpacing;
                 ++line_counter;
-                offsetX = text->horizontalTextOffset.at(line_counter);
+                offsetX = text->mTextOffset.at(line_counter);
             }
         }
     }
-}
-
-uint32 Font::nextPowerOfTwo(uint32 number) const
-{
-    uint32 rval = 1;
-    while (rval < number)
-    {
-        rval <<= 1;
-    }
-    return rval;
-}
-
-void SpriteBatch::sortSprites(SpriteSortingMode mode)
-{
-    switch (mode)
-    {
-    case SpriteSortingMode::BackToFront:
-        std::sort(mSpriteQueue.begin(), mSpriteQueue.end(), [](SPtr<SpriteInfo> a, SPtr<SpriteInfo> b) -> bool
-        {
-            return a->transform->getWorldPosition().l < b->transform->getWorldPosition().l;
-        });
-        break;
-    case SpriteSortingMode::FrontToBack:
-        std::sort(mSpriteQueue.begin(), mSpriteQueue.end(), [](SPtr<SpriteInfo> a, SPtr<SpriteInfo> b) -> bool
-        {
-            return a->transform->getWorldPosition().l > b->transform->getWorldPosition().l;
-        });
-        break;
-    case SpriteSortingMode::TextureID:
-        std::sort(mSpriteQueue.begin(), mSpriteQueue.end(), [](SPtr<SpriteInfo> a, SPtr<SpriteInfo> b) -> bool
-        {
-            return a->textureID < b->textureID;
-        });
-        break;
-    default:
-        break;
-    }
-}
-
-void SpriteBatch::addSpriteToQueue(SPtr<SpriteInfo> spriteInfo)
-{
-    mSpriteQueue.push_back(spriteInfo);
-}
-
-void SpriteBatch::addTextToQueue(SPtr<TextInfo> text)
-{
-    mTextQueue.push_back(text);
-}
-
-void SpriteBatch::setSpriteSortingMode(SpriteSortingMode mode)
-{
-    mSpriteSortingMode = mode;
 }

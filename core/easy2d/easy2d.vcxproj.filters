@@ -76,9 +76,6 @@
     <ClCompile Include="src\object\component\e2d_text_component.cpp">
       <Filter>object\component</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphics\e2d_sprite_batch.cpp">
-      <Filter>graphics</Filter>
-    </ClCompile>
     <ClCompile Include="src\e2d_engine.cpp">
       <Filter>engine</Filter>
     </ClCompile>
@@ -107,6 +104,9 @@
       <Filter>gui</Filter>
     </ClCompile>
     <ClCompile Include="src\graphics\e2d_program.cpp">
+      <Filter>graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graphics\e2d_render_batch.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
   </ItemGroup>
@@ -210,9 +210,6 @@
     <ClInclude Include="src\object\component\e2d_text_component.h">
       <Filter>object\component</Filter>
     </ClInclude>
-    <ClInclude Include="src\graphics\e2d_sprite_batch.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
     <ClInclude Include="src\e2d_engine.h">
       <Filter>engine</Filter>
     </ClInclude>
@@ -244,6 +241,12 @@
       <Filter>gui</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\e2d_program.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\e2d_render_batch.h">
+      <Filter>graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graphics\e2d_render_object.h">
       <Filter>graphics</Filter>
     </ClInclude>
   </ItemGroup>
