@@ -56,17 +56,31 @@ void E2dEngine::initialize(SPtr<android_app> app)
     image->translate(400, 300);
     image->translateL(1);
 
-    auto font = FontManager::getInstance()->loadFont("felt-12", "fzy4k.ttf", 18);
+    auto font = FontManager::getInstance()->loadFont("felt-12", "fzltxh_gbk.ttf", 48);
 
     auto txt = std::make_shared<UITextField>("text");
     scene->addEntity(txt);
     txt->setFont(font);
-    txt->setColor(Color::Red);
-    txt->setText(L"fabcdeFfg");
+    txt->setColor(Color::White);
+    txt->setText(L"我是国人daAFKsbB123");
+    //txt->setShadowColor(Color::Black, 2);
+    txt->setBold(true);
     txt->setRootWidget();
     txt->translateL(2);
     txt->setHorizontalAlignment(HorizontalAlignment::Center);
     txt->setVerticalAlignment(VerticalAlignment::Center);
+
+    auto txt2 = std::make_shared<UITextField>("text2");
+    scene->addEntity(txt2);
+    txt2->setFont(font);
+    txt2->setColor(Color::Red);
+    txt2->setText(L"我是国人daAFKsbB123");
+    txt2->setItalic(true);
+    //txt2->setShadowColor(Color::White, 2);
+    txt2->setRootWidget();
+    txt2->setHorizontalAlignment(HorizontalAlignment::Center);
+    txt2->setVerticalAlignment(VerticalAlignment::Center);
+    txt2->translate(0, 60, 2);
 }
 
 void E2dEngine::update()

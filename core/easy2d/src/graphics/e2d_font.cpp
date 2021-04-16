@@ -1,6 +1,7 @@
 #include "e2d_font.h"
 #include "e2d_font_mgr.h"
 #include "resource/e2d_stream.h"
+#include "freetype/ftoutln.h"
 
 using namespace Easy2D;
 
@@ -70,13 +71,31 @@ void Font::unload()
     }
 }
 
-SPtr<FontChar> Font::loadFontChar(wchar_t ch)
+SPtr<FontChar> Font::loadFontChar(wchar_t ch, bool bBold, bool bItalic)
 {
-    auto error = FT_Load_Char(mFace, ch, FT_LOAD_DEFAULT);
+    auto error = FT_Load_Char(mFace, ch, mFontSize > 18 ? FT_LOAD_FORCE_AUTOHINT : FT_LOAD_DEFAULT);
     if (error)
     {
         LOG_ERROR << _T("Font::loadFontChar FT_Load_Char error! ch: ") << ch;
         return nullptr;
+    }
+    if (bBold)
+    {
+        error = FT_Outline_Embolden(&mFace->glyph->outline, 1 << 6);
+        if (error)
+        {
+            LOG_ERROR << _T("Font::loadFontChar FT_Outline_Embolden error! ch: ") << ch;
+            return nullptr;
+        }
+    }
+    if (bItalic)
+    {
+        FT_Matrix italicMatrix;
+        italicMatrix.xx = 1 << 16;
+        italicMatrix.xy = 0x5800;
+        italicMatrix.yx = 0;
+        italicMatrix.yy = 1 << 16;
+        FT_Outline_Transform(&mFace->glyph->outline, &italicMatrix);
     }
     error = FT_Render_Glyph(mFace->glyph, FT_RENDER_MODE_NORMAL);
     if (error)
@@ -113,7 +132,7 @@ SPtr<FontChar> Font::loadFontChar(wchar_t ch)
     if (mTextureX + width >= FONT_TEXTURE_SIZE)
     {
         mTextureX = 0;
-        mTextureY += mTextureLineY;
+        mTextureY += mTextureLineY + FONT_TEXTURE_SPACE;
     }
     if (mTextureY + height >= FONT_TEXTURE_SIZE)
     {
@@ -129,27 +148,40 @@ SPtr<FontChar> Font::loadFontChar(wchar_t ch)
     fChar->uvCoordBR = Vec2((mTextureX + width) / FONT_TEXTURE_SIZE, (mTextureY + height) / FONT_TEXTURE_SIZE);
     glBindTexture(GL_TEXTURE_2D, mTextures[mTextureIndex]);
     glTexSubImage2D(GL_TEXTURE_2D, 0, mTextureX, mTextureY, width, height, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, expanded_data);
-    mTextureX += width;
-    mFontCharMap.insert(std::make_pair(ch, fChar));
+    mTextureX += width + FONT_TEXTURE_SPACE;
+    FontMap& fontMap = getFontMap(bBold, bItalic);
+    fontMap.insert(std::make_pair(ch, fChar));
     safeDeleteArray(expanded_data);
     return fChar;
 }
-
 
 uint32 Font::getFontSize() const
 {
     return mFontSize;
 }
 
-
-const SPtr<FontChar> Font::getFontChar(wchar_t ch)
+UnorderedMap<wchar_t, SPtr<FontChar>>& Font::getFontMap(bool bBold, bool bItalic)
 {
-    auto it = mFontCharMap.find(ch);
-    if (it != mFontCharMap.end())
+    if (bBold)
+    {
+        return bItalic ? mBoldItaCharMap : mBoldCharMap;
+    }
+    if (bItalic)
+    {
+        return mItalicCharMap;
+    }
+    return mFontCharMap;
+}
+
+const SPtr<FontChar> Font::getFontChar(wchar_t ch, bool bBold /* = false */, bool bItalic /* = false */)
+{
+    FontMap& fontMap = getFontMap(bBold, bItalic);
+    auto it = fontMap.find(ch);
+    if (it != fontMap.end())
     {
         return it->second;
     }
-    return loadFontChar(ch);
+    return loadFontChar(ch, bBold, bItalic);
 }
 
 uint32 Font::getMaxLetterHeight() const
@@ -161,7 +193,6 @@ uint32 Font::getMinLetterHeight() const
 {
     return mMinLetterHeight;
 }
-
 
 uint32 Font::getStringLength(const Wtring& string)
 {

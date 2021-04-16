@@ -26,8 +26,8 @@ namespace Easy2D
         void build();
         void draw();
         void sort();
-        void createTextQuad(SPtr<RenderObject> object);
-        void createSpriteQuad(SPtr<RenderObject> object);
+        void createSpriteQuad(SPtr<RenderSprite> sprite);
+        void createTextQuad(SPtr<RenderText> text, uint16 shadowSize = 0);
         void drawTexture(uint32 start, uint32 size, uint32 texture);
 
         static const uint32 BATCHSIZE = 50;
@@ -46,7 +46,7 @@ namespace Easy2D
         GLuint mVertexID = 0, mTexCoordID = 0, mHUDID = 0;
         GLuint mTexSamplerID = 0, mColorID = 0, mScaleID = 0, mViewID = 0, mProjID = 0;
 
-        RenderSortingMode mSortingMode = RenderSortingMode::BACK_FRONT;
+        RenderSortingMode mSortingMode = RenderSortingMode::BackFront;
     };
 }
 

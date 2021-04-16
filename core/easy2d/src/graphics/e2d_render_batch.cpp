@@ -40,13 +40,13 @@ void RenderBatch::sort()
 {
     switch (mSortingMode)
     {
-    case RenderSortingMode::BACK_FRONT:
+    case RenderSortingMode::BackFront:
         std::sort(mRenderQueue.begin(), mRenderQueue.end(), [](SPtr<RenderObject> a, SPtr<RenderObject> b) -> bool
         {
             return a->mTransform->getWorldPosition().l < b->mTransform->getWorldPosition().l;
         });
         break;
-    case RenderSortingMode::FRONT_BACK:
+    case RenderSortingMode::FrontBack:
         std::sort(mRenderQueue.begin(), mRenderQueue.end(), [](SPtr<RenderObject> a, SPtr<RenderObject> b) -> bool
         {
             return a->mTransform->getWorldPosition().l > b->mTransform->getWorldPosition().l;
@@ -83,11 +83,26 @@ void RenderBatch::build()
     {
         switch (object->mType)
         {
-        case RenderObjectType::RENDER_SPRITE:
-            createSpriteQuad(object);
+        case RenderObjectType::ObjectSprite:
+            {
+                auto sprite = std::dynamic_pointer_cast<RenderSprite>(object);
+                if (sprite)
+                {
+                    createSpriteQuad(sprite);
+                }
+            }
             break;
-        case RenderObjectType::RENDER_TEXT:
-            createTextQuad(object);
+        case RenderObjectType::ObjectText:
+            {
+                auto text = std::dynamic_pointer_cast<RenderText>(object);
+                if (text)
+                {
+                    for (int16 shadow = text->mShadowSize; shadow >= 0; shadow--)
+                    {
+                        createTextQuad(text, shadow);
+                    }
+                }
+            }
             break;
         default:
             break;
@@ -166,7 +181,7 @@ void RenderBatch::end()
 }
 
 
-void RenderBatch::createSpriteQuad(SPtr<RenderObject> object)
+void RenderBatch::createSpriteQuad(SPtr<RenderSprite> sprite)
 {
     //for every sprite that has to be drawn, push back all vertices 
     //(VERTEX_AMOUNT per sprite) into the vertexbuffer and all uvcoords 
@@ -181,18 +196,95 @@ void RenderBatch::createSpriteQuad(SPtr<RenderObject> object)
     *   2----3
     *  BL    BR
     */
-    auto sprite = std::dynamic_pointer_cast<RenderSprite>(object);
-    if (sprite != nullptr)
+    //Push back all vertices
+    Mat4 transformMat = transpose(sprite->mTransform->getWorldMatrix());
+    Vec4 TL = Vec4(0, sprite->mVertices.y, 0, 1);
+    mul(TL, transformMat, TL);
+    Vec4 TR = Vec4(sprite->mVertices.x, sprite->mVertices.y, 0, 1);
+    mul(TR, transformMat, TR);
+    Vec4 BL = Vec4(0, 0, 0, 1);
+    mul(BL, transformMat, BL);
+    Vec4 BR = Vec4(sprite->mVertices.x, 0, 0, 1);
+    mul(BR, transformMat, BR);
+    //0
+    mVertexBuffer.push_back(TL);
+    //1
+    mVertexBuffer.push_back(TR);
+    //2
+    mVertexBuffer.push_back(BL);
+    //1
+    mVertexBuffer.push_back(TR);
+    //3
+    mVertexBuffer.push_back(BR);
+    //2
+    mVertexBuffer.push_back(BL);
+
+    //Push back all uv's
+    //0
+    mUvCoordBuffer.push_back(sprite->mUvCoords.x);
+    mUvCoordBuffer.push_back(sprite->mUvCoords.y + sprite->mUvCoords.w);
+    //1
+    mUvCoordBuffer.push_back(sprite->mUvCoords.x + sprite->mUvCoords.z);
+    mUvCoordBuffer.push_back(sprite->mUvCoords.y + sprite->mUvCoords.w);
+    //2
+    mUvCoordBuffer.push_back(sprite->mUvCoords.x);
+    mUvCoordBuffer.push_back(sprite->mUvCoords.y);
+    //1
+    mUvCoordBuffer.push_back(sprite->mUvCoords.x + sprite->mUvCoords.z);
+    mUvCoordBuffer.push_back(sprite->mUvCoords.y + sprite->mUvCoords.w);
+    //3
+    mUvCoordBuffer.push_back(sprite->mUvCoords.x + sprite->mUvCoords.z);
+    mUvCoordBuffer.push_back(sprite->mUvCoords.y);
+    //2
+    mUvCoordBuffer.push_back(sprite->mUvCoords.x);
+    mUvCoordBuffer.push_back(sprite->mUvCoords.y);
+    //tex
+    mTextureQueue.push_back(sprite->mTextureID);
+    //bool & color buffer
+    for (uint32 i = 0; i < 6; ++i)
     {
-        //Push back all vertices
-        Mat4 transformMat = transpose(sprite->mTransform->getWorldMatrix());
-        Vec4 TL = Vec4(0, sprite->mVertices.y, 0, 1);
+        mIsHUDBuffer.push_back(float32(sprite->mbHud));
+        //rgba
+        mColorBuffer.push_back(sprite->mColor);
+    }
+}
+
+void RenderBatch::createTextQuad(SPtr<RenderText> text, uint16 shadowSize /* = 0 */)
+{
+    //for every sprite that has to be drawn, push back all vertices 
+    //(VERTEX_AMOUNT per sprite) into the vertexbuffer and all uvcoords 
+    //(UV_AMOUNT per sprite) into the uvbuffer and the isHUD bool
+    /*
+    *  TL    TR
+    *   0----1
+    *   |   /|
+    *   |  / |
+    *   | /  |
+    *   |/   |
+    *   2----3
+    *  BL    BR
+    */
+    //Variables per textcomponent
+    int32 line_counter = 0;
+    int32 offsetY = -shadowSize;
+    int32 offsetX = shadowSize + text->mAlianOffset.at(line_counter);
+    int32 fontHeight(text->mFont->getMaxLetterHeight() + text->mFont->getMinLetterHeight());
+    const Mat4& worldMat = text->mTransform->getWorldMatrix();
+    for (auto it : text->mText)
+    {
+        auto fChar = text->mFont->getFontChar(it, text->mbBold, text->mbItalic);
+        Mat4 offsetMatrix = translate(Vec3(offsetX + fChar->letterDimensions.x, offsetY + fChar->letterDimensions.y + text->mTextHeight - fontHeight, 0));
+        offsetX += fChar->advence;
+
+        Mat4 transformMat = transpose(worldMat * offsetMatrix);
+
+        Vec4 TL = Vec4(0, fChar->vertexDimensions.y, 0, 1);
         mul(TL, transformMat, TL);
-        Vec4 TR = Vec4(sprite->mVertices.x, sprite->mVertices.y, 0, 1);
+        Vec4 TR = Vec4(fChar->vertexDimensions.x, fChar->vertexDimensions.y, 0, 1);
         mul(TR, transformMat, TR);
         Vec4 BL = Vec4(0, 0, 0, 1);
         mul(BL, transformMat, BL);
-        Vec4 BR = Vec4(sprite->mVertices.x, 0, 0, 1);
+        Vec4 BR = Vec4(fChar->vertexDimensions.x, 0, 0, 1);
         mul(BR, transformMat, BR);
         //0
         mVertexBuffer.push_back(TL);
@@ -209,125 +301,39 @@ void RenderBatch::createSpriteQuad(SPtr<RenderObject> object)
 
         //Push back all uv's
         //0
-        mUvCoordBuffer.push_back(sprite->mUvCoords.x);
-        mUvCoordBuffer.push_back(sprite->mUvCoords.y + sprite->mUvCoords.w);
+        mUvCoordBuffer.push_back(fChar->uvCoordTL.x);
+        mUvCoordBuffer.push_back(fChar->uvCoordTL.y);
         //1
-        mUvCoordBuffer.push_back(sprite->mUvCoords.x + sprite->mUvCoords.z);
-        mUvCoordBuffer.push_back(sprite->mUvCoords.y + sprite->mUvCoords.w);
+        mUvCoordBuffer.push_back(fChar->uvCoordBR.x);
+        mUvCoordBuffer.push_back(fChar->uvCoordTL.y);
         //2
-        mUvCoordBuffer.push_back(sprite->mUvCoords.x);
-        mUvCoordBuffer.push_back(sprite->mUvCoords.y);
+        mUvCoordBuffer.push_back(fChar->uvCoordTL.x);
+        mUvCoordBuffer.push_back(fChar->uvCoordBR.y);
         //1
-        mUvCoordBuffer.push_back(sprite->mUvCoords.x + sprite->mUvCoords.z);
-        mUvCoordBuffer.push_back(sprite->mUvCoords.y + sprite->mUvCoords.w);
+        mUvCoordBuffer.push_back(fChar->uvCoordBR.x);
+        mUvCoordBuffer.push_back(fChar->uvCoordTL.y);
         //3
-        mUvCoordBuffer.push_back(sprite->mUvCoords.x + sprite->mUvCoords.z);
-        mUvCoordBuffer.push_back(sprite->mUvCoords.y);
+        mUvCoordBuffer.push_back(fChar->uvCoordBR.x);
+        mUvCoordBuffer.push_back(fChar->uvCoordBR.y);
         //2
-        mUvCoordBuffer.push_back(sprite->mUvCoords.x);
-        mUvCoordBuffer.push_back(sprite->mUvCoords.y);
+        mUvCoordBuffer.push_back(fChar->uvCoordTL.x);
+        mUvCoordBuffer.push_back(fChar->uvCoordBR.y);
+
         //tex
-        mTextureQueue.push_back(sprite->mTextureID);
+        mTextureQueue.push_back(fChar->textureID);
+
         //bool & color buffer
         for (uint32 i = 0; i < 6; ++i)
         {
-            mIsHUDBuffer.push_back(float32(sprite->mbHud));
+            mIsHUDBuffer.push_back(float32(text->mbHud));
             //rgba
-            mColorBuffer.push_back(sprite->mColor);
+            mColorBuffer.push_back(shadowSize > 0 ? text->mShadowColor : text->mColor);
         }
-    }
-}
-
-void RenderBatch::createTextQuad(SPtr<RenderObject> object)
-{
-    //for every sprite that has to be drawn, push back all vertices 
-    //(VERTEX_AMOUNT per sprite) into the vertexbuffer and all uvcoords 
-    //(UV_AMOUNT per sprite) into the uvbuffer and the isHUD bool
-    /*
-    *  TL    TR
-    *   0----1
-    *   |   /|
-    *   |  / |
-    *   | /  |
-    *   |/   |
-    *   2----3
-    *  BL    BR
-    */
-    auto text = std::dynamic_pointer_cast<RenderText>(object);
-    if (text != nullptr)
-    {
-        //Variables per textcomponent
-        Mat4 transformMat, offsetMatrix;
-        const Mat4& worldMat = text->mTransform->getWorldMatrix();
-        int32 line_counter(0);
-        int32 offsetX(text->mTextOffset.at(line_counter));
-        int32 offsetY(0);
-        int32 fontHeight(text->mFont->getMaxLetterHeight() + text->mFont->getMinLetterHeight());
-        for (auto it : text->mText)
+        if (it == _T('\n'))
         {
-            auto fChar = text->mFont->getFontChar(it);
-            offsetMatrix = translate(Vec3(offsetX + fChar->letterDimensions.x, offsetY + fChar->letterDimensions.y + text->mTextHeight - fontHeight, 0));
-            offsetX += fChar->advence;
-
-            transformMat = transpose(worldMat * offsetMatrix);
-
-            Vec4 TL = Vec4(0, fChar->vertexDimensions.y, 0, 1);
-            mul(TL, transformMat, TL);
-            Vec4 TR = Vec4(fChar->vertexDimensions.x, fChar->vertexDimensions.y, 0, 1);
-            mul(TR, transformMat, TR);
-            Vec4 BL = Vec4(0, 0, 0, 1);
-            mul(BL, transformMat, BL);
-            Vec4 BR = Vec4(fChar->vertexDimensions.x, 0, 0, 1);
-            mul(BR, transformMat, BR);
-            //0
-            mVertexBuffer.push_back(TL);
-            //1
-            mVertexBuffer.push_back(TR);
-            //2
-            mVertexBuffer.push_back(BL);
-            //1
-            mVertexBuffer.push_back(TR);
-            //3
-            mVertexBuffer.push_back(BR);
-            //2
-            mVertexBuffer.push_back(BL);
-
-            //Push back all uv's
-            //0
-            mUvCoordBuffer.push_back(fChar->uvCoordTL.x);
-            mUvCoordBuffer.push_back(fChar->uvCoordTL.y);
-            //1
-            mUvCoordBuffer.push_back(fChar->uvCoordBR.x);
-            mUvCoordBuffer.push_back(fChar->uvCoordTL.y);
-            //2
-            mUvCoordBuffer.push_back(fChar->uvCoordTL.x);
-            mUvCoordBuffer.push_back(fChar->uvCoordBR.y);
-            //1
-            mUvCoordBuffer.push_back(fChar->uvCoordBR.x);
-            mUvCoordBuffer.push_back(fChar->uvCoordTL.y);
-            //3
-            mUvCoordBuffer.push_back(fChar->uvCoordBR.x);
-            mUvCoordBuffer.push_back(fChar->uvCoordBR.y);
-            //2
-            mUvCoordBuffer.push_back(fChar->uvCoordTL.x);
-            mUvCoordBuffer.push_back(fChar->uvCoordBR.y);
-
-            //tex
-            mTextureQueue.push_back(fChar->textureID);
-
-            //bool & color buffer
-            for (uint32 i = 0; i < 6; ++i)
-            {
-                mIsHUDBuffer.push_back(float32(text->mbHud));
-                //rgba
-                mColorBuffer.push_back(text->mColor);
-            }
-            if (it == _T('\n'))
-            {
-                offsetY -= text->mFont->getMaxLetterHeight() + text->mSpacing;
-                ++line_counter;
-                offsetX = text->mTextOffset.at(line_counter);
-            }
+            offsetY -= text->mFont->getMaxLetterHeight() + text->mSpacing;
+            ++line_counter;
+            offsetX = text->mAlianOffset.at(line_counter);
         }
     }
 }

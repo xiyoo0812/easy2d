@@ -18,6 +18,7 @@ namespace Easy2D
         Vec2 letterDimensions = Vec2(0, 0);
         Vec2 uvCoordTL = Vec2(0, 0), uvCoordBR = Vec2(1, 1);
     };
+    typedef UnorderedMap<wchar_t, SPtr<FontChar>> FontMap;
 
     class Font final : public Resource
     {
@@ -29,7 +30,7 @@ namespace Easy2D
 
         uint32 getFontSize() const;
 
-        const SPtr<FontChar> getFontChar(wchar_t ch);
+        const SPtr<FontChar> getFontChar(wchar_t ch, bool bBold = false, bool bItalic = false);
 
         uint32 getMaxLetterHeight() const;
         uint32 getMinLetterHeight() const;
@@ -37,17 +38,22 @@ namespace Easy2D
 
     private:
         void unload();
-        SPtr<FontChar> loadFontChar(wchar_t ch);
+        FontMap& getFontMap(bool bBold, bool bItalic);
+        SPtr<FontChar> loadFontChar(wchar_t ch, bool bBold, bool bItalic);
 
+        FontMap mFontCharMap;
+        FontMap mBoldCharMap;
+        FontMap mItalicCharMap;
+        FontMap mBoldItaCharMap;
+        FT_Face mFace = nullptr;
         GLuint* mTextures = 0;
         GLuint mTextureIndex = 0;
-        FT_Face mFace = nullptr;
         uint32 mFontDpi = 72, mFontSize = 0;
         float32 mTextureX = 0, mTextureY = 0, mTextureLineY = 0;
         uint32 mMaxLetterHeight = 0, mMinLetterHeight = 0;
-        UnorderedMap<wchar_t, SPtr<FontChar>> mFontCharMap;
 
         inline static uint32 FONT_TEXTURE_NUM = 8;
+        inline static uint32 FONT_TEXTURE_SPACE = 1;
         inline static uint32 FONT_TEXTURE_SIZE = 1024;
     };
 }

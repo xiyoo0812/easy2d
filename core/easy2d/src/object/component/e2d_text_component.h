@@ -24,51 +24,48 @@ namespace Easy2D
         virtual bool checkCulling(float32 left, float32 right, float32 top, float32 bottom) const;
 
         void setText(const Wtring& text);
-
         const Wtring& getText() const;
 
         void setColor(const Color& color);
-
         const Color& getColor() const;
 
-        void setFont(const SPtr<Font> font);
+        void setShadowColor(const Color& color, uint16 shodowSize = 1);
+        const Color& getShadowColor() const;
 
+        void setBold(bool bold);
+        bool isBold() const;
+
+        void setItalic(bool italoc);
+        bool isItalic() const;
+
+        void setFont(const SPtr<Font> font);
         const SPtr<Font> getFont() const;
 
         void setWrapWidth(int32 width);
-
         int32 getWrapWidth() const;
 
         void setVerticalSpacing(uint32 spacing);
 
         void setHUDOptionEnabled(bool enabled);
-
         bool isHUDOptionEnabled() const;
 
         void alignTextLeft();
-
         void alignTextCenter();
-
         void alignTextRight();
 
     protected:
+        void calculateTextHeight();
         void calculateTextDimensions();
-
+        void calculateHorizontalTextOffset();
         void calculateWrappedTextDimensions(uint8 lines);
 
-        void calculateTextHeight();
-
         void cleanUpText(const Wtring& str);
-
-        void calculateHorizontalTextOffset();
-
         int32 getLongestLine(const Wtring& str);
 
         virtual void fillTextInfo();
 
     private:
         Wtring checkWrapping(const Wtring& stringIn, int32 wrapWidth);
-
         void splitString(PointerArray<Wtring, uint32>& words, Wtring str, char delimiter);
 
         int32 mWrapWidth = NO_WRAPPING;

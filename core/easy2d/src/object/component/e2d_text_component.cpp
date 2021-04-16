@@ -32,7 +32,7 @@ void TextComponent::fillTextInfo()
 {
     mTextInfo->mFont = mFont;
     mTextInfo->mTransform = getTransform();
-    mTextInfo->mType = RenderObjectType::RENDER_TEXT;
+    mTextInfo->mType = RenderObjectType::ObjectText;
 }
 
 void TextComponent::calculateTextDimensions()
@@ -76,7 +76,7 @@ void TextComponent::cleanUpText(const Wtring& str)
 
 void TextComponent::calculateHorizontalTextOffset()
 {
-    mTextInfo->mTextOffset.clear();
+    mTextInfo->mAlianOffset.clear();
     if (mTextAlignment == HorizontalAlignment::Center)
     {
         uint32 counter(0);
@@ -100,7 +100,7 @@ void TextComponent::calculateHorizontalTextOffset()
                     {
                         diff /= 2;
                     }
-                    mTextInfo->mTextOffset.push_back(diff);
+                    mTextInfo->mAlianOffset.push_back(diff);
 
                     substr = EMPTY_STRING;
                     counter = 0;
@@ -118,7 +118,7 @@ void TextComponent::calculateHorizontalTextOffset()
             {
                 diff /= 2;
             }
-            mTextInfo->mTextOffset.push_back(diff);
+            mTextInfo->mAlianOffset.push_back(diff);
         }
     }
     else if (mTextAlignment == HorizontalAlignment::Right)
@@ -140,7 +140,7 @@ void TextComponent::calculateHorizontalTextOffset()
                     mTextInfo->mText += substr + L'\n';
 
                     uint32 diff = length - mFont->getStringLength(substr);
-                    mTextInfo->mTextOffset.push_back(diff);
+                    mTextInfo->mAlianOffset.push_back(diff);
 
                     substr = EMPTY_STRING;
                     counter = 0;
@@ -155,18 +155,18 @@ void TextComponent::calculateHorizontalTextOffset()
             mTextInfo->mText += substr;
 
             uint32 diff = length - mFont->getStringLength(substr);
-            mTextInfo->mTextOffset.push_back(diff);
+            mTextInfo->mAlianOffset.push_back(diff);
         }
     }
     else
     {
         getLongestLine(mEditText);
         mTextInfo->mText = mEditText;
-        mTextInfo->mTextOffset.push_back(0);
+        mTextInfo->mAlianOffset.push_back(0);
         auto n = std::count(mEditText.begin(), mEditText.end(), _T('\n'));
         for (; n > 0; --n)
         {
-            mTextInfo->mTextOffset.push_back(0);
+            mTextInfo->mAlianOffset.push_back(0);
         }
     }
 }
@@ -271,6 +271,37 @@ void TextComponent::setColor(const Color& color)
 const Color& TextComponent::getColor() const
 {
     return mTextInfo->mColor;
+}
+
+void TextComponent::setShadowColor(const Color& color, uint16 shodowSize /* = 1 */)
+{
+    mTextInfo->mShadowColor = color;
+    mTextInfo->mShadowSize = shodowSize;
+}
+
+const Color& TextComponent::getShadowColor() const
+{
+    return mTextInfo->mShadowColor;
+}
+
+void TextComponent::setBold(bool bold)
+{
+    mTextInfo->mbBold = bold;
+}
+
+bool TextComponent::isBold() const
+{
+    return mTextInfo->mbBold;
+}
+
+void TextComponent::setItalic(bool italoc)
+{
+    mTextInfo->mbItalic = italoc;
+}
+
+bool TextComponent::isItalic() const
+{
+    return mTextInfo->mbItalic;
 }
 
 void TextComponent::setFont(const SPtr<Font> font)

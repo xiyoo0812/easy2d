@@ -85,6 +85,36 @@ const Color& UITextField::getColor() const
     return mTextComponent->getColor();
 }
 
+void UITextField::setShadowColor(const Color& color, uint16 shodowSize /* = 1 */)
+{
+    mTextComponent->setShadowColor(color, shodowSize);
+}
+
+const Color& UITextField::getShadowColor() const
+{
+    return mTextComponent->getShadowColor();
+}
+
+void UITextField::setBold(bool bold)
+{
+    mTextComponent->setBold(bold);
+}
+
+bool UITextField::isBold() const
+{
+    return mTextComponent->isBold();
+}
+
+void UITextField::setItalic(bool italoc)
+{
+    mTextComponent->setItalic(italoc);
+}
+
+bool UITextField::isItalic() const
+{
+    return mTextComponent->isItalic();
+}
+
 void UITextField::setFont(const SPtr<Font> font)
 {
     mTextComponent->setFont(font);

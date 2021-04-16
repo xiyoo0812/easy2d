@@ -26,6 +26,15 @@ namespace Easy2D
         void setColor(const Color& color);
         const Color& getColor() const;
 
+        void setShadowColor(const Color& color, uint16 shodowSize = 1);
+        const Color& getShadowColor() const;
+
+        void setBold(bool bold);
+        bool isBold() const;
+
+        void setItalic(bool italoc);
+        bool isItalic() const;
+
         void setFont(const SPtr<Font> font);
         const SPtr<Font> getFont() const;
 

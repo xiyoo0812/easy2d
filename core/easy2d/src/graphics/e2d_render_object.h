@@ -10,14 +10,14 @@ namespace Easy2D
 
     enum RenderSortingMode
     {
-        BACK_FRONT,
-        FRONT_BACK,
+        BackFront,
+        FrontBack,
     };
 
     enum class RenderObjectType
     {
-        RENDER_SPRITE = 0,
-        RENDER_TEXT,
+        ObjectSprite = 0,
+        ObjectText,
     };
 
     class RenderObject
@@ -26,7 +26,7 @@ namespace Easy2D
         bool mbHud = false;
         Color mColor = Color::White;
         SPtr<TransformComponent> mTransform = nullptr;
-        RenderObjectType mType = RenderObjectType::RENDER_SPRITE;
+        RenderObjectType mType = RenderObjectType::ObjectSprite;
 
         RenderObject(RenderObjectType t) : mType(t){}
         virtual ~RenderObject(){}
@@ -38,7 +38,7 @@ namespace Easy2D
         Vec2 mVertices = {};
         Vec4 mUvCoords = {};
         uint32 mTextureID = 0;
-        RenderSprite(RenderObjectType t = RenderObjectType::RENDER_SPRITE) : RenderObject(t) {}
+        RenderSprite(RenderObjectType t = RenderObjectType::ObjectSprite) : RenderObject(t) {}
         virtual ~RenderSprite() {}
     };
 
@@ -46,12 +46,16 @@ namespace Easy2D
     {
     public:
         Wtring mText = L"";
-        int32 mSpacing = 0;
-        int32 mTextHeight = 10;
-        Vector<int32> mTextOffset = {};
+        uint16 mSpacing = 0;
+        uint16 mShadowSize = 0;
+        uint16 mTextHeight = 10;
+        Color mShadowColor = Color::Black;
+        Vector<uint16> mAlianOffset = {};
         SPtr<Font> mFont = nullptr;
+        bool mbItalic = false;
+        bool mbBold = false;
 
-        RenderText(RenderObjectType t = RenderObjectType::RENDER_TEXT) : RenderObject(t) {}
+        RenderText(RenderObjectType t = RenderObjectType::ObjectText) : RenderObject(t) {}
         virtual ~RenderText() {}
     };
 }
