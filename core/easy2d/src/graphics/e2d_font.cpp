@@ -73,7 +73,7 @@ void Font::unload()
 
 SPtr<FontChar> Font::loadFontChar(wchar_t ch, bool bBold, bool bItalic)
 {
-    auto error = FT_Load_Char(mFace, ch, mFontSize > 18 ? FT_LOAD_FORCE_AUTOHINT : FT_LOAD_DEFAULT);
+    auto error = FT_Load_Char(mFace, ch, FT_LOAD_FORCE_AUTOHINT);
     if (error)
     {
         LOG_ERROR << _T("Font::loadFontChar FT_Load_Char error! ch: ") << ch;
@@ -103,8 +103,8 @@ SPtr<FontChar> Font::loadFontChar(wchar_t ch, bool bBold, bool bItalic)
         LOG_ERROR << _T("Font::loadFontChar FT_Render_Glyph error! ch: ") << ch;
         return nullptr;
     }
-    FT_Bitmap& bitmap = mFace->glyph->bitmap;
 
+    FT_Bitmap& bitmap = mFace->glyph->bitmap;
     uint32 width = bitmap.width  + bitmap.width % 2;
     uint32 height = bitmap.rows;
 
@@ -118,7 +118,7 @@ SPtr<FontChar> Font::loadFontChar(wchar_t ch, bool bBold, bool bItalic)
         }
     }
     //letter height
-    int32 dimX = (mFace->glyph->metrics.horiBearingX / 64);
+    int32 dimX = mFace->glyph->bitmap_left;
     int32 dimY = ((mFace->glyph->metrics.horiBearingY) - (mFace->glyph->metrics.height)) / 64;
     if (mMaxLetterHeight < mFace->glyph->bitmap_top)
     {

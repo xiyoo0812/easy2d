@@ -58,26 +58,27 @@ void E2dEngine::initialize(SPtr<android_app> app)
 
     auto font = FontManager::getInstance()->loadFont("felt-12", "fzltxh_gbk.ttf", 48);
 
-    auto txt = std::make_shared<UITextField>("text");
-    scene->addEntity(txt);
-    txt->setFont(font);
-    txt->setColor(Color::White);
-    txt->setText(L"我是国人daAFKsbB123");
-    //txt->setShadowColor(Color::Black, 2);
-    txt->setBold(true);
-    txt->setRootWidget();
-    txt->translateL(2);
-    txt->setHorizontalAlignment(HorizontalAlignment::Center);
-    txt->setVerticalAlignment(VerticalAlignment::Center);
+    //auto txt = std::make_shared<UITextField>("text");
+    //scene->addEntity(txt);
+    //txt->setFont(font);
+    //txt->setColor(Color::White);
+    //txt->setText(L"我是国人daAFKsbB123");
+    ////txt->setShadowColor(Color::Black, 2);
+    //txt->setBold(true);
+    //txt->setRootWidget();
+    //txt->translateL(2);
+    //txt->setHorizontalAlignment(HorizontalAlignment::Center);
+    //txt->setVerticalAlignment(VerticalAlignment::Center);
 
     auto txt2 = std::make_shared<UITextField>("text2");
     scene->addEntity(txt2);
     txt2->setFont(font);
-    txt2->setColor(Color::Red);
-    txt2->setText(L"我是国人daAFKsbB123");
+    txt2->setColor(Color::Black);
     txt2->setItalic(true);
-    //txt2->setShadowColor(Color::White, 2);
+    txt2->setShadowColor(Color::White, 1);
+    txt2->setOutlineColor(Color::Red, 1);
     txt2->setRootWidget();
+    txt2->setText(L"我是国人daAFKsbB123");
     txt2->setHorizontalAlignment(HorizontalAlignment::Center);
     txt2->setVerticalAlignment(VerticalAlignment::Center);
     txt2->translate(0, 60, 2);

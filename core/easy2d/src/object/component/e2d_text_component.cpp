@@ -284,6 +284,17 @@ const Color& TextComponent::getShadowColor() const
     return mTextInfo->mShadowColor;
 }
 
+void TextComponent::setOutlineColor(const Color& color, uint16 outlineSize /* = 1 */)
+{
+    mTextInfo->mOutlineColor = color;
+    mTextInfo->mOutlineSize = outlineSize;
+}
+
+const Color& TextComponent::getOutlineColor() const
+{
+    return mTextInfo->mOutlineColor;
+}
+
 void TextComponent::setBold(bool bold)
 {
     mTextInfo->mbBold = bold;

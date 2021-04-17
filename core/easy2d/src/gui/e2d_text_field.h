@@ -29,6 +29,9 @@ namespace Easy2D
         void setShadowColor(const Color& color, uint16 shodowSize = 1);
         const Color& getShadowColor() const;
 
+        void setOutlineColor(const Color& color, uint16 outlineSize = 1);
+        const Color& getOutlineColor() const;
+
         void setBold(bool bold);
         bool isBold() const;
 

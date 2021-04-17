@@ -27,7 +27,7 @@ namespace Easy2D
         void draw();
         void sort();
         void createSpriteQuad(SPtr<RenderSprite> sprite);
-        void createTextQuad(SPtr<RenderText> text, uint16 shadowSize = 0);
+        void createTextQuad(SPtr<RenderText> text, Vec2 offset, Color color);
         void drawTexture(uint32 start, uint32 size, uint32 texture);
 
         static const uint32 BATCHSIZE = 50;

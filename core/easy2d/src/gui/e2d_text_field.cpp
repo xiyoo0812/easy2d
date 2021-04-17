@@ -95,6 +95,16 @@ const Color& UITextField::getShadowColor() const
     return mTextComponent->getShadowColor();
 }
 
+void UITextField::setOutlineColor(const Color& color, uint16 outlineSize /* = 1 */)
+{
+    mTextComponent->setOutlineColor(color, outlineSize);
+}
+
+const Color& UITextField::getOutlineColor() const
+{
+    return mTextComponent->getOutlineColor();
+}
+
 void UITextField::setBold(bool bold)
 {
     mTextComponent->setBold(bold);

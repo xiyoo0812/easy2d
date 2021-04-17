@@ -45,12 +45,12 @@ namespace Easy2D
         FontMap mBoldCharMap;
         FontMap mItalicCharMap;
         FontMap mBoldItaCharMap;
-        FT_Face mFace = nullptr;
         GLuint* mTextures = 0;
         GLuint mTextureIndex = 0;
         uint32 mFontDpi = 72, mFontSize = 0;
         float32 mTextureX = 0, mTextureY = 0, mTextureLineY = 0;
         uint32 mMaxLetterHeight = 0, mMinLetterHeight = 0;
+        FT_Face mFace = nullptr;
 
         inline static uint32 FONT_TEXTURE_NUM = 8;
         inline static uint32 FONT_TEXTURE_SPACE = 1;

@@ -47,9 +47,11 @@ namespace Easy2D
     public:
         Wtring mText = L"";
         uint16 mSpacing = 0;
-        uint16 mShadowSize = 0;
         uint16 mTextHeight = 10;
+        uint16 mShadowSize = 0;
+        uint16 mOutlineSize = 0;
         Color mShadowColor = Color::Black;
+        Color mOutlineColor = Color::Black;
         Vector<uint16> mAlianOffset = {};
         SPtr<Font> mFont = nullptr;
         bool mbItalic = false;

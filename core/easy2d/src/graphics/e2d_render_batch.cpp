@@ -97,10 +97,24 @@ void RenderBatch::build()
                 auto text = std::dynamic_pointer_cast<RenderText>(object);
                 if (text)
                 {
-                    for (int16 shadow = text->mShadowSize; shadow >= 0; shadow--)
+                    if (text->mShadowSize > 0)
                     {
-                        createTextQuad(text, shadow);
+                        for (int16 shadow = text->mShadowSize + text->mOutlineSize; shadow > text->mOutlineSize; shadow--)
+                        {
+                            createTextQuad(text, Vec2(shadow, shadow), text->mShadowColor);
+                        }
                     }
+                    if (text->mOutlineSize > 0)
+                    {
+                        for (int16 outline = text->mOutlineSize; outline > 0; outline--)
+                        {
+                            createTextQuad(text, Vec2(-outline, -outline), text->mOutlineColor);
+                            createTextQuad(text, Vec2(-outline, outline), text->mOutlineColor);
+                            createTextQuad(text, Vec2(outline, -outline), text->mOutlineColor);
+                            createTextQuad(text, Vec2(outline, outline), text->mOutlineColor);
+                        }
+                    }
+                    createTextQuad(text, Vec2(0, 0), text->mColor);
                 }
             }
             break;
@@ -249,7 +263,7 @@ void RenderBatch::createSpriteQuad(SPtr<RenderSprite> sprite)
     }
 }
 
-void RenderBatch::createTextQuad(SPtr<RenderText> text, uint16 shadowSize /* = 0 */)
+void RenderBatch::createTextQuad(SPtr<RenderText> text, Vec2 offset, Color color)
 {
     //for every sprite that has to be drawn, push back all vertices 
     //(VERTEX_AMOUNT per sprite) into the vertexbuffer and all uvcoords 
@@ -266,15 +280,15 @@ void RenderBatch::createTextQuad(SPtr<RenderText> text, uint16 shadowSize /* = 0
     */
     //Variables per textcomponent
     int32 line_counter = 0;
-    int32 offsetY = -shadowSize;
-    int32 offsetX = shadowSize + text->mAlianOffset.at(line_counter);
+    int32 offsetY = -offset.y;
+    int32 offsetX = offset.x + text->mAlianOffset.at(line_counter);
     int32 fontHeight(text->mFont->getMaxLetterHeight() + text->mFont->getMinLetterHeight());
     const Mat4& worldMat = text->mTransform->getWorldMatrix();
     for (auto it : text->mText)
     {
         auto fChar = text->mFont->getFontChar(it, text->mbBold, text->mbItalic);
         Mat4 offsetMatrix = translate(Vec3(offsetX + fChar->letterDimensions.x, offsetY + fChar->letterDimensions.y + text->mTextHeight - fontHeight, 0));
-        offsetX += fChar->advence;
+        offsetX += fChar->advence + text->mOutlineSize;
 
         Mat4 transformMat = transpose(worldMat * offsetMatrix);
 
@@ -326,8 +340,7 @@ void RenderBatch::createTextQuad(SPtr<RenderText> text, uint16 shadowSize /* = 0
         for (uint32 i = 0; i < 6; ++i)
         {
             mIsHUDBuffer.push_back(float32(text->mbHud));
-            //rgba
-            mColorBuffer.push_back(shadowSize > 0 ? text->mShadowColor : text->mColor);
+            mColorBuffer.push_back(color);
         }
         if (it == _T('\n'))
         {
