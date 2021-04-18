@@ -5,10 +5,20 @@ namespace Easy2D
     template <typename T>
     SPtr<T> Entity::getChild(const uint64 guid) const
     {
-        auto it = mChildren.find(guid);
-        if (it != mChildren.end())
+        for (auto child : mChildrens)
         {
-            return std::dynamic_pointer_cast<T>(it->second);
+            if (child->compareGUID(guid))
+            {
+                return std::dynamic_pointer_cast<T>(child);
+            }
+        }
+        for (auto child : mChildrens)
+        {
+            auto pChild = child->getChild<T>(guid);
+            if (pChild)
+            {
+                return pChild
+            }
         }
         return nullptr;
     }
@@ -16,14 +26,14 @@ namespace Easy2D
     template <typename T>
     SPtr<T> Entity::getChild(const String& name) const
     {
-        for (auto child : mChildren)
+        for (auto child : mChildrens)
         {
             if (child->compareName(name))
             {
-                return std::dynamic_pointer_cast<T>(it->second);
+                return std::dynamic_pointer_cast<T>(child);
             }
         }
-        for (auto child : mChildren)
+        for (auto child : mChildrens)
         {
             auto pChild = child->getChild<T>(name);
             if (pChild)
@@ -37,11 +47,13 @@ namespace Easy2D
     template <typename T>
     SPtr<T> Entity::getAction(const uint64 guid) const
     {
-        auto it = mActions.find(guid)
-            if (it != mActions.end())
+        for (auto pAction : mActions)
+        {
+            if (pAction->compareGUID(guid))
             {
-                return std::dynamic_pointer_cast<T>(it->second);
+                return std::dynamic_pointer_cast<T>(pAction);
             }
+        }
         return nullptr;
     }
 
@@ -50,9 +62,22 @@ namespace Easy2D
     {
         for (auto pComponent : mComponents)
         {
-            if (pComponent.second->compareName(name))
+            if (pComponent->compareName(name))
             {
-                return std::dynamic_pointer_cast<T>(pComponent.second);
+                return std::dynamic_pointer_cast<T>(pComponent);
+            }
+        }
+        return nullptr;
+    }
+
+    template <typename T>
+    SPtr<T> Entity::getComponent(const uint64 guid) const
+    {
+        for (auto pComponent : mComponents)
+        {
+            if (pComponent->compareGUID(guid))
+            {
+                return std::dynamic_pointer_cast<T>(pComponent);
             }
         }
         return nullptr;

@@ -25,7 +25,7 @@ bool Object::isInitialized() const
     return mInitialized;
 }
 
-bool Object::compareName(const String& name)
+bool Object::compareName(const String& name) const
 {
     return mName == name;
 }
@@ -40,7 +40,7 @@ void Object::setName(const String& name)
     mName = name;
 }
 
-bool Object::compareGUID(const uint64 guid)
+bool Object::compareGUID(const uint64 guid) const
 {
     return mGUID == guid;
 }

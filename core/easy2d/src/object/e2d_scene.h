@@ -24,9 +24,11 @@ namespace Easy2D
         virtual void onConfigurationChanged();
         virtual void onLowMemory();
 
+        void sortEntity();
         void addEntity(SPtr<Entity> pEntity);
         void addEntity(SPtr<Entity> pEntity, const String& name);
         void removeEntity(const uint64 guid);
+        void removeEntity(const String& name);
         void removeEntity(SPtr<Entity> pEntity);
 
         template <typename T = Entity>
@@ -55,7 +57,7 @@ namespace Easy2D
     protected:
         //std::shared_ptr<CollisionManager> m_pCollisionManager;
 
-        UnorderedMap<uint64, SPtr<Entity>> mEntitys;
+        Vector<SPtr<Entity>> mEntitys;
         SPtr<Camera> mDefaultCamera, mActiveCamera;
 
         int32 mCullingOffsetX, mCullingOffsetY;

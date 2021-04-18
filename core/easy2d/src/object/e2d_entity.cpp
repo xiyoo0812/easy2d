@@ -1,5 +1,6 @@
 #include "e2d_entity.h"
 #include "e2d_scene.h"
+#include "graphics/e2d_render_batch.h"
 #include "component/e2d_transform_component.h"
 
 /* Easy2D */
@@ -24,7 +25,7 @@ Entity::Entity(const String& name, const String& group)
 Entity::~Entity()
 {
     mActions.clear();
-    mChildren.clear();
+    mChildrens.clear();
     mComponents.clear();
 }
 
@@ -44,56 +45,57 @@ void Entity::initialize()
 {
     for (auto component : mComponents)
     {
-        component.second->setMaster(std::dynamic_pointer_cast<Entity>(shared_from_this()));
+        component->setMaster(std::dynamic_pointer_cast<Entity>(shared_from_this()));
     }
 }
 
-void Entity::translate(const Vec2& translation)
+void Entity::sortChild()
 {
-    getTransform()->translate(translation);
+    switch (RenderBatch::getInstance()->getSortingMode())
+    {
+    case RenderSortingMode::BackFront:
+        std::sort(mChildrens.begin(), mChildrens.end(), [](SPtr<Entity> a, SPtr<Entity> b) -> bool
+        {
+            return a->getZorder() < b->getZorder();
+        });
+        break;
+    case RenderSortingMode::FrontBack:
+        std::sort(mChildrens.begin(), mChildrens.end(), [](SPtr<Entity> a, SPtr<Entity> b) -> bool
+        {
+            return a->getZorder() < b->getZorder();
+        });
+        break;
+    default:
+        break;
+    }
 }
 
-void Entity::translate(float32 x, float32 y)
+void Entity::setPosition(const Vec2& pos)
+{
+    getTransform()->translate(pos);
+}
+
+void Entity::setPosition(float32 x, float32 y)
 {
     getTransform()->translate(x, y);
 }
 
-void Entity::translate(const Vec2& translation, lay l)
-{
-    getTransform()->translate(translation, l);
-}
-
-void Entity::translate(float32 x, float32 y, lay l)
-{
-    getTransform()->translate(x, y, l);
-}
-
-void Entity::translate(const Pos& pos2D)
-{
-    getTransform()->translate(pos2D);
-}
-
-void Entity::translateX(float32 x)
+void Entity::setPositionX(float32 x)
 {
     getTransform()->translateX(x);
 }
 
-void Entity::translateY(float32 y)
+void Entity::setPositionY(float32 y)
 {
     getTransform()->translateY(y);
 }
 
-void Entity::translateL(lay l)
-{
-    getTransform()->translateL(l);
-}
-
-const Pos& Entity::getWorldPosition() const
+const Vec2& Entity::getWorldPosition() const
 {
     return getTransform()->getWorldPosition();
 }
 
-const Pos& Entity::getLocalPosition() const
+const Vec2& Entity::getLocalPosition() const
 {
     return getTransform()->getLocalPosition();
 }
@@ -109,15 +111,15 @@ void Entity::update(const uint32& escapeMs)
     {
         for (auto action : mActions)
         {
-            action.second->update(escapeMs);
+            action->update(escapeMs);
         }
         for (auto component : mComponents)
         {
-            component.second->update(escapeMs);
+            component->update(escapeMs);
         }
-        for (auto child : mChildren)
+        for (auto child : mChildrens)
         {
-            child.second->update(escapeMs);
+            child->update(escapeMs);
         }
     }
 }
@@ -127,7 +129,7 @@ bool Entity::checkCulling(float32 left, float32 right, float32 top, float32 bott
 {
     for (auto component : mComponents)
     {
-        if (component.second->checkCulling(left, right, top, bottom))
+        if (component->checkCulling(left, right, top, bottom))
         {
             return true;
         }
@@ -141,11 +143,11 @@ void Entity::draw()
     {
         for (auto component : mComponents)
         {
-            component.second->draw();
+            component->draw();
         }
-        for (auto child : mChildren)
+        for (auto child : mChildrens)
         {
-            child.second->draw();
+            child->draw();
         }
     }
 }
@@ -158,12 +160,12 @@ void Entity::drawWithCulling(float32 left, float32 right, float32 top, float32 b
         {
             for (auto component : mComponents)
             {
-                component.second->draw();
+                component->draw();
             }
         }
-        for (auto child : mChildren)
+        for (auto child : mChildrens)
         {
-            child.second->drawWithCulling(left, right, top, bottom);
+            child->drawWithCulling(left, right, top, bottom);
         }
     }
 }
@@ -208,8 +210,9 @@ bool Entity::addChild(SPtr<Entity> pChild)
     }
     pChild->setScene(mScene.lock());
     pChild->setParent(std::dynamic_pointer_cast<Entity>(shared_from_this()));
-    mChildren.insert(std::make_pair(pChild->getGUID(), pChild));
+    mChildrens.push_back(pChild);
     pChild->initialize();
+    sortChild();
     return true;
 }
 
@@ -220,49 +223,72 @@ void Entity::removeChild(const SPtr<Entity> pEntity)
 
 void Entity::removeChild(const uint64 guid)
 {
-    auto it = mChildren.find(guid);
-    if (it != mChildren.end())
+    auto it = std::find_if(mChildrens.begin(), mChildrens.end(), [&](SPtr<Entity> pEntity) -> bool
     {
-        mChildren.erase(it);
+        return pEntity->compareGUID(guid);
+    });
+    if (it != mChildrens.end())
+    {
+        mChildrens.erase(it);
+        sortChild();
     }
 }
 
-const UnorderedMap<uint64, SPtr<Entity>>& Entity::getChildren() const
+void Entity::removeChild(const String& name)
 {
-    return mChildren;
+    auto it = std::find_if(mChildrens.begin(), mChildrens.end(), [&](SPtr<Entity> pEntity) -> bool
+    {
+        return pEntity->compareName(name);
+    });
+    if (it != mChildrens.end())
+    {
+        mChildrens.erase(it);
+        sortChild();
+    }
+}
+
+const Vector<SPtr<Entity>>& Entity::getChildren() const
+{
+    return mChildrens;
 }
 
 void Entity::setChildDisabled(const uint64 guid, bool disabled)
 {
-    auto it = mChildren.find(guid);
-    if (it != mChildren.end())
+    for (auto pEntity : mChildrens)
     {
-        it->second->setDisabled(disabled);
+        if (pEntity->compareGUID(guid))
+        {
+            pEntity->setDisabled(disabled);
+            break;
+        }
     }
 }
 
 void Entity::setChildVisible(const uint64 guid, bool visible)
 {
-    auto it = mChildren.find(guid);
-    if (it != mChildren.end())
+    for (auto pEntity : mChildrens)
     {
-        it->second->setVisible(visible);
+        if (pEntity->compareGUID(guid))
+        {
+            pEntity->setVisible(visible);
+            break;
+        }
     }
 }
 
 void Entity::setChildrenDisabled(bool disable)
 {
-    for (auto child : mChildren)
+    for (auto child : mChildrens)
     {
-        child.second->setDisabled(disable);
+        child->setDisabled(disable);
     }
 }
 
 void Entity::setChildrenVisible(bool visible)
 {
-    for (auto child : mChildren)
+    for (auto child : mChildrens)
     {
-        child.second->setVisible(visible);
+        child->setVisible(visible);
     }
 }
 
@@ -275,7 +301,7 @@ bool Entity::addAction(SPtr<Action> pAction)
         return false;
     }
     pAction->setMaster(std::dynamic_pointer_cast<Entity>(shared_from_this()));
-    mActions.insert(std::make_pair(pAction->getGUID(), pAction));
+    mActions.push_back(pAction);
     pAction->initialize();
     return true;
 }
@@ -287,38 +313,63 @@ void Entity::removeAction(const SPtr<Action> pAction)
 
 void Entity::removeAction(const uint64 guid)
 {
-    auto it = mActions.find(guid);
+    auto it = std::find_if(mActions.begin(), mActions.end(), [&](SPtr<Action> pAction) -> bool
+    {
+        return pAction->compareGUID(guid);
+    });
     if (it != mActions.end())
     {
-        it->second->setMaster(nullptr);
+        (*it)->setMaster(nullptr);
+        mActions.erase(it);
+    }
+}
+
+void Entity::removeAction(const String& name)
+{
+    auto it = std::find_if(mActions.begin(), mActions.end(), [&](SPtr<Action> pAction) -> bool
+    {
+        return pAction->compareName(name);
+    });
+    if (it != mActions.end())
+    {
+        (*it)->setMaster(nullptr);
         mActions.erase(it);
     }
 }
 
 void Entity::restartAction(const uint64 guid)
 {
-    auto it = mActions.find(guid);
-    if (it != mActions.end())
+    for (auto pAction : mActions)
     {
-        it->second->restart();
+        if (pAction->compareGUID(guid))
+        {
+            pAction->restart();
+            break;
+        }
     }
 }
 
 void Entity::pauseAction(const uint64 guid)
 {
-    auto it = mActions.find(guid);
-    if (it != mActions.end())
+    for (auto pAction : mActions)
     {
-        it->second->pause();
+        if (pAction->compareGUID(guid))
+        {
+            pAction->pause();
+            break;
+        }
     }
 }
 
 void Entity::resumeAction(const uint64 guid)
 {
-    auto it = mActions.find(guid);
-    if (it != mActions.end())
+    for (auto pAction : mActions)
     {
-        it->second->resume();
+        if (pAction->compareGUID(guid))
+        {
+            pAction->resume();
+            break;
+        }
     }
 }
 
@@ -330,7 +381,7 @@ bool Entity::addComponent(SPtr<Component> pComponent)
             _T("' already exists. Component gets added but beware, duplicate names can become the cause of problems.");
         return false;
     }
-    mComponents.insert(std::make_pair(pComponent->getGUID(), pComponent));
+    mComponents.push_back(pComponent);
     pComponent->initialize();
     return true;
 }
@@ -342,10 +393,24 @@ void Entity::removeComponent(const SPtr<Component> pComponent)
 
 void Entity::removeComponent(const uint64 guid)
 {
-    auto it = mComponents.find(guid);
+    auto it = std::find_if(mComponents.begin(), mComponents.end(), [&](SPtr<Component> pComponent) -> bool
+    {
+        return pComponent->compareGUID(guid);
+    });
     if (it != mComponents.end())
     {
-        it->second->setMaster(nullptr);
+        mComponents.erase(it);
+    }
+}
+
+void Entity::removeComponent(const String& name)
+{
+    auto it = std::find_if(mComponents.begin(), mComponents.end(), [&](SPtr<Component> pComponent) -> bool
+    {
+        return pComponent->compareName(name);
+    });
+    if (it != mComponents.end())
+    {
         mComponents.erase(it);
     }
 }
@@ -362,9 +427,9 @@ bool Entity::isVisible() const
 
 bool Entity::isChildNameExist(const String& name) const
 {
-    for (auto pChild : mChildren)
+    for (auto pChild : mChildrens)
     {
-        if (pChild.second->compareName(name))
+        if (pChild->compareName(name))
         {
             return true;
         }
@@ -376,7 +441,7 @@ bool Entity::isActionNameExist(const String& name) const
 {
     for (auto pAction : mActions)
     {
-        if (pAction.second->compareName(name))
+        if (pAction->compareName(name))
         {
             return true;
         }
@@ -388,7 +453,7 @@ bool Entity::isComponentNameExist(const String& name) const
 {
     for (auto pComponent : mComponents)
     {
-        if (pComponent.second->compareName(name))
+        if (pComponent->compareName(name))
         {
             return true;
         }
@@ -414,6 +479,15 @@ int32 Entity::getZorder() const
 void Entity::setZorder(int32 order)
 {
     mZorder = order;
+    if (!mParent.expired())
+    {
+        mParent.lock()->sortChild();
+        return;
+    }
+    if (!mScene.expired())
+    {
+        mScene.lock()->sortEntity();
+    }
 }
 
 SPtr<Scene> Entity::getScene() const
@@ -426,9 +500,9 @@ void Entity::setScene(SPtr<Scene> pScene)
     if (mScene.lock() != pScene)
     {
         mScene = pScene;
-        for (auto child : mChildren)
+        for (auto child : mChildrens)
         {
-            child.second->setScene(pScene);
+            child->setScene(pScene);
         }
     }
 }
@@ -445,9 +519,9 @@ void Entity::setParent(SPtr<Entity> pEntity)
 
 void Entity::reset()
 {
-    for (auto child : mChildren)
+    for (auto child : mChildrens)
     {
-        child.second->reset();
+        child->reset();
     }
 }
 
@@ -457,9 +531,9 @@ void Entity::recalculateDimensions()
     auto transform = getTransform();
     for (auto comp : mComponents)
     {
-        if (comp.second != transform)
+        if (comp != transform)
         {
-            Vec2 temp = comp.second->getDimensions();
+            Vec2 temp = comp->getDimensions();
             if (temp.x > dim.x)
             {
                 dim.x = temp.x;

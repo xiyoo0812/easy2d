@@ -103,11 +103,11 @@ namespace Easy2D
     float32 getYaw(const Quatf& quaternion);
     float32 getRoll(const Quatf& quaternion);
 
-    void getTranslation(const Mat4& matrix, Pos& translation);
+    void getTranslation(const Mat4& matrix, Vec2& translation);
     void getScaling(const Mat4& matrix, Vec2& scaling);
     void getRotation(const Mat4& matrix, float32& rotation);
     void getRotationAndScaling(const Mat4& matrix, float32& rotation, Vec2& scaling);
-    void decomposeMatrix(const Mat4& matrix, Pos& position, Vec2& scaling, float32& rotation);
+    void decomposeMatrix(const Mat4& matrix, Vec2& position, Vec2& scaling, float32& rotation);
 
     int32 random(int32 min, int32 max);
     uint32 random(uint32 min, uint32 max);

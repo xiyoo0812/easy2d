@@ -24,13 +24,13 @@ void UIWidget::initialize()
 void UIWidget::setHorizontalAlignment(HorizontalAlignment alignment, bool redefineCenter)
 {
     mHorizontalAlignment = alignment;
-    translateX(0);
+    setPositionX(0);
 }
 
 void UIWidget::setVerticalAlignment(VerticalAlignment alignment, bool redefineCenter)
 {
     mVerticalAlignment = alignment;
-    translateY(0);
+    setPositionY(0);
 }
 
 void UIWidget::setAlignmentCentered(bool redefineCenter)
@@ -72,39 +72,24 @@ Vec2 UIWidget::getDockDimensions() const
     return mParent.lock()->getDimensions();
 }
 
-void UIWidget::translate(const Vec2& translation)
+void UIWidget::setPosition(const Vec2& translation)
 {
-    Entity::translate(translateUIX(translation.x), translateUIY(translation.y));
+    Entity::setPosition(translateUIX(translation.x), translateUIY(translation.y));
 }
 
-void UIWidget::translate(float32 x, float32 y)
+void UIWidget::setPosition(float32 x, float32 y)
 {
-    Entity::translate(translateUIX(x), translateUIY(y));
+    Entity::setPosition(translateUIX(x), translateUIY(y));
 }
 
-void UIWidget::translate(const Vec2& translation, lay l)
+void UIWidget::setPositionX(float32 x)
 {
-    Entity::translate(translateUIX(translation.x), translateUIY(translation.y), l);
+    Entity::setPositionX(translateUIX(x));
 }
 
-void UIWidget::translate(float32 x, float32 y, lay l)
+void UIWidget::setPositionY(float32 y)
 {
-    Entity::translate(translateUIX(x), translateUIY(y), l);
-}
-
-void UIWidget::translate(const Pos& pos2D)
-{
-    Entity::translate(translateUIX(pos2D.x), translateUIY(pos2D.y));
-}
-
-void UIWidget::translateX(float32 x)
-{
-    Entity::translateX(translateUIX(x));
-}
-
-void UIWidget::translateY(float32 y)
-{
-    Entity::translateY(translateUIY(y));
+    Entity::setPositionY(translateUIY(y));
 }
 
 float32 UIWidget::translateUIX(float32 x)
@@ -139,9 +124,9 @@ float32 UIWidget::translateUIY(float32 y)
 
 void UIWidget::repositionChildren()
 {
-    for (auto child : mChildren)
+    for (auto child : mChildrens)
     {
-        auto element = std::dynamic_pointer_cast<UIWidget>(child.second);
+        auto element = std::dynamic_pointer_cast<UIWidget>(child);
         if (element != nullptr)
         {
             element->reposition();

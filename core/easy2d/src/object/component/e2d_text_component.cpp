@@ -32,7 +32,6 @@ void TextComponent::fillTextInfo()
 {
     mTextInfo->mFont = mFont;
     mTextInfo->mTransform = getTransform();
-    mTextInfo->mType = RenderObjectType::ObjectText;
 }
 
 void TextComponent::calculateTextDimensions()
@@ -222,7 +221,7 @@ void TextComponent::update(const uint32& escapeMs)
 bool TextComponent::checkCulling(float32 left, float32 right, float32 top, float32 bottom) const
 {
     float32 textWidth, textHeight, textW, textH;
-    Pos objectPos = getTransform()->getWorldPosition();
+    Vec2 objectPos = getTransform()->getWorldPosition();
 
     if (mTextInfo->mbHud)
     {

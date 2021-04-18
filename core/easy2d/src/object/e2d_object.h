@@ -16,10 +16,10 @@ namespace Easy2D
 
         const String& getName() const;
         void setName(const String& name);
-        bool compareName(const String& name);
+        bool compareName(const String& name) const;
 
         uint64 getGUID() const;
-        bool compareGUID(const uint64 guid);
+        bool compareGUID(const uint64 guid) const;
 
         bool isInitialized() const;
         virtual void destroy() = 0;

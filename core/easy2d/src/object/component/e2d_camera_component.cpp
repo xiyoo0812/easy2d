@@ -41,7 +41,7 @@ void CameraComponent::initialize()
 void CameraComponent::update(const uint32& escapeMs)
 {
     auto pos = getTransform()->getWorldPosition();
-    Vec3 eyeVec = Vec3(pos.pos2D(), 0);
+    Vec3 eyeVec = Vec3(pos, 0);
     eyeVec.x /= (ScaleSystem::getInstance()->getWorkingResolution().x / 2.0f);
     eyeVec.y /= (ScaleSystem::getInstance()->getWorkingResolution().y / 2.0f);
 
@@ -167,12 +167,20 @@ Mat4 CameraComponent::matrixPerspectiveFOV(float32 fovY, float32 ratio, float32 
 
 Mat4 CameraComponent::matrixOrtho(float32 width, float32 height, float32 nearPlane, float32 farPlane)
 {
+    /*
+    float ortho[16] = {
+        2.0f / (right - left), 0, 0, -(right + left) / (right - left),
+        0, 2.0f / (top - bottom), 0, -(top + bottom) / (top - bottom),
+        0, 0, -2.0f / (far - near), -(far + near) / (far - near),
+        0, 0, 0, 1
+    };
+    */
     //opengl standard is -1 to 1 --> 2 width
     Mat4 matOrtho(
         2 / width, 0, 0, -1,
         0, 2 / height, 0, -1,
-        0, 0, 1 / (farPlane - nearPlane), 0,
-        0, 0, nearPlane / (nearPlane - farPlane), 1
+        0, 0, -2 / (farPlane - nearPlane), 0,
+        0, 0, 0, 1
     );
     return matOrtho;
 }
@@ -220,5 +228,5 @@ void CameraComponent::translateY(float32 y)
 
 void CameraComponent::convertScreenToWorld(Vec2& posInOut)
 {
-    posInOut += getTransform()->getWorldPosition().pos2D();
+    posInOut += getTransform()->getWorldPosition();
 }

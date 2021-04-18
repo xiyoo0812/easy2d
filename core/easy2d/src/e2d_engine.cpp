@@ -53,22 +53,22 @@ void E2dEngine::initialize(SPtr<android_app> app)
     image->setTexture(tex);
     image->setHorizontalAlignment(HorizontalAlignment::Center);
     image->setVerticalAlignment(VerticalAlignment::Center);
-    image->translate(400, 300);
-    image->translateL(1);
+    image->setPosition(400, 300);
+    image->setZorder(1);
 
     auto font = FontManager::getInstance()->loadFont("felt-12", "fzltxh_gbk.ttf", 48);
 
-    //auto txt = std::make_shared<UITextField>("text");
-    //scene->addEntity(txt);
-    //txt->setFont(font);
-    //txt->setColor(Color::White);
-    //txt->setText(L"我是国人daAFKsbB123");
-    ////txt->setShadowColor(Color::Black, 2);
-    //txt->setBold(true);
-    //txt->setRootWidget();
-    //txt->translateL(2);
-    //txt->setHorizontalAlignment(HorizontalAlignment::Center);
-    //txt->setVerticalAlignment(VerticalAlignment::Center);
+    auto txt = std::make_shared<UITextField>("text");
+    scene->addEntity(txt);
+    txt->setFont(font);
+    txt->setColor(Color::White);
+    txt->setText(L"我是国人daAFKsbB123");
+    //txt->setShadowColor(Color::Black, 2);
+    txt->setBold(true);
+    txt->setRootWidget();
+    txt->setZorder(2);
+    txt->setHorizontalAlignment(HorizontalAlignment::Center);
+    txt->setVerticalAlignment(VerticalAlignment::Center);
 
     auto txt2 = std::make_shared<UITextField>("text2");
     scene->addEntity(txt2);
@@ -78,10 +78,11 @@ void E2dEngine::initialize(SPtr<android_app> app)
     txt2->setShadowColor(Color::White, 1);
     txt2->setOutlineColor(Color::Red, 1);
     txt2->setRootWidget();
+    txt2->setZorder(2);
     txt2->setText(L"我是国人daAFKsbB123");
     txt2->setHorizontalAlignment(HorizontalAlignment::Center);
     txt2->setVerticalAlignment(VerticalAlignment::Center);
-    txt2->translate(0, 60, 2);
+    txt2->setPosition(0, -60);
 }
 
 void E2dEngine::update()

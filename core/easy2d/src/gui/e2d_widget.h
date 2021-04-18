@@ -15,13 +15,10 @@ namespace Easy2D
         virtual void initialize();
         virtual void update(const uint32& escapeMs);
 
-        virtual void translate(const Vec2& translation);
-        virtual void translate(float32 x, float32 y);
-        virtual void translate(const Vec2& translation, lay l);
-        virtual void translate(float32 x, float32 y, lay l);
-        virtual void translate(const Pos& pos2D);
-        virtual void translateX(float32 x);
-        virtual void translateY(float32 y);
+        virtual void setPosition(const Vec2& translation);
+        virtual void setPosition(float32 x, float32 y);
+        virtual void setPositionX(float32 x);
+        virtual void setPositionY(float32 y);
 
         virtual void setHorizontalAlignment(HorizontalAlignment alignment, bool redefineCenter = true);
         virtual void setVerticalAlignment(VerticalAlignment alignment, bool redefineCenter = true);

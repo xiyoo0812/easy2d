@@ -1,4 +1,5 @@
 #include "e2d_transform_component.h"
+#include "graphics/e2d_graphics_mgr.h"
 #include "object/e2d_entity.h"
 #include "math/e2d_math.h"
 
@@ -31,25 +32,6 @@ void TransformComponent::translate(float32 x, float32 y)
     translate(Vec2(x, y));
 }
 
-void TransformComponent::translate(const Vec2& translation, lay l)
-{
-    mLocalPosition.x = translation.x;
-    mLocalPosition.y = translation.y;
-    mLocalPosition.l = l;
-    mChanged |= TransformType::TRANSLATION;
-}
-
-void TransformComponent::translate(float32 x, float32 y, lay l)
-{
-    translate(Vec2(x, y), l);
-}
-
-void TransformComponent::translate(const Pos& pos2D)
-{
-    mLocalPosition = pos2D;
-    mChanged |= TransformType::TRANSLATION;
-}
-
 void TransformComponent::translateX(float32 x)
 {
     mLocalPosition.x = x;
@@ -59,12 +41,6 @@ void TransformComponent::translateX(float32 x)
 void TransformComponent::translateY(float32 y)
 {
     mLocalPosition.y = y;
-    mChanged |= TransformType::TRANSLATION;
-}
-
-void TransformComponent::translateL(lay l)
-{
-    mLocalPosition.l = l;
     mChanged |= TransformType::TRANSLATION;
 }
 
@@ -151,12 +127,12 @@ void TransformComponent::mirrorY(bool y)
     mMirroredY = y;
 }
 
-const Pos& TransformComponent::getWorldPosition()
+const Vec2& TransformComponent::getWorldPosition()
 {
     return mWorldPosition;
 }
 
-const Pos& TransformComponent::getLocalPosition()
+const Vec2& TransformComponent::getLocalPosition()
 {
     return mLocalPosition;
 }
@@ -277,7 +253,7 @@ void TransformComponent::commonUpdate()
 {
     for (auto child : getMaster()->getChildren())
     {
-        child.second->getTransform()->setChanged(mChanged);
+        child->getTransform()->setChanged(mChanged);
     }
     singleUpdate(mWorld);
     auto parent = getMaster()->getParent();
@@ -298,8 +274,10 @@ void TransformComponent::commonUpdate()
 
 void TransformComponent::singleUpdate(Mat4& world)
 {
+    Vec3 transPos(mLocalPosition.x, mLocalPosition.y, 0);
+    transPos.y = GraphicsManager::getInstance()->getWindowHeight() - transPos.y;
     Mat4 matRot, matTrans, matScale, matC, matCI;
-    matTrans = Easy2D::translate(mLocalPosition.pos3D());
+    matTrans = Easy2D::translate(transPos);
     matRot = toMat4(Quat(Vec3(0, 0, mLocalRotation)));
     matScale = Easy2D::scale(Vec3(mLocalScale.x, mLocalScale.y, 1.0f));
     Vec3 centerPos(mCenterPosition.x, mCenterPosition.y, 0);

@@ -24,18 +24,14 @@ namespace Easy2D
         virtual void update(const uint32& escapeMs);
         virtual void drawWithCulling(float32 left, float32 right, float32 top, float32 bottom);
 
-        virtual void translate(const Vec2& translation);
-		virtual void translate(float32 x, float32 y);
-		virtual void translate(const Vec2& translation, lay l);
-		virtual void translate(float32 x, float32 y, lay l);
-		virtual void translate(const Pos& pos2D);
-		virtual void translateX(float32 x);
-		virtual void translateY(float32 y);
-		virtual void translateL(lay l);
-		
+        virtual void setPosition(const Vec2& pos);
+        virtual void setPosition(float32 x, float32 y);
+        virtual void setPositionX(float32 x);
+        virtual void setPositionY(float32 y);
+
         const Vec2& getDimensions() const;
-        const Pos& getWorldPosition() const;
-        const Pos& getLocalPosition() const;
+        const Vec2& getWorldPosition() const;
+        const Vec2& getLocalPosition() const;
         const String& getPhysics() const;
         void setPhysics(const String& physics);
         bool comparePhysics(const String& physics);
@@ -44,10 +40,12 @@ namespace Easy2D
         void setGroup(const String& group);
         bool compareGroup(const String& group);
 
+        void sortChild();
         bool addChild(SPtr<Entity> pEntity);
         void removeChild(const uint64 guid);
+        void removeChild(const String& name);
         void removeChild(const SPtr<Entity> pEntity);
-        const UnorderedMap<uint64, SPtr<Entity>>& getChildren() const;
+        const Vector<SPtr<Entity>>& getChildren() const;
 
         void setChildDisabled(const uint64 guid, bool disabled);
         void setChildVisible(const uint64 guid, bool visible);
@@ -57,6 +55,7 @@ namespace Easy2D
         bool addAction(SPtr<Action> pAction);
         void removeAction(const SPtr<Action> pAction);
         void removeAction(const uint64 guid);
+        void removeAction(const String& name);
         void restartAction(const uint64 guid);
         void pauseAction(const uint64 guid);
         void resumeAction(const uint64 guid);
@@ -64,6 +63,7 @@ namespace Easy2D
         bool addComponent(SPtr<Component> pComponent);
         void removeComponent(const SPtr<Component> pComponent);
         void removeComponent(const uint64 guid);
+        void removeComponent(const String& name);
 
         void setVisible(bool visible);
         void setDisabled(bool disabled);
@@ -89,6 +89,8 @@ namespace Easy2D
         SPtr<T> getChild(const String& name) const;
         template <typename T = Action>
         SPtr<T> getAction(const uint64 guid) const;
+        template <typename T>
+        SPtr<T> getComponent(const uint64 guid) const;
         template <typename T = Component>
         SPtr<T> getComponent(const String& name) const;
 
@@ -103,9 +105,10 @@ namespace Easy2D
         WPtr<Scene> mScene = {};
         WPtr<Entity> mParent = {};
 
-        UnorderedMap<uint64, SPtr<Action>> mActions;
-        UnorderedMap<uint64, SPtr<Entity>> mChildren;
-        UnorderedMap<uint64, SPtr<Component>> mComponents;
+        Vector<SPtr<Action>> mActions;
+        Vector<SPtr<Entity>> mChildrens;
+        Vector<SPtr<Component>> mComponents;
+
     };
 }
 

@@ -13,9 +13,11 @@ namespace Easy2D
         friend Singleton<RenderBatch>;
 
         void initialize();
-        void addRenderQueue(SPtr<RenderObject> object);
-        void setSortingMode(RenderSortingMode mode);
         void flush();
+        void addRenderQueue(SPtr<RenderSprite> object);
+        void addRenderQueue(SPtr<RenderText> object);
+        void setSortingMode(RenderSortingMode mode);
+        const RenderSortingMode getSortingMode();
 
     private:
         RenderBatch();
@@ -23,9 +25,7 @@ namespace Easy2D
 
         void begin();
         void end();
-        void build();
         void draw();
-        void sort();
         void createSpriteQuad(SPtr<RenderSprite> sprite);
         void createTextQuad(SPtr<RenderText> text, Vec2 offset, Color color);
         void drawTexture(uint32 start, uint32 size, uint32 texture);
@@ -40,7 +40,6 @@ namespace Easy2D
         Vector<float32> mIsHUDBuffer;
         Vector<float32> mUvCoordBuffer;
         Vector<GLuint> mTextureQueue;
-        Vector<SPtr<RenderObject>> mRenderQueue;
 
         SPtr<Program> mProgram = nullptr;
         GLuint mVertexID = 0, mTexCoordID = 0, mHUDID = 0;

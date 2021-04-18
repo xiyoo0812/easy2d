@@ -365,11 +365,10 @@ namespace Easy2D
         ));
     }
 
-    void getTranslation(const Mat4& matrix, Pos& translation)
+    void getTranslation(const Mat4& matrix, Vec2& translation)
     {
         translation.x = matrix[3][0];
         translation.y = matrix[3][1];
-        translation.l = lay(matrix[3][2]);
     }
 
     void getScaling(const Mat4& matrix, Vec2& scaling)
@@ -426,7 +425,7 @@ namespace Easy2D
         rotation = Easy2D::getRoll(rotQuat);
     }
 
-    void decomposeMatrix(const Mat4& matrix, Pos& position, Vec2& scaling, float32& rotation)
+    void decomposeMatrix(const Mat4& matrix, Vec2& position, Vec2& scaling, float32& rotation)
     {
         Easy2D::getTranslation(matrix, position);
         Easy2D::getRotationAndScaling(matrix, rotation, scaling);

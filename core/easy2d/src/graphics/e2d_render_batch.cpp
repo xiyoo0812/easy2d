@@ -36,92 +36,56 @@ void RenderBatch::initialize()
     mTexSamplerID = mProgram->getUniformLocation("texSampler");
 }
 
-void RenderBatch::sort()
-{
-    switch (mSortingMode)
-    {
-    case RenderSortingMode::BackFront:
-        std::sort(mRenderQueue.begin(), mRenderQueue.end(), [](SPtr<RenderObject> a, SPtr<RenderObject> b) -> bool
-        {
-            return a->mTransform->getWorldPosition().l < b->mTransform->getWorldPosition().l;
-        });
-        break;
-    case RenderSortingMode::FrontBack:
-        std::sort(mRenderQueue.begin(), mRenderQueue.end(), [](SPtr<RenderObject> a, SPtr<RenderObject> b) -> bool
-        {
-            return a->mTransform->getWorldPosition().l > b->mTransform->getWorldPosition().l;
-        });
-        break;
-    default:
-        break;
-    }
-}
-
-void RenderBatch::addRenderQueue(SPtr<RenderObject> object)
-{
-    mRenderQueue.push_back(object);
-}
-
 void RenderBatch::setSortingMode(RenderSortingMode mode)
 {
     mSortingMode = mode;
 }
 
+const RenderSortingMode RenderBatch::getSortingMode()
+{
+    return mSortingMode;
+}
+
+void RenderBatch::addRenderQueue(SPtr<RenderSprite> object)
+{
+    auto sprite = std::dynamic_pointer_cast<RenderSprite>(object);
+    if (sprite)
+    {
+        createSpriteQuad(sprite);
+    }
+}
+
+void RenderBatch::addRenderQueue(SPtr<RenderText> object)
+{
+    auto text = std::dynamic_pointer_cast<RenderText>(object);
+    if (text)
+    {
+        if (text->mShadowSize > 0)
+        {
+            for (int16 shadow = text->mShadowSize + text->mOutlineSize; shadow > text->mOutlineSize; shadow--)
+            {
+                createTextQuad(text, Vec2(shadow, shadow), text->mShadowColor);
+            }
+        }
+        if (text->mOutlineSize > 0)
+        {
+            for (int16 outline = text->mOutlineSize; outline > 0; outline--)
+            {
+                createTextQuad(text, Vec2(-outline, -outline), text->mOutlineColor);
+                createTextQuad(text, Vec2(-outline, outline), text->mOutlineColor);
+                createTextQuad(text, Vec2(outline, -outline), text->mOutlineColor);
+                createTextQuad(text, Vec2(outline, outline), text->mOutlineColor);
+            }
+        }
+        createTextQuad(text, Vec2(0, 0), text->mColor);
+    }
+}
+
 void RenderBatch::flush()
 {
-    sort();
-    build();
     begin();
     draw();
     end();
-}
-
-void RenderBatch::build()
-{
-    //Create Vertexbuffer
-    for (auto object : mRenderQueue)
-    {
-        switch (object->mType)
-        {
-        case RenderObjectType::ObjectSprite:
-            {
-                auto sprite = std::dynamic_pointer_cast<RenderSprite>(object);
-                if (sprite)
-                {
-                    createSpriteQuad(sprite);
-                }
-            }
-            break;
-        case RenderObjectType::ObjectText:
-            {
-                auto text = std::dynamic_pointer_cast<RenderText>(object);
-                if (text)
-                {
-                    if (text->mShadowSize > 0)
-                    {
-                        for (int16 shadow = text->mShadowSize + text->mOutlineSize; shadow > text->mOutlineSize; shadow--)
-                        {
-                            createTextQuad(text, Vec2(shadow, shadow), text->mShadowColor);
-                        }
-                    }
-                    if (text->mOutlineSize > 0)
-                    {
-                        for (int16 outline = text->mOutlineSize; outline > 0; outline--)
-                        {
-                            createTextQuad(text, Vec2(-outline, -outline), text->mOutlineColor);
-                            createTextQuad(text, Vec2(-outline, outline), text->mOutlineColor);
-                            createTextQuad(text, Vec2(outline, -outline), text->mOutlineColor);
-                            createTextQuad(text, Vec2(outline, outline), text->mOutlineColor);
-                        }
-                    }
-                    createTextQuad(text, Vec2(0, 0), text->mColor);
-                }
-            }
-            break;
-        default:
-            break;
-        }
-    }
 }
 
 void RenderBatch::begin()
@@ -191,7 +155,6 @@ void RenderBatch::end()
     mIsHUDBuffer.clear();
     mColorBuffer.clear();
     mTextureQueue.clear();
-    mRenderQueue.clear();
 }
 
 

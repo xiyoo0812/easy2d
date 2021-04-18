@@ -30,12 +30,8 @@ namespace Easy2D
 
         void translate(const Vec2& translation);
         void translate(float32 x, float32 y);
-        void translate(const Vec2& translation, lay l);
-        void translate(float32 x, float32 y, lay l);
-        void translate(const Pos& pos2D);
         void translateX(float32 x);
         void translateY(float32 y);
-        void translateL(lay l);
 
         void move(const Vec2& translation);
         void move(float32 x, float32 y);
@@ -55,8 +51,8 @@ namespace Easy2D
         void mirrorX(bool x);
         void mirrorY(bool y);
 
-        const Pos& getWorldPosition();
-        const Pos& getLocalPosition();
+        const Vec2& getWorldPosition();
+        const Vec2& getLocalPosition();
         float32 getWorldRotation();
         float32 getLocalRotation() const;
         const Vec2& getWorldScale();
@@ -87,7 +83,7 @@ namespace Easy2D
         Mat4 mWorld = {};
         uchar mChanged = 0;
         bool mMirroredX = false, mMirroredY = false;
-        Pos mWorldPosition = {}, mLocalPosition = {};
+        Vec2 mWorldPosition = {}, mLocalPosition = {};
         float32 mWorldRotation = 0, mLocalRotation = 0;
         Vec2 mWorldScale{ 1,1 }, mLocalScale {1,1}, mCenterPosition = {};
 

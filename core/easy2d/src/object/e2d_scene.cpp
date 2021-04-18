@@ -3,6 +3,7 @@
 #include "e2d_scene_mgr.h"
 #include "math/e2d_pos.h"
 #include "graphics/e2d_graphics_mgr.h"
+#include "graphics/e2d_render_batch.h"
 #include "component/e2d_transform_component.h"
 
 /* Easy2D */
@@ -49,7 +50,7 @@ void Scene::onDeactivate()
 {
     for (auto entity : mEntitys)
     {
-        entity.second->reset();
+        entity->reset();
     }
 }
 
@@ -57,7 +58,7 @@ void Scene::update(const uint32& escapeMs)
 {
     for (auto entity : mEntitys)
     {
-        entity.second->update(escapeMs);
+        entity->update(escapeMs);
     }
     // m_pCollisionManager->Update(context);
 }
@@ -68,21 +69,21 @@ void Scene::draw()
     {
         for (auto entity : mEntitys)
         {
-            entity.second->draw();
+            entity->draw();
         }
     }
     else
     {
-        Pos camPos = mDefaultCamera->getTransform()->getWorldPosition();
+        Vec2 camPos = mDefaultCamera->getTransform()->getWorldPosition();
         int32 screenWidth = GraphicsManager::getInstance()->getWindowResolution().x;
         int32 screenHeight = GraphicsManager::getInstance()->getWindowResolution().y;
-        float32 left = camPos.pos2D().x - mCullingOffsetX;
-        float32 right = camPos.pos2D().x + screenWidth + mCullingOffsetX;
-        float32 top = camPos.pos2D().y + screenHeight + mCullingOffsetY;
-        float32 bottom = camPos.pos2D().y - mCullingOffsetY;
+        float32 left = camPos.x - mCullingOffsetX;
+        float32 right = camPos.x + screenWidth + mCullingOffsetX;
+        float32 top = camPos.y + screenHeight + mCullingOffsetY;
+        float32 bottom = camPos.y - mCullingOffsetY;
         for (auto entity : mEntitys)
         {
-            entity.second->drawWithCulling(left, right, top, bottom);
+            entity->drawWithCulling(left, right, top, bottom);
         }
     }
 }
@@ -102,6 +103,28 @@ void Scene::onLowMemory()
 
 }
 
+
+void Scene::sortEntity()
+{
+    switch (RenderBatch::getInstance()->getSortingMode())
+    {
+    case RenderSortingMode::BackFront:
+        std::sort(mEntitys.begin(), mEntitys.end(), [](SPtr<Entity> a, SPtr<Entity> b) -> bool
+        {
+            return a->getZorder() < b->getZorder();
+        });
+        break;
+    case RenderSortingMode::FrontBack:
+        std::sort(mEntitys.begin(), mEntitys.end(), [](SPtr<Entity> a, SPtr<Entity> b) -> bool
+        {
+            return a->getZorder() < b->getZorder();
+        });
+        break;
+    default:
+        break;
+    }
+}
+
 void Scene::addEntity(SPtr<Entity> pEntity)
 {
     if (pEntity)
@@ -113,8 +136,9 @@ void Scene::addEntity(SPtr<Entity> pEntity)
             return;
         }
         pEntity->setScene(std::dynamic_pointer_cast<Scene>(shared_from_this()));
-        mEntitys.insert(std::make_pair(pEntity->getGUID(), pEntity));
+        mEntitys.push_back(pEntity);
         pEntity->initialize();
+        sortEntity();
     }
 }
 
@@ -134,28 +158,51 @@ void Scene::removeEntity(SPtr<Entity> pEntity)
 
 void Scene::removeEntity(const uint64 guid)
 {
-    auto it = mEntitys.find(guid);
+    auto it = std::find_if(mEntitys.begin(), mEntitys.end(), [&](SPtr<Entity> pEntity) -> bool
+    {
+        return pEntity->compareGUID(guid);
+    });
     if (it != mEntitys.end())
     {
         mEntitys.erase(it);
+        sortEntity();
+    }
+}
+
+void Scene::removeEntity(const String& name)
+{
+    auto it = std::find_if(mEntitys.begin(), mEntitys.end(), [&](SPtr<Entity> pEntity) -> bool
+    {
+        return pEntity->compareName(name);
+    });
+    if (it != mEntitys.end())
+    {
+        mEntitys.erase(it);
+        sortEntity();
     }
 }
 
 void Scene::setEntityDisabled(const uint64 guid, bool disabled)
 {
-    auto it = mEntitys.find(guid);
-    if (it != mEntitys.end())
+    for (auto entity : mEntitys)
     {
-        it->second->setDisabled(disabled);
+        if (entity->compareGUID(guid))
+        {
+            entity->setDisabled(disabled);
+            break;
+        }
     }
 }
 
 void Scene::setEntityVisible(const uint64 guid, bool visible)
 {
-    auto it = mEntitys.find(guid);
-    if (it != mEntitys.end())
+    for (auto entity : mEntitys)
     {
-        it->second->setVisible(visible);
+        if (entity->compareGUID(guid))
+        {
+            entity->setVisible(visible);
+            break;
+        }
     }
 }
 
@@ -163,9 +210,9 @@ void Scene::setGroupDisabled(const String& tag, bool visible)
 {
     for (auto entity : mEntitys)
     {
-        if (entity.second->compareGroup(tag))
+        if (entity->compareGroup(tag))
         {
-            entity.second->setDisabled(visible);
+            entity->setDisabled(visible);
         }
     }
 }
@@ -174,9 +221,9 @@ void Scene::setGroupVisible(const String& tag, bool visible)
 {
     for (auto entity : mEntitys)
     {
-        if (entity.second->compareGroup(tag))
+        if (entity->compareGroup(tag))
         {
-            entity.second->setVisible(visible);
+            entity->setVisible(visible);
         }
     }
 }
@@ -185,9 +232,9 @@ void Scene::getGroup(const String& tag, Vector<SPtr<Entity>>& group)
 {
     for (auto entity : mEntitys)
     {
-        if (entity.second->compareGroup(tag))
+        if (entity->compareGroup(tag))
         {
-            group.push_back(entity.second);
+            group.push_back(entity);
         }
     }
 }
@@ -225,7 +272,7 @@ bool Scene::isEntityNameExist(const String& name) const
 {
     for (auto entity : mEntitys)
     {
-        if (entity.second->compareName(name))
+        if (entity->compareName(name))
         {
             return true;
         }

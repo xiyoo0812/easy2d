@@ -10,14 +10,8 @@ namespace Easy2D
 
     enum RenderSortingMode
     {
-        BackFront,
+        BackFront = 0,
         FrontBack,
-    };
-
-    enum class RenderObjectType
-    {
-        ObjectSprite = 0,
-        ObjectText,
     };
 
     class RenderObject
@@ -26,10 +20,6 @@ namespace Easy2D
         bool mbHud = false;
         Color mColor = Color::White;
         SPtr<TransformComponent> mTransform = nullptr;
-        RenderObjectType mType = RenderObjectType::ObjectSprite;
-
-        RenderObject(RenderObjectType t) : mType(t){}
-        virtual ~RenderObject(){}
     };
 
     class RenderSprite : public RenderObject
@@ -38,8 +28,6 @@ namespace Easy2D
         Vec2 mVertices = {};
         Vec4 mUvCoords = {};
         uint32 mTextureID = 0;
-        RenderSprite(RenderObjectType t = RenderObjectType::ObjectSprite) : RenderObject(t) {}
-        virtual ~RenderSprite() {}
     };
 
     class RenderText : public RenderObject
@@ -56,9 +44,6 @@ namespace Easy2D
         SPtr<Font> mFont = nullptr;
         bool mbItalic = false;
         bool mbBold = false;
-
-        RenderText(RenderObjectType t = RenderObjectType::ObjectText) : RenderObject(t) {}
-        virtual ~RenderText() {}
     };
 }
 

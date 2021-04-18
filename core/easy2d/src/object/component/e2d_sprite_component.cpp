@@ -61,7 +61,7 @@ bool SpriteComponent::checkCulling(float32 left, float32 right, float32 top, flo
         return true;
     }
     float32 spriteWidth, spriteHeight;
-    Pos objectPos = getTransform()->getWorldPosition();
+    Vec2 objectPos = getTransform()->getWorldPosition();
     if (mSpriteInfo->mbHud)
     {
         objectPos.x += left;
