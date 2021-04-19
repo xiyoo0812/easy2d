@@ -29,15 +29,15 @@ void UITextField::setHorizontalAlignment(HorizontalAlignment alignment, bool red
         switch (alignment)
         {
         case HorizontalAlignment::Left:
-            getTransform()->setCenterX(0);
+            getTransform()->setAnchorX(0);
             mTextComponent->alignTextLeft();
             break;
         case HorizontalAlignment::Center:
-            getTransform()->setCenterX(float32(mTextComponent->getWidth()) / 2.0f);
+            getTransform()->setAnchorX(0.5);
             mTextComponent->alignTextCenter();
             break;
         case HorizontalAlignment::Right:
-            getTransform()->setCenterX(float32(mTextComponent->getWidth()));
+            getTransform()->setAnchorX(1);
             mTextComponent->alignTextRight();
             break;
         }
@@ -52,13 +52,13 @@ void UITextField::setVerticalAlignment(VerticalAlignment alignment, bool redefin
         switch (alignment)
         {
         case VerticalAlignment::Bottom:
-            getTransform()->setCenterY(0);
+            getTransform()->setAnchorY(0);
             break;
         case VerticalAlignment::Center:
-            getTransform()->setCenterY(float32(mTextComponent->getHeight()) / 2.0f);
+            getTransform()->setAnchorY(0.5);
             break;
         case VerticalAlignment::Top:
-            getTransform()->setCenterY(float32(mTextComponent->getHeight()));
+            getTransform()->setAnchorY(1);
             break;
         }
     }

@@ -115,7 +115,7 @@ void SpriteComponent::setTexture(SPtr<Texture2D> texture, uint32 widthSegments /
     mDimensions.x = texture->getWidth() / mWidthSegments;
     mDimensions.y = texture->getHeight() / mHeightSegments;
 
-    getTransform()->setDimensionsSafe(mDimensions);
+    getTransform()->setDimensions(mDimensions);
 
     createUVCoords();
     fillSpriteInfo();

@@ -157,7 +157,6 @@ void RenderBatch::end()
     mTextureQueue.clear();
 }
 
-
 void RenderBatch::createSpriteQuad(SPtr<RenderSprite> sprite)
 {
     //for every sprite that has to be drawn, push back all vertices 
@@ -195,7 +194,6 @@ void RenderBatch::createSpriteQuad(SPtr<RenderSprite> sprite)
     mVertexBuffer.push_back(BR);
     //2
     mVertexBuffer.push_back(BL);
-
     //Push back all uv's
     //0
     mUvCoordBuffer.push_back(sprite->mUvCoords.x);
@@ -252,9 +250,7 @@ void RenderBatch::createTextQuad(SPtr<RenderText> text, Vec2 offset, Color color
         auto fChar = text->mFont->getFontChar(it, text->mbBold, text->mbItalic);
         Mat4 offsetMatrix = translate(Vec3(offsetX + fChar->letterDimensions.x, offsetY + fChar->letterDimensions.y + text->mTextHeight - fontHeight, 0));
         offsetX += fChar->advence + text->mOutlineSize;
-
         Mat4 transformMat = transpose(worldMat * offsetMatrix);
-
         Vec4 TL = Vec4(0, fChar->vertexDimensions.y, 0, 1);
         mul(TL, transformMat, TL);
         Vec4 TR = Vec4(fChar->vertexDimensions.x, fChar->vertexDimensions.y, 0, 1);
@@ -275,7 +271,6 @@ void RenderBatch::createTextQuad(SPtr<RenderText> text, Vec2 offset, Color color
         mVertexBuffer.push_back(BR);
         //2
         mVertexBuffer.push_back(BL);
-
         //Push back all uv's
         //0
         mUvCoordBuffer.push_back(fChar->uvCoordTL.x);
@@ -295,10 +290,8 @@ void RenderBatch::createTextQuad(SPtr<RenderText> text, Vec2 offset, Color color
         //2
         mUvCoordBuffer.push_back(fChar->uvCoordTL.x);
         mUvCoordBuffer.push_back(fChar->uvCoordBR.y);
-
         //tex
         mTextureQueue.push_back(fChar->textureID);
-
         //bool & color buffer
         for (uint32 i = 0; i < 6; ++i)
         {

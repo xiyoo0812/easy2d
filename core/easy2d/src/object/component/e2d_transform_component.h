@@ -39,7 +39,6 @@ namespace Easy2D
         void moveY(float32 y);
 
         void rotate(float32 rotation);
-        void rotate(float32 rotation, const Vec2& centerPoint);
 
         void scale(const Vec2& scale);
         void scale(float32 x, float32 y);
@@ -58,20 +57,15 @@ namespace Easy2D
         const Vec2& getWorldScale();
         const Vec2& getLocalScale();
 
-        void setCenterPoint(const Vec2 & centerPoint);
-        void setCenterPoint(float32 x, float32 y);
-        void setCenterX(float32 x);
-        void setCenterY(float32 y);
+        void setAnchor(const Vec2& anchor);
+        void setAnchor(float32 x, float32 y);
+        void setAnchorX(float32 x);
+        void setAnchorY(float32 y);
 
         void setDimensions(float32 x, float32 y);
-        void setDimensions(const Vec2 & dimensions);
+        void setDimensions(const Vec2& dimensions);
         void setDimensionsX(float32 x);
         void setDimensionsY(float32 y);
-
-        void setDimensionsSafe(float32 x, float32 y);
-        void setDimensionsSafe(const Vec2 & dimensions);
-        void setDimensionsXSafe(float32 x);
-        void setDimensionsYSafe(float32 y);
 
         const Mat4& getWorldMatrix() const;
 
@@ -83,9 +77,8 @@ namespace Easy2D
         Mat4 mWorld = {};
         uchar mChanged = 0;
         bool mMirroredX = false, mMirroredY = false;
-        Vec2 mWorldPosition = {}, mLocalPosition = {};
         float32 mWorldRotation = 0, mLocalRotation = 0;
-        Vec2 mWorldScale{ 1,1 }, mLocalScale {1,1}, mCenterPosition = {};
+        Vec2 mWorldPt {0, 0}, mLocalPt { 0, 0 }, mWorldScale{ 1,1 }, mLocalScale{ 1,1 }, mAnchorPt{ 0, 0 };
 
     public:
         inline static String GUID = "transform";

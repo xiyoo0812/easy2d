@@ -9,6 +9,7 @@
 namespace Easy2D
 {
     class Scene;
+    class TransformComponent;
     class Entity : public Object
     {
     public:
@@ -28,6 +29,16 @@ namespace Easy2D
         virtual void setPosition(float32 x, float32 y);
         virtual void setPositionX(float32 x);
         virtual void setPositionY(float32 y);
+
+        void setMirror(bool x, bool y);
+        void setMirrorX(bool x);
+        void setMirrorY(bool y);
+
+        void setScale(const Vec2& scale);
+        void setScale(float32 x, float32 y);
+        void setScale(float32 u);
+        void setScaleX(float32 x);
+        void setScaleY(float32 y);
 
         const Vec2& getDimensions() const;
         const Vec2& getWorldPosition() const;
@@ -104,6 +115,7 @@ namespace Easy2D
 
         WPtr<Scene> mScene = {};
         WPtr<Entity> mParent = {};
+        SPtr<TransformComponent> mTransform = nullptr;
 
         Vector<SPtr<Action>> mActions;
         Vector<SPtr<Entity>> mChildrens;

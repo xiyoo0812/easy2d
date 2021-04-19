@@ -25,13 +25,13 @@ void UIImage::setHorizontalAlignment(HorizontalAlignment alignment, bool redefin
         switch (alignment)
         {
         case HorizontalAlignment::Left:
-            getTransform()->setCenterX(0);
+            getTransform()->setAnchorX(0);
             break;
         case HorizontalAlignment::Center:
-            getTransform()->setCenterX(float32(mSpriteComponent->getWidth()) / 2.0f);
+            getTransform()->setAnchorX(0.5);
             break;
         case HorizontalAlignment::Right:
-            getTransform()->setCenterX(float32(mSpriteComponent->getWidth()));
+            getTransform()->setAnchorX(1);
             break;
         }
     }
@@ -45,13 +45,13 @@ void UIImage::setVerticalAlignment(VerticalAlignment alignment, bool redefineCen
         switch (alignment)
         {
         case VerticalAlignment::Bottom:
-            getTransform()->setCenterY(0);
+            getTransform()->setAnchorY(0);
             break;
         case VerticalAlignment::Center:
-            getTransform()->setCenterY(float32(mSpriteComponent->getHeight()) / 2.0f);
+            getTransform()->setAnchorY(0.5);
             break;
         case VerticalAlignment::Top:
-            getTransform()->setCenterY(float32(mSpriteComponent->getHeight()));
+            getTransform()->setAnchorY(1);
             break;
         }
     }

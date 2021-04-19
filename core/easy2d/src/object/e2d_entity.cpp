@@ -8,18 +8,21 @@ using namespace Easy2D;
 
 Entity::Entity(void) : Object()
 {
-    addComponent(std::make_shared<TransformComponent>());
+    mTransform = std::make_shared<TransformComponent>();
+    addComponent(mTransform);
 }
 
 Entity::Entity(const String& name) : Object(name)
 {
-    addComponent(std::make_shared<TransformComponent>());
+    mTransform = std::make_shared<TransformComponent>();
+    addComponent(mTransform);
 }
 
 Entity::Entity(const String& name, const String& group)
     : Object(name), mGroup(group)
 {
-    addComponent(std::make_shared<TransformComponent>());
+    mTransform = std::make_shared<TransformComponent>();
+    addComponent(mTransform);
 }
 
 Entity::~Entity()
@@ -70,39 +73,78 @@ void Entity::sortChild()
     }
 }
 
+void Entity::setMirror(bool x, bool y)
+{
+    mTransform->mirror(x, y);
+}
+
+void Entity::setMirrorX(bool x)
+{
+    mTransform->mirrorX(x);
+}
+void Entity::setMirrorY(bool y)
+{
+    mTransform->mirrorY(y);
+}
+
+void Entity::setScale(const Vec2& scale)
+{
+    mTransform->scale(scale);
+}
+
+void Entity::setScale(float32 x, float32 y)
+{
+    mTransform->scale(x, y);
+}
+
+void Entity::setScale(float32 u)
+{
+    mTransform->scale(u, u);
+}
+
+void Entity::setScaleX(float32 x)
+{
+    mTransform->scaleX(x);
+}
+
+void Entity::setScaleY(float32 y)
+{
+    mTransform->scaleY(y);
+}
+
 void Entity::setPosition(const Vec2& pos)
 {
-    getTransform()->translate(pos);
+    mTransform->translate(pos);
 }
 
 void Entity::setPosition(float32 x, float32 y)
 {
-    getTransform()->translate(x, y);
+    mTransform->translate(x, y);
 }
 
 void Entity::setPositionX(float32 x)
 {
-    getTransform()->translateX(x);
+    mTransform->translateX(x);
 }
 
 void Entity::setPositionY(float32 y)
 {
-    getTransform()->translateY(y);
+    mTransform->translateY(y);
 }
 
 const Vec2& Entity::getWorldPosition() const
 {
-    return getTransform()->getWorldPosition();
+    return mTransform->getWorldPosition();
 }
 
 const Vec2& Entity::getLocalPosition() const
 {
-    return getTransform()->getLocalPosition();
+    return mTransform->getLocalPosition();
 }
 
 const Vec2& Entity::getDimensions() const
 {
-    return getTransform()->getDimensions();
+    return mTransform->getDimensions();
 }
 
 void Entity::update(const uint32& escapeMs)
@@ -528,10 +570,9 @@ void Entity::reset()
 void Entity::recalculateDimensions()
 {
     Vec2 dim(0, 0);
-    auto transform = getTransform();
     for (auto comp : mComponents)
     {
-        if (comp != transform)
+        if (comp != mTransform)
         {
             Vec2 temp = comp->getDimensions();
             if (temp.x > dim.x)
@@ -544,11 +585,11 @@ void Entity::recalculateDimensions()
             }
         }
     }
-    transform->setDimensions(dim);
+    mTransform->setDimensions(dim);
 }
 
 SPtr<TransformComponent> Entity::getTransform() const
 {
-    return getComponent<TransformComponent>(TransformComponent::GUID);
+    return mTransform;
 }
 

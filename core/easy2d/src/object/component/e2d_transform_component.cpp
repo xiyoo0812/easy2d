@@ -22,8 +22,8 @@ void TransformComponent::initialize()
 
 void TransformComponent::translate(const Vec2& translation)
 {
-    mLocalPosition.x = translation.x;
-    mLocalPosition.y = translation.y;
+    mLocalPt.x = translation.x;
+    mLocalPt.y = translation.y;
     mChanged |= TransformType::TRANSLATION;
 }
 
@@ -34,52 +34,45 @@ void TransformComponent::translate(float32 x, float32 y)
 
 void TransformComponent::translateX(float32 x)
 {
-    mLocalPosition.x = x;
+    mLocalPt.x = x;
     mChanged |= TransformType::TRANSLATION;
 }
 
 void TransformComponent::translateY(float32 y)
 {
-    mLocalPosition.y = y;
+    mLocalPt.y = y;
     mChanged |= TransformType::TRANSLATION;
 }
 
 void TransformComponent::move(const Vec2& translation)
 {
-    mLocalPosition.x += translation.x;
-    mLocalPosition.y += translation.y;
+    mLocalPt.x += translation.x;
+    mLocalPt.y += translation.y;
     mChanged |= TransformType::TRANSLATION;
 }
 
 void TransformComponent::move(float32 x, float32 y)
 {
-    mLocalPosition.x += x;
-    mLocalPosition.y += y;
+    mLocalPt.x += x;
+    mLocalPt.y += y;
     mChanged |= TransformType::TRANSLATION;
 }
 
 void TransformComponent::moveX(float32 x)
 {
-    mLocalPosition.x += x;
+    mLocalPt.x += x;
     mChanged |= TransformType::TRANSLATION;
 }
 
 void TransformComponent::moveY(float32 y)
 {
-    mLocalPosition.y += y;
+    mLocalPt.y += y;
     mChanged |= TransformType::TRANSLATION;
 }
 
 void TransformComponent::rotate(float32 rotation)
 {
     mLocalRotation = rotation;
-    mChanged |= TransformType::ROTATION;
-}
-
-void TransformComponent::rotate(float32 rotation, const Vec2& centerPoint)
-{
-    mLocalRotation = rotation;
-    setCenterPoint(centerPoint);
     mChanged |= TransformType::ROTATION;
 }
 
@@ -129,12 +122,12 @@ void TransformComponent::mirrorY(bool y)
 
 const Vec2& TransformComponent::getWorldPosition()
 {
-    return mWorldPosition;
+    return mWorldPt;
 }
 
 const Vec2& TransformComponent::getLocalPosition()
 {
-    return mLocalPosition;
+    return mLocalPt;
 }
 
 float32 TransformComponent::getWorldRotation()
@@ -157,25 +150,32 @@ const Vec2& TransformComponent::getLocalScale()
     return mLocalScale;
 }
 
-void TransformComponent::setCenterPoint(const Vec2& centerPoint)
+void TransformComponent::setAnchor(const Vec2& anchor)
 {
-    mCenterPosition = centerPoint;
+    setAnchorX(anchor.x);
+    setAnchorY(anchor.y);
 }
 
-void TransformComponent::setCenterPoint(float32 x, float32 y)
+void TransformComponent::setAnchor(float32 x, float32 y)
 {
-    mCenterPosition.x = x;
-    mCenterPosition.y = y;
+    setAnchorX(x);
+    setAnchorY(y);
 }
 
-void TransformComponent::setCenterX(float32 x)
+void TransformComponent::setAnchorX(float32 x)
 {
-    mCenterPosition.x = x;
+    if (x >= 0.0f && x <= 1.0f)
+    {
+        mAnchorPt.x = x;
+    }
 }
 
-void TransformComponent::setCenterY(float32 y)
+void TransformComponent::setAnchorY(float32 y)
 {
-    mCenterPosition.y = y;
+    if (y >= 0.0f && y <= 1.0f)
+    {
+        mAnchorPt.y = y;
+    }
 }
 
 void TransformComponent::setDimensions(float32 x, float32 y)
@@ -197,41 +197,6 @@ void TransformComponent::setDimensionsX(float32 x)
 void TransformComponent::setDimensionsY(float32 y)
 {
     mDimensions.y = y;
-}
-
-void TransformComponent::setDimensionsSafe(float32 x, float32 y)
-{
-    setDimensionsXSafe(x);
-    setDimensionsYSafe(y);
-}
-
-void TransformComponent::setDimensionsSafe(const Vec2& dimensions)
-{
-    setDimensionsSafe(dimensions.x, dimensions.y);
-}
-
-void TransformComponent::setDimensionsXSafe(float32 x)
-{
-    if (x > mDimensions.x)
-    {
-        mDimensions.x = x;
-    }
-    else if (x < mDimensions.x)
-    {
-        getMaster()->recalculateDimensions();
-    }
-}
-
-void TransformComponent::setDimensionsYSafe(float32 y)
-{
-    if (y > mDimensions.y)
-    {
-        mDimensions.y = y;
-    }
-    else if (y < mDimensions.y)
-    {
-        getMaster()->recalculateDimensions();
-    }
 }
 
 const Mat4& TransformComponent::getWorldMatrix() const
@@ -261,26 +226,18 @@ void TransformComponent::commonUpdate()
     {
         mWorld = parent->getTransform()->getWorldMatrix() * mWorld;
     }
-    decomposeMatrix(mWorld, mWorldPosition, mWorldScale, mWorldRotation);
-    if (mMirroredX)
-    {
-        mWorldPosition.x -= mDimensions.x;
-    }
-    if (mMirroredY)
-    {
-        mWorldPosition.y -= mDimensions.y;
-    }
+    decomposeMatrix(mWorld, mWorldPt, mWorldScale, mWorldRotation);
 }
 
 void TransformComponent::singleUpdate(Mat4& world)
 {
-    Vec3 transPos(mLocalPosition.x, mLocalPosition.y, 0);
+    Vec3 transPos(mLocalPt.x, mLocalPt.y, 0);
     transPos.y = GraphicsManager::getInstance()->getWindowHeight() - transPos.y;
     Mat4 matRot, matTrans, matScale, matC, matCI;
     matTrans = Easy2D::translate(transPos);
-    matRot = toMat4(Quat(Vec3(0, 0, mLocalRotation)));
+    matRot = Easy2D::toMat4(Quat(Vec3(0, 0, mLocalRotation)));
     matScale = Easy2D::scale(Vec3(mLocalScale.x, mLocalScale.y, 1.0f));
-    Vec3 centerPos(mCenterPosition.x, mCenterPosition.y, 0);
+    Vec3 centerPos(mAnchorPt.x * mDimensions.x, mAnchorPt.y * mDimensions.y, 0);
     matC = Easy2D::translate(-centerPos);
 
     world = matTrans * matRot * matScale * matC;
@@ -288,7 +245,6 @@ void TransformComponent::singleUpdate(Mat4& world)
     if (mMirroredX || mMirroredY)
     {
         world *= Easy2D::translate(mDimensions.x / 2.0f, mDimensions.y / 2.0f, 0);
-
         if (mMirroredX)
         {
             if (mMirroredY)

@@ -43,7 +43,7 @@ void TextComponent::calculateTextDimensions()
 void TextComponent::calculateWrappedTextDimensions(uint8 lines)
 {
     mDimensions.y = (mFont->getMaxLetterHeight() * lines) + (mTextInfo->mSpacing * (lines - 1));
-    getTransform()->setDimensionsYSafe(mDimensions.y);
+    getTransform()->setDimensionsY(mDimensions.y);
 }
 
 void TextComponent::calculateTextHeight()
@@ -52,7 +52,7 @@ void TextComponent::calculateTextHeight()
     ++count;
     mDimensions.y = (mFont->getMaxLetterHeight() * count) + (mTextInfo->mSpacing * (count - 1));
     mTextInfo->mTextHeight = mDimensions.y;
-    getTransform()->setDimensionsYSafe(mDimensions.y);
+    getTransform()->setDimensionsY(mDimensions.y);
 }
 
 void TextComponent::cleanUpText(const Wtring& str)
@@ -183,7 +183,7 @@ int32 TextComponent::getLongestLine(const Wtring& str)
             {
                 length = strLength;
                 mDimensions.x = strLength;
-                getTransform()->setDimensionsXSafe(mDimensions.x);
+                getTransform()->setDimensionsX(mDimensions.x);
             }
             substr = EMPTY_STRING;
         }
@@ -198,7 +198,7 @@ int32 TextComponent::getLongestLine(const Wtring& str)
     {
         length = strLength;
         mDimensions.x = strLength;
-        getTransform()->setDimensionsXSafe(mDimensions.x);
+        getTransform()->setDimensionsX(mDimensions.x);
     }
     return length;
 }
@@ -334,7 +334,7 @@ void TextComponent::setWrapWidth(int32 width)
     else
     {
         mDimensions.x = 0;
-        getTransform()->setDimensionsXSafe(mDimensions.x);
+        getTransform()->setDimensionsX(mDimensions.x);
         cleanUpText(checkWrapping(mOrigText, mWrapWidth));
     }
 }
@@ -352,7 +352,7 @@ Wtring TextComponent::checkWrapping(const Wtring& stringIn, int32 wrapWidth)
     splitString(words, stringIn, _T(' '));
 
     mDimensions.y = mFont->getMaxLetterHeight();
-    getTransform()->setDimensionsYSafe(mDimensions.y);
+    getTransform()->setDimensionsY(mDimensions.y);
 
     uint8 lines(1);
 
@@ -379,7 +379,7 @@ Wtring TextComponent::checkWrapping(const Wtring& stringIn, int32 wrapWidth)
             if (w > mDimensions.x)
             {
                 mDimensions.x = w;
-                getTransform()->setDimensionsXSafe(mDimensions.x);
+                getTransform()->setDimensionsX(mDimensions.x);
             }
             if (w > wrapWidth)
             {
