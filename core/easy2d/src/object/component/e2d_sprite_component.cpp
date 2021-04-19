@@ -67,8 +67,8 @@ bool SpriteComponent::checkCulling(float32 left, float32 right, float32 top, flo
         objectPos.x += left;
         objectPos.y += bottom;
     }
-    spriteWidth = float32(getWidth()) * getTransform()->getWorldScale().x;
-    spriteHeight = float32(getHeight()) * getTransform()->getWorldScale().y;
+    spriteWidth = float32(getWidth()) * getTransform()->getScale().x;
+    spriteHeight = float32(getHeight()) * getTransform()->getScale().y;
     float32 objRight = objectPos.x + spriteWidth;
     float32 objTop = objectPos.y + spriteHeight;
 

@@ -232,8 +232,8 @@ bool TextComponent::checkCulling(float32 left, float32 right, float32 top, float
     textW = float32(mFont->getStringLength(mOrigText));
     textH = float32(mFont->getMaxLetterHeight());
 
-    textWidth = textW * getTransform()->getWorldScale().x;
-    textHeight = textH * getTransform()->getWorldScale().y;
+    textWidth = textW * getTransform()->getScale().x;
+    textHeight = textH * getTransform()->getScale().y;
 
     float32 teRight = objectPos.x + textWidth;
     float32 texTop = objectPos.y + textHeight;

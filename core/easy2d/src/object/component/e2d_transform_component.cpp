@@ -72,13 +72,13 @@ void TransformComponent::moveY(float32 y)
 
 void TransformComponent::rotate(float32 rotation)
 {
-    mLocalRotation = rotation;
+    mRotation = rotation;
     mChanged |= TransformType::ROTATION;
 }
 
 void TransformComponent::scale(const Vec2& scale)
 {
-    mLocalScale = scale;
+    mScale = scale;
     mChanged |= TransformType::SCALE;
 }
 
@@ -94,13 +94,13 @@ void TransformComponent::scale(float32 u)
 
 void TransformComponent::scaleX(float32 x)
 {
-    mLocalScale.x = x;
+    mScale.x = x;
     mChanged |= TransformType::SCALE;
 }
 
 void TransformComponent::scaleY(float32 y)
 {
-    mLocalScale.y = y;
+    mScale.y = y;
     mChanged |= TransformType::SCALE;
 }
 
@@ -130,24 +130,14 @@ const Vec2& TransformComponent::getLocalPosition()
     return mLocalPt;
 }
 
-float32 TransformComponent::getWorldRotation()
+float32 TransformComponent::getRotation() const
 {
-    return mWorldRotation;
+    return mRotation;
 }
 
-float32 TransformComponent::getLocalRotation() const
+const Vec2& TransformComponent::getScale()
 {
-    return mLocalRotation;
-}
-
-const Vec2& TransformComponent::getWorldScale()
-{
-    return mWorldScale;
-}
-
-const Vec2& TransformComponent::getLocalScale()
-{
-    return mLocalScale;
+    return mScale;
 }
 
 void TransformComponent::setAnchor(const Vec2& anchor)
@@ -167,6 +157,7 @@ void TransformComponent::setAnchorX(float32 x)
     if (x >= 0.0f && x <= 1.0f)
     {
         mAnchorPt.x = x;
+        mChanged |= TransformType::TRANSLATION;
     }
 }
 
@@ -175,6 +166,7 @@ void TransformComponent::setAnchorY(float32 y)
     if (y >= 0.0f && y <= 1.0f)
     {
         mAnchorPt.y = y;
+        mChanged |= TransformType::TRANSLATION;
     }
 }
 
@@ -220,48 +212,49 @@ void TransformComponent::commonUpdate()
     {
         child->getTransform()->setChanged(mChanged);
     }
-    singleUpdate(mWorld);
+    Vec3 transPos(mLocalPt.x, mLocalPt.y, 0);
+    transPos.y = GraphicsManager::getInstance()->getWindowHeight() - transPos.y;
+    Vec3 centerPos(mAnchorPt.x * mDimensions.x, mAnchorPt.y * mDimensions.y, 0);
+    Mat4 matRot, matTrans, matScale, matC;
+    matTrans = Easy2D::translate(transPos - centerPos);
+    matRot = Easy2D::toMat4(Quat(Vec3(0, 0, mRotation)));
+    matScale = Easy2D::scale(Vec3(mScale.x, mScale.y, 1.0f));
+
+    mWorld = matTrans * matRot * matScale;
     auto parent = getMaster()->getParent();
     if (parent != nullptr)
     {
         mWorld = parent->getTransform()->getWorldMatrix() * mWorld;
     }
-    decomposeMatrix(mWorld, mWorldPt, mWorldScale, mWorldRotation);
-}
-
-void TransformComponent::singleUpdate(Mat4& world)
-{
-    Vec3 transPos(mLocalPt.x, mLocalPt.y, 0);
-    transPos.y = GraphicsManager::getInstance()->getWindowHeight() - transPos.y;
-    Mat4 matRot, matTrans, matScale, matC, matCI;
-    matTrans = Easy2D::translate(transPos);
-    matRot = Easy2D::toMat4(Quat(Vec3(0, 0, mLocalRotation)));
-    matScale = Easy2D::scale(Vec3(mLocalScale.x, mLocalScale.y, 1.0f));
-    Vec3 centerPos(mAnchorPt.x * mDimensions.x, mAnchorPt.y * mDimensions.y, 0);
-    matC = Easy2D::translate(-centerPos);
-
-    world = matTrans * matRot * matScale * matC;
+    Easy2D::getTranslation(mWorld, mWorldPt);
 
     if (mMirroredX || mMirroredY)
     {
-        world *= Easy2D::translate(mDimensions.x / 2.0f, mDimensions.y / 2.0f, 0);
+        mWorld *= Easy2D::translate(mDimensions.x / 2.0f, mDimensions.y / 2.0f, 0);
         if (mMirroredX)
         {
             if (mMirroredY)
             {
-                world *= Easy2D::scale(Vec3(-1, -1, 1));
+                mWorld *= Easy2D::scale(Vec3(-1, -1, 1));
             }
             else
             {
-                world *= Easy2D::scale(Vec3(-1, 1, 1));
+                mWorld *= Easy2D::scale(Vec3(-1, 1, 1));
             }
         }
         else
         {
-            world *= Easy2D::scale(Vec3(1, -1, 1));
+            mWorld *= Easy2D::scale(Vec3(1, -1, 1));
         }
-        world *= Easy2D::translate(mDimensions.x / -2.0f, mDimensions.y / -2.0f, 0);
+        mWorld *= Easy2D::translate(mDimensions.x / -2.0f, mDimensions.y / -2.0f, 0);
     }
+}
+
+void TransformComponent::singleUpdate(Mat4& world)
+{
+
+
+
 }
 
 void TransformComponent::update(const uint32& escapeMs)

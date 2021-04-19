@@ -48,7 +48,7 @@ void CameraComponent::update(const uint32& escapeMs)
     Vec3 lookAtVec, upVec;
     Mat4 rotTransform;
 
-    float32 rotDegrees = getTransform()->getWorldRotation();
+    float32 rotDegrees = getTransform()->getRotation();
     rotDegrees = radiansToDegrees(rotDegrees);
     Quat rotation(Vec3(0, 0, rotDegrees));
 

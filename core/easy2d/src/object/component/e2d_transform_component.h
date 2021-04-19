@@ -52,10 +52,8 @@ namespace Easy2D
 
         const Vec2& getWorldPosition();
         const Vec2& getLocalPosition();
-        float32 getWorldRotation();
-        float32 getLocalRotation() const;
-        const Vec2& getWorldScale();
-        const Vec2& getLocalScale();
+        float32 getRotation() const;
+        const Vec2& getScale();
 
         void setAnchor(const Vec2& anchor);
         void setAnchor(float32 x, float32 y);
@@ -76,9 +74,9 @@ namespace Easy2D
 
         Mat4 mWorld = {};
         uchar mChanged = 0;
+        float32 mRotation = 0;
         bool mMirroredX = false, mMirroredY = false;
-        float32 mWorldRotation = 0, mLocalRotation = 0;
-        Vec2 mWorldPt {0, 0}, mLocalPt { 0, 0 }, mWorldScale{ 1,1 }, mLocalScale{ 1,1 }, mAnchorPt{ 0, 0 };
+        Vec2 mWorldPt {0, 0}, mLocalPt { 0, 0 }, mScale{ 1,1 }, mAnchorPt{ 0, 0 };
 
     public:
         inline static String GUID = "transform";

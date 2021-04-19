@@ -83,6 +83,7 @@ void E2dEngine::initialize(SPtr<android_app> app)
     txt2->setHorizontalAlignment(HorizontalAlignment::Center);
     txt2->setVerticalAlignment(VerticalAlignment::Center);
     txt2->setPosition(0, -60);
+    txt2->setMirrorX(true);
 }
 
 void E2dEngine::update()
