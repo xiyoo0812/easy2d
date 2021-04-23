@@ -20,8 +20,8 @@ namespace Easy2D
         virtual void setPositionX(float32 x);
         virtual void setPositionY(float32 y);
 
-        virtual void setHorizontalAlignment(HorizontalAlignment alignment, bool redefineCenter = true);
-        virtual void setVerticalAlignment(VerticalAlignment alignment, bool redefineCenter = true);
+        virtual void setHorizontalAlignment(HorizontalAlign alignment, bool redefineCenter = true);
+        virtual void setVerticalAlignment(VerticalAlign alignment, bool redefineCenter = true);
         void setAlignmentCentered(bool redefineCenter = true);
 
         void reposition();
@@ -35,8 +35,8 @@ namespace Easy2D
         void repositionChildren();
 
         bool mbRootWidget = false;
-        VerticalAlignment mVerticalAlignment;
-        HorizontalAlignment mHorizontalAlignment;
+        VerticalAlign mVerticalAlignment;
+        HorizontalAlign mHorizontalAlignment;
     };
 }
 

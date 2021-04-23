@@ -45,7 +45,7 @@ SPtr<TransformComponent> Component::getTransform() const
 
 bool Component::checkCulling(float32 left, float32 right, float32 top, float32 bottom) const
 {
-    return false;
+    return true;
 }
 
 void Component::setEnabled(bool bEnabled)
@@ -76,19 +76,4 @@ SPtr<Entity> Component::getMaster() const
 void Component::setMaster(SPtr<Entity> pEntity)
 {
     mMaster = pEntity;
-}
-
-const Vec2& Component::getDimensions() const
-{
-    return mDimensions;
-}
-
-float32 Component::getWidth() const
-{
-    return mDimensions.x;
-}
-
-float32 Component::getHeight() const
-{
-    return mDimensions.y;
 }

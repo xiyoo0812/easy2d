@@ -2,38 +2,37 @@
 #define TEXT_COMPONENT_H
 
 #include "base/e2d_color.h"
-#include "object/e2d_component.h"
+#include "object/e2d_entity.h"
 #include "graphics/e2d_font_mgr.h"
 #include "graphics/e2d_render_object.h"
 
 namespace Easy2D
 {
-    class TextComponent : public Component
+    class TextComponent : public Entity
     {
     public:
-        TextComponent();
+        TextComponent(const String& name);
 
         virtual ~TextComponent();
-
-        virtual void draw();
 
         virtual void initialize();
 
         virtual void update(const uint32& escapeMs);
 
-        virtual bool checkCulling(float32 left, float32 right, float32 top, float32 bottom) const;
-
         void setText(const Wtring& text);
         const Wtring& getText() const;
+        const Wtring& getShowText() const;
 
         void setColor(const Color& color);
         const Color& getColor() const;
 
         void setShadowColor(const Color& color, uint16 shodowSize = 1);
         const Color& getShadowColor() const;
+        uint16 getShadowSize() const;
 
         void setOutlineColor(const Color& color, uint16 outlineSize = 1);
         const Color& getOutlineColor() const;
+        uint16 getOutlineSize() const;
 
         void setBold(bool bold);
         bool isBold() const;
@@ -47,14 +46,19 @@ namespace Easy2D
         void setWrapWidth(int32 width);
         int32 getWrapWidth() const;
 
-        void setVerticalSpacing(uint32 spacing);
+        void setSpacing(uint32 spacing);
+        uint32 getSpacing() const;
 
-        void setHUDOptionEnabled(bool enabled);
-        bool isHUDOptionEnabled() const;
+        void setHUDEnabled(bool enabled);
+        bool isHUDEnabled() const;
 
-        void alignTextLeft();
-        void alignTextCenter();
-        void alignTextRight();
+        void setContentFollow(bool follow);
+        bool isContentFollow() const;
+
+        void setVerticalAlign(VerticalAlign align);
+        void setHorizontalAlign(HorizontalAlign align);
+        VerticalAlign getVerticalAlign() const;
+        HorizontalAlign getHorizontalAlign() const;
 
     protected:
         void calculateTextHeight();
@@ -65,24 +69,40 @@ namespace Easy2D
         void cleanUpText(const Wtring& str);
         int32 getLongestLine(const Wtring& str);
 
-        virtual void fillTextInfo();
-
     private:
         Wtring checkWrapping(const Wtring& stringIn, int32 wrapWidth);
         void splitString(PointerArray<Wtring, uint32>& words, Wtring str, char delimiter);
 
-        int32 mWrapWidth = NO_WRAPPING;
-        uint32 mStringLength = 0;
-        Wtring mOrigText = L"", mEditText = L"";
+        bool mbHud = false;
+        bool mbBold = false;
+        bool mbDirty = false;
+        bool mbItalic = false;
+        bool mbContentFollow = false;
+
+        uint16 mSpacing = 0;
+        uint16 mShadowSize = 0;
+        uint16 mOutlineSize = 0;
 
         SPtr<Font> mFont = nullptr;
-        SPtr<RenderText> mTextInfo = nullptr;
-        HorizontalAlignment mTextAlignment = HorizontalAlignment::Center;
+        Color mColor = Color::White;
+        Color mShadowColor = Color::Black;
+        Color mOutlineColor = Color::Black;
+
+        uint32 mStringLength = 0;
+        int32 mWrapWidth = NO_WRAPPING;
+        Wtring mOrigText = L"", mShowText = L"";
+
+        Vector<uint16> mVerticalOffset = {};
+        Vector<uint16> mHorizontalOffset = {};
+        VerticalAlign mVerticalAlign = VerticalAlign::Center;
+        HorizontalAlign mHorizontalAlign = HorizontalAlign::Center;
 
     public:
-        inline static String GUID = "text";
+        inline static const uint32 NO_WRAPPING = 0;
+        inline static const Wtring TAB = L"    ";
+        inline static const Wtring ENTER = L"\n";
+        inline static const Wtring EMPTY_STRING = L"";
     };
-    
 }
 
 #endif

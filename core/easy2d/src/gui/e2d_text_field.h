@@ -7,7 +7,7 @@
 
 namespace Easy2D
 {
-    class TextComponent;
+    class RenderText;
     class UITextField : public UIWidget
     {
     public:
@@ -17,8 +17,8 @@ namespace Easy2D
 
         virtual void initialize();
 
-        virtual void setHorizontalAlignment(HorizontalAlignment alignment, bool redefineCenter = true);
-        virtual void setVerticalAlignment(VerticalAlignment alignment, bool redefineCenter = true);
+        virtual void setHorizontalAlignment(HorizontalAlign alignment, bool redefineCenter = true);
+        virtual void setVerticalAlignment(VerticalAlign alignment, bool redefineCenter = true);
 
         void setText(const Wtring& text);
         const Wtring& getText() const;
@@ -47,7 +47,7 @@ namespace Easy2D
         float32 getHeight() const;
 
     protected:
-        SPtr<TextComponent> mTextComponent;
+        SPtr<RenderText> mTextComponent;
     };
 }
 

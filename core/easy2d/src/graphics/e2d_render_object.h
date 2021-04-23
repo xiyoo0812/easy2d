@@ -22,11 +22,12 @@ namespace Easy2D
         SPtr<TransformComponent> mTransform = nullptr;
     };
 
-    class RenderSprite : public RenderObject
+    class RenderTexture : public RenderObject
     {
     public:
-        Vec2 mVertices = {};
-        Vec4 mUvCoords = {};
+        Vec2 mVertices { 1, 1 };
+        Vec4 mUvCoords { 0, 0, 1, 1 };
+        Vec4 mScale9 { 0, 0, 1, 1 };
         uint32 mTextureID = 0;
     };
 

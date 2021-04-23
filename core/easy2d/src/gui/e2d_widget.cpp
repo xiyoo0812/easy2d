@@ -21,13 +21,13 @@ void UIWidget::initialize()
 }
 
 
-void UIWidget::setHorizontalAlignment(HorizontalAlignment alignment, bool redefineCenter)
+void UIWidget::setHorizontalAlignment(HorizontalAlign alignment, bool redefineCenter)
 {
     mHorizontalAlignment = alignment;
     setPositionX(0);
 }
 
-void UIWidget::setVerticalAlignment(VerticalAlignment alignment, bool redefineCenter)
+void UIWidget::setVerticalAlignment(VerticalAlign alignment, bool redefineCenter)
 {
     mVerticalAlignment = alignment;
     setPositionY(0);
@@ -35,8 +35,8 @@ void UIWidget::setVerticalAlignment(VerticalAlignment alignment, bool redefineCe
 
 void UIWidget::setAlignmentCentered(bool redefineCenter)
 {
-    setHorizontalAlignment(HorizontalAlignment::Center, redefineCenter);
-    setVerticalAlignment(VerticalAlignment::Center, redefineCenter);
+    setHorizontalAlignment(HorizontalAlign::Center, redefineCenter);
+    setVerticalAlignment(VerticalAlign::Center, redefineCenter);
 }
 
 void UIWidget::reposition()
@@ -97,10 +97,10 @@ float32 UIWidget::translateUIX(float32 x)
     Vec2 dimensions = getDockDimensions();
     switch (mHorizontalAlignment)
     {
-    case HorizontalAlignment::Center:
+    case HorizontalAlign::Center:
         x += dimensions.x / 2;
         break;
-    case HorizontalAlignment::Right:
+    case HorizontalAlign::Right:
         x += dimensions.x;
         break;
     }
@@ -112,10 +112,10 @@ float32 UIWidget::translateUIY(float32 y)
     Vec2 dimensions = getDockDimensions();
     switch (mVerticalAlignment)
     {
-    case VerticalAlignment::Center:
+    case VerticalAlign::Center:
         y += dimensions.y / 2;
         break;
-    case VerticalAlignment::Top:
+    case VerticalAlign::Top:
         y += dimensions.y;
         break;
     }

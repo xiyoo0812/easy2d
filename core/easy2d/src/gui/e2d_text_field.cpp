@@ -8,7 +8,7 @@ using namespace Easy2D;
 UITextField::UITextField(const String& name)
     : UIWidget(name)
 {
-    mTextComponent = std::make_shared<TextComponent>();
+    mTextComponent = std::make_shared<RenderText>();
     addComponent(mTextComponent);
 }
 
@@ -19,24 +19,24 @@ UITextField::~UITextField(void)
 void UITextField::initialize()
 {
     Entity::initialize();
-    mTextComponent->setHUDOptionEnabled(true);
+    mTextComponent->setHUDEnabled(true);
 }
 
-void UITextField::setHorizontalAlignment(HorizontalAlignment alignment, bool redefineCenter)
+void UITextField::setHorizontalAlignment(HorizontalAlign alignment, bool redefineCenter)
 {
     if (redefineCenter)
     {
         switch (alignment)
         {
-        case HorizontalAlignment::Left:
+        case HorizontalAlign::Left:
             getTransform()->setAnchorX(0);
             mTextComponent->alignTextLeft();
             break;
-        case HorizontalAlignment::Center:
+        case HorizontalAlign::Center:
             getTransform()->setAnchorX(0.5);
             mTextComponent->alignTextCenter();
             break;
-        case HorizontalAlignment::Right:
+        case HorizontalAlign::Right:
             getTransform()->setAnchorX(1);
             mTextComponent->alignTextRight();
             break;
@@ -45,19 +45,19 @@ void UITextField::setHorizontalAlignment(HorizontalAlignment alignment, bool red
     UIWidget::setHorizontalAlignment(alignment, redefineCenter);
 }
 
-void UITextField::setVerticalAlignment(VerticalAlignment alignment, bool redefineCenter)
+void UITextField::setVerticalAlignment(VerticalAlign alignment, bool redefineCenter)
 {
     if (redefineCenter)
     {
         switch (alignment)
         {
-        case VerticalAlignment::Bottom:
+        case VerticalAlign::Bottom:
             getTransform()->setAnchorY(0);
             break;
-        case VerticalAlignment::Center:
+        case VerticalAlign::Center:
             getTransform()->setAnchorY(0.5);
             break;
-        case VerticalAlignment::Top:
+        case VerticalAlign::Top:
             getTransform()->setAnchorY(1);
             break;
         }

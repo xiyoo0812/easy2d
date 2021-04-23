@@ -191,22 +191,27 @@ void TransformComponent::setDimensionsY(float32 y)
     mDimensions.y = y;
 }
 
+const Vec2& TransformComponent::getDimensions() const
+{
+    return mDimensions;
+}
+
+float32 TransformComponent::getWidth() const
+{
+    return mDimensions.x;
+}
+
+float32 TransformComponent::getHeight() const
+{
+    return mDimensions.y;
+}
+
 const Mat4& TransformComponent::getWorldMatrix() const
 {
     return mWorld;
 }
 
-void TransformComponent::checkForUpdate(bool force)
-{
-    if (mChanged == TransformType::NONE && !force)
-    {
-        return;
-    }
-    commonUpdate();
-    mChanged = TransformType::NONE;
-}
-
-void TransformComponent::commonUpdate()
+void TransformComponent::updateTransform()
 {
     for (auto child : getMaster()->getChildren())
     {
@@ -250,21 +255,14 @@ void TransformComponent::commonUpdate()
     }
 }
 
-void TransformComponent::singleUpdate(Mat4& world)
-{
-
-
-
-}
-
 void TransformComponent::update(const uint32& escapeMs)
 {
-    checkForUpdate();
-}
-
-void TransformComponent::draw()
-{
-
+    if (mChanged == TransformType::NONE)
+    {
+        return;
+    }
+    updateTransform();
+    mChanged = TransformType::NONE;
 }
 
 void TransformComponent::setChanged(uchar changed)

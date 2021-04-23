@@ -51,9 +51,9 @@ void E2dEngine::initialize(SPtr<android_app> app)
     auto image = std::make_shared<UIImage>("image");
     scene->addEntity(image);
     image->setTexture(tex);
-    image->setHorizontalAlignment(HorizontalAlignment::Center);
-    image->setVerticalAlignment(VerticalAlignment::Center);
-    image->setPosition(400, 300);
+    image->setHorizontalAlignment(HorizontalAlign::Center);
+    image->setVerticalAlignment(VerticalAlign::Center);
+    image->setPosition(291, 214);
     image->setZorder(1);
 
     auto font = FontManager::getInstance()->loadFont("felt-12", "fzltxh_gbk.ttf", 48);
@@ -67,8 +67,8 @@ void E2dEngine::initialize(SPtr<android_app> app)
     txt->setBold(true);
     txt->setRootWidget();
     txt->setZorder(2);
-    txt->setHorizontalAlignment(HorizontalAlignment::Center);
-    txt->setVerticalAlignment(VerticalAlignment::Center);
+    txt->setHorizontalAlignment(HorizontalAlign::Center);
+    txt->setVerticalAlignment(VerticalAlign::Center);
 
     auto txt2 = std::make_shared<UITextField>("text2");
     scene->addEntity(txt2);
@@ -80,8 +80,8 @@ void E2dEngine::initialize(SPtr<android_app> app)
     txt2->setRootWidget();
     txt2->setZorder(2);
     txt2->setText(L"我是国人daAFKsbB123");
-    txt2->setHorizontalAlignment(HorizontalAlignment::Center);
-    txt2->setVerticalAlignment(VerticalAlignment::Center);
+    txt2->setHorizontalAlignment(HorizontalAlign::Center);
+    txt2->setVerticalAlignment(VerticalAlign::Center);
     txt2->setPosition(0, -60);
     txt2->setMirrorX(true);
 }

@@ -46,39 +46,31 @@ const RenderSortingMode RenderBatch::getSortingMode()
     return mSortingMode;
 }
 
-void RenderBatch::addRenderQueue(SPtr<RenderSprite> object)
+void RenderBatch::addRenderQueue(SPtr<RenderTexture> texture)
 {
-    auto sprite = std::dynamic_pointer_cast<RenderSprite>(object);
-    if (sprite)
-    {
-        createSpriteQuad(sprite);
-    }
+    createSpriteQuad(texture);
 }
 
-void RenderBatch::addRenderQueue(SPtr<RenderText> object)
+void RenderBatch::addRenderQueue(SPtr<RenderText> text)
 {
-    auto text = std::dynamic_pointer_cast<RenderText>(object);
-    if (text)
+    if (text->mShadowSize > 0)
     {
-        if (text->mShadowSize > 0)
+        for (int16 shadow = text->mShadowSize + text->mOutlineSize; shadow > text->mOutlineSize; shadow--)
         {
-            for (int16 shadow = text->mShadowSize + text->mOutlineSize; shadow > text->mOutlineSize; shadow--)
-            {
-                createTextQuad(text, Vec2(shadow, shadow), text->mShadowColor);
-            }
+            createTextQuad(text, Vec2(shadow, shadow), text->mShadowColor);
         }
-        if (text->mOutlineSize > 0)
-        {
-            for (int16 outline = text->mOutlineSize; outline > 0; outline--)
-            {
-                createTextQuad(text, Vec2(-outline, -outline), text->mOutlineColor);
-                createTextQuad(text, Vec2(-outline, outline), text->mOutlineColor);
-                createTextQuad(text, Vec2(outline, -outline), text->mOutlineColor);
-                createTextQuad(text, Vec2(outline, outline), text->mOutlineColor);
-            }
-        }
-        createTextQuad(text, Vec2(0, 0), text->mColor);
     }
+    if (text->mOutlineSize > 0)
+    {
+        for (int16 outline = text->mOutlineSize; outline > 0; outline--)
+        {
+            createTextQuad(text, Vec2(-outline, -outline), text->mOutlineColor);
+            createTextQuad(text, Vec2(-outline, outline), text->mOutlineColor);
+            createTextQuad(text, Vec2(outline, -outline), text->mOutlineColor);
+            createTextQuad(text, Vec2(outline, outline), text->mOutlineColor);
+        }
+    }
+    createTextQuad(text, Vec2(0, 0), text->mColor);
 }
 
 void RenderBatch::flush()
@@ -157,7 +149,7 @@ void RenderBatch::end()
     mTextureQueue.clear();
 }
 
-void RenderBatch::createSpriteQuad(SPtr<RenderSprite> sprite)
+void RenderBatch::createSpriteQuad(SPtr<RenderTexture> sprite)
 {
     //for every sprite that has to be drawn, push back all vertices 
     //(VERTEX_AMOUNT per sprite) into the vertexbuffer and all uvcoords 

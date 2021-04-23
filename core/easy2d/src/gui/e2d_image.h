@@ -15,8 +15,8 @@ namespace Easy2D
 
         virtual ~UIImage();
 
-        virtual void setHorizontalAlignment(HorizontalAlignment alignment, bool redefineCenter = true);
-        virtual void setVerticalAlignment(VerticalAlignment alignment, bool redefineCenter = true);
+        virtual void setHorizontalAlignment(HorizontalAlign alignment, bool redefineCenter = true);
+        virtual void setVerticalAlignment(VerticalAlign alignment, bool redefineCenter = true);
 
         void setCurrentSegement(uint32 segmentX, uint32 segmentY);
 

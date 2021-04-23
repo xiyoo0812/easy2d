@@ -21,9 +21,7 @@ namespace Easy2D
         virtual void reset();
         virtual void destroy();
         virtual void initialize();
-        virtual void draw();
         virtual void update(const uint32& escapeMs);
-        virtual void drawWithCulling(float32 left, float32 right, float32 top, float32 bottom);
 
         virtual void setPosition(const Vec2& pos);
         virtual void setPosition(float32 x, float32 y);
@@ -40,9 +38,12 @@ namespace Easy2D
         void setScaleX(float32 x);
         void setScaleY(float32 y);
 
+        float32 getWidth() const;
+        float32 getHeight() const;
         const Vec2& getDimensions() const;
         const Vec2& getWorldPosition() const;
         const Vec2& getLocalPosition() const;
+
         const String& getPhysics() const;
         void setPhysics(const String& physics);
         bool comparePhysics(const String& physics);
@@ -106,7 +107,7 @@ namespace Easy2D
         SPtr<T> getComponent(const String& name) const;
 
     protected:
-        virtual bool checkCulling(float32 left, float32 right, float32 top, float32 bottom);
+        virtual bool checkCulling(float32 left, float32 top, float32 right, float32 bottom);
 
         int32 mZorder = 0;
         bool mVisible = true;

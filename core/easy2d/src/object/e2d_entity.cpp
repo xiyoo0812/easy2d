@@ -147,6 +147,16 @@ const Vec2& Entity::getDimensions() const
     return mTransform->getDimensions();
 }
 
+float32 Entity::getWidth() const
+{
+    return mTransform->getWidth();
+}
+
+float32 Entity::getHeight() const
+{
+    return mTransform->getHeight();
+}
+
 void Entity::update(const uint32& escapeMs)
 {
     if (!mDisable)
@@ -159,57 +169,30 @@ void Entity::update(const uint32& escapeMs)
         {
             component->update(escapeMs);
         }
+        Vec2 dim = getDimensions();
         for (auto child : mChildrens)
         {
-            child->update(escapeMs);
-        }
-    }
-}
-
-
-bool Entity::checkCulling(float32 left, float32 right, float32 top, float32 bottom)
-{
-    for (auto component : mComponents)
-    {
-        if (component->checkCulling(left, right, top, bottom))
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
-void Entity::draw()
-{
-    if (mVisible)
-    {
-        for (auto component : mComponents)
-        {
-            component->draw();
-        }
-        for (auto child : mChildrens)
-        {
-            child->draw();
-        }
-    }
-}
-
-void Entity::drawWithCulling(float32 left, float32 right, float32 top, float32 bottom)
-{
-    if (mVisible)
-    {
-        if (checkCulling(left, right, top, bottom))
-        {
-            for (auto component : mComponents)
+            if (child->checkCulling(0, 0, dim.x, dim.y))
             {
-                component->draw();
+                child->update(escapeMs);
             }
         }
-        for (auto child : mChildrens)
-        {
-            child->drawWithCulling(left, right, top, bottom);
-        }
     }
+}
+
+bool Entity::checkCulling(float32 left, float32 top, float32 right, float32 bottom)
+{
+    Vec2 dim = getDimensions();
+    Vec2 pos = getLocalPosition();
+    if ((pos.x <= right && pos.x >= left) && (pos.y <= bottom && pos.y >= top))
+    {
+        return true;
+    }
+    if ((pos.x + dim.x <= right && pos.x + dim.x >= left) && (pos.y + dim.y <= bottom && pos.y + +dim.y >= top))
+    {
+        return true;
+    }
+    return false;
 }
 
 const String& Entity::getPhysics() const

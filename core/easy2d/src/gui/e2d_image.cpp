@@ -9,7 +9,7 @@ UIImage::UIImage(const String& name, uint32 horizontalSegements, uint32 vertical
     : UIWidget(name)
 {
     mSpriteComponent = std::make_shared<SpriteComponent>(horizontalSegements, verticalSegments);
-    mSpriteComponent->setHUDOptionEnabled(true);
+    mSpriteComponent->setHUDEnabled(true);
     addComponent(mSpriteComponent);
 }
 
@@ -18,19 +18,19 @@ UIImage::~UIImage(void)
 
 }
 
-void UIImage::setHorizontalAlignment(HorizontalAlignment alignment, bool redefineCenter)
+void UIImage::setHorizontalAlignment(HorizontalAlign alignment, bool redefineCenter)
 {
     if (redefineCenter)
     {
         switch (alignment)
         {
-        case HorizontalAlignment::Left:
+        case HorizontalAlign::Left:
             getTransform()->setAnchorX(0);
             break;
-        case HorizontalAlignment::Center:
+        case HorizontalAlign::Center:
             getTransform()->setAnchorX(0.5);
             break;
-        case HorizontalAlignment::Right:
+        case HorizontalAlign::Right:
             getTransform()->setAnchorX(1);
             break;
         }
@@ -38,19 +38,19 @@ void UIImage::setHorizontalAlignment(HorizontalAlignment alignment, bool redefin
     UIWidget::setHorizontalAlignment(alignment, redefineCenter);
 }
 
-void UIImage::setVerticalAlignment(VerticalAlignment alignment, bool redefineCenter)
+void UIImage::setVerticalAlignment(VerticalAlign alignment, bool redefineCenter)
 {
     if (redefineCenter)
     {
         switch (alignment)
         {
-        case VerticalAlignment::Bottom:
+        case VerticalAlign::Bottom:
             getTransform()->setAnchorY(0);
             break;
-        case VerticalAlignment::Center:
+        case VerticalAlign::Center:
             getTransform()->setAnchorY(0.5);
             break;
-        case VerticalAlignment::Top:
+        case VerticalAlign::Top:
             getTransform()->setAnchorY(1);
             break;
         }

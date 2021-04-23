@@ -24,7 +24,6 @@ namespace Easy2D
 
         virtual void initialize();
 
-        void draw();
         void update(const uint32& escapeMs);
         void setChanged(uchar changed);
 
@@ -64,19 +63,20 @@ namespace Easy2D
         void setDimensions(const Vec2& dimensions);
         void setDimensionsX(float32 x);
         void setDimensionsY(float32 y);
+        const Vec2& getDimensions() const;
+        float32 getWidth() const;
+        float32 getHeight() const;
 
         const Mat4& getWorldMatrix() const;
 
     private:
-        void checkForUpdate(const bool force = false);
-        void commonUpdate();
-        void singleUpdate(Mat4& world);
+        void updateTransform();
 
         Mat4 mWorld = {};
         uchar mChanged = 0;
         float32 mRotation = 0;
         bool mMirroredX = false, mMirroredY = false;
-        Vec2 mWorldPt {0, 0}, mLocalPt { 0, 0 }, mScale{ 1,1 }, mAnchorPt{ 0, 0 };
+        Vec2 mWorldPt{ 0, 0 }, mLocalPt{ 0, 0 }, mScale{ 1,1 }, mAnchorPt{ 0, 0 }, mDimensions{ 0, 0 };
 
     public:
         inline static String GUID = "transform";

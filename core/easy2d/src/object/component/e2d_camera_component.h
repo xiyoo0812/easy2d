@@ -11,7 +11,6 @@ namespace Easy2D
         CameraComponent();
         virtual ~CameraComponent();
 
-        virtual void draw();
         virtual void update(const uint32 &escapeMs);
         virtual void initialize();
 

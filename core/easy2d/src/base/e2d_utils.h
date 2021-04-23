@@ -3,18 +3,14 @@
 
 namespace Easy2D
 {
-    static const int32 NO_WRAPPING = -1;
-    static const Wtring TAB = L"    ";
-    static const Wtring EMPTY_STRING = L"";
-
-    enum class HorizontalAlignment : byte
+    enum class HorizontalAlign : byte
 	{
 		Left = 0,
 		Center,
 		Right
 	};
 
-	enum class VerticalAlignment : byte
+	enum class VerticalAlign : byte
 	{
 		Bottom = 0,
 		Center,

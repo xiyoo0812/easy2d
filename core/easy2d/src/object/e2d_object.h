@@ -22,6 +22,7 @@ namespace Easy2D
         bool compareGUID(const uint64 guid) const;
 
         bool isInitialized() const;
+        virtual void initialize() = 0;
         virtual void destroy() = 0;
 
     protected:

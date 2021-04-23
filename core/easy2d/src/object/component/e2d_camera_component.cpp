@@ -67,11 +67,6 @@ void CameraComponent::update(const uint32& escapeMs)
     mViewInverse = transpose(mView);
 }
 
-void CameraComponent::draw()
-{
-
-}
-
 void CameraComponent::setFieldOfView(float32 fov)
 {
     mFOV = fov;

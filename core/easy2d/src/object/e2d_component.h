@@ -20,13 +20,10 @@ namespace Easy2D
 
         virtual void initialize() = 0;
 
-        virtual void draw() = 0;
         virtual void update(const uint32& escapeMs) = 0;
 
         SPtr<Scene> getScene() const;
         SPtr<TransformComponent> getTransform() const;
-
-        virtual bool checkCulling(float32 left, float32 right, float32 top, float32 bottom) const;
 
         void setEnabled(bool bEnabled);
         bool isEnabled() const;
@@ -37,12 +34,7 @@ namespace Easy2D
         SPtr<Entity> getMaster() const;
         void setMaster(SPtr<Entity> pMaster);
 
-        const Vec2& getDimensions() const;
-        float32 getWidth() const;
-        float32 getHeight() const;
-
     protected:
-        Vec2 mDimensions = {};
         WPtr<Entity> mMaster = {};
         bool mEnabled = true, mVisible = true;
     };

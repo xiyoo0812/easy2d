@@ -1,12 +1,19 @@
 #ifndef SPRITEVATCH_H
 #define SPRITEVATCH_H
 
-#include "base/e2d_color.h"
 #include "e2d_program.h"
-#include "e2d_render_object.h"
+#include "base/e2d_color.h"
+#include "object/e2d_render_text.h"
+#include "object/e2d_render_texture.h"
 
 namespace Easy2D
 {
+    enum RenderSortingMode
+    {
+        BackFront = 0,
+        FrontBack,
+    };
+
     class RenderBatch final : public Singleton<RenderBatch>
     {
     public:
@@ -14,8 +21,8 @@ namespace Easy2D
 
         void initialize();
         void flush();
-        void addRenderQueue(SPtr<RenderSprite> object);
-        void addRenderQueue(SPtr<RenderText> object);
+        void addRenderQueue(SPtr<RenderTexture> texture);
+        void addRenderQueue(SPtr<RenderText> text);
         void setSortingMode(RenderSortingMode mode);
         const RenderSortingMode getSortingMode();
 
@@ -26,7 +33,7 @@ namespace Easy2D
         void begin();
         void end();
         void draw();
-        void createSpriteQuad(SPtr<RenderSprite> sprite);
+        void createSpriteQuad(SPtr<RenderTexture> sprite);
         void createTextQuad(SPtr<RenderText> text, Vec2 offset, Color color);
         void drawTexture(uint32 start, uint32 size, uint32 texture);
 
