@@ -43,14 +43,9 @@ SPtr<TransformComponent> Component::getTransform() const
     return nullptr;
 }
 
-bool Component::checkCulling(float32 left, float32 right, float32 top, float32 bottom) const
+void Component::setEnabled(bool enabled)
 {
-    return true;
-}
-
-void Component::setEnabled(bool bEnabled)
-{
-    mEnabled = bEnabled;
+    mEnabled = enabled;
 }
 
 bool Component::isEnabled() const
@@ -58,14 +53,24 @@ bool Component::isEnabled() const
     return mEnabled;
 }
 
-void Component::setVisible(bool bVisible)
+void Component::setVisible(bool visible)
 {
-    mVisible = bVisible;
+    mVisible = visible;
 }
 
 bool Component::isVisible() const
 {
     return mVisible;
+}
+
+void Component::setChanged(bool changed)
+{
+    mChanged = changed;
+}
+
+bool Component::isChanged() const
+{
+    return mChanged;
 }
 
 SPtr<Entity> Component::getMaster() const

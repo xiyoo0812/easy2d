@@ -2,7 +2,7 @@
 #include "e2d_scale_system.h"
 #include "e2d_graphics_mgr.h"
 #include "object/component/e2d_text_component.h"
-#include "object/component/e2d_sprite_component.h"
+#include "object/component/e2d_texture_component.h"
 #include "object/component/e2d_transform_component.h"
 
 /* Easy2D */
@@ -232,69 +232,65 @@ void RenderBatch::createTextQuad(SPtr<RenderText> text, Vec2 offset, Color color
     *  BL    BR
     */
     //Variables per textcomponent
-    int32 line_counter = 0;
-    int32 offsetY = -offset.y;
-    int32 offsetX = offset.x + text->mAlianOffset.at(line_counter);
-    int32 fontHeight(text->mFont->getMaxLetterHeight() + text->mFont->getMinLetterHeight());
+    size_t line_count = text->mTextList.size();
     const Mat4& worldMat = text->mTransform->getWorldMatrix();
-    for (auto it : text->mText)
+    for (size_t line = 0; line < line_count; ++line)
     {
-        auto fChar = text->mFont->getFontChar(it, text->mbBold, text->mbItalic);
-        Mat4 offsetMatrix = translate(Vec3(offsetX + fChar->letterDimensions.x, offsetY + fChar->letterDimensions.y + text->mTextHeight - fontHeight, 0));
-        offsetX += fChar->advence + text->mOutlineSize;
-        Mat4 transformMat = transpose(worldMat * offsetMatrix);
-        Vec4 TL = Vec4(0, fChar->vertexDimensions.y, 0, 1);
-        mul(TL, transformMat, TL);
-        Vec4 TR = Vec4(fChar->vertexDimensions.x, fChar->vertexDimensions.y, 0, 1);
-        mul(TR, transformMat, TR);
-        Vec4 BL = Vec4(0, 0, 0, 1);
-        mul(BL, transformMat, BL);
-        Vec4 BR = Vec4(fChar->vertexDimensions.x, 0, 0, 1);
-        mul(BR, transformMat, BR);
-        //0
-        mVertexBuffer.push_back(TL);
-        //1
-        mVertexBuffer.push_back(TR);
-        //2
-        mVertexBuffer.push_back(BL);
-        //1
-        mVertexBuffer.push_back(TR);
-        //3
-        mVertexBuffer.push_back(BR);
-        //2
-        mVertexBuffer.push_back(BL);
-        //Push back all uv's
-        //0
-        mUvCoordBuffer.push_back(fChar->uvCoordTL.x);
-        mUvCoordBuffer.push_back(fChar->uvCoordTL.y);
-        //1
-        mUvCoordBuffer.push_back(fChar->uvCoordBR.x);
-        mUvCoordBuffer.push_back(fChar->uvCoordTL.y);
-        //2
-        mUvCoordBuffer.push_back(fChar->uvCoordTL.x);
-        mUvCoordBuffer.push_back(fChar->uvCoordBR.y);
-        //1
-        mUvCoordBuffer.push_back(fChar->uvCoordBR.x);
-        mUvCoordBuffer.push_back(fChar->uvCoordTL.y);
-        //3
-        mUvCoordBuffer.push_back(fChar->uvCoordBR.x);
-        mUvCoordBuffer.push_back(fChar->uvCoordBR.y);
-        //2
-        mUvCoordBuffer.push_back(fChar->uvCoordTL.x);
-        mUvCoordBuffer.push_back(fChar->uvCoordBR.y);
-        //tex
-        mTextureQueue.push_back(fChar->textureID);
-        //bool & color buffer
-        for (uint32 i = 0; i < 6; ++i)
+        int32 offsetY = -offset.y + text->mVerticalOffset[line];
+        int32 offsetX = offset.x + text->mHorizontalOffset[line];
+        for (auto it : text->mTextList[line])
         {
-            mIsHUDBuffer.push_back(float32(text->mbHud));
-            mColorBuffer.push_back(color);
-        }
-        if (it == _T('\n'))
-        {
-            offsetY -= text->mFont->getMaxLetterHeight() + text->mSpacing;
-            ++line_counter;
-            offsetX = text->mAlianOffset.at(line_counter);
+            auto fChar = text->mFont->getFontChar(it, text->mbBold, text->mbItalic);
+            Mat4 offsetMatrix = translate(Vec3(offsetX + fChar->letterDimensions.x, offsetY + fChar->letterDimensions.y, 0));
+            offsetX += fChar->advence + text->mOutlineSize;
+            Mat4 transformMat = transpose(worldMat * offsetMatrix);
+            Vec4 TL = Vec4(0, fChar->vertexDimensions.y, 0, 1);
+            mul(TL, transformMat, TL);
+            Vec4 TR = Vec4(fChar->vertexDimensions.x, fChar->vertexDimensions.y, 0, 1);
+            mul(TR, transformMat, TR);
+            Vec4 BL = Vec4(0, 0, 0, 1);
+            mul(BL, transformMat, BL);
+            Vec4 BR = Vec4(fChar->vertexDimensions.x, 0, 0, 1);
+            mul(BR, transformMat, BR);
+            //0
+            mVertexBuffer.push_back(TL);
+            //1
+            mVertexBuffer.push_back(TR);
+            //2
+            mVertexBuffer.push_back(BL);
+            //1
+            mVertexBuffer.push_back(TR);
+            //3
+            mVertexBuffer.push_back(BR);
+            //2
+            mVertexBuffer.push_back(BL);
+            //Push back all uv's
+            //0
+            mUvCoordBuffer.push_back(fChar->uvCoordTL.x);
+            mUvCoordBuffer.push_back(fChar->uvCoordTL.y);
+            //1
+            mUvCoordBuffer.push_back(fChar->uvCoordBR.x);
+            mUvCoordBuffer.push_back(fChar->uvCoordTL.y);
+            //2
+            mUvCoordBuffer.push_back(fChar->uvCoordTL.x);
+            mUvCoordBuffer.push_back(fChar->uvCoordBR.y);
+            //1
+            mUvCoordBuffer.push_back(fChar->uvCoordBR.x);
+            mUvCoordBuffer.push_back(fChar->uvCoordTL.y);
+            //3
+            mUvCoordBuffer.push_back(fChar->uvCoordBR.x);
+            mUvCoordBuffer.push_back(fChar->uvCoordBR.y);
+            //2
+            mUvCoordBuffer.push_back(fChar->uvCoordTL.x);
+            mUvCoordBuffer.push_back(fChar->uvCoordBR.y);
+            //tex
+            mTextureQueue.push_back(fChar->textureID);
+            //bool & color buffer
+            for (uint32 i = 0; i < 6; ++i)
+            {
+                mIsHUDBuffer.push_back(float32(text->mbHud));
+                mColorBuffer.push_back(color);
+            }
         }
     }
 }

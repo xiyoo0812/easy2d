@@ -1,12 +1,13 @@
-#include "e2d_render_text.h"
+#include "e2d_text_component.h"
+#include "e2d_transform_component.h"
 #include "graphics/e2d_render_batch.h"
-#include "component/e2d_transform_component.h"
 
 /* Easy2D */
 using namespace Easy2D;
 
-TextComponent::TextComponent(const String& name) : Entity(name)
+TextComponent::TextComponent() : Component(TextComponent::GUID)
 {
+    mRenderText = std::make_shared<RenderText>();
 }
 
 TextComponent::~TextComponent()
@@ -18,253 +19,130 @@ void TextComponent::initialize()
 
 }
 
-void TextComponent::calculateTextDimensions()
+void TextComponent::checkWrapping()
 {
-    getLongestLine(mShowText);
-    calculateTextHeight();
-}
-
-void TextComponent::calculateWrappedTextDimensions(uint8 lines)
-{
-    mDimensions.y = (mFont->getMaxLetterHeight() * lines) + (mSpacing * (lines - 1));
-    getTransform()->setDimensionsY(mDimensions.y);
-}
-
-void TextComponent::calculateTextHeight()
-{
-    auto count = std::count(mShowText.begin(), mShowText.end(), ENTER);
-    ++count;
-    mDimensions.y = (mFont->getMaxLetterHeight() * count) + (mSpacing * (count - 1));
-    mTextInfo->mTextHeight = mDimensions.y;
-    getTransform()->setDimensionsY(mDimensions.y);
-}
-
-void TextComponent::cleanUpText(const Wtring& str)
-{
-    size_t length = str.length();
-    mShowText = EMPTY_STRING;
-    for (size_t i = 0; i < length; ++i)
+    Vector<Wtring> renderWords;
+    Vector<uint16> lineWidths = {};
+    Wtring wrapText = EMPTY_STRING;
+    uint16 lineWidth = 0, textWidth = 0;
+    Vec2 transDim = getTransform()->getDimensions();
+    for (auto it : mOrigText)
     {
-        if (str[i] == L'\t')
+        if (it == *(ENTER.c_str()))
         {
-            mShowText += TAB;
-        }
-        else
-        {
-            mShowText += str[i];
-        }
-    }
-    calculateHorizontalTextOffset();
-}
-
-void TextComponent::calculateHorizontalTextOffset()
-{
-    mAlianOffset.clear();
-    if (mTextAlignment == HorizontalAlign::Center)
-    {
-        uint32 counter(0);
-        uint32 length = getLongestLine(mShowText);
-        if (length == 0)
-        {
-            mTextInfo->mText = mShowText;
-        }
-        else
-        {
-            mTextInfo->mText = EMPTY_STRING;
-            Wtring substr(EMPTY_STRING);
-            for (size_t i = 0; i < mShowText.length(); ++i)
+            if (mbLineWrap)
             {
-                if (mShowText[i] == L'\n')
+                lineWidths.push_back(lineWidth);
+                renderWords.push_back(wrapText);
+                wrapText = EMPTY_STRING;
+                lineWidth = 0;
+            }
+            continue;
+        }
+        uint32 charWidth = mRenderText->mFont->getCharWidth(it, mRenderText->mbBold, mRenderText->mbItalic);
+        if (mbLineWrap)
+        {
+            if (lineWidth + charWidth > transDim.x - mFrameOffset * 2)
+            {
+                if (lineWidth > textWidth)
                 {
-                    mTextInfo->mText += substr + L'\n';
-
-                    uint32 diff = length - mFont->getStringLength(substr);
-                    if (diff > 0)
-                    {
-                        diff /= 2;
-                    }
-                    mTextInfo->mAlianOffset.push_back(diff);
-
-                    substr = EMPTY_STRING;
-                    counter = 0;
+                    textWidth = lineWidth;
                 }
-                else
-                {
-                    substr += mShowText[i];
-                    ++counter;
-                }
+                lineWidths.push_back(lineWidth);
+                renderWords.push_back(wrapText);
+                wrapText = EMPTY_STRING;
+                lineWidth = 0;
             }
-            mTextInfo->mText += substr;
-
-            uint32 diff = length - mFont->getStringLength(substr);
-            if (diff > 0)
-            {
-                diff /= 2;
-            }
-            mTextInfo->mAlianOffset.push_back(diff);
         }
+        lineWidth += charWidth;
+        wrapText.append(&it);
     }
-    else if (mTextAlignment == HorizontalAlign::Right)
+    if (!wrapText.empty())
     {
-        uint32 counter(0);
-        uint32 length = getLongestLine(mShowText);
-        if (length == 0)
-        {
-            mTextInfo->mText = mShowText;
-        }
-        else
-        {
-            mTextInfo->mText = EMPTY_STRING;
-            Wtring substr(EMPTY_STRING);
-            for (size_t i = 0; i < mShowText.length(); ++i)
-            {
-                if (mShowText[i] == L'\n')
-                {
-                    mTextInfo->mText += substr + L'\n';
-
-                    uint32 diff = length - mFont->getStringLength(substr);
-                    mTextInfo->mAlianOffset.push_back(diff);
-
-                    substr = EMPTY_STRING;
-                    counter = 0;
-                }
-                else
-                {
-                    substr += mShowText[i];
-                    ++counter;
-                }
-            }
-
-            mTextInfo->mText += substr;
-
-            uint32 diff = length - mFont->getStringLength(substr);
-            mTextInfo->mAlianOffset.push_back(diff);
-        }
+        lineWidths.push_back(lineWidth);
+        renderWords.push_back(wrapText);
     }
-    else
+    mRenderText->mTextList = renderWords;
+    uint32 lineCount = renderWords.size();
+    uint32 fontHeight = mRenderText->mFont->getMaxLetterHeight() + mRenderText->mFont->getMinLetterHeight();
+    uint32 textHeight = fontHeight * lineCount + mRenderText->mSpacing * (lineCount - 1);
+    calculateTextDimensions(textWidth, textHeight);
+    calculateTextOffset(lineWidths);
+}
+
+void TextComponent::calculateTextDimensions(uint32 textWidth, uint32 textHeight)
+{
+    if (mbContentFollow)
     {
-        getLongestLine(mShowText);
-        mTextInfo->mText = mShowText;
-        mTextInfo->mAlianOffset.push_back(0);
-        auto n = std::count(mShowText.begin(), mShowText.end(), _T('\n'));
-        for (; n > 0; --n)
-        {
-            mTextInfo->mAlianOffset.push_back(0);
-        }
+        getTransform()->setDimensions(textWidth + mFrameOffset * 2, textHeight + mFrameOffset * 2);
+        return;
+    }
+    if (textHeight > getTransform()->getHeight())
+    {
+        getTransform()->setDimensionsY(textHeight + mFrameOffset * 2);
     }
 }
 
-int32 TextComponent::getLongestLine(const Wtring& str)
+void TextComponent::calculateTextOffset(Vector<uint16>& lineWidths)
 {
-    int32 length(0);
-    Wtring substr(EMPTY_STRING);
-    for (size_t i = 0; i < str.length(); ++i)
+    mRenderText->mVerticalOffset.clear();
+    mRenderText->mHorizontalOffset.clear();
+    uint32 lineCount = lineWidths.size();
+    Vec2 transDim = getTransform()->getDimensions();
+    uint32 fontHeight = mRenderText->mFont->getMaxLetterHeight() + mRenderText->mFont->getMinLetterHeight();
+    uint32 textHeight = fontHeight * lineCount + mRenderText->mSpacing * (lineCount - 1);
+    for (size_t line = 0; line < lineCount; ++line)
     {
-        if (str[i] == _T('\n'))
+        uint32 length = lineWidths[line];
+        if (mHorizontalAlign == HorizontalAlign::Center)
         {
-            int32 strLength = mFont->getStringLength(substr);
-            if (strLength > length)
-            {
-                length = strLength;
-                mDimensions.x = strLength;
-                getTransform()->setDimensionsX(mDimensions.x);
-            }
-            substr = EMPTY_STRING;
+            uint32 diff = transDim.x - mFrameOffset * 2 - length;
+            mRenderText->mHorizontalOffset.push_back(mFrameOffset + diff / 2);
+        }
+        else if (mHorizontalAlign == HorizontalAlign::Right)
+        {
+            uint32 diff = transDim.x - mFrameOffset * 2 - length;
+            mRenderText->mHorizontalOffset.push_back(mFrameOffset + diff);
         }
         else
         {
-            substr += str[i];
+            mRenderText->mHorizontalOffset.push_back(mFrameOffset);
         }
-    }
-
-    int32 strLength = mFont->getStringLength(substr);
-    if (strLength > length)
-    {
-        length = strLength;
-        mDimensions.x = strLength;
-        getTransform()->setDimensionsX(mDimensions.x);
-    }
-    return length;
-}
-
-
-Wtring TextComponent::checkWrapping(const Wtring& stringIn, int32 wrapWidth)
-{
-    Wtring line(EMPTY_STRING), returnString(EMPTY_STRING);
-
-    PointerArray<Wtring, uint32> words;
-    splitString(words, stringIn, _T(' '));
-
-    mDimensions.y = mFont->getMaxLetterHeight();
-    getTransform()->setDimensionsY(mDimensions.y);
-
-    uint8 lines(1);
-
-    for (uint32 i = 0; i < words.amount; ++i)
-    {
-        size_t n_count = words.elements[i].find(L'\n');
-        if (n_count != String::npos)
+        uint32 lineHeight = mFrameOffset + line * fontHeight + (line - 1) * mRenderText->mSpacing;
+        if (mVerticalAlign == VerticalAlign::Center)
         {
-            if (words.elements[i][0] == L'\n')
-            {
-                returnString += line + L'\n';
-                line = words.elements[i].substr(0, words.elements[i].size() - 1);
-            }
-            else
-            {
-                returnString += line + words.elements[i];
-                line = EMPTY_STRING;
-            }
-            ++lines;
+            uint32 diff = transDim.y - mFrameOffset * 2 - textHeight;
+            mRenderText->mVerticalOffset.push_back(lineHeight + diff / 2);
+        }
+        else if (mVerticalAlign == VerticalAlign::Bottom)
+        {
+            uint32 diff = transDim.y - mFrameOffset * 2 - textHeight;
+            mRenderText->mVerticalOffset.push_back(lineHeight + diff);
         }
         else
         {
-            int32 w = mFont->getStringLength(line + words.elements[i]);
-            if (w > mDimensions.x)
-            {
-                mDimensions.x = w;
-                getTransform()->setDimensionsX(mDimensions.x);
-            }
-            if (w > wrapWidth)
-            {
-                returnString += line + L"\n";
-                ++lines;
-                line = EMPTY_STRING;
-            }
-            line += words.elements[i] + L" ";
+            mRenderText->mVerticalOffset.push_back(lineHeight);
         }
     }
-
-    delete[] words.elements;
-    calculateWrappedTextDimensions(lines);
-    return returnString + line;
-}
-
-void TextComponent::splitString(PointerArray<Wtring, uint32>& words, Wtring str, char delimiter)
-{
-    words.amount = std::count(str.begin(), str.end(), delimiter) + 1;
-    words.elements = new Wtring[words.amount];
-    size_t n = 0, pos = 0;
-    for (; n < words.amount - 1; ++n)
-    {
-        pos = str.find(delimiter);
-        words.elements[n] = str.substr(0, pos);
-        str.erase(0, pos + 1);
-    }
-    words.elements[n] = str;
 }
 
 void TextComponent::update(const uint32& escapeMs)
 {
-    if (mFont && !mOrigText.empty())
+    if (mRenderText->mFont)
     {
-        RenderBatch::getInstance()->addRenderQueue(std::dynamic_pointer_cast<TextComponent>(shared_from_this()));
+        if (mChanged)
+        {
+            checkWrapping();
+            mChanged = false;
+        }
+        RenderBatch::getInstance()->addRenderQueue(mRenderText);
     }
 }
 
 void TextComponent::setText(const Wtring& text)
 {
     mOrigText = text;
+    mChanged = true;
 }
 
 const Wtring& TextComponent::getText() const
@@ -272,116 +150,117 @@ const Wtring& TextComponent::getText() const
     return mOrigText;
 }
 
-const Wtring& TextComponent::getShowText() const
-{
-    return mShowText;
-}
-
 void TextComponent::setColor(const Color& color)
 {
-    mColor = color;
+    mRenderText->mColor = color;
 }
 
 const Color& TextComponent::getColor() const
 {
-    return mColor;
+    return mRenderText->mColor;
 }
 
 void TextComponent::setShadowColor(const Color& color, uint16 shodowSize /* = 1 */)
 {
-    mShadowColor = color;
-    mShadowSize = shodowSize;
+    mRenderText->mShadowColor = color;
+    mRenderText->mShadowSize = shodowSize;
 }
 
 const Color& TextComponent::getShadowColor() const
 {
-    return mShadowColor;
+    return mRenderText->mShadowColor;
 }
 
 uint16 TextComponent::getShadowSize() const
 {
-    return mShadowSize;
+    return mRenderText->mShadowSize;
 }
 
 void TextComponent::setOutlineColor(const Color& color, uint16 outlineSize /* = 1 */)
 {
-    mOutlineColor = color;
-    mOutlineSize = outlineSize;
+    mRenderText->mOutlineColor = color;
+    mRenderText->mOutlineSize = outlineSize;
 }
 
 const Color& TextComponent::getOutlineColor() const
 {
-    return mOutlineColor;
+    return mRenderText->mOutlineColor;
 }
 
 uint16 TextComponent::getOutlineSize() const
 {
-    return mOutlineSize;
+    return mRenderText->mOutlineSize;
 }
 
 void TextComponent::setBold(bool bold)
 {
-    mbBold = bold;
+    mRenderText->mbBold = bold;
+    mChanged = true;
 }
 
 bool TextComponent::isBold() const
 {
-    return mbBold;
+    return mRenderText->mbBold;
 }
 
 void TextComponent::setItalic(bool italoc)
 {
-    mbItalic = italoc;
+    mRenderText->mbItalic = italoc;
+    mChanged = true;
 }
 
 bool TextComponent::isItalic() const
 {
-    return mbItalic;
+    return mRenderText->mbItalic;
 }
 
 void TextComponent::setFont(const SPtr<Font> font)
 {
-    mFont = font;
+    mRenderText->mFont = font;
+    mChanged = true;
 }
 
 const SPtr<Font> TextComponent::getFont() const
 {
-    return mFont;
+    return mRenderText->mFont;
 }
 
-void TextComponent::setWrapWidth(int32 width)
+void TextComponent::setLineWrap(bool lineWrap)
 {
-    mWrapWidth = width;
+    mbLineWrap = lineWrap;
+    mChanged = true;
 }
 
-int32 TextComponent::getWrapWidth() const
+bool TextComponent::isLineWrap() const
 {
-    return mWrapWidth;
+    return mbLineWrap;
 }
 
 void TextComponent::setSpacing(uint32 spacing)
 {
-    mSpacing = spacing;
+    mRenderText->mSpacing = spacing;
+    mChanged = true;
 }
 
 uint32 TextComponent::getSpacing() const
 {
-    return mSpacing;
+    return mRenderText->mSpacing;
 }
 
 void TextComponent::setHUDEnabled(bool enabled)
 {
-    mbHud = enabled;
+    mRenderText->mbHud = enabled;
 }
 
 bool TextComponent::isHUDEnabled() const
 {
-    return mbHud;
+    return mRenderText->mbHud;
 }
 
 void TextComponent::setContentFollow(bool follow)
 {
     mbContentFollow = follow;
+    mChanged = true;
 }
 
 bool TextComponent::isContentFollow() const
@@ -392,11 +271,13 @@ bool TextComponent::isContentFollow() const
 void TextComponent::setVerticalAlign(VerticalAlign align)
 {
     mVerticalAlign = align;
+    mChanged = true;
 }
 
 void TextComponent::setHorizontalAlign(HorizontalAlign align)
 {
     mHorizontalAlign = align;
+    mChanged = true;
 }
 
 VerticalAlign TextComponent::getVerticalAlign() const

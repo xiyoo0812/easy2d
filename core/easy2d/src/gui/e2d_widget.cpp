@@ -49,11 +49,6 @@ void UIWidget::update(const uint32& escapeMs)
     Entity::update(escapeMs);
 }
 
-void UIWidget::draw()
-{
-    Entity::draw();
-}
-
 void UIWidget::setRootWidget()
 {
     mbRootWidget = true;

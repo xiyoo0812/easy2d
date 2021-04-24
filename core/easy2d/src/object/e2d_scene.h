@@ -18,7 +18,6 @@ namespace Easy2D
         virtual void onActivate();
         virtual void onDeactivate();
         virtual void update(const uint32& escapeMs);
-        virtual void draw();
 
         virtual void onSaveState(void** pData, size_t* pSize);
         virtual void onConfigurationChanged();

@@ -10,22 +10,12 @@ namespace Easy2D
     class TransformComponent final : public Component
     {
     public:
-        enum TransformType : byte
-        {
-            NONE = 0,
-            TRANSLATION = 1,
-            ROTATION = 2,
-            SCALE = 4,
-            ALL = 7
-        };
-
         TransformComponent();
         ~TransformComponent();
 
         virtual void initialize();
 
         void update(const uint32& escapeMs);
-        void setChanged(uchar changed);
 
         void translate(const Vec2& translation);
         void translate(float32 x, float32 y);
@@ -73,7 +63,6 @@ namespace Easy2D
         void updateTransform();
 
         Mat4 mWorld = {};
-        uchar mChanged = 0;
         float32 mRotation = 0;
         bool mMirroredX = false, mMirroredY = false;
         Vec2 mWorldPt{ 0, 0 }, mLocalPt{ 0, 0 }, mScale{ 1,1 }, mAnchorPt{ 0, 0 }, mDimensions{ 0, 0 };

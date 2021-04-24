@@ -63,31 +63,6 @@ void Scene::update(const uint32& escapeMs)
     // m_pCollisionManager->Update(context);
 }
 
-void Scene::draw()
-{
-    if (!CULLING_IS_ENABLED)
-    {
-        for (auto entity : mEntitys)
-        {
-            entity->draw();
-        }
-    }
-    else
-    {
-        Vec2 camPos = mDefaultCamera->getTransform()->getWorldPosition();
-        int32 screenWidth = GraphicsManager::getInstance()->getWindowResolution().x;
-        int32 screenHeight = GraphicsManager::getInstance()->getWindowResolution().y;
-        float32 left = camPos.x - mCullingOffsetX;
-        float32 right = camPos.x + screenWidth + mCullingOffsetX;
-        float32 top = camPos.y + screenHeight + mCullingOffsetY;
-        float32 bottom = camPos.y - mCullingOffsetY;
-        for (auto entity : mEntitys)
-        {
-            entity->drawWithCulling(left, right, top, bottom);
-        }
-    }
-}
-
 void Scene::onSaveState(void** pData, size_t* pSize)
 {
 

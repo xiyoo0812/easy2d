@@ -85,7 +85,6 @@ namespace Easy2D
         bool isChildNameExist(const String& name) const;
         bool isActionNameExist(const String& name) const;
         bool isComponentNameExist(const String& name) const;
-        void Entity::recalculateDimensions();
 
         int32 getZorder() const;
         void setZorder(int32 order);

@@ -7,30 +7,23 @@
 
 namespace Easy2D
 {
-    class SpriteComponent;
+    class TextureComponent;
     class UIImage : public UIWidget
     {
     public:
-        UIImage(const String& name, uint32 horizontalSegements = 1, uint32 verticalSegments = 1);
+        UIImage(const String& name);
 
         virtual ~UIImage();
 
         virtual void setHorizontalAlignment(HorizontalAlign alignment, bool redefineCenter = true);
         virtual void setVerticalAlignment(VerticalAlign alignment, bool redefineCenter = true);
 
-        void setCurrentSegement(uint32 segmentX, uint32 segmentY);
-
         void setColor(const Color& color);
 
-        void setTexture(SPtr<Texture2D> mTexture, uint32 widthSegments = 1, uint32 heightSegments = 1);
-
-        virtual Vec2 getDimensions() const;
-
-        float32 getWidth() const;
-        float32 getHeight() const;
+        void setTexture(SPtr<Texture2D> mTexture);
 
     protected:
-        SPtr<SpriteComponent> mSpriteComponent;
+        SPtr<TextureComponent> mTextureComponent;
     };
 }
 

@@ -7,7 +7,7 @@
 
 namespace Easy2D
 {
-    class RenderText;
+    class TextComponent;
     class UITextField : public UIWidget
     {
     public:
@@ -41,13 +41,8 @@ namespace Easy2D
         void setFont(const SPtr<Font> font);
         const SPtr<Font> getFont() const;
 
-        virtual Vec2 getDimensions() const;
-
-        float32 getWidth() const;
-        float32 getHeight() const;
-
     protected:
-        SPtr<RenderText> mTextComponent;
+        SPtr<TextComponent> mTextComponent;
     };
 }
 

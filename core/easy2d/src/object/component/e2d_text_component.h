@@ -2,16 +2,16 @@
 #define TEXT_COMPONENT_H
 
 #include "base/e2d_color.h"
-#include "object/e2d_entity.h"
+#include "object/e2d_component.h"
 #include "graphics/e2d_font_mgr.h"
 #include "graphics/e2d_render_object.h"
 
 namespace Easy2D
 {
-    class TextComponent : public Entity
+    class TextComponent : public Component
     {
     public:
-        TextComponent(const String& name);
+        TextComponent();
 
         virtual ~TextComponent();
 
@@ -21,7 +21,6 @@ namespace Easy2D
 
         void setText(const Wtring& text);
         const Wtring& getText() const;
-        const Wtring& getShowText() const;
 
         void setColor(const Color& color);
         const Color& getColor() const;
@@ -43,8 +42,8 @@ namespace Easy2D
         void setFont(const SPtr<Font> font);
         const SPtr<Font> getFont() const;
 
-        void setWrapWidth(int32 width);
-        int32 getWrapWidth() const;
+        void setLineWrap(bool lineWrap);
+        bool isLineWrap() const;
 
         void setSpacing(uint32 spacing);
         uint32 getSpacing() const;
@@ -60,48 +59,25 @@ namespace Easy2D
         VerticalAlign getVerticalAlign() const;
         HorizontalAlign getHorizontalAlign() const;
 
-    protected:
-        void calculateTextHeight();
-        void calculateTextDimensions();
-        void calculateHorizontalTextOffset();
-        void calculateWrappedTextDimensions(uint8 lines);
-
-        void cleanUpText(const Wtring& str);
-        int32 getLongestLine(const Wtring& str);
-
     private:
-        Wtring checkWrapping(const Wtring& stringIn, int32 wrapWidth);
-        void splitString(PointerArray<Wtring, uint32>& words, Wtring str, char delimiter);
+        void checkWrapping();
+        void calculateTextDimensions(uint32 textWidth, uint32 textHeight);
+        void calculateTextOffset(Vector<uint16>& lineWidths);
 
-        bool mbHud = false;
-        bool mbBold = false;
-        bool mbDirty = false;
-        bool mbItalic = false;
+        bool mbLineWrap = false;
         bool mbContentFollow = false;
 
-        uint16 mSpacing = 0;
-        uint16 mShadowSize = 0;
-        uint16 mOutlineSize = 0;
-
-        SPtr<Font> mFont = nullptr;
-        Color mColor = Color::White;
-        Color mShadowColor = Color::Black;
-        Color mOutlineColor = Color::Black;
-
-        uint32 mStringLength = 0;
-        int32 mWrapWidth = NO_WRAPPING;
-        Wtring mOrigText = L"", mShowText = L"";
-
-        Vector<uint16> mVerticalOffset = {};
-        Vector<uint16> mHorizontalOffset = {};
+        uint32 mFrameOffset = 1;
+        Wtring mOrigText = EMPTY_STRING;
+        SPtr<RenderText> mRenderText = nullptr;
         VerticalAlign mVerticalAlign = VerticalAlign::Center;
         HorizontalAlign mHorizontalAlign = HorizontalAlign::Center;
 
     public:
-        inline static const uint32 NO_WRAPPING = 0;
         inline static const Wtring TAB = L"    ";
         inline static const Wtring ENTER = L"\n";
         inline static const Wtring EMPTY_STRING = L"";
+        inline static String GUID = "render_text";
     };
 }
 

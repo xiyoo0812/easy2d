@@ -2,9 +2,8 @@
 #define SPRITEVATCH_H
 
 #include "e2d_program.h"
+#include "e2d_render_object.h"
 #include "base/e2d_color.h"
-#include "object/e2d_render_text.h"
-#include "object/e2d_render_texture.h"
 
 namespace Easy2D
 {

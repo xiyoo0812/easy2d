@@ -8,12 +8,6 @@ namespace Easy2D
     class Font;
     class TransformComponent;
 
-    enum RenderSortingMode
-    {
-        BackFront = 0,
-        FrontBack,
-    };
-
     class RenderObject
     {
     public:
@@ -34,14 +28,14 @@ namespace Easy2D
     class RenderText : public RenderObject
     {
     public:
-        Wtring mText = L"";
         uint16 mSpacing = 0;
-        uint16 mTextHeight = 10;
         uint16 mShadowSize = 0;
         uint16 mOutlineSize = 0;
+        Vector<Wtring> mTextList = {};
+        Vector<uint16> mVerticalOffset = {};
+        Vector<uint16> mHorizontalOffset = {};
         Color mShadowColor = Color::Black;
         Color mOutlineColor = Color::Black;
-        Vector<uint16> mAlianOffset = {};
         SPtr<Font> mFont = nullptr;
         bool mbItalic = false;
         bool mbBold = false;

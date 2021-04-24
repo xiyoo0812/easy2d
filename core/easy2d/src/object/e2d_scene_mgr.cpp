@@ -130,7 +130,6 @@ void SceneManager::draw()
 {
     if (mActiveScene)
     {
-        mActiveScene->draw();
         RenderBatch::getInstance()->flush();
         // 		DebugDraw::getInstance()->flush();
     }

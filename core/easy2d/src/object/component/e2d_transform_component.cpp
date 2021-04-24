@@ -24,7 +24,7 @@ void TransformComponent::translate(const Vec2& translation)
 {
     mLocalPt.x = translation.x;
     mLocalPt.y = translation.y;
-    mChanged |= TransformType::TRANSLATION;
+    mChanged = true;
 }
 
 void TransformComponent::translate(float32 x, float32 y)
@@ -35,51 +35,51 @@ void TransformComponent::translate(float32 x, float32 y)
 void TransformComponent::translateX(float32 x)
 {
     mLocalPt.x = x;
-    mChanged |= TransformType::TRANSLATION;
+    mChanged = true;
 }
 
 void TransformComponent::translateY(float32 y)
 {
     mLocalPt.y = y;
-    mChanged |= TransformType::TRANSLATION;
+    mChanged = true;
 }
 
 void TransformComponent::move(const Vec2& translation)
 {
     mLocalPt.x += translation.x;
     mLocalPt.y += translation.y;
-    mChanged |= TransformType::TRANSLATION;
+    mChanged = true;
 }
 
 void TransformComponent::move(float32 x, float32 y)
 {
     mLocalPt.x += x;
     mLocalPt.y += y;
-    mChanged |= TransformType::TRANSLATION;
+    mChanged = true;
 }
 
 void TransformComponent::moveX(float32 x)
 {
     mLocalPt.x += x;
-    mChanged |= TransformType::TRANSLATION;
+    mChanged = true;
 }
 
 void TransformComponent::moveY(float32 y)
 {
     mLocalPt.y += y;
-    mChanged |= TransformType::TRANSLATION;
+    mChanged = true;
 }
 
 void TransformComponent::rotate(float32 rotation)
 {
     mRotation = rotation;
-    mChanged |= TransformType::ROTATION;
+    mChanged = true;
 }
 
 void TransformComponent::scale(const Vec2& scale)
 {
     mScale = scale;
-    mChanged |= TransformType::SCALE;
+    mChanged = true;
 }
 
 void TransformComponent::scale(float32 x, float32 y)
@@ -95,13 +95,13 @@ void TransformComponent::scale(float32 u)
 void TransformComponent::scaleX(float32 x)
 {
     mScale.x = x;
-    mChanged |= TransformType::SCALE;
+    mChanged = true;
 }
 
 void TransformComponent::scaleY(float32 y)
 {
     mScale.y = y;
-    mChanged |= TransformType::SCALE;
+    mChanged = true;
 }
 
 void TransformComponent::mirror(bool x, bool y)
@@ -157,7 +157,7 @@ void TransformComponent::setAnchorX(float32 x)
     if (x >= 0.0f && x <= 1.0f)
     {
         mAnchorPt.x = x;
-        mChanged |= TransformType::TRANSLATION;
+        mChanged = true;
     }
 }
 
@@ -166,7 +166,7 @@ void TransformComponent::setAnchorY(float32 y)
     if (y >= 0.0f && y <= 1.0f)
     {
         mAnchorPt.y = y;
-        mChanged |= TransformType::TRANSLATION;
+        mChanged = true;
     }
 }
 
@@ -257,16 +257,9 @@ void TransformComponent::updateTransform()
 
 void TransformComponent::update(const uint32& escapeMs)
 {
-    if (mChanged == TransformType::NONE)
+    if (mChanged)
     {
-        return;
+        updateTransform();
+        mChanged = false;
     }
-    updateTransform();
-    mChanged = TransformType::NONE;
 }
-
-void TransformComponent::setChanged(uchar changed)
-{
-    mChanged = changed;
-}
-

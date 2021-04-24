@@ -1,5 +1,5 @@
-#ifndef SPRITE_COMPONENT_H
-#define SPRITE_COMPONENT_H
+#ifndef TEXTURE_COMPONENT_H
+#define TEXTURE_COMPONENT_H
 
 #include "base/e2d_color.h"
 #include "object/e2d_component.h"
@@ -8,12 +8,12 @@
 
 namespace Easy2D
 {
-    class SpriteComponent : public Component
+    class TextureComponent : public Component
     {
     public:
-        SpriteComponent(const String& name);
+        TextureComponent();
 
-        virtual ~SpriteComponent();
+        virtual ~TextureComponent();
 
         virtual void initialize();
 
@@ -35,7 +35,10 @@ namespace Easy2D
 
     private:
         SPtr<Texture2D> mTexture = nullptr;
-        SPtr<RenderTexture> mSpriteInfo = nullptr;
+        SPtr<RenderTexture> mRenderTex = nullptr;
+
+    public:
+        inline static String GUID = "render_texture";
     };
 }
 

@@ -34,7 +34,8 @@ namespace Easy2D
 
         uint32 getMaxLetterHeight() const;
         uint32 getMinLetterHeight() const;
-        uint32 getStringLength(const Wtring& string);
+        uint32 getCharWidth(wchar_t ch, bool bBold = false, bool bItalic = false);
+        uint32 getTextWidth(const Wtring& string, bool bBold = false, bool bItalic = false);
 
     private:
         void unload();

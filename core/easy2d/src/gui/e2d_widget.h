@@ -11,7 +11,6 @@ namespace Easy2D
         UIWidget(const String& name);
         virtual ~UIWidget();
 
-        virtual void draw();
         virtual void initialize();
         virtual void update(const uint32& escapeMs);
 

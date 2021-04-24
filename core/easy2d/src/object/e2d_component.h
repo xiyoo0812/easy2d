@@ -25,18 +25,21 @@ namespace Easy2D
         SPtr<Scene> getScene() const;
         SPtr<TransformComponent> getTransform() const;
 
-        void setEnabled(bool bEnabled);
+        void setEnabled(bool enabled);
         bool isEnabled() const;
 
-        void setVisible(bool bVisible);
+        void setVisible(bool visible);
         bool isVisible() const;
+
+        void setChanged(bool changed);
+        bool isChanged() const;
 
         SPtr<Entity> getMaster() const;
         void setMaster(SPtr<Entity> pMaster);
 
     protected:
         WPtr<Entity> mMaster = {};
-        bool mEnabled = true, mVisible = true;
+        bool mEnabled = true, mVisible = true, mChanged = false;
     };
 }
 

@@ -1,77 +1,76 @@
-#include "e2d_sprite_component.h"
+#include "e2d_texture_component.h"
 #include "e2d_transform_component.h"
 #include "graphics/e2d_render_batch.h"
 
 /* Easy2D */
 using namespace Easy2D;
 
-SpriteComponent::SpriteComponent(const String& name) : Component(name)
+TextureComponent::TextureComponent() : Component(TextureComponent::GUID)
 {
-    mSpriteInfo = std::make_shared<RenderTexture>();
+    mRenderTex = std::make_shared<RenderTexture>();
 }
 
-SpriteComponent::~SpriteComponent()
-{
-}
-
-void SpriteComponent::initialize()
+TextureComponent::~TextureComponent()
 {
 }
 
-void SpriteComponent::setUVCoords(float32 beginX, float32 beginY, float32 endX, float32 endY)
+void TextureComponent::initialize()
+{
+}
+
+void TextureComponent::setUVCoords(float32 beginX, float32 beginY, float32 endX, float32 endY)
 {
     if (mTexture)
     {
         int32 w = mTexture->getWidth();
         int32 h = mTexture->getHeight();
-        mSpriteInfo->mUvCoords = Vec4(beginX / w, beginY / h, endX / w, endY / h);
+        mRenderTex->mUvCoords = Vec4(beginX / w, beginY / h, endX / w, endY / h);
     }
 }
 
-void SpriteComponent::setUVCoords(const Vec4& coords)
+void TextureComponent::setUVCoords(const Vec4& coords)
 {
     setUVCoords(coords.x, coords.y, coords.z, coords.w);
 }
 
-void SpriteComponent::update(const uint32& escapeMs)
+void TextureComponent::update(const uint32& escapeMs)
 {
     if (mTexture)
     {
-        mSpriteInfo->mTransform = getTransform();
-        RenderBatch::getInstance()->addRenderQueue(mSpriteInfo);
+        mRenderTex->mTransform = getTransform();
+        RenderBatch::getInstance()->addRenderQueue(mRenderTex);
     }
 }
 
-void SpriteComponent::setColor(const Color & color)
+void TextureComponent::setColor(const Color & color)
 {
-    mSpriteInfo->mColor = color;
+    mRenderTex->mColor = color;
 }
 
-const Color& SpriteComponent::getColor() const
+const Color& TextureComponent::getColor() const
 {
-    return mSpriteInfo->mColor;
+    return mRenderTex->mColor;
 }
 
-void SpriteComponent::setHUDEnabled(bool enabled)
+void TextureComponent::setHUDEnabled(bool enabled)
 {
-    mSpriteInfo->mbHud = enabled;
+    mRenderTex->mbHud = enabled;
 }
 
-bool SpriteComponent::isHUDEnabled() const
+bool TextureComponent::isHUDEnabled() const
 {
-    return mSpriteInfo->mbHud;
+    return mRenderTex->mbHud;
 }
 
-void SpriteComponent::setTexture(SPtr<Texture2D> texture)
+void TextureComponent::setTexture(SPtr<Texture2D> texture)
 {
-    mDimensions.x = 0;
-    mDimensions.y = 0;
     mTexture = texture;
-
-    mDimensions.x = texture->getWidth() / mWidthSegments;
-    mDimensions.y = texture->getHeight() / mHeightSegments;
-
-    getTransform()->setDimensions(mDimensions);
-    mSpriteInfo->mTextureID = mTexture->getTextureID();
-    mSpriteInfo->mVertices = Vec2(mDimensions.x, mDimensions.y);
+    Vec2 transDim = getTransform()->getDimensions();
+    if (transDim.x == 0 && transDim.y == 0)
+    {
+        transDim = Vec2(texture->getWidth(), texture->getHeight());
+        getTransform()->setDimensions(transDim);
+    }
+    mRenderTex->mTextureID = mTexture->getTextureID();
+    mRenderTex->mVertices = transDim;
 }

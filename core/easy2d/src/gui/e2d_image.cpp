@@ -1,16 +1,16 @@
 #include "e2d_image.h"
-#include "object/component/e2d_sprite_component.h"
+#include "object/component/e2d_texture_component.h"
 #include "object/component/e2d_transform_component.h"
 
 /* Easy2D */
 using namespace Easy2D;
 
-UIImage::UIImage(const String& name, uint32 horizontalSegements, uint32 verticalSegments)
+UIImage::UIImage(const String& name)
     : UIWidget(name)
 {
-    mSpriteComponent = std::make_shared<SpriteComponent>(horizontalSegements, verticalSegments);
-    mSpriteComponent->setHUDEnabled(true);
-    addComponent(mSpriteComponent);
+    mTextureComponent = std::make_shared<TextureComponent>();
+    mTextureComponent->setHUDEnabled(true);
+    addComponent(mTextureComponent);
 }
 
 UIImage::~UIImage(void)
@@ -58,32 +58,12 @@ void UIImage::setVerticalAlignment(VerticalAlign alignment, bool redefineCenter)
     UIWidget::setVerticalAlignment(alignment, redefineCenter);
 }
 
-void UIImage::setCurrentSegement(uint32 segmentX, uint32 segmentY)
+void UIImage::setTexture(SPtr<Texture2D> mTexture)
 {
-    mSpriteComponent->setCurrentSegment(segmentX, segmentY);
-}
-
-void UIImage::setTexture(SPtr<Texture2D> mTexture, uint32 widthSegments, uint32 heightSegments)
-{
-    mSpriteComponent->setTexture(mTexture, widthSegments, heightSegments);
+    mTextureComponent->setTexture(mTexture);
 }
 
 void UIImage::setColor(const Color& color)
 {
-    mSpriteComponent->setColor(color);
-}
-
-Vec2 UIImage::getDimensions() const
-{
-    return Vec2(getWidth(), getHeight());
-}
-
-float32 UIImage::getWidth() const
-{
-    return mSpriteComponent->getWidth();
-}
-
-float32 UIImage::getHeight() const
-{
-    return mSpriteComponent->getHeight();
+    mTextureComponent->setColor(color);
 }

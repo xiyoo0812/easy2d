@@ -8,7 +8,7 @@ using namespace Easy2D;
 UITextField::UITextField(const String& name)
     : UIWidget(name)
 {
-    mTextComponent = std::make_shared<RenderText>();
+    mTextComponent = std::make_shared<TextComponent>();
     addComponent(mTextComponent);
 }
 
@@ -26,19 +26,17 @@ void UITextField::setHorizontalAlignment(HorizontalAlign alignment, bool redefin
 {
     if (redefineCenter)
     {
+        mTextComponent->setHorizontalAlign(alignment);
         switch (alignment)
         {
         case HorizontalAlign::Left:
             getTransform()->setAnchorX(0);
-            mTextComponent->alignTextLeft();
             break;
         case HorizontalAlign::Center:
             getTransform()->setAnchorX(0.5);
-            mTextComponent->alignTextCenter();
             break;
         case HorizontalAlign::Right:
             getTransform()->setAnchorX(1);
-            mTextComponent->alignTextRight();
             break;
         }
     }
@@ -49,6 +47,7 @@ void UITextField::setVerticalAlignment(VerticalAlign alignment, bool redefineCen
 {
     if (redefineCenter)
     {
+        mTextComponent->setVerticalAlign(alignment);
         switch (alignment)
         {
         case VerticalAlign::Bottom:
@@ -135,17 +134,3 @@ const SPtr<Font> UITextField::getFont() const
     return mTextComponent->getFont();
 }
 
-Vec2 UITextField::getDimensions() const
-{
-    return Vec2(getWidth(), getHeight());
-}
-
-float32 UITextField::getWidth() const
-{
-    return mTextComponent->getWidth();
-}
-
-float32 UITextField::getHeight() const
-{
-    return mTextComponent->getHeight();
-}

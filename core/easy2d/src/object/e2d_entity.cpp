@@ -550,27 +550,6 @@ void Entity::reset()
     }
 }
 
-void Entity::recalculateDimensions()
-{
-    Vec2 dim(0, 0);
-    for (auto comp : mComponents)
-    {
-        if (comp != mTransform)
-        {
-            Vec2 temp = comp->getDimensions();
-            if (temp.x > dim.x)
-            {
-                dim.x = temp.x;
-            }
-            if (temp.y > dim.y)
-            {
-                dim.y = temp.y;
-            }
-        }
-    }
-    mTransform->setDimensions(dim);
-}
-
 SPtr<TransformComponent> Entity::getTransform() const
 {
     return mTransform;

@@ -194,16 +194,22 @@ uint32 Font::getMinLetterHeight() const
     return mMinLetterHeight;
 }
 
-uint32 Font::getStringLength(const Wtring& string)
+uint32 Font::getCharWidth(wchar_t ch, bool bBold /* = false */, bool bItalic /* = false */)
+{
+    auto fChar = getFontChar(ch);
+    if (fChar != nullptr)
+    {
+        return fChar->advence;
+    }
+    return mFontSize / 2;
+}
+
+uint32 Font::getTextWidth(const Wtring& string, bool bBold /* = false */, bool bItalic /* = false */)
 {
     uint32 length = 0;
     for (auto it : string)
     {
-        auto fChar = getFontChar(it);
-        if (fChar != nullptr)
-        {
-            length += fChar->advence;
-        }
+        length += getCharWidth(it, bBold, bItalic);
     }
     return length;
 }
