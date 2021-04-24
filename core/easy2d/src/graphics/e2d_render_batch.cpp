@@ -207,8 +207,6 @@ void RenderBatch::createSpriteQuad(SPtr<RenderTexture> sprite)
     mUvCoordBuffer.push_back(sprite->mUvCoords.y);
     //tex
     mTextureQueue.push_back(sprite->mTextureID);
-    //viewport
-    mViewportQueue.push_back(sprite->mViewPort);
     //bool & color buffer
     for (uint32 i = 0; i < 6; ++i)
     {
@@ -287,8 +285,6 @@ void RenderBatch::createTextQuad(SPtr<RenderText> text, Vec2& offset, Color& col
             mUvCoordBuffer.push_back(fChar->uvCoordBR.y);
             //tex
             mTextureQueue.push_back(fChar->textureID);
-            //viewport
-            mViewportQueue.push_back(text->mViewPort);
             //bool & color buffer
             for (uint32 i = 0; i < 6; ++i)
             {
