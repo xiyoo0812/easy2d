@@ -66,7 +66,7 @@ void TextureComponent::setTexture(SPtr<Texture2D> texture)
 {
     mTexture = texture;
     Vec2 transDim = getTransform()->getDimensions();
-    if (transDim.x == 0 && transDim.y == 0)
+    if (transDim.x == 1 && transDim.y == 1)
     {
         transDim = Vec2(texture->getWidth(), texture->getHeight());
         getTransform()->setDimensions(transDim);

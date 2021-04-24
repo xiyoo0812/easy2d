@@ -23,10 +23,10 @@ namespace Easy2D
         virtual void initialize();
         virtual void update(const uint32& escapeMs);
 
-        virtual void setPosition(const Vec2& pos);
-        virtual void setPosition(float32 x, float32 y);
-        virtual void setPositionX(float32 x);
-        virtual void setPositionY(float32 y);
+        void setPosition(const Vec2& pos);
+        void setPosition(float32 x, float32 y);
+        void setPositionX(float32 x);
+        void setPositionY(float32 y);
 
         void setMirror(bool x, bool y);
         void setMirrorX(bool x);
@@ -39,7 +39,10 @@ namespace Easy2D
         void setScaleY(float32 y);
 
         float32 getWidth() const;
-        float32 getHeight() const;
+        float32 getHeight() const;;
+        void setDimensionsX(float32 x);
+        void setDimensionsY(float32 y);
+        void setDimensions(const Vec2& dim);
         const Vec2& getDimensions() const;
         const Vec2& getWorldPosition() const;
         const Vec2& getLocalPosition() const;

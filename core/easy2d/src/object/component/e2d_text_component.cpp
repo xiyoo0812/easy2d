@@ -16,7 +16,7 @@ TextComponent::~TextComponent()
 
 void TextComponent::initialize()
 {
-
+    mRenderText->mTransform = getTransform();
 }
 
 void TextComponent::checkWrapping()
@@ -28,9 +28,9 @@ void TextComponent::checkWrapping()
     Vec2 transDim = getTransform()->getDimensions();
     for (auto it : mOrigText)
     {
-        if (it == *(ENTER.c_str()))
+        if (it == ENTER)
         {
-            if (mbLineWrap)
+            if (mbLineWrap && lineWidth > 0)
             {
                 lineWidths.push_back(lineWidth);
                 renderWords.push_back(wrapText);
@@ -48,16 +48,19 @@ void TextComponent::checkWrapping()
                 {
                     textWidth = lineWidth;
                 }
-                lineWidths.push_back(lineWidth);
-                renderWords.push_back(wrapText);
-                wrapText = EMPTY_STRING;
-                lineWidth = 0;
+                if (lineWidth > 0)
+                {
+                    lineWidths.push_back(lineWidth);
+                    renderWords.push_back(wrapText);
+                    wrapText = EMPTY_STRING;
+                    lineWidth = 0;
+                }
             }
         }
         lineWidth += charWidth;
-        wrapText.append(&it);
+        wrapText.append(&it, 1);
     }
-    if (!wrapText.empty())
+    if (lineWidth > 0)
     {
         lineWidths.push_back(lineWidth);
         renderWords.push_back(wrapText);
@@ -96,12 +99,12 @@ void TextComponent::calculateTextOffset(Vector<uint16>& lineWidths)
         uint32 length = lineWidths[line];
         if (mHorizontalAlign == HorizontalAlign::Center)
         {
-            uint32 diff = transDim.x - mFrameOffset * 2 - length;
+            int32 diff = transDim.x - mFrameOffset * 2 - length;
             mRenderText->mHorizontalOffset.push_back(mFrameOffset + diff / 2);
         }
         else if (mHorizontalAlign == HorizontalAlign::Right)
         {
-            uint32 diff = transDim.x - mFrameOffset * 2 - length;
+            int32 diff = transDim.x - mFrameOffset * 2 - length;
             mRenderText->mHorizontalOffset.push_back(mFrameOffset + diff);
         }
         else
@@ -111,12 +114,12 @@ void TextComponent::calculateTextOffset(Vector<uint16>& lineWidths)
         uint32 lineHeight = mFrameOffset + line * fontHeight + (line - 1) * mRenderText->mSpacing;
         if (mVerticalAlign == VerticalAlign::Center)
         {
-            uint32 diff = transDim.y - mFrameOffset * 2 - textHeight;
+            int32 diff = transDim.y - mFrameOffset * 2 - textHeight;
             mRenderText->mVerticalOffset.push_back(lineHeight + diff / 2);
         }
         else if (mVerticalAlign == VerticalAlign::Bottom)
         {
-            uint32 diff = transDim.y - mFrameOffset * 2 - textHeight;
+            int32 diff = transDim.y - mFrameOffset * 2 - textHeight;
             mRenderText->mVerticalOffset.push_back(lineHeight + diff);
         }
         else

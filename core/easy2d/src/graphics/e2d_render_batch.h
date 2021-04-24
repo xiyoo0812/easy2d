@@ -33,7 +33,7 @@ namespace Easy2D
         void end();
         void draw();
         void createSpriteQuad(SPtr<RenderTexture> sprite);
-        void createTextQuad(SPtr<RenderText> text, Vec2 offset, Color color);
+        void createTextQuad(SPtr<RenderText> text, Vec2& offset, Color& color);
         void drawTexture(uint32 start, uint32 size, uint32 texture);
 
         static const uint32 BATCHSIZE = 50;

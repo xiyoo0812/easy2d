@@ -65,7 +65,7 @@ namespace Easy2D
         Mat4 mWorld = {};
         float32 mRotation = 0;
         bool mMirroredX = false, mMirroredY = false;
-        Vec2 mWorldPt{ 0, 0 }, mLocalPt{ 0, 0 }, mScale{ 1,1 }, mAnchorPt{ 0, 0 }, mDimensions{ 0, 0 };
+        Vec2 mWorldPt{ 0, 0 }, mLocalPt{ 0, 0 }, mScale{ 1,1 }, mAnchorPt{ 0, 0 }, mDimensions{ 1, 1 };
 
     public:
         inline static String GUID = "transform";

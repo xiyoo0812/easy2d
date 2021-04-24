@@ -207,6 +207,8 @@ void RenderBatch::createSpriteQuad(SPtr<RenderTexture> sprite)
     mUvCoordBuffer.push_back(sprite->mUvCoords.y);
     //tex
     mTextureQueue.push_back(sprite->mTextureID);
+    //viewport
+    mViewportQueue.push_back(sprite->mViewPort);
     //bool & color buffer
     for (uint32 i = 0; i < 6; ++i)
     {
@@ -216,7 +218,7 @@ void RenderBatch::createSpriteQuad(SPtr<RenderTexture> sprite)
     }
 }
 
-void RenderBatch::createTextQuad(SPtr<RenderText> text, Vec2 offset, Color color)
+void RenderBatch::createTextQuad(SPtr<RenderText> text, Vec2& offset, Color& color)
 {
     //for every sprite that has to be drawn, push back all vertices 
     //(VERTEX_AMOUNT per sprite) into the vertexbuffer and all uvcoords 
@@ -236,7 +238,7 @@ void RenderBatch::createTextQuad(SPtr<RenderText> text, Vec2 offset, Color color
     const Mat4& worldMat = text->mTransform->getWorldMatrix();
     for (size_t line = 0; line < line_count; ++line)
     {
-        int32 offsetY = -offset.y + text->mVerticalOffset[line];
+        int32 offsetY = -offset.y - text->mVerticalOffset[line];
         int32 offsetX = offset.x + text->mHorizontalOffset[line];
         for (auto it : text->mTextList[line])
         {
@@ -285,6 +287,8 @@ void RenderBatch::createTextQuad(SPtr<RenderText> text, Vec2 offset, Color color
             mUvCoordBuffer.push_back(fChar->uvCoordBR.y);
             //tex
             mTextureQueue.push_back(fChar->textureID);
+            //viewport
+            mViewportQueue.push_back(text->mViewPort);
             //bool & color buffer
             for (uint32 i = 0; i < 6; ++i)
             {

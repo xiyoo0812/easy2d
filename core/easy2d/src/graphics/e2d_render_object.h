@@ -28,12 +28,12 @@ namespace Easy2D
     class RenderText : public RenderObject
     {
     public:
-        uint16 mSpacing = 0;
+        uint16 mSpacing = 1;
         uint16 mShadowSize = 0;
         uint16 mOutlineSize = 0;
         Vector<Wtring> mTextList = {};
-        Vector<uint16> mVerticalOffset = {};
-        Vector<uint16> mHorizontalOffset = {};
+        Vector<int16> mVerticalOffset = {};
+        Vector<int16> mHorizontalOffset = {};
         Color mShadowColor = Color::Black;
         Color mOutlineColor = Color::Black;
         SPtr<Font> mFont = nullptr;

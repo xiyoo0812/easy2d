@@ -46,9 +46,14 @@ void Entity::destroy()
 
 void Entity::initialize()
 {
-    for (auto component : mComponents)
+    if (!mInitialized)
     {
-        component->setMaster(std::dynamic_pointer_cast<Entity>(shared_from_this()));
+        for (auto component : mComponents)
+        {
+            component->setMaster(std::dynamic_pointer_cast<Entity>(shared_from_this()));
+            component->initialize();
+        }
+        mInitialized = true;
     }
 }
 
@@ -140,6 +145,21 @@ const Vec2& Entity::getWorldPosition() const
 const Vec2& Entity::getLocalPosition() const
 {
     return mTransform->getLocalPosition();
+}
+
+void Entity::setDimensionsX(float32 x)
+{
+    mTransform->setDimensionsX(x);
+}
+
+void Entity::setDimensionsY(float32 y)
+{
+    mTransform->setDimensionsX(y);
+}
+
+void Entity::setDimensions(const Vec2& dim)
+{
+    mTransform->setDimensions(dim);
 }
 
 const Vec2& Entity::getDimensions() const
@@ -407,7 +427,10 @@ bool Entity::addComponent(SPtr<Component> pComponent)
         return false;
     }
     mComponents.push_back(pComponent);
-    pComponent->initialize();
+    if (mInitialized)
+    {
+        pComponent->initialize();
+    }
     return true;
 }
 

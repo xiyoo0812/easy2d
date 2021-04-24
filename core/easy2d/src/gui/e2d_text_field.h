@@ -15,8 +15,6 @@ namespace Easy2D
 
         virtual ~UITextField();
 
-        virtual void initialize();
-
         virtual void setHorizontalAlignment(HorizontalAlign alignment, bool redefineCenter = true);
         virtual void setVerticalAlignment(VerticalAlign alignment, bool redefineCenter = true);
 
@@ -37,6 +35,12 @@ namespace Easy2D
 
         void setItalic(bool italoc);
         bool isItalic() const;
+
+        void setLineWrap(bool lineWrap);
+        bool isLineWrap() const;
+
+        void setSpacing(uint32 spacing);
+        uint32 getSpacing() const;
 
         void setFont(const SPtr<Font> font);
         const SPtr<Font> getFont() const;

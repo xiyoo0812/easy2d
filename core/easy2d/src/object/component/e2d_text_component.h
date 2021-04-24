@@ -74,8 +74,7 @@ namespace Easy2D
         HorizontalAlign mHorizontalAlign = HorizontalAlign::Center;
 
     public:
-        inline static const Wtring TAB = L"    ";
-        inline static const Wtring ENTER = L"\n";
+        inline static const wchar_t ENTER = '\n';
         inline static const Wtring EMPTY_STRING = L"";
         inline static String GUID = "render_text";
     };

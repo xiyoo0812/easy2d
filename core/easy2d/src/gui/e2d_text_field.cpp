@@ -9,17 +9,12 @@ UITextField::UITextField(const String& name)
     : UIWidget(name)
 {
     mTextComponent = std::make_shared<TextComponent>();
+    mTextComponent->setHUDEnabled(true);
     addComponent(mTextComponent);
 }
 
 UITextField::~UITextField(void)
 {
-}
-
-void UITextField::initialize()
-{
-    Entity::initialize();
-    mTextComponent->setHUDEnabled(true);
 }
 
 void UITextField::setHorizontalAlignment(HorizontalAlign alignment, bool redefineCenter)
@@ -122,6 +117,26 @@ void UITextField::setItalic(bool italoc)
 bool UITextField::isItalic() const
 {
     return mTextComponent->isItalic();
+}
+
+void UITextField::setLineWrap(bool lineWrap)
+{
+    mTextComponent->setLineWrap(lineWrap);
+}
+
+bool UITextField::isLineWrap() const
+{
+    return mTextComponent->isLineWrap();
+}
+
+void UITextField::setSpacing(uint32 spacing)
+{
+    mTextComponent->setSpacing(spacing);
+}
+
+uint32 UITextField::getSpacing() const
+{
+    return mTextComponent->getSpacing();
 }
 
 void UITextField::setFont(const SPtr<Font> font)
