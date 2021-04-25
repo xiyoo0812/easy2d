@@ -14,7 +14,7 @@ namespace Easy2D
         bool removeTexture(const String& name);
 
         GLuint getTextureID(const String& name);
-        Vec2 getTextureDimensions(const String& name);
+        Vec2 getTextureSize(const String& name);
 
         void clear();
 

@@ -28,6 +28,11 @@ namespace Easy2D
         void setPositionX(float32 x);
         void setPositionY(float32 y);
 
+        void setAnchor(const Vec2& anchor);
+        void setAnchor(float32 x, float32 y);
+        void setAnchorX(float32 x);
+        void setAnchorY(float32 y);
+
         void setMirror(bool x, bool y);
         void setMirrorX(bool x);
         void setMirrorY(bool y);
@@ -40,12 +45,12 @@ namespace Easy2D
 
         float32 getWidth() const;
         float32 getHeight() const;;
-        void setDimensionsX(float32 x);
-        void setDimensionsY(float32 y);
-        void setDimensions(const Vec2& dim);
-        const Vec2& getDimensions() const;
-        const Vec2& getWorldPosition() const;
-        const Vec2& getLocalPosition() const;
+        void setSizeX(float32 x);
+        void setSizeY(float32 y);
+        void setSize(const Vec2& dim);
+        const Vec2& getSize() const;
+        const Vec2& getAbsolute() const;
+        const Vec2& getPosition() const;
 
         const String& getPhysics() const;
         void setPhysics(const String& physics);
@@ -61,6 +66,9 @@ namespace Easy2D
         void removeChild(const String& name);
         void removeChild(const SPtr<Entity> pEntity);
         const Vector<SPtr<Entity>>& getChildren() const;
+
+        void setDockerAlign(DockerAlign align);
+        DockerAlign getDockerAlign() const;
 
         void setChildDisabled(const uint64 guid, bool disabled);
         void setChildVisible(const uint64 guid, bool visible);

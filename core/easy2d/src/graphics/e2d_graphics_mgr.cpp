@@ -314,7 +314,7 @@ int32 GraphicsManager::getVerticalViewportOffset() const
     return mVerticalViewportOffset;
 }
 
-void GraphicsManager::setWindowDimensions(int32 width, int32 height)
+void GraphicsManager::setWindowSize(int32 width, int32 height)
 {
     mScreenResolution.x = float32(width);
     mScreenResolution.y = float32(height);

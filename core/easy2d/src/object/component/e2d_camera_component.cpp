@@ -40,7 +40,7 @@ void CameraComponent::initialize()
 
 void CameraComponent::update(const uint32& escapeMs)
 {
-    auto pos = getTransform()->getWorldPosition();
+    auto pos = getTransform()->getAbsolute();
     Vec3 eyeVec = Vec3(pos, 0);
     eyeVec.x /= (ScaleSystem::getInstance()->getWorkingResolution().x / 2.0f);
     eyeVec.y /= (ScaleSystem::getInstance()->getWorkingResolution().y / 2.0f);
@@ -223,5 +223,5 @@ void CameraComponent::translateY(float32 y)
 
 void CameraComponent::convertScreenToWorld(Vec2& posInOut)
 {
-    posInOut += getTransform()->getWorldPosition();
+    posInOut += getTransform()->getAbsolute();
 }

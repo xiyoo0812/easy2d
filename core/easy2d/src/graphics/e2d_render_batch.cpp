@@ -165,7 +165,9 @@ void RenderBatch::createSpriteQuad(SPtr<RenderTexture> sprite)
     *  BL    BR
     */
     //Push back all vertices
-    Mat4 transformMat = transpose(sprite->mTransform->getWorldMatrix());
+    //左上角坐标系转为左下角坐标系
+    Mat4 matTrans = Easy2D::translate(0, sprite->mOffsetY, 0);
+    Mat4 transformMat = transpose(matTrans * sprite->mTransform->getWorldMatrix());
     Vec4 TL = Vec4(0, sprite->mVertices.y, 0, 1);
     mul(TL, transformMat, TL);
     Vec4 TR = Vec4(sprite->mVertices.x, sprite->mVertices.y, 0, 1);
@@ -236,21 +238,21 @@ void RenderBatch::createTextQuad(SPtr<RenderText> text, Vec2& offset, Color& col
     const Mat4& worldMat = text->mTransform->getWorldMatrix();
     for (size_t line = 0; line < line_count; ++line)
     {
-        int32 offsetY = -offset.y - text->mVerticalOffset[line];
+        int32 offsetY = -offset.y - (text->mVerticalOffset[line] - text->mOffsetY);
         int32 offsetX = offset.x + text->mHorizontalOffset[line];
         for (auto it : text->mTextList[line])
         {
             auto fChar = text->mFont->getFontChar(it, text->mbBold, text->mbItalic);
-            Mat4 offsetMatrix = translate(Vec3(offsetX + fChar->letterDimensions.x, offsetY + fChar->letterDimensions.y, 0));
+            Mat4 offsetMatrix = translate(Vec3(offsetX + fChar->letterSize.x, offsetY + fChar->letterSize.y, 0));
             offsetX += fChar->advence + text->mOutlineSize;
             Mat4 transformMat = transpose(worldMat * offsetMatrix);
-            Vec4 TL = Vec4(0, fChar->vertexDimensions.y, 0, 1);
+            Vec4 TL = Vec4(0, fChar->vertexSize.y, 0, 1);
             mul(TL, transformMat, TL);
-            Vec4 TR = Vec4(fChar->vertexDimensions.x, fChar->vertexDimensions.y, 0, 1);
+            Vec4 TR = Vec4(fChar->vertexSize.x, fChar->vertexSize.y, 0, 1);
             mul(TR, transformMat, TR);
             Vec4 BL = Vec4(0, 0, 0, 1);
             mul(BL, transformMat, BL);
-            Vec4 BR = Vec4(fChar->vertexDimensions.x, 0, 0, 1);
+            Vec4 BR = Vec4(fChar->vertexSize.x, 0, 0, 1);
             mul(BR, transformMat, BR);
             //0
             mVertexBuffer.push_back(TL);

@@ -137,34 +137,54 @@ void Entity::setPositionY(float32 y)
     mTransform->translateY(y);
 }
 
-const Vec2& Entity::getWorldPosition() const
+void Entity::setAnchor(const Vec2& pos)
 {
-    return mTransform->getWorldPosition();
+    mTransform->setAnchor(pos);
 }
 
-const Vec2& Entity::getLocalPosition() const
+void Entity::setAnchor(float32 x, float32 y)
 {
-    return mTransform->getLocalPosition();
+    mTransform->setAnchor(x, y);
 }
 
-void Entity::setDimensionsX(float32 x)
+void Entity::setAnchorX(float32 x)
 {
-    mTransform->setDimensionsX(x);
+    mTransform->setAnchorX(x);
 }
 
-void Entity::setDimensionsY(float32 y)
+void Entity::setAnchorY(float32 y)
 {
-    mTransform->setDimensionsX(y);
+    mTransform->setAnchorY(y);
 }
 
-void Entity::setDimensions(const Vec2& dim)
+const Vec2& Entity::getAbsolute() const
 {
-    mTransform->setDimensions(dim);
+    return mTransform->getAbsolute();
 }
 
-const Vec2& Entity::getDimensions() const
+const Vec2& Entity::getPosition() const
 {
-    return mTransform->getDimensions();
+    return mTransform->getPosition();
+}
+
+void Entity::setSizeX(float32 x)
+{
+    mTransform->setSizeX(x);
+}
+
+void Entity::setSizeY(float32 y)
+{
+    mTransform->setSizeX(y);
+}
+
+void Entity::setSize(const Vec2& dim)
+{
+    mTransform->setSize(dim);
+}
+
+const Vec2& Entity::getSize() const
+{
+    return mTransform->getSize();
 }
 
 float32 Entity::getWidth() const
@@ -189,7 +209,7 @@ void Entity::update(const uint32& escapeMs)
         {
             component->update(escapeMs);
         }
-        Vec2 dim = getDimensions();
+        Vec2 dim = getSize();
         for (auto child : mChildrens)
         {
             if (child->checkCulling(0, 0, dim.x, dim.y))
@@ -200,10 +220,20 @@ void Entity::update(const uint32& escapeMs)
     }
 }
 
+void Entity::setDockerAlign(DockerAlign align)
+{
+    mTransform->setDockerAlign(align);
+}
+
+DockerAlign Entity::getDockerAlign() const
+{
+    return mTransform->getDockerAlign();
+}
+
 bool Entity::checkCulling(float32 left, float32 top, float32 right, float32 bottom)
 {
-    Vec2 dim = getDimensions();
-    Vec2 pos = getLocalPosition();
+    Vec2 dim = getSize();
+    Vec2 pos = getPosition();
     if ((pos.x <= right && pos.x >= left) && (pos.y <= bottom && pos.y >= top))
     {
         return true;

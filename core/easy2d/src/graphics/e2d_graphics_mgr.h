@@ -47,7 +47,7 @@ namespace Easy2D
         int32 getHorizontalViewportOffset() const;
         int32 getVerticalViewportOffset() const;
 
-        void setWindowDimensions(int32 width, int32 height);
+        void setWindowSize(int32 width, int32 height);
         void setWindowChanged(bool changed);
         bool getWindowChanged() const;
         void calculateViewPort();

@@ -1,6 +1,7 @@
 #include "e2d_texture_component.h"
 #include "e2d_transform_component.h"
 #include "graphics/e2d_render_batch.h"
+#include "graphics/e2d_graphics_mgr.h"
 
 /* Easy2D */
 using namespace Easy2D;
@@ -16,6 +17,7 @@ TextureComponent::~TextureComponent()
 
 void TextureComponent::initialize()
 {
+    mRenderTex->mTransform = getTransform();
 }
 
 void TextureComponent::setUVCoords(float32 beginX, float32 beginY, float32 endX, float32 endY)
@@ -37,7 +39,9 @@ void TextureComponent::update(const uint32& escapeMs)
 {
     if (mTexture)
     {
-        mRenderTex->mTransform = getTransform();
+        Vec2 pos = getTransform()->getPosition();
+        Vec2 transDim = getTransform()->getSize();
+        mRenderTex->mOffsetY = GraphicsManager::getInstance()->getWindowHeight() - transDim.y - pos.y * 2;
         RenderBatch::getInstance()->addRenderQueue(mRenderTex);
     }
 }
@@ -65,12 +69,12 @@ bool TextureComponent::isHUDEnabled() const
 void TextureComponent::setTexture(SPtr<Texture2D> texture)
 {
     mTexture = texture;
-    Vec2 transDim = getTransform()->getDimensions();
+    Vec2 transDim = getTransform()->getSize();
     if (transDim.x == 1 && transDim.y == 1)
     {
         transDim = Vec2(texture->getWidth(), texture->getHeight());
-        getTransform()->setDimensions(transDim);
+        getTransform()->setSize(transDim);
     }
-    mRenderTex->mTextureID = mTexture->getTextureID();
     mRenderTex->mVertices = transDim;
+    mRenderTex->mTextureID = mTexture->getTextureID();
 }

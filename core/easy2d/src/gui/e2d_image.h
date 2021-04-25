@@ -15,9 +15,6 @@ namespace Easy2D
 
         virtual ~UIImage();
 
-        virtual void setHorizontalAlignment(HorizontalAlign alignment, bool redefineCenter = true);
-        virtual void setVerticalAlignment(VerticalAlign alignment, bool redefineCenter = true);
-
         void setColor(const Color& color);
 
         void setTexture(SPtr<Texture2D> mTexture);

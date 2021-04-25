@@ -17,13 +17,12 @@ TransformComponent::~TransformComponent()
 
 void TransformComponent::initialize()
 {
-    //checkForUpdate(true);
 }
 
 void TransformComponent::translate(const Vec2& translation)
 {
-    mLocalPt.x = translation.x;
-    mLocalPt.y = translation.y;
+    mPostion.x = translation.x;
+    mPostion.y = translation.y;
     mChanged = true;
 }
 
@@ -34,39 +33,39 @@ void TransformComponent::translate(float32 x, float32 y)
 
 void TransformComponent::translateX(float32 x)
 {
-    mLocalPt.x = x;
+    mPostion.x = x;
     mChanged = true;
 }
 
 void TransformComponent::translateY(float32 y)
 {
-    mLocalPt.y = y;
+    mPostion.y = y;
     mChanged = true;
 }
 
 void TransformComponent::move(const Vec2& translation)
 {
-    mLocalPt.x += translation.x;
-    mLocalPt.y += translation.y;
+    mPostion.x += translation.x;
+    mPostion.y += translation.y;
     mChanged = true;
 }
 
 void TransformComponent::move(float32 x, float32 y)
 {
-    mLocalPt.x += x;
-    mLocalPt.y += y;
+    mPostion.x += x;
+    mPostion.y += y;
     mChanged = true;
 }
 
 void TransformComponent::moveX(float32 x)
 {
-    mLocalPt.x += x;
+    mPostion.x += x;
     mChanged = true;
 }
 
 void TransformComponent::moveY(float32 y)
 {
-    mLocalPt.y += y;
+    mPostion.y += y;
     mChanged = true;
 }
 
@@ -108,26 +107,29 @@ void TransformComponent::mirror(bool x, bool y)
 {
     mMirroredX = x;
     mMirroredY = y;
+    mChanged = true;
 }
 
 void TransformComponent::mirrorX(bool x)
 {
     mMirroredX = x;
+    mChanged = true;
 }
 
 void TransformComponent::mirrorY(bool y)
 {
     mMirroredY = y;
+    mChanged = true;
 }
 
-const Vec2& TransformComponent::getWorldPosition()
+const Vec2& TransformComponent::getAbsolute()
 {
-    return mWorldPt;
+    return mAbsolute;
 }
 
-const Vec2& TransformComponent::getLocalPosition()
+const Vec2& TransformComponent::getPosition()
 {
-    return mLocalPt;
+    return mPostion;
 }
 
 float32 TransformComponent::getRotation() const
@@ -156,7 +158,7 @@ void TransformComponent::setAnchorX(float32 x)
 {
     if (x >= 0.0f && x <= 1.0f)
     {
-        mAnchorPt.x = x;
+        mAnchor.x = x;
         mChanged = true;
     }
 }
@@ -165,45 +167,61 @@ void TransformComponent::setAnchorY(float32 y)
 {
     if (y >= 0.0f && y <= 1.0f)
     {
-        mAnchorPt.y = y;
+        mAnchor.y = y;
         mChanged = true;
     }
 }
 
-void TransformComponent::setDimensions(float32 x, float32 y)
+void TransformComponent::setSize(float32 x, float32 y)
 {
-    mDimensions.x = x;
-    mDimensions.y = y;
+    if (x != mSize.x || y != mSize.y)
+    {
+        mSize.x = x;
+        mSize.y = y;
+        mChanged = true;
+    }
 }
 
-void TransformComponent::setDimensions(const Vec2& dimensions)
+void TransformComponent::setSize(const Vec2& size)
 {
-    mDimensions = dimensions;
+    if (mSize != size)
+    {
+        mSize = size;
+        mChanged = true;
+    }
 }
 
-void TransformComponent::setDimensionsX(float32 x)
+void TransformComponent::setSizeX(float32 x)
 {
-    mDimensions.x = x;
+    if (x != mSize.x)
+    {
+        mSize.x = x;
+        mChanged = true;
+    }
 }
 
-void TransformComponent::setDimensionsY(float32 y)
+void TransformComponent::setSizeY(float32 y)
 {
-    mDimensions.y = y;
+    if (y != mSize.y)
+    {
+        mSize.y = y;
+        mChanged = true;
+    }
 }
 
-const Vec2& TransformComponent::getDimensions() const
+const Vec2& TransformComponent::getSize() const
 {
-    return mDimensions;
+    return mSize;
 }
 
 float32 TransformComponent::getWidth() const
 {
-    return mDimensions.x;
+    return mSize.x;
 }
 
 float32 TransformComponent::getHeight() const
 {
-    return mDimensions.y;
+    return mSize.y;
 }
 
 const Mat4& TransformComponent::getWorldMatrix() const
@@ -217,9 +235,8 @@ void TransformComponent::updateTransform()
     {
         child->getTransform()->setChanged(mChanged);
     }
-    Vec3 transPos(mLocalPt.x, mLocalPt.y, 0);
-    transPos.y = GraphicsManager::getInstance()->getWindowHeight() - transPos.y;
-    Vec3 centerPos(mAnchorPt.x * mDimensions.x, mAnchorPt.y * mDimensions.y, 0);
+    Vec3 transPos(transDockerX(mPostion.x), transDockerY(mPostion.y), 0);
+    Vec3 centerPos(mAnchor.x * mSize.x, -mAnchor.y * mSize.y, 0);
     Mat4 matRot, matTrans, matScale, matC;
     matTrans = Easy2D::translate(transPos - centerPos);
     matRot = Easy2D::toMat4(Quat(Vec3(0, 0, mRotation)));
@@ -231,11 +248,11 @@ void TransformComponent::updateTransform()
     {
         mWorld = parent->getTransform()->getWorldMatrix() * mWorld;
     }
-    Easy2D::getTranslation(mWorld, mWorldPt);
+    Easy2D::getTranslation(mWorld, mAbsolute);
 
     if (mMirroredX || mMirroredY)
     {
-        mWorld *= Easy2D::translate(mDimensions.x / 2.0f, mDimensions.y / 2.0f, 0);
+        mWorld *= Easy2D::translate(mSize.x / 2.0f, mSize.y / 2.0f, 0);
         if (mMirroredX)
         {
             if (mMirroredY)
@@ -251,7 +268,7 @@ void TransformComponent::updateTransform()
         {
             mWorld *= Easy2D::scale(Vec3(1, -1, 1));
         }
-        mWorld *= Easy2D::translate(mDimensions.x / -2.0f, mDimensions.y / -2.0f, 0);
+        mWorld *= Easy2D::translate(mSize.x / -2.0f, mSize.y / -2.0f, 0);
     }
 }
 
@@ -262,4 +279,68 @@ void TransformComponent::update(const uint32& escapeMs)
         updateTransform();
         mChanged = false;
     }
+}
+
+void TransformComponent::setDockerAlign(DockerAlign align)
+{
+    mDockerAlign = align;
+    mChanged = true;
+}
+
+DockerAlign TransformComponent::getDockerAlign() const
+{
+    return mDockerAlign;
+}
+
+float32 TransformComponent::transDockerX(float32 x)
+{
+    Vec2 Size = getDockerSize();
+    switch (mDockerAlign)
+    {
+    case DockerAlign::Top:
+    case DockerAlign::Center:
+    case DockerAlign::Bottom:
+        x += Size.x / 2;
+        break;
+    case DockerAlign::Right:
+    case DockerAlign::RightTop:
+    case DockerAlign::RightBottom:
+        x += Size.x;
+        break;
+    default:
+        return x;
+    }
+}
+
+float32 TransformComponent::transDockerY(float32 y)
+{
+    Vec2 Size = getDockerSize();
+    switch (mDockerAlign)
+    {
+    case DockerAlign::Left:
+    case DockerAlign::Center:
+    case DockerAlign::Right:
+        y += Size.y / 2;
+        break;
+    case DockerAlign::Bottom:
+    case DockerAlign::LeftBottom:
+    case DockerAlign::RightBottom:
+        y += Size.y;
+        break;
+    default:
+        return y;
+    }
+}
+
+Vec2 TransformComponent::getDockerSize() const
+{
+    if (!mMaster.expired())
+    {
+        auto parent = mMaster.lock()->getParent();
+        if (parent)
+        {
+            parent->getSize();
+        }
+    }
+    return GraphicsManager::getInstance()->getScreenResolution();
 }

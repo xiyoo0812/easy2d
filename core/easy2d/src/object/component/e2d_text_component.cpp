@@ -1,6 +1,7 @@
 #include "e2d_text_component.h"
 #include "e2d_transform_component.h"
 #include "graphics/e2d_render_batch.h"
+#include "graphics/e2d_graphics_mgr.h"
 
 /* Easy2D */
 using namespace Easy2D;
@@ -25,7 +26,7 @@ void TextComponent::checkWrapping()
     Vector<uint16> lineWidths = {};
     Wtring wrapText = EMPTY_STRING;
     uint16 lineWidth = 0, textWidth = 0;
-    Vec2 transDim = getTransform()->getDimensions();
+    Vec2 transDim = getTransform()->getSize();
     for (auto it : mOrigText)
     {
         if (it == ENTER)
@@ -69,20 +70,24 @@ void TextComponent::checkWrapping()
     uint32 lineCount = renderWords.size();
     uint32 fontHeight = mRenderText->mFont->getMaxLetterHeight() + mRenderText->mFont->getMinLetterHeight();
     uint32 textHeight = fontHeight * lineCount + mRenderText->mSpacing * (lineCount - 1);
-    calculateTextDimensions(textWidth, textHeight);
+    calculateTextSize(textWidth, textHeight);
     calculateTextOffset(lineWidths);
 }
 
-void TextComponent::calculateTextDimensions(uint32 textWidth, uint32 textHeight)
+void TextComponent::calculateTextSize(uint32 textWidth, uint32 textHeight)
 {
     if (mbContentFollow)
     {
-        getTransform()->setDimensions(textWidth + mFrameOffset * 2, textHeight + mFrameOffset * 2);
+        getTransform()->setSize(textWidth + mFrameOffset * 2, textHeight + mFrameOffset * 2);
         return;
+    }
+    if (!mbLineWrap && textWidth > getTransform()->getWidth())
+    {
+        getTransform()->setSizeX(textWidth + mFrameOffset * 2);
     }
     if (textHeight > getTransform()->getHeight())
     {
-        getTransform()->setDimensionsY(textHeight + mFrameOffset * 2);
+        getTransform()->setSizeY(textHeight + mFrameOffset * 2);
     }
 }
 
@@ -91,7 +96,7 @@ void TextComponent::calculateTextOffset(Vector<uint16>& lineWidths)
     mRenderText->mVerticalOffset.clear();
     mRenderText->mHorizontalOffset.clear();
     uint32 lineCount = lineWidths.size();
-    Vec2 transDim = getTransform()->getDimensions();
+    Vec2 transDim = getTransform()->getSize();
     uint32 fontHeight = mRenderText->mFont->getMaxLetterHeight() + mRenderText->mFont->getMinLetterHeight();
     uint32 textHeight = fontHeight * lineCount + mRenderText->mSpacing * (lineCount - 1);
     for (size_t line = 0; line < lineCount; ++line)
@@ -111,7 +116,7 @@ void TextComponent::calculateTextOffset(Vector<uint16>& lineWidths)
         {
             mRenderText->mHorizontalOffset.push_back(mFrameOffset);
         }
-        uint32 lineHeight = mFrameOffset + line * fontHeight + (line - 1) * mRenderText->mSpacing;
+        uint32 lineHeight = mFrameOffset + line * fontHeight + line * mRenderText->mSpacing;
         if (mVerticalAlign == VerticalAlign::Center)
         {
             int32 diff = transDim.y - mFrameOffset * 2 - textHeight;
@@ -136,6 +141,8 @@ void TextComponent::update(const uint32& escapeMs)
         if (mChanged)
         {
             checkWrapping();
+            uint32 fontHeight = mRenderText->mFont->getMaxLetterHeight() + mRenderText->mFont->getMinLetterHeight();
+            mRenderText->mOffsetY = GraphicsManager::getInstance()->getWindowHeight() - fontHeight - getTransform()->getPosition().y * 2;
             mChanged = false;
         }
         RenderBatch::getInstance()->addRenderQueue(mRenderText);

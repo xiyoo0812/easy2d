@@ -17,46 +17,14 @@ UITextField::~UITextField(void)
 {
 }
 
-void UITextField::setHorizontalAlignment(HorizontalAlign alignment, bool redefineCenter)
+void UITextField::setHorizontalAlign(HorizontalAlign align)
 {
-    if (redefineCenter)
-    {
-        mTextComponent->setHorizontalAlign(alignment);
-        switch (alignment)
-        {
-        case HorizontalAlign::Left:
-            getTransform()->setAnchorX(0);
-            break;
-        case HorizontalAlign::Center:
-            getTransform()->setAnchorX(0.5);
-            break;
-        case HorizontalAlign::Right:
-            getTransform()->setAnchorX(1);
-            break;
-        }
-    }
-    UIWidget::setHorizontalAlignment(alignment, redefineCenter);
+    mTextComponent->setHorizontalAlign(align);
 }
 
-void UITextField::setVerticalAlignment(VerticalAlign alignment, bool redefineCenter)
+void UITextField::setVerticalAlign(VerticalAlign align)
 {
-    if (redefineCenter)
-    {
-        mTextComponent->setVerticalAlign(alignment);
-        switch (alignment)
-        {
-        case VerticalAlign::Bottom:
-            getTransform()->setAnchorY(0);
-            break;
-        case VerticalAlign::Center:
-            getTransform()->setAnchorY(0.5);
-            break;
-        case VerticalAlign::Top:
-            getTransform()->setAnchorY(1);
-            break;
-        }
-    }
-    UIWidget::setVerticalAlignment(alignment, redefineCenter);
+    mTextComponent->setVerticalAlign(align);
 }
 
 void UITextField::setText(const Wtring& text)

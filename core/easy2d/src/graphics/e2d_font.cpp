@@ -141,8 +141,8 @@ SPtr<FontChar> Font::loadFontChar(wchar_t ch, bool bBold, bool bItalic)
     }
     auto fChar = std::make_shared<FontChar>();
     fChar->textureID = mTextures[mTextureIndex];
-    fChar->letterDimensions = Vec2(dimX, dimY);
-    fChar->vertexDimensions = Vec2(width, height);
+    fChar->letterSize = Vec2(dimX, dimY);
+    fChar->vertexSize = Vec2(width, height);
     fChar->advence = (mFace->glyph->metrics.horiAdvance / 64);
     fChar->uvCoordTL = Vec2(mTextureX / FONT_TEXTURE_SIZE, mTextureY / FONT_TEXTURE_SIZE);
     fChar->uvCoordBR = Vec2((mTextureX + width) / FONT_TEXTURE_SIZE, (mTextureY + height) / FONT_TEXTURE_SIZE);

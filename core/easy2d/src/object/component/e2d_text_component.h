@@ -61,7 +61,7 @@ namespace Easy2D
 
     private:
         void checkWrapping();
-        void calculateTextDimensions(uint32 textWidth, uint32 textHeight);
+        void calculateTextSize(uint32 textWidth, uint32 textHeight);
         void calculateTextOffset(Vector<uint16>& lineWidths);
 
         bool mbLineWrap = false;
@@ -71,7 +71,7 @@ namespace Easy2D
         Wtring mOrigText = EMPTY_STRING;
         SPtr<RenderText> mRenderText = nullptr;
         VerticalAlign mVerticalAlign = VerticalAlign::Center;
-        HorizontalAlign mHorizontalAlign = HorizontalAlign::Center;
+        HorizontalAlign mHorizontalAlign = HorizontalAlign::Left;
 
     public:
         inline static const wchar_t ENTER = '\n';

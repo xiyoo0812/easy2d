@@ -249,7 +249,7 @@ bool Window::onMessage(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         RECT clienRect;
         GetClientRect(hWnd, &clienRect);
         GraphicsManager::getInstance()->setWindowChanged(true);
-        GraphicsManager::getInstance()->setWindowDimensions(clienRect.right - clienRect.left,clienRect.bottom - clienRect.top);
+        GraphicsManager::getInstance()->setWindowSize(clienRect.right - clienRect.left,clienRect.bottom - clienRect.top);
         return true;
     }
     break;

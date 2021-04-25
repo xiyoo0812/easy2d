@@ -14,8 +14,8 @@ namespace Easy2D
     public:
         GLuint textureID = 0;
         uint8 advence = 0;
-        Vec2 vertexDimensions = Vec2(0, 0);
-        Vec2 letterDimensions = Vec2(0, 0);
+        Vec2 vertexSize = Vec2(0, 0);
+        Vec2 letterSize = Vec2(0, 0);
         Vec2 uvCoordTL = Vec2(0, 0), uvCoordBR = Vec2(1, 1);
     };
     typedef UnorderedMap<wchar_t, SPtr<FontChar>> FontMap;

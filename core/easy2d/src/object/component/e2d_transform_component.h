@@ -27,45 +27,51 @@ namespace Easy2D
         void moveX(float32 x);
         void moveY(float32 y);
 
-        void rotate(float32 rotation);
+        const Vec2& getAbsolute();
+        const Vec2& getPosition();
 
         void scale(const Vec2& scale);
         void scale(float32 x, float32 y);
         void scale(float32 u);
         void scaleX(float32 x);
         void scaleY(float32 y);
+        const Vec2& getScale();
 
         void mirror(bool x, bool y);
         void mirrorX(bool x);
         void mirrorY(bool y);
 
-        const Vec2& getWorldPosition();
-        const Vec2& getLocalPosition();
         float32 getRotation() const;
-        const Vec2& getScale();
+        void rotate(float32 rotation);
 
         void setAnchor(const Vec2& anchor);
         void setAnchor(float32 x, float32 y);
         void setAnchorX(float32 x);
         void setAnchorY(float32 y);
 
-        void setDimensions(float32 x, float32 y);
-        void setDimensions(const Vec2& dimensions);
-        void setDimensionsX(float32 x);
-        void setDimensionsY(float32 y);
-        const Vec2& getDimensions() const;
+        void setSize(float32 x, float32 y);
+        void setSize(const Vec2& size);
+        void setSizeX(float32 x);
+        void setSizeY(float32 y);
         float32 getWidth() const;
         float32 getHeight() const;
-
+        const Vec2& getSize() const;
         const Mat4& getWorldMatrix() const;
+
+        void setDockerAlign(DockerAlign align);
+        DockerAlign getDockerAlign() const;
 
     private:
         void updateTransform();
+        Vec2 getDockerSize() const;
+        float32 transDockerX(float32 x);
+        float32 transDockerY(float32 y);
 
         Mat4 mWorld = {};
         float32 mRotation = 0;
         bool mMirroredX = false, mMirroredY = false;
-        Vec2 mWorldPt{ 0, 0 }, mLocalPt{ 0, 0 }, mScale{ 1,1 }, mAnchorPt{ 0, 0 }, mDimensions{ 1, 1 };
+        DockerAlign mDockerAlign = DockerAlign::LeftTop;
+        Vec2 mAbsolute{ 0, 0 }, mPostion{ 0, 0 }, mAnchor{ 0, 0 }, mScale{ 1,1 }, mSize{ 1, 1 };
 
     public:
         inline static String GUID = "transform";

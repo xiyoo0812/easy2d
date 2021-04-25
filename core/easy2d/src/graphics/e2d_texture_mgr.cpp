@@ -64,7 +64,7 @@ GLuint TextureManager::getTextureID(const String& name)
     return 0;
 }
 
-Vec2 TextureManager::getTextureDimensions(const String& name)
+Vec2 TextureManager::getTextureSize(const String& name)
 {
     auto it = mTextureMap.find(name);
     if (it != mTextureMap.end())

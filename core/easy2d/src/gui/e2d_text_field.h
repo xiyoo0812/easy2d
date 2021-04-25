@@ -15,8 +15,8 @@ namespace Easy2D
 
         virtual ~UITextField();
 
-        virtual void setHorizontalAlignment(HorizontalAlign alignment, bool redefineCenter = true);
-        virtual void setVerticalAlignment(VerticalAlign alignment, bool redefineCenter = true);
+        void setVerticalAlign(VerticalAlign align);
+        void setHorizontalAlign(HorizontalAlign align);
 
         void setText(const Wtring& text);
         const Wtring& getText() const;

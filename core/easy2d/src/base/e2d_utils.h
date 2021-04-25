@@ -4,28 +4,34 @@
 namespace Easy2D
 {
     enum class HorizontalAlign : byte
-	{
-		Left = 0,
-		Center,
-		Right
-	};
-
-	enum class VerticalAlign : byte
-	{
-		Bottom = 0,
-		Center,
-		Top
-	};
-
-    template <typename T, typename U = uint8>
-    struct PointerArray
     {
-        U amount;
-        T* elements;
+        Left = 0,
+        Center,
+        Right
+    };
+
+    enum class VerticalAlign : byte
+    {
+        Bottom = 0,
+        Center,
+        Top
+    };
+
+    enum class DockerAlign : byte
+    {
+        Top = 0,
+        Left,
+        Right,
+        Bottom,
+        Center,
+        LeftTop,
+        LeftBottom,
+        RightTop,
+        RightBottom,
     };
 
     template <typename T>
-    inline void safeDelete(T* &pointer)
+    inline void safeDelete(T*& pointer)
     {
         if (pointer != nullptr)
         {
@@ -35,7 +41,7 @@ namespace Easy2D
     }
 
     template <typename T>
-    inline void safeDeleteArray(T* &array)
+    inline void safeDeleteArray(T*& array)
     {
         if (array != nullptr)
         {
