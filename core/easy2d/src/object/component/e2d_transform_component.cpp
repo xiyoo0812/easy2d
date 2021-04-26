@@ -294,18 +294,18 @@ DockerAlign TransformComponent::getDockerAlign() const
 
 float32 TransformComponent::transDockerX(float32 x)
 {
-    Vec2 Size = getDockerSize();
+    const Vec2& size = getDockerSize();
     switch (mDockerAlign)
     {
     case DockerAlign::Top:
     case DockerAlign::Center:
     case DockerAlign::Bottom:
-        x += Size.x / 2;
+        x += size.x / 2;
         break;
     case DockerAlign::Right:
     case DockerAlign::RightTop:
     case DockerAlign::RightBottom:
-        x += Size.x;
+        x = size.x - x;
         break;
     default:
         return x;
@@ -314,32 +314,32 @@ float32 TransformComponent::transDockerX(float32 x)
 
 float32 TransformComponent::transDockerY(float32 y)
 {
-    Vec2 Size = getDockerSize();
+    const Vec2& size = getDockerSize();
     switch (mDockerAlign)
     {
     case DockerAlign::Left:
     case DockerAlign::Center:
     case DockerAlign::Right:
-        y += Size.y / 2;
+        y += size.y / 2;
         break;
     case DockerAlign::Bottom:
     case DockerAlign::LeftBottom:
     case DockerAlign::RightBottom:
-        y += Size.y;
+        y = size.y - y;
         break;
     default:
         return y;
     }
 }
 
-Vec2 TransformComponent::getDockerSize() const
+const Vec2& TransformComponent::getDockerSize() const
 {
     if (!mMaster.expired())
     {
         auto parent = mMaster.lock()->getParent();
         if (parent)
         {
-            parent->getSize();
+            return parent->getSize();
         }
     }
     return GraphicsManager::getInstance()->getScreenResolution();
