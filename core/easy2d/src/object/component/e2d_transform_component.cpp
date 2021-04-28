@@ -310,6 +310,7 @@ float32 TransformComponent::transDockerX(float32 x)
     default:
         return x;
     }
+    return x;
 }
 
 float32 TransformComponent::transDockerY(float32 y)
@@ -320,16 +321,17 @@ float32 TransformComponent::transDockerY(float32 y)
     case DockerAlign::Left:
     case DockerAlign::Center:
     case DockerAlign::Right:
-        y += size.y / 2;
+        y -= size.y / 2;
         break;
     case DockerAlign::Bottom:
     case DockerAlign::LeftBottom:
     case DockerAlign::RightBottom:
-        y = size.y - y;
+        y = y - (size.y - 2*y);
         break;
     default:
         return y;
     }
+    return y;
 }
 
 const Vec2& TransformComponent::getDockerSize() const
