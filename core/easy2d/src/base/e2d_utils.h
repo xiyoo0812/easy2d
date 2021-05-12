@@ -28,6 +28,7 @@ namespace Easy2D
         LeftBottom,
         RightTop,
         RightBottom,
+        Full,
     };
 
     template <typename T>

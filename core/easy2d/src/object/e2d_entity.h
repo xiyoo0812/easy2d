@@ -5,12 +5,13 @@
 #include "e2d_object.h"
 #include "e2d_action.h"
 #include "e2d_component.h"
+#include "base/e2d_event.h"
 
 namespace Easy2D
 {
     class Scene;
     class TransformComponent;
-    class Entity : public Object
+    class Entity : public Object, public EventDispatcher
     {
     public:
         Entity();

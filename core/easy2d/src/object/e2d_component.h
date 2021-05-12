@@ -2,6 +2,7 @@
 #define COMPONENT_H
 
 #include "e2d_object.h"
+#include "base/e2d_event.h"
 
 namespace Easy2D
 {
@@ -9,7 +10,7 @@ namespace Easy2D
     class Entity;
     class TransformComponent;
 
-    class Component : public Object
+    class Component : public Object, public EventListerner
     {
     public:
         Component();
@@ -21,6 +22,7 @@ namespace Easy2D
         virtual void initialize() = 0;
 
         virtual void update(const uint32& escapeMs) = 0;
+        virtual void onHandleEvent(SPtr<Event> event) {}
 
         SPtr<Scene> getScene() const;
         SPtr<TransformComponent> getTransform() const;

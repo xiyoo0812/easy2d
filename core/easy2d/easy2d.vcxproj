@@ -112,6 +112,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\base\e2d_color.cpp" />
+    <ClCompile Include="src\base\e2d_event.cpp" />
     <ClCompile Include="src\base\e2d_guid.cpp" />
     <ClCompile Include="src\base\e2d_stopwatch.cpp" />
     <ClCompile Include="src\base\e2d_timer_mgr.cpp" />
@@ -150,6 +151,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\base\e2d_color.h" />
+    <ClInclude Include="src\base\e2d_event.h" />
     <ClInclude Include="src\base\e2d_guid.h" />
     <ClInclude Include="src\base\e2d_singleton.h" />
     <ClInclude Include="src\base\e2d_stopwatch.h" />

@@ -277,6 +277,7 @@ void TransformComponent::update(const uint32& escapeMs)
     if (mChanged)
     {
         updateTransform();
+        mMaster.lock()->notifyTrigger(std::make_shared<TransformEvent>());
         mChanged = false;
     }
 }
@@ -284,6 +285,12 @@ void TransformComponent::update(const uint32& escapeMs)
 void TransformComponent::setDockerAlign(DockerAlign align)
 {
     mDockerAlign = align;
+    if (align == DockerAlign::Full)
+    {
+        mPostion = Vec2(0, 0);
+        mAnchor = Vec2(0.5, 0.5);
+        mSize = getDockerSize();
+    }
     mChanged = true;
 }
 
@@ -307,6 +314,9 @@ float32 TransformComponent::transDockerX(float32 x)
     case DockerAlign::RightBottom:
         x = size.x - x;
         break;
+    case DockerAlign::Full:
+        x = size.x / 2;
+        break;
     default:
         return x;
     }
@@ -327,6 +337,9 @@ float32 TransformComponent::transDockerY(float32 y)
     case DockerAlign::LeftBottom:
     case DockerAlign::RightBottom:
         y = y - (size.y - 2*y);
+        break;
+    case DockerAlign::Full:
+        y = -size.y / 2;
         break;
     default:
         return y;

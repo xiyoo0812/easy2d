@@ -51,10 +51,10 @@ void E2dEngine::initialize(SPtr<android_app> app)
     auto image = std::make_shared<UIImage>("image");
     scene->addEntity(image);
     image->setTexture(tex);
-    image->setPosition(10, 100);
-    image->setAnchor(1, 1);
+    image->setPosition(0, 0);
+    image->setAnchor(0.5, 0.5);
     image->setZorder(1);
-    image->setDockerAlign(DockerAlign::LeftBottom);
+    image->setDockerAlign(DockerAlign::Full);
 
     auto font = FontManager::getInstance()->loadFont("felt-12", "fzltxh_gbk.ttf", 48);
 

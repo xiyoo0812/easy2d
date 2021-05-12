@@ -19,6 +19,8 @@ namespace Easy2D
 
         virtual void update(const uint32& escapeMs);
 
+        virtual void onHandleEvent(SPtr<Event> event);
+
         void setColor(const Color& color);
         
         const Color& getColor() const;

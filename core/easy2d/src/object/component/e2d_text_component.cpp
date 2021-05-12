@@ -149,6 +149,14 @@ void TextComponent::update(const uint32& escapeMs)
     }
 }
 
+void TextComponent::onHandleEvent(SPtr<Event> event)
+{
+    if (event->getGuid() == TransformEvent::GUID)
+    {
+        mChanged = true;
+    }
+}
+
 void TextComponent::setText(const Wtring& text)
 {
     mOrigText = text;

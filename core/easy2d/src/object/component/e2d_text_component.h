@@ -17,7 +17,8 @@ namespace Easy2D
 
         virtual void initialize();
 
-        virtual void update(const uint32& escapeMs);
+        virtual void update(const uint32& escapeMs); 
+        virtual void onHandleEvent(SPtr<Event> event);
 
         void setText(const Wtring& text);
         const Wtring& getText() const;

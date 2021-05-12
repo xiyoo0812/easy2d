@@ -39,10 +39,23 @@ void TextureComponent::update(const uint32& escapeMs)
 {
     if (mTexture)
     {
-        Vec2 pos = getTransform()->getPosition();
-        Vec2 transDim = getTransform()->getSize();
-        mRenderTex->mOffsetY = GraphicsManager::getInstance()->getWindowHeight() - transDim.y - pos.y * 2;
+        if (mChanged)
+        {
+            Vec2 pos = getTransform()->getPosition();
+            Vec2 transDim = getTransform()->getSize();
+            mRenderTex->mVertices = transDim;
+            mRenderTex->mOffsetY = GraphicsManager::getInstance()->getWindowHeight() - transDim.y - pos.y * 2;
+            mChanged = false;
+        }
         RenderBatch::getInstance()->addRenderQueue(mRenderTex);
+    }
+}
+
+void TextureComponent::onHandleEvent(SPtr<Event> event)
+{
+    if (event->getGuid() == TransformEvent::GUID)
+    {
+        mChanged = true;
     }
 }
 
@@ -68,6 +81,7 @@ bool TextureComponent::isHUDEnabled() const
 
 void TextureComponent::setTexture(SPtr<Texture2D> texture)
 {
+    mChanged = true;
     mTexture = texture;
     Vec2 transDim = getTransform()->getSize();
     if (transDim.x == 1 && transDim.y == 1)
@@ -75,6 +89,5 @@ void TextureComponent::setTexture(SPtr<Texture2D> texture)
         transDim = Vec2(texture->getWidth(), texture->getHeight());
         getTransform()->setSize(transDim);
     }
-    mRenderTex->mVertices = transDim;
     mRenderTex->mTextureID = mTexture->getTextureID();
 }

@@ -7,6 +7,14 @@
 namespace Easy2D
 {
     class Object;
+
+    class TransformEvent : public Event
+    {
+    public:
+        TransformEvent() : Event(GUID) {}
+        inline static String GUID = BUILD_SGUID();
+    };
+
     class TransformComponent final : public Component
     {
     public:
