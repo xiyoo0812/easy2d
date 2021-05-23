@@ -36,8 +36,12 @@ namespace Easy2D
         void setItalic(bool italoc);
         bool isItalic() const;
 
-        void setLineWrap(bool lineWrap);
-        bool isLineWrap() const;
+        void setLineWidth(uint32 lineWrap);
+        uint32 getLineWidth() const;
+        bool isLineWarp() const;
+
+        void setContentFollow(bool follow);
+        bool isContentFollow() const;
 
         void setSpacing(uint32 spacing);
         uint32 getSpacing() const;

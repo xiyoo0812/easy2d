@@ -51,6 +51,26 @@ void TextureComponent::update(const uint32& escapeMs)
     }
 }
 
+bool TextureComponent::isScale9Tile() const
+{
+    return mRenderTex->isScale9Tile();
+}
+
+const Vec4i& TextureComponent::getScale9Tile() const
+{
+    return mRenderTex->mScale9;
+}
+
+void TextureComponent::setScale9Tile(const Vec4i& tiles)
+{
+    setScale9Tile(tiles.x, tiles.y, tiles.z, tiles.w);
+}
+
+void TextureComponent::setScale9Tile(const uint32 beginX, uint32 beginY, uint32 endX, uint32 endY)
+{
+    mRenderTex->mScale9 = Vec4i(beginX, beginY, endX, endY);
+}
+
 void TextureComponent::onHandleEvent(SPtr<Event> event)
 {
     if (event->getGuid() == TransformEvent::GUID)

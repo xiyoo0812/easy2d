@@ -87,14 +87,29 @@ bool UITextField::isItalic() const
     return mTextComponent->isItalic();
 }
 
-void UITextField::setLineWrap(bool lineWrap)
+void UITextField::setLineWidth(uint32 lineWrap)
 {
-    mTextComponent->setLineWrap(lineWrap);
+    mTextComponent->setLineWidth(lineWrap);
 }
 
-bool UITextField::isLineWrap() const
+uint32 UITextField::getLineWidth() const
 {
-    return mTextComponent->isLineWrap();
+    return mTextComponent->getLineWidth();
+}
+
+bool UITextField::isLineWarp() const
+{
+    return mTextComponent->isLineWarp();
+}
+
+void UITextField::setContentFollow(bool follow)
+{
+    mTextComponent->setContentFollow(follow);
+}
+
+bool UITextField::isContentFollow() const
+{
+    return mTextComponent->isContentFollow();
 }
 
 void UITextField::setSpacing(uint32 spacing)

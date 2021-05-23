@@ -43,8 +43,9 @@ namespace Easy2D
         void setFont(const SPtr<Font> font);
         const SPtr<Font> getFont() const;
 
-        void setLineWrap(bool lineWrap);
-        bool isLineWrap() const;
+        void setLineWidth(uint32 lineWidth);
+        uint32 getLineWidth() const;
+        bool isLineWarp() const;
 
         void setSpacing(uint32 spacing);
         uint32 getSpacing() const;
@@ -65,9 +66,9 @@ namespace Easy2D
         void calculateTextSize(uint32 textWidth, uint32 textHeight);
         void calculateTextOffset(Vector<uint16>& lineWidths);
 
-        bool mbLineWrap = false;
         bool mbContentFollow = false;
 
+        uint32 mLineWidth = 0;
         uint32 mFrameOffset = 1;
         Wtring mOrigText = EMPTY_STRING;
         SPtr<RenderText> mRenderText = nullptr;

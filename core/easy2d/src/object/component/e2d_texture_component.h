@@ -29,6 +29,14 @@ namespace Easy2D
 
         bool isHUDEnabled() const;
 
+        bool isScale9Tile() const;
+
+        const Vec4i& getScale9Tile() const;
+
+        void setScale9Tile(const Vec4i& tiles);
+
+        void setScale9Tile(const uint32 beginX, uint32 beginY, uint32 endX, uint32 endY);
+
         void setUVCoords(const Vec4& coords);
 
         void setUVCoords(float32 beginX, float32 beginY, float32 endX, float32 endY);

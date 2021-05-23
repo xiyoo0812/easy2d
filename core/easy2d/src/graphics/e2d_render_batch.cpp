@@ -48,6 +48,19 @@ const RenderSortingMode RenderBatch::getSortingMode()
 
 void RenderBatch::addRenderQueue(SPtr<RenderTexture> texture)
 {
+    if (texture->isScale9Tile())
+    {
+        createSpriteQuad(texture);
+        createSpriteQuad(texture);
+        createSpriteQuad(texture);
+        createSpriteQuad(texture);
+        createSpriteQuad(texture);
+        createSpriteQuad(texture);
+        createSpriteQuad(texture);
+        createSpriteQuad(texture);
+        createSpriteQuad(texture);
+        return;
+    }
     createSpriteQuad(texture);
 }
 

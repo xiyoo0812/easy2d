@@ -17,7 +17,17 @@ namespace Easy2D
 
         void setColor(const Color& color);
 
+        const Color& getColor() const;
+
         void setTexture(SPtr<Texture2D> mTexture);
+
+        bool isScale9Tile() const;
+
+        const Vec4i& getScale9Tile() const;
+
+        void setScale9Tile(const Vec4i& tiles);
+
+        void setScale9Tile(const uint32 beginX, uint32 beginY, uint32 endX, uint32 endY);
 
     protected:
         SPtr<TextureComponent> mTextureComponent;

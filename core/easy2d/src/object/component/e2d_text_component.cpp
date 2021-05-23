@@ -27,11 +27,15 @@ void TextComponent::checkWrapping()
     Wtring wrapText = EMPTY_STRING;
     uint16 lineWidth = 0, textWidth = 0;
     Vec2 transDim = getTransform()->getSize();
+    if (isLineWarp() && mLineWidth > transDim.x - mFrameOffset * 2)
+    {
+        mLineWidth = transDim.x - mFrameOffset * 2;
+    }
     for (auto it : mOrigText)
     {
         if (it == ENTER)
         {
-            if (mbLineWrap && lineWidth > 0)
+            if (isLineWarp() && lineWidth > 0)
             {
                 lineWidths.push_back(lineWidth);
                 renderWords.push_back(wrapText);
@@ -41,9 +45,9 @@ void TextComponent::checkWrapping()
             continue;
         }
         uint32 charWidth = mRenderText->mFont->getCharWidth(it, mRenderText->mbBold, mRenderText->mbItalic);
-        if (mbLineWrap)
+        if (isLineWarp())
         {
-            if (lineWidth + charWidth > transDim.x - mFrameOffset * 2)
+            if (lineWidth + charWidth > mLineWidth)
             {
                 if (lineWidth > textWidth)
                 {
@@ -57,6 +61,10 @@ void TextComponent::checkWrapping()
                     lineWidth = 0;
                 }
             }
+        }
+        else
+        {
+            textWidth += charWidth;
         }
         lineWidth += charWidth;
         wrapText.append(&it, 1);
@@ -81,11 +89,7 @@ void TextComponent::calculateTextSize(uint32 textWidth, uint32 textHeight)
         getTransform()->setSize(textWidth + mFrameOffset * 2, textHeight + mFrameOffset * 2);
         return;
     }
-    if (!mbLineWrap && textWidth > getTransform()->getWidth())
-    {
-        getTransform()->setSizeX(textWidth + mFrameOffset * 2);
-    }
-    if (textHeight > getTransform()->getHeight())
+    if (textHeight > getTransform()->getHeight() - mFrameOffset * 2)
     {
         getTransform()->setSizeY(textHeight + mFrameOffset * 2);
     }
@@ -97,6 +101,7 @@ void TextComponent::calculateTextOffset(Vector<uint16>& lineWidths)
     mRenderText->mHorizontalOffset.clear();
     uint32 lineCount = lineWidths.size();
     Vec2 transDim = getTransform()->getSize();
+    uint32 lineWidth = isLineWarp() ? mLineWidth : (transDim.x - mFrameOffset * 2);
     uint32 fontHeight = mRenderText->mFont->getMaxLetterHeight() + mRenderText->mFont->getMinLetterHeight();
     uint32 textHeight = fontHeight * lineCount + mRenderText->mSpacing * (lineCount - 1);
     for (size_t line = 0; line < lineCount; ++line)
@@ -104,12 +109,12 @@ void TextComponent::calculateTextOffset(Vector<uint16>& lineWidths)
         uint32 length = lineWidths[line];
         if (mHorizontalAlign == HorizontalAlign::Center)
         {
-            int32 diff = transDim.x - mFrameOffset * 2 - length;
+            int32 diff = lineWidth - length;
             mRenderText->mHorizontalOffset.push_back(mFrameOffset + diff / 2);
         }
         else if (mHorizontalAlign == HorizontalAlign::Right)
         {
-            int32 diff = transDim.x - mFrameOffset * 2 - length;
+            int32 diff = lineWidth - length;
             mRenderText->mHorizontalOffset.push_back(mFrameOffset + diff);
         }
         else
@@ -119,12 +124,12 @@ void TextComponent::calculateTextOffset(Vector<uint16>& lineWidths)
         uint32 lineHeight = mFrameOffset + line * fontHeight + line * mRenderText->mSpacing;
         if (mVerticalAlign == VerticalAlign::Center)
         {
-            int32 diff = transDim.y - mFrameOffset * 2 - textHeight;
+            int32 diff = transDim.y - textHeight;
             mRenderText->mVerticalOffset.push_back(lineHeight + diff / 2);
         }
         else if (mVerticalAlign == VerticalAlign::Bottom)
         {
-            int32 diff = transDim.y - mFrameOffset * 2 - textHeight;
+            int32 diff = transDim.y - textHeight;
             mRenderText->mVerticalOffset.push_back(lineHeight + diff);
         }
         else
@@ -243,15 +248,20 @@ const SPtr<Font> TextComponent::getFont() const
     return mRenderText->mFont;
 }
 
-void TextComponent::setLineWrap(bool lineWrap)
+void TextComponent::setLineWidth(uint32 lineWidth)
 {
-    mbLineWrap = lineWrap;
+    mLineWidth = lineWidth;
     mChanged = true;
 }
 
-bool TextComponent::isLineWrap() const
+bool TextComponent::isLineWarp() const
 {
-    return mbLineWrap;
+    return mLineWidth > 0;
+}
+
+uint32 TextComponent::getLineWidth() const
+{
+    return mLineWidth;
 }
 
 void TextComponent::setSpacing(uint32 spacing)

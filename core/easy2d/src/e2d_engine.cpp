@@ -68,9 +68,9 @@ void E2dEngine::initialize(SPtr<android_app> app)
     txt->setSpacing(5);
     txt->setSize(Vec2(200, 60));
     txt->setAnchor(0, 1);
-    txt->setPosition(30, 0);
-    txt->setLineWrap(true);
-    txt->setDockerAlign(DockerAlign::LeftBottom);
+    txt->setPosition(0, 0);
+    txt->setHorizontalAlign(HorizontalAlign::Center);
+    txt->setDockerAlign(DockerAlign::Full);
 
 //     auto txt2 = std::make_shared<UITextField>("text2");
 //     scene->addEntity(txt2);
