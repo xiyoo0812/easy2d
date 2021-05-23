@@ -48,19 +48,6 @@ const RenderSortingMode RenderBatch::getSortingMode()
 
 void RenderBatch::addRenderQueue(SPtr<RenderTexture> texture)
 {
-    if (texture->isScale9Tile())
-    {
-        createSpriteQuad(texture);
-        createSpriteQuad(texture);
-        createSpriteQuad(texture);
-        createSpriteQuad(texture);
-        createSpriteQuad(texture);
-        createSpriteQuad(texture);
-        createSpriteQuad(texture);
-        createSpriteQuad(texture);
-        createSpriteQuad(texture);
-        return;
-    }
     createSpriteQuad(texture);
 }
 
@@ -179,7 +166,7 @@ void RenderBatch::createSpriteQuad(SPtr<RenderTexture> sprite)
     */
     //Push back all vertices
     //左上角坐标系转为左下角坐标系
-    Mat4 matTrans = Easy2D::translate(0, sprite->mOffsetY, 0);
+    Mat4 matTrans = Easy2D::translate(sprite->mOffsetX, sprite->mOffsetY, 0);
     Mat4 transformMat = transpose(matTrans * sprite->mTransform->getWorldMatrix());
     Vec4 TL = Vec4(0, sprite->mVertices.y, 0, 1);
     mul(TL, transformMat, TL);
@@ -252,7 +239,7 @@ void RenderBatch::createTextQuad(SPtr<RenderText> text, Vec2& offset, Color& col
     for (size_t line = 0; line < line_count; ++line)
     {
         int32 offsetY = -offset.y - (text->mVerticalOffset[line] - text->mOffsetY);
-        int32 offsetX = offset.x + text->mHorizontalOffset[line];
+        int32 offsetX = text->mOffsetX + offset.x + text->mHorizontalOffset[line];
         for (auto it : text->mTextList[line])
         {
             auto fChar = text->mFont->getFontChar(it, text->mbBold, text->mbItalic);

@@ -31,11 +31,13 @@ namespace Easy2D
 
         bool isScale9Tile() const;
 
-        const Vec4i& getScale9Tile() const;
+        void disableScale9Tile();
 
-        void setScale9Tile(const Vec4i& tiles);
+        const Vec4& getScale9Tile() const;
 
-        void setScale9Tile(const uint32 beginX, uint32 beginY, uint32 endX, uint32 endY);
+        void setScale9Tile(const Vec4& tiles);
+
+        void setScale9Tile(const float32 beginX, float32 beginY, float32 endX, float32 endY);
 
         void setUVCoords(const Vec4& coords);
 
@@ -43,9 +45,14 @@ namespace Easy2D
 
         void setTexture(SPtr<Texture2D> mTexture);
 
+    protected:
+        SPtr<RenderTexture> buildRenderTexture();
+
     private:
+        Vec4 mScale9Tile { 0, 0, 1, 1 };
         SPtr<Texture2D> mTexture = nullptr;
         SPtr<RenderTexture> mRenderTex = nullptr;
+        Vector<SPtr<RenderTexture>> mRenderTexScale9 = {};
 
     public:
         inline static String GUID = "render_texture";

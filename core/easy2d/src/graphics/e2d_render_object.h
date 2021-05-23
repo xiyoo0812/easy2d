@@ -11,6 +11,7 @@ namespace Easy2D
     class RenderObject
     {
     public:
+        int32 mOffsetX = 0;
         int32 mOffsetY = 0;
         bool mbHud = false;
         Color mColor = Color::White;
@@ -20,16 +21,9 @@ namespace Easy2D
     class RenderTexture : public RenderObject
     {
     public:
+        Vec2 mVertices{ 1, 1 };
         Vec4 mUvCoords{ 0, 0, 1, 1 };
-        Vec4i mScale9{ 0, 0, 1, 1 };
-        Vec2i mVertices{ 1, 1 };
         uint32 mTextureID = 0;
-
-        bool isScale9Tile() const
-        {
-            return mScale9.x > 0 && mScale9.y > 0 && mScale9.z < mVertices.x && mScale9.w < mVertices.y;
-        }
-
     };
 
     class RenderText : public RenderObject

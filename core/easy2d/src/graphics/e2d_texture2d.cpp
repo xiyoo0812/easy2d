@@ -52,12 +52,12 @@ bool Texture2D::load()
     return true;
 }
 
-int32 Texture2D::getHeight() const
+uint32 Texture2D::getHeight() const
 {
     return mHeight;
 }
 
-int32 Texture2D::getWidth() const
+uint32 Texture2D::getWidth() const
 {
     return mWidth;
 }

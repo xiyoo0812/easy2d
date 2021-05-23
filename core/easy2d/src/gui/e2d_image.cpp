@@ -38,17 +38,22 @@ bool UIImage::isScale9Tile() const
     return mTextureComponent->isScale9Tile();
 }
 
-const Vec4i& UIImage::getScale9Tile() const
+void UIImage::disableScale9Tile()
+{
+    mTextureComponent->disableScale9Tile();
+}
+
+const Vec4& UIImage::getScale9Tile() const
 {
     return mTextureComponent->getScale9Tile();
 }
 
-void UIImage::setScale9Tile(const Vec4i& tiles)
+void UIImage::setScale9Tile(const Vec4& tiles)
 {
     mTextureComponent->setScale9Tile(tiles.x, tiles.y, tiles.z, tiles.w);
 }
 
-void UIImage::setScale9Tile(const uint32 beginX, uint32 beginY, uint32 endX, uint32 endY)
+void UIImage::setScale9Tile(const float32 beginX, float32 beginY, float32 endX, float32 endY)
 {
     mTextureComponent->setScale9Tile(beginX, beginY, endX, endY);
 }
