@@ -13,7 +13,7 @@ UIImage::UIImage(const String& name)
     addComponent(mTextureComponent);
 }
 
-UIImage::~UIImage(void)
+UIImage::~UIImage()
 {
 
 }
@@ -31,6 +31,16 @@ void UIImage::setColor(const Color& color)
 const Color& UIImage::getColor() const
 {
     return mTextureComponent->getColor();
+}
+
+void UIImage::setUVCoords(float32 beginX, float32 beginY, float32 endX, float32 endY)
+{
+    mTextureComponent->setUVCoords(beginX, beginY, endX, endY);
+}
+
+void UIImage::setUVCoords(const Vec4& coords)
+{
+    mTextureComponent->setUVCoords(coords.x, coords.y, coords.z, coords.w);
 }
 
 bool UIImage::isScale9Tile() const

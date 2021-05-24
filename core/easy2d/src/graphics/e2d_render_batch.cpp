@@ -166,7 +166,8 @@ void RenderBatch::createSpriteQuad(SPtr<RenderTexture> sprite)
     */
     //Push back all vertices
     Mat4 matWorld = sprite->mTransform->getWorldMatrix();
-    Mat4 transformMat = transpose(matWorld);
+    Mat4 offsetMatrix = Easy2D::translate(Vec3(sprite->mOffset.x, sprite->mOffset.y, 0));
+    Mat4 transformMat = transpose(matWorld * offsetMatrix);
     Vec4 TL = Vec4(0, sprite->mVertices.y, 0, 1);
     mul(TL, transformMat, TL);
     Vec4 TR = Vec4(sprite->mVertices.x, sprite->mVertices.y, 0, 1);

@@ -47,11 +47,13 @@ void E2dEngine::initialize(SPtr<android_app> app)
     auto scene = std::make_shared<Scene>("test");
     SceneManager::getInstance()->addScene(scene);
 
-    auto tex = TextureManager::getInstance()->loadTexture("image/bg.png", "bg");
+    auto tex = TextureManager::getInstance()->loadTexture("image/btn.png", "btn");
     auto image = std::make_shared<UIImage>("image");
     scene->addEntity(image);
     image->setTexture(tex);
     image->setPosition(0, 0);
+    image->setSize(Vec2(95, 42));
+    image->setScale9Tile(20, 12, 75, 30);
     image->setAnchor(0, 0);
     image->setZorder(1);
     image->setDockerAlign(DockerAlign::LeftTop);
@@ -69,6 +71,7 @@ void E2dEngine::initialize(SPtr<android_app> app)
     txt->setSize(Vec2(200, 60));
     txt->setPosition(0, 5);
     txt->setAnchor(0, 0);
+    txt->setLineWidth(200);
     txt->setHorizontalAlign(HorizontalAlign::Left);
     txt->setDockerAlign(DockerAlign::LeftTop);
 

@@ -47,17 +47,26 @@ void TextureComponent::update(const uint32& escapeMs)
             uint32 windowHeight = GraphicsManager::getInstance()->getWindowHeight();
             if (mRenderTexScale9.size() > 0)
             {
-                uint centerWidth = transDim.x - mScale9Tile.x - mScale9Tile.z;
-                uint centerHeight = transDim.y - mScale9Tile.y - mScale9Tile.w;
-                mRenderTexScale9[0]->mVertices = Vec2(mScale9Tile.x, mScale9Tile.y);   //tl
-                mRenderTexScale9[1]->mVertices = Vec2(centerWidth, mScale9Tile.y);     //tc
-                mRenderTexScale9[2]->mVertices = Vec2(mScale9Tile.z, mScale9Tile.y);   //tr
-                mRenderTexScale9[3]->mVertices = Vec2(mScale9Tile.x, centerHeight);    //cl
-                mRenderTexScale9[4]->mVertices = Vec2(centerWidth, centerHeight);      //cc
-                mRenderTexScale9[5]->mVertices = Vec2(mScale9Tile.z, centerHeight);    //cr
-                mRenderTexScale9[6]->mVertices = Vec2(mScale9Tile.x, mScale9Tile.w);   //bl
-                mRenderTexScale9[7]->mVertices = Vec2(centerWidth, mScale9Tile.w);     //bc
-                mRenderTexScale9[8]->mVertices = Vec2(mScale9Tile.z, mScale9Tile.w);   //br
+                uint32 centerWidth = transDim.x - mScale9Tile.x - mScale9Tile.z;
+                uint32 centerHeight = transDim.y - mScale9Tile.y - mScale9Tile.w;
+                mRenderTexScale9[0]->mOffset = Vec2(0, 0);                              //tl
+                mRenderTexScale9[0]->mVertices = Vec2(mScale9Tile.x, mScale9Tile.y);    //tl
+                mRenderTexScale9[1]->mOffset = Vec2(mScale9Tile.x, 0);                  //tc
+                mRenderTexScale9[1]->mVertices = Vec2(centerWidth, mScale9Tile.y);      //tc
+                mRenderTexScale9[2]->mOffset = Vec2(transDim.x - mScale9Tile.z, 0);     //tr
+                mRenderTexScale9[2]->mVertices = Vec2(mScale9Tile.z, mScale9Tile.y);    //tr
+                mRenderTexScale9[3]->mOffset = Vec2(0, mScale9Tile.y);                  //cl
+                mRenderTexScale9[3]->mVertices = Vec2(mScale9Tile.x, centerHeight);     //cl
+                mRenderTexScale9[4]->mOffset = Vec2(mScale9Tile.x, mScale9Tile.y);      //cc
+                mRenderTexScale9[4]->mVertices = Vec2(centerWidth, centerHeight);       //cc
+                mRenderTexScale9[5]->mOffset = Vec2(transDim.x - mScale9Tile.z, mScale9Tile.y); //cr
+                mRenderTexScale9[5]->mVertices = Vec2(mScale9Tile.z, centerHeight);             //cr
+                mRenderTexScale9[6]->mOffset = Vec2(0, transDim.y - mScale9Tile.w);     //bl
+                mRenderTexScale9[6]->mVertices = Vec2(mScale9Tile.x, mScale9Tile.w);    //bl
+                mRenderTexScale9[7]->mOffset = Vec2(mScale9Tile.x, transDim.y - mScale9Tile.w); //bc
+                mRenderTexScale9[7]->mVertices = Vec2(centerWidth, mScale9Tile.w);              //bc
+                mRenderTexScale9[8]->mOffset = Vec2(transDim.x - mScale9Tile.z, transDim.y - mScale9Tile.w);    //br
+                mRenderTexScale9[8]->mVertices = Vec2(mScale9Tile.z, mScale9Tile.w);                            //br
             }
             mChanged = false;
         }
@@ -65,7 +74,7 @@ void TextureComponent::update(const uint32& escapeMs)
         {
             for (auto renderTex : mRenderTexScale9)
             {
-                RenderBatch::getInstance()->addRenderQueue(renderTex);
+                    RenderBatch::getInstance()->addRenderQueue(renderTex);
             }
             return;
         }
@@ -107,13 +116,13 @@ void TextureComponent::setScale9Tile(const float32 beginX, float32 beginY, float
         float32 uvCoordsW = mRenderTex->mUvCoords.w;
         mScale9Tile = Vec4i(beginX, beginY, w - endX, h - endY);
         auto renderTexTL = buildRenderTexture();
-        renderTexTL->mUvCoords = Vec4(uvCoordsX, uvCoordsY, beginX / w, beginY / h);
+        renderTexTL->mUvCoords = Vec4(uvCoordsX, endY / h, beginX / w, uvCoordsW);
         mRenderTexScale9.push_back(renderTexTL);
         auto renderTexTC = buildRenderTexture();
-        renderTexTC->mUvCoords = Vec4(beginX / w, uvCoordsY, endX / w, beginY / h);
+        renderTexTC->mUvCoords = Vec4(beginX / w, endY / h, endX / w, uvCoordsW);
         mRenderTexScale9.push_back(renderTexTC);
         auto renderTexTR = buildRenderTexture();
-        renderTexTR->mUvCoords = Vec4(endX / w, uvCoordsY, uvCoordsZ, beginY / h);
+        renderTexTR->mUvCoords = Vec4(endX / w, endY / h, uvCoordsZ, uvCoordsW);
         mRenderTexScale9.push_back(renderTexTR);
         auto renderTexCL = buildRenderTexture();
         renderTexCL->mUvCoords = Vec4(uvCoordsX, beginY / h, beginX / w, endY / h);
@@ -125,13 +134,13 @@ void TextureComponent::setScale9Tile(const float32 beginX, float32 beginY, float
         renderTexCR->mUvCoords = Vec4(endX / w, beginY / h, uvCoordsZ, endY / h);
         mRenderTexScale9.push_back(renderTexCR);
         auto renderTexBL = buildRenderTexture();
-        renderTexBL->mUvCoords = Vec4(uvCoordsX, endY / h, beginX / w, uvCoordsW);
+        renderTexBL->mUvCoords = Vec4(uvCoordsX, uvCoordsY, beginX / w, beginY / h);
         mRenderTexScale9.push_back(renderTexBL);
         auto renderTexBC = buildRenderTexture();
-        renderTexBC->mUvCoords = Vec4(beginX /w, endY / h, endX / w, uvCoordsW);
+        renderTexBC->mUvCoords = Vec4(beginX / w, uvCoordsY, endX / w, beginY / h);
         mRenderTexScale9.push_back(renderTexBC);
         auto renderTexBR = buildRenderTexture();
-        renderTexBC->mUvCoords = Vec4(endX / w, endY / h, uvCoordsZ, uvCoordsW);
+        renderTexBR->mUvCoords = Vec4(endX / w, uvCoordsY, uvCoordsZ, beginY / h);
         mRenderTexScale9.push_back(renderTexBR);
         mChanged = true;
     }

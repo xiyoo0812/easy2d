@@ -31,6 +31,10 @@ namespace Easy2D
 
         void setScale9Tile(const float32 beginX, float32 beginY, float32 endX, float32 endY);
 
+        void setUVCoords(const Vec4& coords);
+
+        void setUVCoords(float32 beginX, float32 beginY, float32 endX, float32 endY);
+
     protected:
         SPtr<TextureComponent> mTextureComponent;
     };
