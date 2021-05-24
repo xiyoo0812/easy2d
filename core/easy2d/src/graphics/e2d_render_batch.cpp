@@ -165,9 +165,8 @@ void RenderBatch::createSpriteQuad(SPtr<RenderTexture> sprite)
     *  BL    BR
     */
     //Push back all vertices
-    //左上角坐标系转为左下角坐标系
-    Mat4 matTrans = Easy2D::translate(sprite->mOffsetX, sprite->mOffsetY, 0);
-    Mat4 transformMat = transpose(matTrans * sprite->mTransform->getWorldMatrix());
+    Mat4 matWorld = sprite->mTransform->getWorldMatrix();
+    Mat4 transformMat = transpose(matWorld);
     Vec4 TL = Vec4(0, sprite->mVertices.y, 0, 1);
     mul(TL, transformMat, TL);
     Vec4 TR = Vec4(sprite->mVertices.x, sprite->mVertices.y, 0, 1);
@@ -191,22 +190,22 @@ void RenderBatch::createSpriteQuad(SPtr<RenderTexture> sprite)
     //Push back all uv's
     //0
     mUvCoordBuffer.push_back(sprite->mUvCoords.x);
-    mUvCoordBuffer.push_back(sprite->mUvCoords.y + sprite->mUvCoords.w);
-    //1
-    mUvCoordBuffer.push_back(sprite->mUvCoords.x + sprite->mUvCoords.z);
-    mUvCoordBuffer.push_back(sprite->mUvCoords.y + sprite->mUvCoords.w);
-    //2
-    mUvCoordBuffer.push_back(sprite->mUvCoords.x);
     mUvCoordBuffer.push_back(sprite->mUvCoords.y);
     //1
-    mUvCoordBuffer.push_back(sprite->mUvCoords.x + sprite->mUvCoords.z);
-    mUvCoordBuffer.push_back(sprite->mUvCoords.y + sprite->mUvCoords.w);
+    mUvCoordBuffer.push_back(sprite->mUvCoords.z);
+    mUvCoordBuffer.push_back(sprite->mUvCoords.y);
+    //2
+    mUvCoordBuffer.push_back(sprite->mUvCoords.x);
+    mUvCoordBuffer.push_back(sprite->mUvCoords.w);
+    //1
+    mUvCoordBuffer.push_back(sprite->mUvCoords.z);
+    mUvCoordBuffer.push_back(sprite->mUvCoords.y);
     //3
-    mUvCoordBuffer.push_back(sprite->mUvCoords.x + sprite->mUvCoords.z);
-    mUvCoordBuffer.push_back(sprite->mUvCoords.y);
+    mUvCoordBuffer.push_back(sprite->mUvCoords.z);
+    mUvCoordBuffer.push_back(sprite->mUvCoords.w);
     //2
     mUvCoordBuffer.push_back(sprite->mUvCoords.x);
-    mUvCoordBuffer.push_back(sprite->mUvCoords.y);
+    mUvCoordBuffer.push_back(sprite->mUvCoords.w);
     //tex
     mTextureQueue.push_back(sprite->mTextureID);
     //bool & color buffer
@@ -235,17 +234,21 @@ void RenderBatch::createTextQuad(SPtr<RenderText> text, Vec2& offset, Color& col
     */
     //Variables per textcomponent
     size_t line_count = text->mTextList.size();
-    const Mat4& worldMat = text->mTransform->getWorldMatrix();
+    Mat4 worldMat = text->mTransform->getWorldMatrix();
     for (size_t line = 0; line < line_count; ++line)
     {
-        int32 offsetY = -offset.y - (text->mVerticalOffset[line] - text->mOffsetY);
-        int32 offsetX = text->mOffsetX + offset.x + text->mHorizontalOffset[line];
+        uint32 fontHeight = text->mFont->getFontHeight();
+        int32 offsetY = offset.y + text->mVerticalOffset[line];
+        int32 offsetX = offset.x + text->mHorizontalOffset[line];
         for (auto it : text->mTextList[line])
         {
             auto fChar = text->mFont->getFontChar(it, text->mbBold, text->mbItalic);
-            Mat4 offsetMatrix = translate(Vec3(offsetX + fChar->letterSize.x, offsetY + fChar->letterSize.y, 0));
+            Mat4 offsetMatrix = worldMat * Easy2D::translate(Vec3(offsetX + fChar->letterSize.x, offsetY - fChar->letterSize.y, 0));
+            offsetMatrix *= Easy2D::translate(0, fontHeight / 2.0f, 0);
+            offsetMatrix *= Easy2D::scale(1, -1, 1);
+            offsetMatrix *= Easy2D::translate(0, fontHeight / -2.0f, 0);
+            Mat4 transformMat = Easy2D::transpose(offsetMatrix);
             offsetX += fChar->advence + text->mOutlineSize;
-            Mat4 transformMat = transpose(worldMat * offsetMatrix);
             Vec4 TL = Vec4(0, fChar->vertexSize.y, 0, 1);
             mul(TL, transformMat, TL);
             Vec4 TR = Vec4(fChar->vertexSize.x, fChar->vertexSize.y, 0, 1);
@@ -268,23 +271,23 @@ void RenderBatch::createTextQuad(SPtr<RenderText> text, Vec2& offset, Color& col
             mVertexBuffer.push_back(BL);
             //Push back all uv's
             //0
-            mUvCoordBuffer.push_back(fChar->uvCoordTL.x);
-            mUvCoordBuffer.push_back(fChar->uvCoordTL.y);
+            mUvCoordBuffer.push_back(fChar->uvCoords.x);
+            mUvCoordBuffer.push_back(fChar->uvCoords.y);
             //1
-            mUvCoordBuffer.push_back(fChar->uvCoordBR.x);
-            mUvCoordBuffer.push_back(fChar->uvCoordTL.y);
+            mUvCoordBuffer.push_back(fChar->uvCoords.z);
+            mUvCoordBuffer.push_back(fChar->uvCoords.y);
             //2
-            mUvCoordBuffer.push_back(fChar->uvCoordTL.x);
-            mUvCoordBuffer.push_back(fChar->uvCoordBR.y);
+            mUvCoordBuffer.push_back(fChar->uvCoords.x);
+            mUvCoordBuffer.push_back(fChar->uvCoords.w);
             //1
-            mUvCoordBuffer.push_back(fChar->uvCoordBR.x);
-            mUvCoordBuffer.push_back(fChar->uvCoordTL.y);
+            mUvCoordBuffer.push_back(fChar->uvCoords.z);
+            mUvCoordBuffer.push_back(fChar->uvCoords.y);
             //3
-            mUvCoordBuffer.push_back(fChar->uvCoordBR.x);
-            mUvCoordBuffer.push_back(fChar->uvCoordBR.y);
+            mUvCoordBuffer.push_back(fChar->uvCoords.z);
+            mUvCoordBuffer.push_back(fChar->uvCoords.w);
             //2
-            mUvCoordBuffer.push_back(fChar->uvCoordTL.x);
-            mUvCoordBuffer.push_back(fChar->uvCoordBR.y);
+            mUvCoordBuffer.push_back(fChar->uvCoords.x);
+            mUvCoordBuffer.push_back(fChar->uvCoords.w);
             //tex
             mTextureQueue.push_back(fChar->textureID);
             //bool & color buffer

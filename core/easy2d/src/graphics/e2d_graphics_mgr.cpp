@@ -79,6 +79,8 @@ void GraphicsManager::initialize(int32 screenWidth, int32 screenHeight)
     mScreenResolution.y = float32(screenHeight);
     glewInit();
 
+    PrintGlVersionInfo();
+
     LOG_INFO << _T("Graphics Manager : Initializing OpenGL Functors");
     if (!initializeOpenGLFunctors())
     {
@@ -365,4 +367,13 @@ bool GraphicsManager::initializeOpenGLFunctors()
     }
     return false;
 }
+
+void GraphicsManager::PrintGlVersionInfo()
+{
+    LOG_DEBUG << "OpenGL version: " << glGetString(GL_VERSION);
+    LOG_DEBUG << "GL_VENDOR: " << glGetString(GL_VENDOR);
+    LOG_DEBUG << "GL_RENDERER: " << glGetString(GL_RENDERER);
+    LOG_DEBUG << "GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION);
+}
+
 #endif

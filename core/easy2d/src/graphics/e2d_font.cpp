@@ -144,8 +144,7 @@ SPtr<FontChar> Font::loadFontChar(wchar_t ch, bool bBold, bool bItalic)
     fChar->letterSize = Vec2(dimX, dimY);
     fChar->vertexSize = Vec2(width, height);
     fChar->advence = (mFace->glyph->metrics.horiAdvance / 64);
-    fChar->uvCoordTL = Vec2(mTextureX / FONT_TEXTURE_SIZE, mTextureY / FONT_TEXTURE_SIZE);
-    fChar->uvCoordBR = Vec2((mTextureX + width) / FONT_TEXTURE_SIZE, (mTextureY + height) / FONT_TEXTURE_SIZE);
+    fChar->uvCoords = Vec4(mTextureX / FONT_TEXTURE_SIZE, mTextureY / FONT_TEXTURE_SIZE, (mTextureX + width) / FONT_TEXTURE_SIZE, (mTextureY + height) / FONT_TEXTURE_SIZE);
     glBindTexture(GL_TEXTURE_2D, mTextures[mTextureIndex]);
     glTexSubImage2D(GL_TEXTURE_2D, 0, mTextureX, mTextureY, width, height, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, expanded_data);
     mTextureX += width + FONT_TEXTURE_SPACE;
@@ -182,6 +181,11 @@ const SPtr<FontChar> Font::getFontChar(wchar_t ch, bool bBold /* = false */, boo
         return it->second;
     }
     return loadFontChar(ch, bBold, bItalic);
+}
+
+uint32 Font::getFontHeight() const
+{
+    return mMaxLetterHeight + mMinLetterHeight;
 }
 
 uint32 Font::getMaxLetterHeight() const

@@ -177,7 +177,8 @@ Mat4 CameraComponent::matrixOrtho(float32 width, float32 height, float32 nearPla
         0, 0, -2 / (farPlane - nearPlane), 0,
         0, 0, 0, 1
     );
-    return matOrtho;
+    //·­×ªY×ø±êÏµ
+    return Easy2D::scale(matOrtho, 1, -1, 1);
 }
 
 Mat4 CameraComponent::matrixLookAt(const Vec3& eye, const Vec3& at, const Vec3& up)

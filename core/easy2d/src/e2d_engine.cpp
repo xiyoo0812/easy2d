@@ -52,25 +52,25 @@ void E2dEngine::initialize(SPtr<android_app> app)
     scene->addEntity(image);
     image->setTexture(tex);
     image->setPosition(0, 0);
-    image->setAnchor(0.5, 0.5);
+    image->setAnchor(0, 0);
     image->setZorder(1);
-    image->setDockerAlign(DockerAlign::Full);
+    image->setDockerAlign(DockerAlign::LeftTop);
 
     auto font = FontManager::getInstance()->loadFont("felt-12", "fzltxh_gbk.ttf", 48);
 
     auto txt = std::make_shared<UITextField>("text");
     scene->addEntity(txt);
     txt->setFont(font);
-    txt->setText(L"国人daAFKsbB123");
+    txt->setText(L"国人daAFKsbBgf123");
     //txt->setShadowColor(Color::Black, 2);
     //txt->setBold(true);
     txt->setZorder(2);
     txt->setSpacing(5);
     txt->setSize(Vec2(200, 60));
-    txt->setAnchor(0, 1);
-    txt->setPosition(0, 0);
-    txt->setHorizontalAlign(HorizontalAlign::Center);
-    txt->setDockerAlign(DockerAlign::Full);
+    txt->setPosition(0, 5);
+    txt->setAnchor(0, 0);
+    txt->setHorizontalAlign(HorizontalAlign::Left);
+    txt->setDockerAlign(DockerAlign::LeftTop);
 
 //     auto txt2 = std::make_shared<UITextField>("text2");
 //     scene->addEntity(txt2);

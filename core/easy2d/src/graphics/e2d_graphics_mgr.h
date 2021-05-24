@@ -59,6 +59,7 @@ namespace Easy2D
         GraphicsManager();
         ~GraphicsManager();
 
+        void PrintGlVersionInfo();
         void initializeOpenGLStates();
 #ifdef WIN32
         bool wglExtensionSupported(const char* extension_name);

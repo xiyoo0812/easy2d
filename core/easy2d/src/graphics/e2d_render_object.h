@@ -11,8 +11,6 @@ namespace Easy2D
     class RenderObject
     {
     public:
-        int32 mOffsetX = 0;
-        int32 mOffsetY = 0;
         bool mbHud = false;
         Color mColor = Color::White;
         SPtr<TransformComponent> mTransform = nullptr;

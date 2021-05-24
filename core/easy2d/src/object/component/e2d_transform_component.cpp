@@ -331,15 +331,15 @@ float32 TransformComponent::transDockerY(float32 y)
     case DockerAlign::Left:
     case DockerAlign::Center:
     case DockerAlign::Right:
-        y -= size.y / 2;
+        y += size.y / 2;
         break;
     case DockerAlign::Bottom:
     case DockerAlign::LeftBottom:
     case DockerAlign::RightBottom:
-        y = y - (size.y - 2*y);
+        y = size.y - y;
         break;
     case DockerAlign::Full:
-        y = -size.y / 2;
+        y = size.y / 2;
         break;
     default:
         return y;

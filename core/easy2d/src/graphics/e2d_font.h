@@ -16,7 +16,7 @@ namespace Easy2D
         uint8 advence = 0;
         Vec2 vertexSize = Vec2(0, 0);
         Vec2 letterSize = Vec2(0, 0);
-        Vec2 uvCoordTL = Vec2(0, 0), uvCoordBR = Vec2(1, 1);
+        Vec4 uvCoords = Vec4(0, 0, 1, 1);
     };
     typedef UnorderedMap<wchar_t, SPtr<FontChar>> FontMap;
 
@@ -32,8 +32,9 @@ namespace Easy2D
 
         const SPtr<FontChar> getFontChar(wchar_t ch, bool bBold = false, bool bItalic = false);
 
-        uint32 getMaxLetterHeight() const;
+        uint32 getFontHeight() const;
         uint32 getMinLetterHeight() const;
+        uint32 getMaxLetterHeight() const;
         uint32 getCharWidth(wchar_t ch, bool bBold = false, bool bItalic = false);
         uint32 getTextWidth(const Wtring& string, bool bBold = false, bool bItalic = false);
 

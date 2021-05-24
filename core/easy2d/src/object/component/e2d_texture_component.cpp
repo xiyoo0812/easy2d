@@ -45,38 +45,19 @@ void TextureComponent::update(const uint32& escapeMs)
             Vec2 transDim = getTransform()->getSize();
             mRenderTex->mVertices = transDim;
             uint32 windowHeight = GraphicsManager::getInstance()->getWindowHeight();
-            mRenderTex->mOffsetY = windowHeight - transDim.y - pos.y * 2;
             if (mRenderTexScale9.size() > 0)
             {
                 uint centerWidth = transDim.x - mScale9Tile.x - mScale9Tile.z;
                 uint centerHeight = transDim.y - mScale9Tile.y - mScale9Tile.w;
                 mRenderTexScale9[0]->mVertices = Vec2(mScale9Tile.x, mScale9Tile.y);   //tl
-                mRenderTexScale9[0]->mOffsetX = 0;
-                mRenderTexScale9[0]->mOffsetY = windowHeight - transDim.y - pos.y * 2;
                 mRenderTexScale9[1]->mVertices = Vec2(centerWidth, mScale9Tile.y);     //tc
-                mRenderTexScale9[1]->mOffsetX = mScale9Tile.x;
-                mRenderTexScale9[1]->mOffsetY = windowHeight - transDim.y - pos.y * 2;
                 mRenderTexScale9[2]->mVertices = Vec2(mScale9Tile.z, mScale9Tile.y);   //tr
-                mRenderTexScale9[2]->mOffsetX = transDim.x - mScale9Tile.z;
-                mRenderTexScale9[2]->mOffsetY = windowHeight - transDim.y - pos.y * 2;
                 mRenderTexScale9[3]->mVertices = Vec2(mScale9Tile.x, centerHeight);    //cl
-                mRenderTexScale9[3]->mOffsetX = 0;
-                mRenderTexScale9[3]->mOffsetY = windowHeight - transDim.y - (pos.y + mScale9Tile.y) * 2;
                 mRenderTexScale9[4]->mVertices = Vec2(centerWidth, centerHeight);      //cc
-                mRenderTexScale9[4]->mOffsetX = mScale9Tile.x;
-                mRenderTexScale9[4]->mOffsetY = windowHeight - transDim.y - (pos.y + mScale9Tile.y) * 2;
                 mRenderTexScale9[5]->mVertices = Vec2(mScale9Tile.z, centerHeight);    //cr
-                mRenderTexScale9[5]->mOffsetX = transDim.x - mScale9Tile.z;
-                mRenderTexScale9[5]->mOffsetY = windowHeight - transDim.y - (pos.y + mScale9Tile.y) * 2;
                 mRenderTexScale9[6]->mVertices = Vec2(mScale9Tile.x, mScale9Tile.w);   //bl
-                mRenderTexScale9[6]->mOffsetX = 0;
-                mRenderTexScale9[6]->mOffsetY = windowHeight - transDim.y - (pos.y + transDim.y - mScale9Tile.w) * 2;
                 mRenderTexScale9[7]->mVertices = Vec2(centerWidth, mScale9Tile.w);     //bc
-                mRenderTexScale9[7]->mOffsetX = mScale9Tile.x;
-                mRenderTexScale9[7]->mOffsetY = windowHeight - transDim.y - (pos.y + transDim.y - mScale9Tile.w) * 2;
                 mRenderTexScale9[8]->mVertices = Vec2(mScale9Tile.z, mScale9Tile.w);   //br
-                mRenderTexScale9[8]->mOffsetX = transDim.x - mScale9Tile.z;
-                mRenderTexScale9[8]->mOffsetY = windowHeight - transDim.y - (pos.y + transDim.y - mScale9Tile.w) * 2;
             }
             mChanged = false;
         }
