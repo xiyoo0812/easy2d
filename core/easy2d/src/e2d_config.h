@@ -12,12 +12,6 @@
 #include "base/e2d_utils.h"
 #include "base/e2d_singleton.h"
 
-#define LOG_WARN logger_ctx<log_level::LOG_LEVEL_WARN>(__FILE__, __LINE__)
-#define LOG_INFO logger_ctx<log_level::LOG_LEVEL_INFO>(__FILE__, __LINE__)
-#define LOG_DEBUG logger_ctx<log_level::LOG_LEVEL_DEBUG>(__FILE__, __LINE__)
-#define LOG_ERROR logger_ctx<log_level::LOG_LEVEL_ERROR>(__FILE__, __LINE__)
-#define LOG_FATAL logger_ctx<log_level::LOG_LEVEL_FATAL>(__FILE__, __LINE__)
-
 #if defined(_WIN32)
     #ifndef NOMINMAX 
         #define NOMINMAX 

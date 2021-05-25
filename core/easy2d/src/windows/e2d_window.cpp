@@ -26,7 +26,7 @@ void Window::initialize(HINSTANCE instance, uint32 width /* = 800 */, uint32 hei
     if (!mInitialized)
     {
         mE2dEngine = SPtr<E2dEngine>(E2dEngine::getInstance());
-        log_service::default_instance()->start("./logs/", "E2D_LOG");
+        LOG_INIT("./logs/", "E2D_LOG", logger::rolling_type::HOURLY, 10000);
 
         WNDCLASSEX wndClass;
         wndClass.cbClsExtra = 0;
