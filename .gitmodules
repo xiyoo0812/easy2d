@@ -7,3 +7,6 @@
 [submodule "extend/luaxlsx"]
 	path = extend/luaxlsx
 	url = https://github.com/xiyoo0812/luaxlsx.git
+[submodule "extend/luaext"]
+	path = extend/luaext
+	url = https://github.com/xiyoo0812/luaext.git
