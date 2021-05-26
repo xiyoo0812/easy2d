@@ -17,23 +17,21 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "quanta", "tools\quanta\quan
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "all", "all", "{1D4D6BAB-BDCA-48C7-B032-575D40D1D349}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "luacjson", "extend\luacjson\luacjson.vcxproj", "{47B1F51B-70AA-4C21-993D-66BA5B831C67}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "luacjson", "extend\luaext\luacjson.vcxproj", "{47B1F51B-70AA-4C21-993D-66BA5B831C67}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pbc", "extend\pbc\pbc.vcxproj", "{072B788A-F4A1-4FB5-83F0-633A4FE5DB5E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pbc", "extend\luaext\pbc.vcxproj", "{072B788A-F4A1-4FB5-83F0-633A4FE5DB5E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "extend", "extend", "{63562A69-5B42-42D7-A086-2BE59AAE7077}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lpeg", "extend\lpeg\lpeg.vcxproj", "{568D6F01-6547-475B-B0C9-4D29DC9A6EA1}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lpeg", "extend\luaext\lpeg.vcxproj", "{568D6F01-6547-475B-B0C9-4D29DC9A6EA1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "easy2d", "easy2d", "{F70FF6C0-FD69-49DD-A63B-54CD33AA35DB}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sproto", "extend\sproto\sproto.vcxproj", "{07588F60-510F-4B30-8413-26404A6535E4}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "luac", "extend\lua\luac.vcxproj", "{001BCFDF-426A-476B-B709-D7E40A374229}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "luaxlsx", "extend\luaxlsx\luaxlsx.vcxproj", "{C1D0F16D-0B61-4B54-92B2-4A612BB0673B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lfs", "extend\lfs\lfs.vcxproj", "{3D32C183-3733-44C4-BE9F-EFD213D07900}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lfs", "extend\luaext\lfs.vcxproj", "{3D32C183-3733-44C4-BE9F-EFD213D07900}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lualog", "extend\lualog\lualog.vcxproj", "{C2DD1C67-5A7A-48F9-A860-FE4B92F6D1BD}"
 EndProject
@@ -45,9 +43,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "glew", "extend\glew\glew.vc
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "freetype", "extend\freetype\freetype.vcxproj", "{16A1BC78-2397-48F3-B446-84011D2A545E}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "easy2d", "core\easy2d\easy2d.vcxproj", "{50149E84-CB12-4C94-A648-CF522614804F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "easy2d", "easy2d\easy2d.vcxproj", "{50149E84-CB12-4C94-A648-CF522614804F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "game", "game\windows\game.vcxproj", "{2B5B8B79-3656-45A0-AD7F-E5E7720E0111}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "e2d_game", "platform\windows\e2d_game.vcxproj", "{2B5B8B79-3656-45A0-AD7F-E5E7720E0111}"
 	ProjectSection(ProjectDependencies) = postProject
 		{50149E84-CB12-4C94-A648-CF522614804F} = {50149E84-CB12-4C94-A648-CF522614804F}
 	EndProjectSection

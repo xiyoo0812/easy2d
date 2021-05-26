@@ -15,9 +15,9 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{2B5B8B79-3656-45A0-AD7F-E5E7720E0111}</ProjectGuid>
-    <RootNamespace>Server</RootNamespace>
+    <RootNamespace>easy2d_win</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <ProjectName>game</ProjectName>
+    <ProjectName>easy2d_win</ProjectName>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -68,7 +68,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>./src;../../core/easy2d/src;../../extend/stb;../../extend/glm;../../extend/lua/src;../../extend/luna/src;../../extend/glew/src;../../extend/lualog/src;../../extend/freetype/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./src;$(SolutionDir)easy2d/src;$(SolutionDir)extend/stb;$(SolutionDir)extend/glm;$(SolutionDir)extend/lua/lua;$(SolutionDir)extend/luna/src;$(SolutionDir)extend/glew/src;$(SolutionDir)extend/lualog/src;$(SolutionDir)extend/freetype/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -80,7 +80,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>easy2d.lib;opengl32.lib;freetype.lib;glew.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../../library/$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)library/$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(SolutionDir)\temp\$(ProjectName)\$(Platform)\$(TargetName).pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -91,12 +91,12 @@
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>copy /y $(TargetPath) ..\..\bin\</Command>
+      <Command>copy /y $(TargetPath) $(SolutionDir)bin</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>./src;../../core/easy2d/src;../../extend/stb;../../extend/glm;../../extend/lua/src;../../extend/luna/src;../../extend/glew/src;../../extend/lualog/src;../../extend/freetype/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./src;$(SolutionDir)easy2d/src;$(SolutionDir)extend/stb;$(SolutionDir)extend/glm;$(SolutionDir)extend/lua/lua;$(SolutionDir)extend/luna/src;$(SolutionDir)extend/glew/src;$(SolutionDir)extend/lualog/src;$(SolutionDir)extend/freetype/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -108,7 +108,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>easy2d.lib;opengl32.lib;freetype.lib;glew.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>../../library/$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)library/$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(SolutionDir)\temp\$(ProjectName)\$(Platform)\$(TargetName).pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -118,7 +118,7 @@
       </ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>copy /y $(TargetPath) ..\..\bin\</Command>
+      <Command>copy /y $(TargetPath) $(SolutionDir)bin</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
