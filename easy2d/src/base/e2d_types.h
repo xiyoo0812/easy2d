@@ -96,7 +96,7 @@ namespace Easy2D
     typedef Mat3f Mat3;
     typedef Mat4f Mat4;
 
-    const float64 PI = 3.14159265358979323846264338327950288;
+    const float32 PI = float32(3.141592);
     const float32 EPSILON = 0.0000001f;
 };
 

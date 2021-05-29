@@ -1,6 +1,5 @@
 #include "e2d_graphics_mgr.h"
 #include "e2d_render_batch.h"
-#include "e2d_scale_system.h"
 #include "object/e2d_camera.h"
 #include "object/e2d_scene_mgr.h"
 #include "object/component/e2d_camera_component.h"
@@ -19,77 +18,43 @@ void GraphicsManager::calculateViewPort()
 {
     if (mbInitialize)
     {
-        Vec2 screenRes = getWindowResolution();
-        Vec2 workingRes = ScaleSystem::getInstance()->getWorkingResolution();
-        float32 width = screenRes.x / workingRes.x;
-        float32 height = screenRes.y / workingRes.y;
+        float32 width = mDesignResolution.x / mScreenResolution.x;
+        float32 height = mDesignResolution.y / mScreenResolution.y;
 
         float32 aspectRatio(0);
         if (width > height)
         {
-            height = screenRes.y;
-            aspectRatio = (workingRes.x / workingRes.y);
+            height = mScreenResolution.y;
+            aspectRatio = (mDesignResolution.x / mDesignResolution.y);
             width = height * aspectRatio;
-            mHorizontalViewportOffset = static_cast<int32>((screenRes.x - width) / 2);
+            mHorizontalViewportOffset = static_cast<int32>((mScreenResolution.x - width) / 2);
         }
         else
         {
-            width = screenRes.x;
-            aspectRatio = (workingRes.y / workingRes.x);
+            width = mScreenResolution.x;
+            aspectRatio = (mDesignResolution.y / mDesignResolution.x);
             height = width * aspectRatio;
-            mVerticalViewportOffset = static_cast<int32>((screenRes.y - height) / 2);
+            mVerticalViewportOffset = static_cast<int32>((mScreenResolution.y - height) / 2);
         }
-        glViewport(mHorizontalViewportOffset, mVerticalViewportOffset, static_cast<int32>(width), static_cast<int32>(height));
         mViewportResolution.x = width;
         mViewportResolution.y = height;
-        ScaleSystem::getInstance()->calculateScale();
+        mScale = mViewportResolution.x / mDesignResolution.x;
+        glViewport(mHorizontalViewportOffset, mVerticalViewportOffset, static_cast<int32>(width), static_cast<int32>(height));
     }
 }
 
-void GraphicsManager::setVSync(bool vSync)
-{
-#ifdef WIN32
-    //Enables or disables VSync.
-    //0 = No Sync , 1+ = VSync
-    //Default value is 1.
-    if (!vSync)
-    {
-        mWglSwapIntervalEXT(0);
-    }
-    else
-    {
-        mWglSwapIntervalEXT(1);
-    }
-#endif
-}
-
-bool GraphicsManager::getVSync() const
-{
-#ifdef WIN32
-    return !(mWglGetSwapIntervalEXT() == 0);
-#else
-    return true;
-#endif
-}
 
 #ifdef WIN32
 void GraphicsManager::initialize(int32 screenWidth, int32 screenHeight)
 {
-    mScreenResolution.x = float32(screenWidth);
-    mScreenResolution.y = float32(screenHeight);
-    glewInit();
+    setScreenResolution(screenWidth, screenHeight);
+    setDesignResolution(screenWidth, screenHeight);
 
-    PrintGlVersionInfo();
-
-    LOG_INFO << _T("Graphics Manager : Initializing OpenGL Functors");
-    if (!initializeOpenGLFunctors())
-    {
-        LOG_ERROR << _T("Graphics Manager : Graphics card doesn't support VSync option!!");
-    }
     //Initializes base GL state.
     //DEPTH_TEST is default disabled
     initializeOpenGLStates();
     mbInitialize = true;
+    calculateViewPort();
 }
 #endif
 #ifdef ANDROID
@@ -155,7 +120,7 @@ void GraphicsManager::initialize(SPtr<android_app> pApplication)
     //[COMMENT] This might be redundant!
     mViewportResolution.x = sX;
     mViewportResolution.y = sY;
-    mScreenResolution = mViewportResolution;
+    mDesignResolution = mViewportResolution;
     glViewport(0, 0, mViewportResolution.x, mViewportResolution.y);
     initializeOpenGLStates();
     LOG_INFO << _T("Graphics Manager : Initialized");
@@ -186,7 +151,6 @@ void GraphicsManager::destroy()
 
 void GraphicsManager::initializeOpenGLStates()
 {
-    //glDisable(GL_DEPTH_TEST);
     glClearColor(0.0f, 0.5f, 0.5f, 1.0f);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
@@ -200,12 +164,6 @@ void GraphicsManager::startDraw()
 void GraphicsManager::stopDraw()
 {   
     glFlush();
-#ifdef ANDROID
-    if (eglSwapBuffers(mDisplay, mSurface) != EGL_TRUE)
-    {
-        return;
-    }
-#endif
 }
 
 void GraphicsManager::update()
@@ -233,12 +191,12 @@ void GraphicsManager::update()
 
 int32 GraphicsManager::getWindowWidth() const
 {
-    return int32(mScreenResolution.x);
+    return int32(mDesignResolution.x);
 }
 
 int32 GraphicsManager::getWindowHeight() const
 {
-    return int32(mScreenResolution.y);
+    return int32(mDesignResolution.y);
 }
 
 int32 GraphicsManager::getViewportWidth() const
@@ -253,12 +211,12 @@ int32 GraphicsManager::getViewportHeight() const
 
 int32 GraphicsManager::getScreenWidth() const
 {
-    return int32(ScaleSystem::getInstance()->getWorkingResolution().x);
+    return mScreenResolution.x;
 }
 
 int32 GraphicsManager::getScreenHeight() const
 {
-    return int32(ScaleSystem::getInstance()->getWorkingResolution().y);
+    return mScreenResolution.y;
 }
 
 const Mat4& GraphicsManager::getViewInverseProjectionMatrix() const
@@ -281,14 +239,14 @@ const Mat4& GraphicsManager::getViewInverseMatrix() const
     return mViewInverseMatrix;
 }
 
-float32 GraphicsManager::getWindowAspectRatio() const
+float32 GraphicsManager::getDesignAspectRatio() const
 {
-    return mScreenResolution.x / mScreenResolution.y;
+    return mDesignResolution.x / mDesignResolution.y;
 }
 
-const Vec2& GraphicsManager::getWindowResolution() const
+const Vec2& GraphicsManager::getDesignResolution() const
 {
-    return mScreenResolution;
+    return mDesignResolution;
 }
 
 const Vec2& GraphicsManager::getViewportResolution() const
@@ -298,7 +256,7 @@ const Vec2& GraphicsManager::getViewportResolution() const
 
 const Vec2& GraphicsManager::getScreenResolution() const
 {
-    return ScaleSystem::getInstance()->getWorkingResolution();
+    return mScreenResolution;
 }
 
 float32 GraphicsManager::getViewportAspectRatio() const
@@ -316,64 +274,22 @@ int32 GraphicsManager::getVerticalViewportOffset() const
     return mVerticalViewportOffset;
 }
 
-void GraphicsManager::setWindowSize(int32 width, int32 height)
+float32 GraphicsManager::getScale() const
+{
+    return mScale;
+}
+
+void GraphicsManager::setScreenResolution(int32 width, int32 height)
 {
     mScreenResolution.x = float32(width);
     mScreenResolution.y = float32(height);
     calculateViewPort();
 }
 
-void GraphicsManager::setWindowChanged(bool changed)
+void GraphicsManager::setDesignResolution(int32 width, int32 height)
 {
-    mbWindowChanged = changed;
-    if (changed)
-    {
-        calculateViewPort();
-    }
+    mDesignResolution.x = float32(width);
+    mDesignResolution.y = float32(height);
+    calculateViewPort();
 }
 
-bool GraphicsManager::getWindowChanged() const
-{
-    return mbWindowChanged;
-}
-
-#ifdef WIN32
-bool GraphicsManager::wglExtensionSupported(const char* extension_name)
-{
-    // this is the pointer to the function which returns the pointer to string with the list of all wgl extensions
-    PFNWGLGETEXTENSIONSSTRINGEXTPROC _wglGetExtensionsStringEXT = NULL;
-    // determine pointer to wglGetExtensionsStringEXT function
-    _wglGetExtensionsStringEXT = (PFNWGLGETEXTENSIONSSTRINGEXTPROC)wglGetProcAddress("wglGetExtensionsStringEXT");
-    if (strstr(_wglGetExtensionsStringEXT(), extension_name) == NULL)
-    {
-        // string was not found
-        return false;
-    }
-    // extension is supported
-    return true;
-}
-
-bool GraphicsManager::initializeOpenGLFunctors()
-{
-    if (wglExtensionSupported("WGL_EXT_swap_control"))
-    {
-        // Extension is supported, init pointers.
-        mWglSwapIntervalEXT = (PFNWGLSWAPINTERVALEXTPROC)wglGetProcAddress("wglSwapIntervalEXT");
-        // this is another function from WGL_EXT_swap_control extension
-        mWglGetSwapIntervalEXT = (PFNWGLGETSWAPINTERVALEXTPROC)wglGetProcAddress("wglGetSwapIntervalEXT");
-        // VSync
-        setVSync(true);
-        return true;
-    }
-    return false;
-}
-
-void GraphicsManager::PrintGlVersionInfo()
-{
-    LOG_DEBUG << "OpenGL version: " << glGetString(GL_VERSION);
-    LOG_DEBUG << "GL_VENDOR: " << glGetString(GL_VENDOR);
-    LOG_DEBUG << "GL_RENDERER: " << glGetString(GL_RENDERER);
-    LOG_DEBUG << "GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION);
-}
-
-#endif

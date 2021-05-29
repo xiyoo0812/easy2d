@@ -3,7 +3,6 @@
 #include "object/e2d_scene_mgr.h"
 #include "graphics/e2d_font_mgr.h"
 #include "graphics/e2d_texture_mgr.h"
-#include "graphics/e2d_scale_system.h"
 #include "graphics/e2d_graphics_mgr.h"
 #include "graphics/e2d_render_batch.h"
 #include "resource/e2d_asset_mgr.h"
@@ -26,11 +25,6 @@ E2dEngine::~E2dEngine()
 #ifdef WIN32
 void E2dEngine::initialize(uint32 window_width, uint32 window_height)
 {
-    mStopWatch = std::make_shared<Stopwatch>();
-    //初始化asset资源路径
-    AssetManager::getInstance()->initialize("res");
-    //初始化font资源路径，基于asset的路径
-    FontManager::getInstance()->initialize("font");
     GraphicsManager::getInstance()->initialize(window_width, window_height);
 #endif
 #ifdef ANDROID
@@ -38,10 +32,14 @@ void E2dEngine::initialize(SPtr<android_app> app)
 {
     GraphicsManager::getInstance()->initialize(app);
 #endif
-    //AudioManager::getInstance()->start();
-    ScaleSystem::getInstance()->setWorkingResolution(window_width, window_height);
-    GraphicsManager::getInstance()->calculateViewPort();
+    mStopWatch = std::make_shared<Stopwatch>();
+    //初始化asset资源路径
+    AssetManager::getInstance()->initialize("res");
+    //初始化font资源路径，基于asset的路径
+    FontManager::getInstance()->initialize("font");
     RenderBatch::getInstance()->initialize();
+
+    //AudioManager::getInstance()->start();
     //DebugDraw::getInstance()->initialize();
 
     auto scene = std::make_shared<Scene>("test");
@@ -53,7 +51,7 @@ void E2dEngine::initialize(SPtr<android_app> app)
     image->setTexture(tex);
     image->setPosition(0, 0);
     image->setSize(Vec2(95, 42));
-    image->setScale9Tile(20, 12, 75, 30);
+    //image->setScale9Tile(20, 12, 75, 30);
     image->setAnchor(0, 0);
     image->setZorder(1);
     image->setDockerAlign(DockerAlign::LeftTop);
@@ -110,7 +108,6 @@ void E2dEngine::stop()
 #endif
     //DebugDraw::earseInstance();
     TimerManager::earseInstance();
-    ScaleSystem::earseInstance();
     FontManager::earseInstance();
     RenderBatch::earseInstance();
     SceneManager::earseInstance();

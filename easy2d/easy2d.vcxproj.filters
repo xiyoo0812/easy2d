@@ -67,9 +67,6 @@
     <ClCompile Include="src\graphics\e2d_graphics_mgr.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\graphics\e2d_scale_system.cpp">
-      <Filter>graphics</Filter>
-    </ClCompile>
     <ClCompile Include="src\e2d_engine.cpp">
       <Filter>engine</Filter>
     </ClCompile>
@@ -202,9 +199,6 @@
       <Filter>math</Filter>
     </ClInclude>
     <ClInclude Include="src\graphics\e2d_graphics_mgr.h">
-      <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graphics\e2d_scale_system.h">
       <Filter>graphics</Filter>
     </ClInclude>
     <ClInclude Include="src\e2d_engine.h">

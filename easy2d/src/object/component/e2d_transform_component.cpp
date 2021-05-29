@@ -357,5 +357,5 @@ const Vec2& TransformComponent::getDockerSize() const
             return parent->getSize();
         }
     }
-    return GraphicsManager::getInstance()->getScreenResolution();
+    return GraphicsManager::getInstance()->getDesignResolution();
 }

@@ -31,51 +31,39 @@ namespace Easy2D
         int32 getScreenWidth() const;
         int32 getScreenHeight() const;
 
-        const Mat4& getViewInverseProjectionMatrix() const;
         const Mat4& getViewMatrix() const;
-        const Mat4& getViewInverseMatrix() const;
         const Mat4& getProjectionMatrix() const;
+        const Mat4& getViewInverseMatrix() const;
+        const Mat4& getViewInverseProjectionMatrix() const;
 
-        float32 getWindowAspectRatio() const;
-
-        const Vec2& getWindowResolution() const;
+        const Vec2& getDesignResolution() const;
         const Vec2& getViewportResolution() const;
         const Vec2& getScreenResolution() const;
 
+        float32 getScale() const;
+        float32 getDesignAspectRatio() const;
         float32 getViewportAspectRatio() const;
 
         int32 getHorizontalViewportOffset() const;
         int32 getVerticalViewportOffset() const;
 
-        void setWindowSize(int32 width, int32 height);
-        void setWindowChanged(bool changed);
-        bool getWindowChanged() const;
-        void calculateViewPort();
-
-        void setVSync(bool VSync);
-        bool getVSync() const;
+        void setDesignResolution(int32 width, int32 height);
+        void setScreenResolution(int32 width, int32 height);
 
     private:
         GraphicsManager();
         ~GraphicsManager();
 
-        void PrintGlVersionInfo();
+        void calculateViewPort();
         void initializeOpenGLStates();
-#ifdef WIN32
-        bool wglExtensionSupported(const char* extension_name);
-        bool initializeOpenGLFunctors();
 
-        PFNWGLSWAPINTERVALEXTPROC mWglSwapIntervalEXT = nullptr;
-        PFNWGLGETSWAPINTERVALEXTPROC mWglGetSwapIntervalEXT = nullptr;
-#endif
-
+        float32 mScale;
         Mat4 mViewMatrix = {};
         Mat4 mProjectionMatrix = {};
         Mat4 mViewInverseMatrix = {};
         Mat4 mViewProjectionMatrix = {};
-        Vec2 mScreenResolution = {}, mViewportResolution = {};
+        Vec2 mDesignResolution = {}, mViewportResolution = {}, mScreenResolution = {};
         int32 mHorizontalViewportOffset = 0, mVerticalViewportOffset = 0;
-        bool mbWindowChanged = false;
         bool mbInitialize = false;
 
 #ifdef ANDROID

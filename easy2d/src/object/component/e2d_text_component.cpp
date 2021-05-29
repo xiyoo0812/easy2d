@@ -75,7 +75,7 @@ void TextComponent::checkWrapping()
         renderWords.push_back(wrapText);
     }
     mRenderText->mTextList = renderWords;
-    uint32 lineCount = renderWords.size();
+    size_t lineCount = renderWords.size();
     uint32 fontHeight = mRenderText->mFont->getFontHeight();
     uint32 textHeight = fontHeight * lineCount + mRenderText->mSpacing * (lineCount - 1);
     calculateTextSize(textWidth, textHeight);
@@ -99,7 +99,7 @@ void TextComponent::calculateTextOffset(Vector<uint16>& lineWidths)
 {
     mRenderText->mVerticalOffset.clear();
     mRenderText->mHorizontalOffset.clear();
-    uint32 lineCount = lineWidths.size();
+    size_t lineCount = lineWidths.size();
     Vec2 transDim = getTransform()->getSize();
     uint32 lineWidth = isLineWarp() ? mLineWidth : (transDim.x - mFrameOffset * 2);
     uint32 fontHeight = mRenderText->mFont->getFontHeight();

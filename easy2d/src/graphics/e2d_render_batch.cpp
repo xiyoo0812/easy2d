@@ -1,5 +1,4 @@
 #include "e2d_render_batch.h"
-#include "e2d_scale_system.h"
 #include "e2d_graphics_mgr.h"
 #include "object/component/e2d_text_component.h"
 #include "object/component/e2d_texture_component.h"
@@ -91,7 +90,7 @@ void RenderBatch::begin()
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     //Set uniforms
     glUniform1i(mTexSamplerID, 0);
-    float scaleValue = ScaleSystem::getInstance()->getScale();
+    float scaleValue = GraphicsManager::getInstance()->getScale();
     Mat4 scaleMat = scale(scaleValue, scaleValue, 0);
     glUniformMatrix4fv(mScaleID, 1, GL_FALSE, toPointer(scaleMat));
     const Mat4& viewInverseMat = GraphicsManager::getInstance()->getViewInverseMatrix();
