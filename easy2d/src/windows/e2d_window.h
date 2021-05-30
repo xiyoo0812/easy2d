@@ -18,28 +18,16 @@ namespace Easy2D
         ~Window();
 
         void initialize(HINSTANCE instance, uint32 width = 800, uint32 height = 600, bool useConsole = false);
-
-        const HDC& getHDC() const;
-        const HWND& getHandle() const;
-
-        bool isFullScreen() const;
         bool isInitialized() const;
-        bool isFixResolution() const;
 
-        void setFullScreen(HWND hWnd, bool fullscreen);
-
+#ifndef GLFW
         void setResolution(uint32 width, uint32 height, bool reset = true);
-
         bool onMessage(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
-
+#endif
     private:
         Window() {}
         void mainLoop();
-
-        void PrintGlVersionInfo();
-
-        void clientResize(uint32 & width, uint32 & height);
-        void getWindowDiffSize(uint32 & difX, uint32 & difY);
+        void printGlVersionInfo();
 
         struct WindowState
         {
@@ -50,16 +38,18 @@ namespace Easy2D
 
         WindowState mWindowState;
 
-        bool mFullScreen = false;
         bool mInitialized = false;
-        bool mFixResolution = false;
+        SPtr<E2dEngine> mE2dEngine = nullptr;
 
+#ifdef GLFW
+        GLFWwindow* window = nullptr;
+#else
+        void clientResize(uint32& width, uint32& height);
+        void getWindowDiffSize(uint32& difX, uint32& difY);
         HDC mHDC = nullptr;
         HWND mHandle = nullptr;
         HGLRC mOGLContext = nullptr;
-        GLFWwindow* window = nullptr;
-        SPtr<E2dEngine> mE2dEngine = nullptr;
-
+#endif
     };
 }
 

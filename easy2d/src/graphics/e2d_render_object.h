@@ -13,14 +13,18 @@ namespace Easy2D
     public:
         bool mbHud = false;
         Color mColor = Color::White;
-        SPtr<TransformComponent> mTransform = nullptr;
+        Mat4 matWorld{};
     };
 
-    class RenderTexture : public RenderObject
+    class RenderRect : public RenderObject
     {
     public:
-        Vec2 mOffset{ 0, 0 };
         Vec2 mVertices{ 1, 1 };
+    };
+
+    class RenderTexture : public RenderRect
+    {
+    public:
         Vec4 mUvCoords{ 0, 0, 1, 1 };
         uint32 mTextureID = 0;
     };

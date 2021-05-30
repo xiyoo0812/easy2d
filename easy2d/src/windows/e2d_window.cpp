@@ -7,13 +7,18 @@
 /* Easy2D */
 using namespace Easy2D;
 
-//#define GLFW
-
+#ifdef GLFW
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
 }
 
+void processInput(GLFWwindow* window)
+{
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, true);
+}
+#else
 #define IDI_STARGAMEICON 201
 #define WNDCLASSNAME _T("E2DWindow")
 #define KEYDOWN(vkCode) ((GetAsyncKeyState(vkCode) & 0x8000) ? 1 : 0)
@@ -27,6 +32,7 @@ LRESULT CALLBACK wndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     }
     return DefWindowProc(hWnd, message, wParam, lParam);
 }
+#endif
 
 void Window::initialize(HINSTANCE instance, uint32 width /* = 800 */, uint32 height/* = 600 */, bool useConsole /* = false */)
 {
@@ -37,8 +43,8 @@ void Window::initialize(HINSTANCE instance, uint32 width /* = 800 */, uint32 hei
 
 #ifdef GLFW
          glfwInit();
-         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
          glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
          window = glfwCreateWindow(width, height, _T("E2DGAME"), NULL, NULL);
@@ -51,7 +57,11 @@ void Window::initialize(HINSTANCE instance, uint32 width /* = 800 */, uint32 hei
          glfwMakeContextCurrent(window);
          glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-         glewExperimental = GL_TRUE;
+         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+         {
+             std::cout << "Failed to initialize GLAD" << std::endl;
+             return;
+         }
 #else
         WNDCLASSEX wndClass;
         wndClass.cbClsExtra = 0;
@@ -123,13 +133,12 @@ void Window::initialize(HINSTANCE instance, uint32 width /* = 800 */, uint32 hei
             LOG_FATAL << _T("Action couldn't be completed!");
             return;
         }
-
         if (glewInit() != GLEW_OK)
         {
             return;
         }
 #endif
-        PrintGlVersionInfo();
+        printGlVersionInfo();
         mE2dEngine->initialize(width, height);
         mInitialized = true;
         mainLoop();
@@ -146,6 +155,8 @@ void Window::mainLoop()
 #ifdef GLFW
     while (!glfwWindowShouldClose(window))
     {
+        processInput(window);
+
         mE2dEngine->update();
         mE2dEngine->draw();
 
@@ -176,67 +187,27 @@ bool Window::isInitialized() const
     return mInitialized;
 }
 
-bool Window::isFullScreen() const
+#ifndef GLFW
+bool Window::onMessage(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    return mFullScreen;
-}
-
-bool Window::isFixResolution() const
-{
-    return mFixResolution;
-}
-
-void Window::setFullScreen(HWND hWnd, bool fullscreen)
-{
-    if (!mFullScreen)
+    switch (message)
     {
-        mWindowState.maximized = IsZoomed(hWnd);
-        if (mWindowState.maximized)
-        {
-            // window can't be maximized in fullscreen modus
-            SendMessage(hWnd, WM_SYSCOMMAND, SC_RESTORE, 0);
-        }
-        mWindowState.style = GetWindowLong(hWnd, GWL_STYLE);
-        mWindowState.exStyle = GetWindowLong(hWnd, GWL_EXSTYLE);
-        GetWindowRect(hWnd, &mWindowState.winRect);
-    }
-    auto hdc = GetDC(hWnd);
-    auto& winRect = mWindowState.winRect;
-    mFullScreen = fullscreen;
-    if (mFullScreen)
+    case WM_DESTROY:
     {
-        DEVMODE fullscreenSettings = DEVMODE();
-        int32 screenWidth = GetDeviceCaps(hdc, HORZRES);
-        int32 screenHeight = GetDeviceCaps(hdc, VERTRES);
-        if (mFixResolution)
-        {
-            screenWidth = winRect.right - winRect.left;
-            screenHeight = winRect.bottom - winRect.top;
-        }
-        EnumDisplaySettings(NULL, 0, &fullscreenSettings);
-        fullscreenSettings.dmPelsWidth = screenWidth;
-        fullscreenSettings.dmPelsHeight = screenHeight;
-        fullscreenSettings.dmBitsPerPel = GetDeviceCaps(hdc, BITSPIXEL);
-        fullscreenSettings.dmDisplayFrequency = GetDeviceCaps(hdc, VREFRESH);
-        fullscreenSettings.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT | DM_BITSPERPEL | DM_DISPLAYFREQUENCY;
-        SetWindowLongPtr(hWnd, GWL_EXSTYLE, WS_EX_APPWINDOW | WS_EX_TOPMOST);
-        SetWindowLongPtr(hWnd, GWL_STYLE, WS_POPUP | WS_VISIBLE);
-        SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, screenWidth, screenHeight, SWP_SHOWWINDOW);
-        ChangeDisplaySettings(&fullscreenSettings, CDS_FULLSCREEN);
-        ShowWindow(hWnd, SW_MAXIMIZE);
+        PostQuitMessage(0);
+        return true;
     }
-    else
+    break;
+    case WM_SIZE:
     {
-        SetWindowLongPtr(hWnd, GWL_EXSTYLE, mWindowState.exStyle);
-        SetWindowLongPtr(hWnd, GWL_STYLE, mWindowState.style);
-        ChangeDisplaySettings(NULL, CDS_RESET);
-        SetWindowPos(hWnd, HWND_NOTOPMOST, winRect.left, winRect.top, winRect.right - winRect.left, winRect.bottom - winRect.top, SWP_SHOWWINDOW);
-        ShowWindow(hWnd, SW_RESTORE);
-        if (mWindowState.maximized)
-        {
-            SendMessage(hWnd, WM_SYSCOMMAND, SC_MAXIMIZE, 0);
-        }
+        RECT clienRect;
+        GetClientRect(hWnd, &clienRect);
+        GraphicsManager::getInstance()->setScreenResolution(clienRect.right - clienRect.left,clienRect.bottom - clienRect.top);
+        return true;
     }
+    break;
+    }
+    return false;
 }
 
 void Window::setResolution(uint32 width, uint32 height, bool reset /* = true */)
@@ -265,7 +236,7 @@ void Window::clientResize(uint32& width, uint32& height)
     height += difY;
 }
 
-void Window::getWindowDiffSize(uint32 & difX, uint32 & difY)
+void Window::getWindowDiffSize(uint32& difX, uint32& difY)
 {
     RECT rcClient, rcWindow;
     GetClientRect(mHandle, &rcClient);
@@ -273,28 +244,7 @@ void Window::getWindowDiffSize(uint32 & difX, uint32 & difY)
     difX = (rcWindow.right - rcWindow.left) - rcClient.right;
     difY = (rcWindow.bottom - rcWindow.top) - rcClient.bottom;
 }
-
-bool Window::onMessage(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-    switch (message)
-    {
-    case WM_DESTROY:
-    {
-        PostQuitMessage(0);
-        return true;
-    }
-    break;
-    case WM_SIZE:
-    {
-        RECT clienRect;
-        GetClientRect(hWnd, &clienRect);
-        GraphicsManager::getInstance()->setScreenResolution(clienRect.right - clienRect.left,clienRect.bottom - clienRect.top);
-        return true;
-    }
-    break;
-    }
-    return false;
-}
+#endif
 
 Window::~Window()
 {
@@ -302,17 +252,7 @@ Window::~Window()
     // delete StarEngine::getInstance();
 }
 
-const HDC& Window::getHDC() const
-{
-    return mHDC;
-}
-
-const HWND& Window::getHandle() const
-{
-    return mHandle;
-}
-
-void Window::PrintGlVersionInfo()
+void Window::printGlVersionInfo()
 {
     LOG_DEBUG << "OpenGL version: " << glGetString(GL_VERSION);
     LOG_DEBUG << "GL_VENDOR: " << glGetString(GL_VENDOR);

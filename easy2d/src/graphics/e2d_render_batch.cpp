@@ -18,8 +18,19 @@ RenderBatch::~RenderBatch()
 void RenderBatch::initialize()
 {
     //Set Shader and shader variables
-    Path vShader(_T("shader/shader.vs"));
-    Path fShader(_T("shader/shader.fs"));
+#ifdef GLFW
+    Path vShader(_T("shader/rect.vs"));
+    Path fShader(_T("shader/rect.fs"));
+    mProgram = std::make_shared<Program>();
+    if (!mProgram->load(vShader, fShader))
+    {
+        LOG_ERROR << _T("SpriteBatch initialize load Program failed");
+    }
+    mVertexID = mProgram->getAttribLocation("position");
+    mColorID = mProgram->getAttribLocation("color");
+#else
+    Path vShader(_T("shader/texture.vs"));
+    Path fShader(_T("shader/texture.fs"));
     mProgram = std::make_shared<Program>();
     if (!mProgram->load(vShader, fShader))
     {
@@ -33,6 +44,7 @@ void RenderBatch::initialize()
     mProjID = mProgram->getUniformLocation("matProj");
     mViewID = mProgram->getUniformLocation("matView");
     mTexSamplerID = mProgram->getUniformLocation("texSampler");
+#endif
 }
 
 void RenderBatch::setSortingMode(RenderSortingMode mode)
@@ -47,12 +59,17 @@ const RenderSortingMode RenderBatch::getSortingMode()
 
 void RenderBatch::addRenderQueue(SPtr<RenderTexture> texture)
 {
-    createSpriteQuad(texture);
+    //createSpriteQuad(texture);
+}
+
+void RenderBatch::addRenderQueue(SPtr<RenderRect> rect)
+{
+    createRectQuad(rect);
 }
 
 void RenderBatch::addRenderQueue(SPtr<RenderText> text)
 {
-    if (text->mShadowSize > 0)
+    /*if (text->mShadowSize > 0)
     {
         for (int16 shadow = text->mShadowSize + text->mOutlineSize; shadow > text->mOutlineSize; shadow--)
         {
@@ -69,11 +86,17 @@ void RenderBatch::addRenderQueue(SPtr<RenderText> text)
             createTextQuad(text, Vec2(outline, outline), text->mOutlineColor);
         }
     }
-    createTextQuad(text, Vec2(0, 0), text->mColor);
+    createTextQuad(text, Vec2(0, 0), text->mColor);*/
 }
 
+unsigned int VBO, VAO, VCO;
 void RenderBatch::flush()
 {
+
+    SPtr<RenderRect> rect = std::make_shared<RenderRect>();
+    rect->mColor = Color::White;
+    //rect->mVertices = Vec2(300, 200);
+    addRenderQueue(rect);
     begin();
     draw();
     end();
@@ -81,14 +104,17 @@ void RenderBatch::flush()
 
 void RenderBatch::begin()
 {
-    mProgram->bind();
-    //[TODO] Test android!
-    glEnableVertexAttribArray(mVertexID);
+     mProgram->bind();
+     //[TODO] Test android!
+     glEnableVertexAttribArray(mVertexID);
+     glEnableVertexAttribArray(mColorID);
+#ifndef GLFW
     glEnableVertexAttribArray(mTexCoordID);
     glEnableVertexAttribArray(mHUDID);
-    glEnableVertexAttribArray(mColorID);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+#endif
+    //glBindBuffer(GL_ARRAY_BUFFER, 0);
     //Set uniforms
+#ifndef GLFW
     glUniform1i(mTexSamplerID, 0);
     float scaleValue = GraphicsManager::getInstance()->getScale();
     Mat4 scaleMat = scale(scaleValue, scaleValue, 0);
@@ -97,12 +123,18 @@ void RenderBatch::begin()
     glUniformMatrix4fv(mViewID, 1, GL_FALSE, toPointer(viewInverseMat));
     const Mat4& projectionMat = GraphicsManager::getInstance()->getProjectionMatrix();
     glUniformMatrix4fv(mProjID, 1, GL_FALSE, toPointer(projectionMat));
+#endif
 }
 
 void RenderBatch::draw()
 {
     GLuint curTexture = 0;
     uint32 batchStart = 0, batchSize = 0;
+    if (mTextureQueue.empty())
+    {
+        drawRect(0, mVertexBuffer.size());
+        return;
+    }
     for (auto texture : mTextureQueue)
     {
         //If != -> flush
@@ -116,6 +148,31 @@ void RenderBatch::draw()
         ++batchSize;
     }
     drawTexture(batchStart, batchSize, curTexture);
+}
+
+void RenderBatch::drawRect(uint32 start, uint32 size)
+{
+    if (size > 0)
+    {
+        glGenVertexArrays(2, &VAO);
+        glGenBuffers(1, &VBO);
+        glGenBuffers(1, &VCO);
+        glBindVertexArray(VAO);
+ 
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(Vec4) * size, reinterpret_cast<GLvoid*>(&mVertexBuffer.at(0)), GL_STATIC_DRAW);
+        // position attribute
+        glVertexAttribPointer(mVertexID, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(mVertexID);
+ 
+        glBindBuffer(GL_ARRAY_BUFFER, VCO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(Vec4) * size, reinterpret_cast<GLvoid*>(&mColorBuffer.at(0)), GL_STATIC_DRAW);
+        // color attribute
+        glVertexAttribPointer(mColorID, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(0));
+        glEnableVertexAttribArray(mColorID);
+
+        glDrawArrays(GL_TRIANGLES, start, size);
+    }
 }
 
 void RenderBatch::drawTexture(uint32 start, uint32 size, uint32 texture)
@@ -136,16 +193,62 @@ void RenderBatch::drawTexture(uint32 start, uint32 size, uint32 texture)
 void RenderBatch::end()
 {
     //Unbind attributes and buffers
-    glDisableVertexAttribArray(mHUDID);
     glDisableVertexAttribArray(mColorID);
     glDisableVertexAttribArray(mVertexID);
+#ifndef GLFW
+    glDisableVertexAttribArray(mHUDID);
     glDisableVertexAttribArray(mTexCoordID);
+#endif
     mProgram->unbind();
     mVertexBuffer.clear();
     mUvCoordBuffer.clear();
     mIsHUDBuffer.clear();
     mColorBuffer.clear();
     mTextureQueue.clear();
+}
+
+void RenderBatch::createRectQuad(SPtr<RenderRect> rect)
+{
+    //for every sprite that has to be drawn, push back all vertices 
+    //(VERTEX_AMOUNT per sprite) into the vertexbuffer and all uvcoords 
+    //(UV_AMOUNT per sprite) into the uvbuffer and the isHUD bool
+    /*
+    *  TL    TR
+    *   0----1
+    *   |   /|
+    *   |  / |
+    *   | /  |
+    *   |/   |
+    *   2----3
+    *  BL    BR
+    */
+    //Push back all vertices
+    Vec4 TL = Vec4(0, rect->mVertices.y, 0, 1);
+    mul(TL, rect->matWorld, TL);
+    Vec4 TR = Vec4(rect->mVertices.x, rect->mVertices.y, 0, 1);
+    mul(TR, rect->matWorld, TR);
+    Vec4 BL = Vec4(0, 0, 0, 1);
+    mul(BL, rect->matWorld, BL);
+    Vec4 BR = Vec4(rect->mVertices.x, 0, 0, 1);
+    mul(BR, rect->matWorld, BR);
+    //0
+     mVertexBuffer.push_back(TL);
+     //1
+     mVertexBuffer.push_back(TR);
+     //2
+     mVertexBuffer.push_back(BL);
+    //1
+    mVertexBuffer.push_back(TR);
+    //3
+    mVertexBuffer.push_back(BR);
+    //2
+    mVertexBuffer.push_back(BL);
+    //bool & color buffer
+    for (uint32 i = 0; i < 6; ++i)
+    {
+        //rgba
+        mColorBuffer.push_back(Color::Red);
+    }
 }
 
 void RenderBatch::createSpriteQuad(SPtr<RenderTexture> sprite)
@@ -164,17 +267,14 @@ void RenderBatch::createSpriteQuad(SPtr<RenderTexture> sprite)
     *  BL    BR
     */
     //Push back all vertices
-    Mat4 matWorld = sprite->mTransform->getWorldMatrix();
-    Mat4 offsetMatrix = Easy2D::translate(Vec3(sprite->mOffset.x, sprite->mOffset.y, 0));
-    Mat4 transformMat = transpose(matWorld * offsetMatrix);
     Vec4 TL = Vec4(0, sprite->mVertices.y, 0, 1);
-    mul(TL, transformMat, TL);
+    mul(TL, sprite->matWorld, TL);
     Vec4 TR = Vec4(sprite->mVertices.x, sprite->mVertices.y, 0, 1);
-    mul(TR, transformMat, TR);
+    mul(TR, sprite->matWorld, TR);
     Vec4 BL = Vec4(0, 0, 0, 1);
-    mul(BL, transformMat, BL);
+    mul(BL, sprite->matWorld, BL);
     Vec4 BR = Vec4(sprite->mVertices.x, 0, 0, 1);
-    mul(BR, transformMat, BR);
+    mul(BR, sprite->matWorld, BR);
     //0
     mVertexBuffer.push_back(TL);
     //1
@@ -234,7 +334,6 @@ void RenderBatch::createTextQuad(SPtr<RenderText> text, Vec2& offset, Color& col
     */
     //Variables per textcomponent
     size_t line_count = text->mTextList.size();
-    Mat4 worldMat = text->mTransform->getWorldMatrix();
     for (size_t line = 0; line < line_count; ++line)
     {
         uint32 fontHeight = text->mFont->getFontHeight();
@@ -243,7 +342,7 @@ void RenderBatch::createTextQuad(SPtr<RenderText> text, Vec2& offset, Color& col
         for (auto it : text->mTextList[line])
         {
             auto fChar = text->mFont->getFontChar(it, text->mbBold, text->mbItalic);
-            Mat4 offsetMatrix = worldMat * Easy2D::translate(Vec3(offsetX + fChar->letterSize.x, offsetY - fChar->letterSize.y, 0));
+            Mat4 offsetMatrix = text->matWorld * Easy2D::translate(Vec3(offsetX + fChar->letterSize.x, offsetY - fChar->letterSize.y, 0));
             offsetMatrix *= Easy2D::translate(0, fontHeight / 2.0f, 0);
             offsetMatrix *= Easy2D::scale(1, -1, 1);
             offsetMatrix *= Easy2D::translate(0, fontHeight / -2.0f, 0);

@@ -17,7 +17,6 @@ TextComponent::~TextComponent()
 
 void TextComponent::initialize()
 {
-    mRenderText->mTransform = getTransform();
 }
 
 void TextComponent::checkWrapping()
@@ -146,6 +145,7 @@ void TextComponent::update(const uint32& escapeMs)
         if (mChanged)
         {
             checkWrapping();
+            mRenderText->matWorld = getTransform()->getWorldMatrix();
             mChanged = false;
         }
         RenderBatch::getInstance()->addRenderQueue(mRenderText);
