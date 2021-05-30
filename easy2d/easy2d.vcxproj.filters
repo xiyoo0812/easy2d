@@ -19,9 +19,6 @@
     <ClCompile Include="src\graphics\e2d_shader.cpp">
       <Filter>graphics</Filter>
     </ClCompile>
-    <ClCompile Include="src\windows\e2d_window.cpp">
-      <Filter>windows</Filter>
-    </ClCompile>
     <ClCompile Include="src\base\e2d_timer_mgr.cpp">
       <Filter>base</Filter>
     </ClCompile>
@@ -109,6 +106,9 @@
     <ClCompile Include="src\base\e2d_event.cpp">
       <Filter>base</Filter>
     </ClCompile>
+    <ClCompile Include="src\e2d_window.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\base\e2d_color.h">
@@ -140,9 +140,6 @@
     </ClInclude>
     <ClInclude Include="src\graphics\e2d_shader.h">
       <Filter>graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="src\windows\e2d_window.h">
-      <Filter>windows</Filter>
     </ClInclude>
     <ClInclude Include="src\base\e2d_timer_mgr.h">
       <Filter>base</Filter>
@@ -249,6 +246,9 @@
     <ClInclude Include="src\base\e2d_event.h">
       <Filter>base</Filter>
     </ClInclude>
+    <ClInclude Include="src\e2d_window.h">
+      <Filter>engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="base">
@@ -262,9 +262,6 @@
     </Filter>
     <Filter Include="math">
       <UniqueIdentifier>{7366264e-2b7d-4f24-8c86-73b0108e929c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="windows">
-      <UniqueIdentifier>{d1242290-f354-40cb-86b7-45153e68ba56}</UniqueIdentifier>
     </Filter>
     <Filter Include="object">
       <UniqueIdentifier>{af2eec52-c3c1-43db-a968-8b5a7fbda322}</UniqueIdentifier>

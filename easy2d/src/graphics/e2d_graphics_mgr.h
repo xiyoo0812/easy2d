@@ -31,6 +31,7 @@ namespace Easy2D
         int32 getScreenWidth() const;
         int32 getScreenHeight() const;
 
+        const Mat4& getScaleMatrix() const;
         const Mat4& getViewMatrix() const;
         const Mat4& getProjectionMatrix() const;
         const Mat4& getViewInverseMatrix() const;
@@ -40,7 +41,6 @@ namespace Easy2D
         const Vec2& getViewportResolution() const;
         const Vec2& getScreenResolution() const;
 
-        float32 getScale() const;
         float32 getDesignAspectRatio() const;
         float32 getViewportAspectRatio() const;
 
@@ -57,8 +57,8 @@ namespace Easy2D
         void calculateViewPort();
         void initializeOpenGLStates();
 
-        float32 mScale;
         Mat4 mViewMatrix = {};
+        Mat4 mScaleMatrix = {};
         Mat4 mProjectionMatrix = {};
         Mat4 mViewInverseMatrix = {};
         Mat4 mViewProjectionMatrix = {};

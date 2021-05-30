@@ -15,9 +15,9 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{2B5B8B79-3656-45A0-AD7F-E5E7720E0111}</ProjectGuid>
-    <RootNamespace>easy2d_win</RootNamespace>
+    <RootNamespace>e2d_game</RootNamespace>
     <Keyword>Win32Proj</Keyword>
-    <ProjectName>easy2d_win</ProjectName>
+    <ProjectName>e2d_game</ProjectName>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

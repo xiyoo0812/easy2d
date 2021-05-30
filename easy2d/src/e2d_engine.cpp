@@ -56,7 +56,7 @@ void E2dEngine::initialize(SPtr<android_app> app)
     image->setZorder(1);
     image->setDockerAlign(DockerAlign::LeftTop);
 
-    auto font = FontManager::getInstance()->loadFont("felt-12", "fzltxh_gbk.ttf", 48);
+    auto font = FontManager::getInstance()->loadFont("felt-12", "fzltxh_gbk.ttf", 36);
 
     auto txt = std::make_shared<UITextField>("text");
     scene->addEntity(txt);
@@ -66,6 +66,7 @@ void E2dEngine::initialize(SPtr<android_app> app)
     //txt->setBold(true);
     txt->setZorder(2);
     txt->setSpacing(5);
+    txt->setColor(Color::Red);
     txt->setSize(Vec2(200, 60));
     txt->setPosition(0, 5);
     txt->setAnchor(0, 0);
@@ -73,15 +74,15 @@ void E2dEngine::initialize(SPtr<android_app> app)
     txt->setHorizontalAlign(HorizontalAlign::Left);
     txt->setDockerAlign(DockerAlign::LeftTop);
 
-//     auto txt2 = std::make_shared<UITextField>("text2");
-//     scene->addEntity(txt2);
-//     txt2->setFont(font);
-//     //txt2->setItalic(true);
-//     //txt2->setShadowColor(Color::White, 1);
-//     txt2->setOutlineColor(Color::Red, 1);
-//     txt2->setZorder(2);
-//     txt2->setText(L"我是国人daAFKsbB123");
-//     txt2->setPosition(0, -60);
+     //auto txt2 = std::make_shared<UITextField>("text2");
+     //scene->addEntity(txt2);
+     //txt2->setFont(font);
+     ////txt2->setItalic(true);
+     ////txt2->setShadowColor(Color::White, 1);
+     //txt2->setOutlineColor(Color::Red, 1);
+     //txt2->setZorder(2);
+     //txt2->setText(L"我是国人daAFKsbB123");
+     //txt2->setPosition(300, 100);
 }
 
 void E2dEngine::update()

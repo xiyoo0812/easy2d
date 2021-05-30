@@ -38,8 +38,9 @@ void GraphicsManager::calculateViewPort()
         }
         mViewportResolution.x = width;
         mViewportResolution.y = height;
-        mScale = mViewportResolution.x / mDesignResolution.x;
+        float32 scale = mViewportResolution.x / mDesignResolution.x;
         glViewport(mHorizontalViewportOffset, mVerticalViewportOffset, static_cast<int32>(width), static_cast<int32>(height));
+        mScaleMatrix = Easy2D::scale(scale, scale, 0);
     }
 }
 
@@ -51,7 +52,6 @@ void GraphicsManager::initialize(int32 screenWidth, int32 screenHeight)
     setDesignResolution(screenWidth, screenHeight);
 
     //Initializes base GL state.
-    //DEPTH_TEST is default disabled
     initializeOpenGLStates();
     mbInitialize = true;
     calculateViewPort();
@@ -158,7 +158,7 @@ void GraphicsManager::initializeOpenGLStates()
 
 void GraphicsManager::startDraw()
 {
-    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void GraphicsManager::stopDraw()
@@ -219,6 +219,11 @@ int32 GraphicsManager::getScreenHeight() const
     return mScreenResolution.y;
 }
 
+const Mat4& GraphicsManager::getScaleMatrix() const
+{
+    return mScaleMatrix;
+}
+
 const Mat4& GraphicsManager::getViewInverseProjectionMatrix() const
 {
     return mViewProjectionMatrix;
@@ -272,11 +277,6 @@ int32 GraphicsManager::getHorizontalViewportOffset() const
 int32 GraphicsManager::getVerticalViewportOffset() const
 {
     return mVerticalViewportOffset;
-}
-
-float32 GraphicsManager::getScale() const
-{
-    return mScale;
 }
 
 void GraphicsManager::setScreenResolution(int32 width, int32 height)

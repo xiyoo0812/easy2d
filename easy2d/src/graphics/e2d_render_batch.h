@@ -47,7 +47,7 @@ namespace Easy2D
         Vector<Vec4> mVertexBuffer;
         Vector<Color> mColorBuffer;
         Vector<float32> mIsHUDBuffer;
-        Vector<float32> mUvCoordBuffer;
+        Vector<Vec2> mUvCoordBuffer;
         Vector<GLuint> mTextureQueue;
 
         SPtr<Program> mProgram = nullptr;

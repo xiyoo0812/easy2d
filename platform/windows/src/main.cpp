@@ -1,5 +1,5 @@
 // Demo.h : 定义应用程序的入口点。
-#include "windows/e2d_window.h"
+#include "e2d_window.h"
 
 using namespace Easy2D;
 

@@ -12,8 +12,6 @@
 #include "base/e2d_utils.h"
 #include "base/e2d_singleton.h"
 
-#define GLFW
-
 #if defined(_WIN32)
     #ifndef NOMINMAX 
         #define NOMINMAX 
@@ -23,15 +21,8 @@
     #define _CRT_SECURE_NO_DEPRECATE
     #define _CRT_NONSTDC_NO_WARNINGS
     #include <windows.h>
-    #ifdef GLFW
-        #include <glad/glad.h>
-        #include <glfw/glfw3.h>
-    #else
-        #include <gl/glew.h>
-        #include <gl/wglew.h>
-        #include <gl/GL.h>
-        #include <gl/glu.h>
-    #endif
+    #include <glad/glad.h>
+    #include <glfw/glfw3.h>
 #endif
 
 #endif
