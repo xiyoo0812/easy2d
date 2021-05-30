@@ -17,6 +17,7 @@
         #define NOMINMAX 
     #endif
     #define PLATFORM_WINDOW
+    #define GLFW_INCLUDE_NONE
     #define _CRT_SECURE_NO_DEPRECATE
     #define _CRT_NONSTDC_NO_WARNINGS
     #include <windows.h>
@@ -24,6 +25,7 @@
     #include <gl/wglew.h>
     #include <gl/GL.h>
     #include <gl/glu.h>
+    #include "glfw/glfw3.h"
 #endif
 
 #endif

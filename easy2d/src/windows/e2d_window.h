@@ -36,6 +36,8 @@ namespace Easy2D
         Window() {}
         void mainLoop();
 
+        void PrintGlVersionInfo();
+
         void clientResize(uint32 & width, uint32 & height);
         void getWindowDiffSize(uint32 & difX, uint32 & difY);
 
@@ -55,6 +57,7 @@ namespace Easy2D
         HDC mHDC = nullptr;
         HWND mHandle = nullptr;
         HGLRC mOGLContext = nullptr;
+        GLFWwindow* window = nullptr;
         SPtr<E2dEngine> mE2dEngine = nullptr;
 
     };

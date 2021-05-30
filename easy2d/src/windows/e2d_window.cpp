@@ -7,6 +7,13 @@
 /* Easy2D */
 using namespace Easy2D;
 
+//#define GLFW
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    glViewport(0, 0, width, height);
+}
+
 #define IDI_STARGAMEICON 201
 #define WNDCLASSNAME _T("E2DWindow")
 #define KEYDOWN(vkCode) ((GetAsyncKeyState(vkCode) & 0x8000) ? 1 : 0)
@@ -28,6 +35,24 @@ void Window::initialize(HINSTANCE instance, uint32 width /* = 800 */, uint32 hei
         mE2dEngine = SPtr<E2dEngine>(E2dEngine::getInstance());
         LOG_INIT("./logs/", "E2D_LOG", logger::rolling_type::HOURLY, 10000);
 
+#ifdef GLFW
+         glfwInit();
+         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+         window = glfwCreateWindow(width, height, _T("E2DGAME"), NULL, NULL);
+         if (window == NULL)
+         {
+             std::cout << "Failed to create GLFW window" << std::endl;
+             glfwTerminate();
+             return;
+         }
+         glfwMakeContextCurrent(window);
+         glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+         glewExperimental = GL_TRUE;
+#else
         WNDCLASSEX wndClass;
         wndClass.cbClsExtra = 0;
         wndClass.cbWndExtra = 0;
@@ -98,22 +123,36 @@ void Window::initialize(HINSTANCE instance, uint32 width /* = 800 */, uint32 hei
             LOG_FATAL << _T("Action couldn't be completed!");
             return;
         }
-        //ShowCursor(!hide_cursor);
-        mE2dEngine->initialize(width, height);
 
-        POINT pt;
-        pt.x = width / 2;
-        pt.y = height / 2;
-        ClientToScreen(mHandle, &pt);
-        SetCursorPos(pt.x, pt.y);
+        if (glewInit() != GLEW_OK)
+        {
+            return;
+        }
+#endif
+        PrintGlVersionInfo();
+        mE2dEngine->initialize(width, height);
         mInitialized = true;
         mainLoop();
         mE2dEngine->stop();
+
+#ifdef GLFW
+        glfwTerminate();  //释放/删除分配的资源
+#endif
     }
 }
 
 void Window::mainLoop()
 {
+#ifdef GLFW
+    while (!glfwWindowShouldClose(window))
+    {
+        mE2dEngine->update();
+        mE2dEngine->draw();
+
+        glfwSwapBuffers(window);  //交换颜色缓冲，并显示到窗口
+        glfwPollEvents();  //检查触发事件，更新窗口状态，并调用对应回调函数
+    }
+#else
     MSG msg{};
     while (msg.message != WM_QUIT)
     {
@@ -129,6 +168,7 @@ void Window::mainLoop()
             SwapBuffers(Window::mHDC); // Swaps display buffers
         }
     }
+#endif
 }
 
 bool Window::isInitialized() const
@@ -248,8 +288,7 @@ bool Window::onMessage(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
         RECT clienRect;
         GetClientRect(hWnd, &clienRect);
-        GraphicsManager::getInstance()->setWindowChanged(true);
-        GraphicsManager::getInstance()->setWindowSize(clienRect.right - clienRect.left,clienRect.bottom - clienRect.top);
+        GraphicsManager::getInstance()->setScreenResolution(clienRect.right - clienRect.left,clienRect.bottom - clienRect.top);
         return true;
     }
     break;
@@ -272,5 +311,14 @@ const HWND& Window::getHandle() const
 {
     return mHandle;
 }
+
+void Window::PrintGlVersionInfo()
+{
+    LOG_DEBUG << "OpenGL version: " << glGetString(GL_VERSION);
+    LOG_DEBUG << "GL_VENDOR: " << glGetString(GL_VENDOR);
+    LOG_DEBUG << "GL_RENDERER: " << glGetString(GL_RENDERER);
+    LOG_DEBUG << "GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION);
+}
+
 
 #endif
