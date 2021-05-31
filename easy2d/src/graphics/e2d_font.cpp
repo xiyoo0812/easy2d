@@ -49,7 +49,7 @@ bool Font::load()
             glBindTexture(GL_TEXTURE_2D, mTextures[i]);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, FONT_TEXTURE_SIZE, FONT_TEXTURE_SIZE, 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, 0);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, FONT_TEXTURE_SIZE, FONT_TEXTURE_SIZE, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
         }
         mTextureIndex = 0;
         mbLoad = true;

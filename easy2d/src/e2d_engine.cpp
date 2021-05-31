@@ -62,7 +62,7 @@ void E2dEngine::initialize(SPtr<android_app> app)
     scene->addEntity(txt);
     txt->setFont(font);
     txt->setText(L"国人daAFKsbBgf123");
-    //txt->setShadowColor(Color::Black, 2);
+    txt->setShadowColor(Color::Black, 2);
     //txt->setBold(true);
     txt->setZorder(2);
     txt->setSpacing(5);
@@ -74,15 +74,15 @@ void E2dEngine::initialize(SPtr<android_app> app)
     txt->setHorizontalAlign(HorizontalAlign::Left);
     txt->setDockerAlign(DockerAlign::LeftTop);
 
-     //auto txt2 = std::make_shared<UITextField>("text2");
-     //scene->addEntity(txt2);
-     //txt2->setFont(font);
-     ////txt2->setItalic(true);
-     ////txt2->setShadowColor(Color::White, 1);
-     //txt2->setOutlineColor(Color::Red, 1);
-     //txt2->setZorder(2);
-     //txt2->setText(L"我是国人daAFKsbB123");
-     //txt2->setPosition(300, 100);
+     auto txt2 = std::make_shared<UITextField>("text2");
+     scene->addEntity(txt2);
+     txt2->setFont(font);
+     txt2->setItalic(true);
+     //txt2->setShadowColor(Color::White, 1);
+     txt2->setOutlineColor(Color::Red, 1);
+     txt2->setZorder(2);
+     txt2->setText(L"我是国人daAFKsbB123");
+     txt2->setPosition(300, 100);
 }
 
 void E2dEngine::update()
