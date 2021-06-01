@@ -22,7 +22,8 @@
 - c++17
 - stb
 - glm
-- glew
+- glad
+- glfw
 - OpenGL
 - FreeType
 - [lua](https://github.com/xiyoo0812/lua.git)5.2以上

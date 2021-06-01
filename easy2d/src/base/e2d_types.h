@@ -2,6 +2,7 @@
 #define TYPES_H
 
 #include <map>
+#include <set>
 #include <list>
 #include <string>
 #include <vector>
@@ -68,6 +69,8 @@ namespace Easy2D
     using Vector = std::vector<T>;
     template <typename T>
     using List = std::list<T>;
+    template <typename T>
+    using Set = std::set<T>;
     template <class Key, class T, class Hash = std::hash<Key>, class KeyEqual = std::equal_to<Key>>
     using UnorderedMap = std::unordered_map<Key, T, Hash, KeyEqual>;
 

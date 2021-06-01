@@ -118,6 +118,7 @@
     <ClCompile Include="src\base\e2d_color.cpp" />
     <ClCompile Include="src\base\e2d_event.cpp" />
     <ClCompile Include="src\base\e2d_guid.cpp" />
+    <ClCompile Include="src\base\e2d_input.cpp" />
     <ClCompile Include="src\base\e2d_stopwatch.cpp" />
     <ClCompile Include="src\base\e2d_timer_mgr.cpp" />
     <ClCompile Include="src\e2d_engine.cpp" />
@@ -156,6 +157,7 @@
     <ClInclude Include="src\base\e2d_color.h" />
     <ClInclude Include="src\base\e2d_event.h" />
     <ClInclude Include="src\base\e2d_guid.h" />
+    <ClInclude Include="src\base\e2d_input.h" />
     <ClInclude Include="src\base\e2d_singleton.h" />
     <ClInclude Include="src\base\e2d_stopwatch.h" />
     <ClInclude Include="src\base\e2d_timer_mgr.h" />

@@ -3,27 +3,25 @@
 /* Easy2D */
 using namespace Easy2D;
 
+//EventDispatcher
+//--------------------------------------------------------------------------------
 bool EventDispatcher::addTrigger(String& guid, SPtr<EventListerner> listener)
 {
     auto iter = mTriggers.find(guid);
     if (iter == mTriggers.end())
     {
-        List<SPtr<EventListerner>> listeners;
-        listeners.push_back(listener);
+        Set<SPtr<EventListerner>> listeners;
+        listeners.insert(listener);
         mTriggers.insert(std::make_pair(guid, listeners));
         return true;
     }
-    List<SPtr<EventListerner>>& listeners = iter->second;
-    for (auto olistener : listeners)
+    Set<SPtr<EventListerner>>& listeners = iter->second;
+    auto pair = listeners.insert(listener);
+    if (!pair.second)
     {
-        if (olistener == listener)
-        {
-            LOG_ERROR << "EventManager::addListener Add addTrigger(" << guid << ") Repeat!";
-            return false;
-        }
+        LOG_ERROR << "EventDispatcher::addTrigger Add EventListerner(" << guid << ") Repeat!";
     }
-    listeners.push_back(listener);
-    return true;
+    return pair.second;
 }
 
 
@@ -31,7 +29,7 @@ bool EventDispatcher::addListener(String& guid, SPtr<EventListerner> listener)
 {
     if (mListeners.find(guid) != mListeners.end())
     {
-        LOG_ERROR << "EventManager::addListener Add EventListener(" << guid << ") Repeat!";
+        LOG_ERROR << "EventDispatcher::addListener Add EventListerner(" << guid << ") Repeat!";
         return false;
     }
     mListeners.insert(std::make_pair(guid, listener));
@@ -43,15 +41,8 @@ void EventDispatcher::removeTrigger(String& guid, SPtr<EventListerner> listener)
     auto iter = mTriggers.find(guid);
     if (iter != mTriggers.end())
     {
-        List<SPtr<EventListerner>>& listeners = iter->second;
-        for (auto it = listeners.begin(), itEnd = listeners.end(); it != itEnd; ++it)
-        {
-            if (*it == listener)
-            {
-                listeners.erase(it);
-                break;
-            }
-        }
+        Set<SPtr<EventListerner>>& listeners = iter->second;
+        listeners.erase(listener);
     }
 }
 
@@ -70,7 +61,7 @@ void EventDispatcher::notifyTrigger(SPtr<Event> event)
     auto iter = mTriggers.find(guid);
     if (iter != mTriggers.end())
     {
-        List<SPtr<EventListerner>>& listeners = iter->second;
+        Set<SPtr<EventListerner>>& listeners = iter->second;
         for (auto listener : listeners)
         {
             listener->onHandleEvent(event);
@@ -84,5 +75,28 @@ void EventDispatcher::notifyListener(SPtr<Event> event)
     for (auto iter : mListeners)
     {
         iter.second->onHandleEvent(event);
+    }
+}
+
+//EventSinkDispatcher
+//--------------------------------------------------------------------------------
+bool EventSinkDispatcher::addEventSink(SPtr<EventSink> sink)
+{
+    auto pair = mEventSinks.insert(sink);
+    if (!pair.second)
+    {
+        LOG_ERROR << "EventSinkDispatcher::addEventSink Add EventSink(" << sink->getName() << ") Repeat!";
+    }
+    return pair.second;
+}
+
+void EventSinkDispatcher::onHandleEvent(SPtr<Event> event)
+{
+    for (auto sink : mEventSinks)
+    {
+        if (sink->onHandlerEvent(event) == BubbleType::Stop)
+        {
+            break;
+        }
     }
 }
