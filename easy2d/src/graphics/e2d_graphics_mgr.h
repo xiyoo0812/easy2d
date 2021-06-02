@@ -18,8 +18,6 @@ namespace Easy2D
         void destroy();
 #endif
 
-        void startDraw();
-        void stopDraw();
         void update();
 
         int32 getWindowWidth() const;
@@ -55,7 +53,6 @@ namespace Easy2D
         ~GraphicsManager();
 
         void calculateViewPort();
-        void initializeOpenGLStates();
 
         Mat4 mViewMatrix = {};
         Mat4 mScaleMatrix = {};

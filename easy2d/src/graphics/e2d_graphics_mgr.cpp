@@ -51,8 +51,6 @@ void GraphicsManager::initialize(int32 screenWidth, int32 screenHeight)
     setScreenResolution(screenWidth, screenHeight);
     setDesignResolution(screenWidth, screenHeight);
 
-    //Initializes base GL state.
-    initializeOpenGLStates();
     mbInitialize = true;
     calculateViewPort();
 }
@@ -148,23 +146,6 @@ void GraphicsManager::destroy()
     }
 }
 #endif
-
-void GraphicsManager::initializeOpenGLStates()
-{
-    glClearColor(0.0f, 0.5f, 0.5f, 1.0f);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_BLEND);
-}
-
-void GraphicsManager::startDraw()
-{
-    glClear(GL_COLOR_BUFFER_BIT);
-}
-
-void GraphicsManager::stopDraw()
-{   
-    glFlush();
-}
 
 void GraphicsManager::update()
 {

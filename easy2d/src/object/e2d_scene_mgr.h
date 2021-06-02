@@ -26,7 +26,6 @@ namespace Easy2D
         bool initialized();
 
         void update(const uint32& escapeMs);
-        void draw();
 
 #ifdef ANDROID
         void processActivityEvent(int32 pCommand, android_app* pApplication);

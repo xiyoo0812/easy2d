@@ -19,9 +19,7 @@ namespace Easy2D
         virtual void onDeactivate();
         virtual void update(const uint32& escapeMs);
 
-        virtual void onSaveState(void** pData, size_t* pSize);
-        virtual void onConfigurationChanged();
-        virtual void onLowMemory();
+        virtual BubbleType onHandlerEvent(SPtr<Event> event);
 
         void sortEntity();
         void addEntity(SPtr<Entity> pEntity);

@@ -46,7 +46,7 @@ void OnMouseWheel(GLFWwindow* window, double x, double y)
     InputSystem::getInstance()->onHandleEvent(event);
 }
 
-void InputSystem::setup(GLFWwindow* window)
+void InputSystem::initialize(GLFWwindow* window)
 {
     glfwSetKeyCallback(window, OnKey);
     glfwSetCharCallback(window, OnChar);

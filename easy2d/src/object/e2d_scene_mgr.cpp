@@ -126,15 +126,6 @@ void SceneManager::update(const uint32& escapeMs)
     }
 }
 
-void SceneManager::draw()
-{
-    if (mActiveScene)
-    {
-        RenderBatch::getInstance()->flush();
-        // 		DebugDraw::getInstance()->flush();
-    }
-}
-
 #ifdef ANDROID
 #define INPUT_MANAGER (InputManager::getInstance())
 void SceneManager::processActivityEvent(int32 pCommand, android_app* pApplication)

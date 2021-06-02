@@ -133,6 +133,7 @@
     <ClCompile Include="src\graphics\e2d_texture2d.cpp" />
     <ClCompile Include="src\graphics\e2d_texture_mgr.cpp" />
     <ClCompile Include="src\gui\e2d_image.cpp" />
+    <ClCompile Include="src\gui\e2d_root.cpp" />
     <ClCompile Include="src\gui\e2d_text_field.cpp" />
     <ClCompile Include="src\gui\e2d_widget.cpp" />
     <ClCompile Include="src\math\e2d_math.cpp" />
@@ -177,6 +178,7 @@
     <ClInclude Include="src\graphics\e2d_texture2d.h" />
     <ClInclude Include="src\graphics\e2d_texture_mgr.h" />
     <ClInclude Include="src\gui\e2d_image.h" />
+    <ClInclude Include="src\gui\e2d_root.h" />
     <ClInclude Include="src\gui\e2d_text_field.h" />
     <ClInclude Include="src\gui\e2d_widget.h" />
     <ClInclude Include="src\math\e2d_math.h" />

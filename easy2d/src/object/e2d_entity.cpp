@@ -212,10 +212,7 @@ void Entity::update(const uint32& escapeMs)
         Vec2 dim = getSize();
         for (auto child : mChildrens)
         {
-            if (child->checkCulling(0, 0, dim.x, dim.y))
-            {
-                child->update(escapeMs);
-            }
+            child->update(escapeMs);
         }
     }
 }

@@ -112,6 +112,9 @@
     <ClCompile Include="src\base\e2d_input.cpp">
       <Filter>base</Filter>
     </ClCompile>
+    <ClCompile Include="src\gui\e2d_root.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\base\e2d_color.h">
@@ -254,6 +257,9 @@
     </ClInclude>
     <ClInclude Include="src\base\e2d_input.h">
       <Filter>base</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gui\e2d_root.h">
+      <Filter>gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

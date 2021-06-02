@@ -19,12 +19,13 @@ namespace Easy2D
         friend Singleton<RenderBatch>;
 
         void initialize();
-        void flush();
+        void initializeGLStates();
         void addRenderQueue(SPtr<RenderText> text);
         void addRenderQueue(SPtr<RenderRect> rect);
         void addRenderQueue(SPtr<RenderTexture> texture);
         void setSortingMode(RenderSortingMode mode);
         const RenderSortingMode getSortingMode();
+        void flush();
 
     private:
         RenderBatch();

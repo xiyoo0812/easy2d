@@ -2,7 +2,8 @@
 #define ENGINE_H
 
 #include "e2d_config.h"
-#include "base\e2d_stopwatch.h"
+#include "gui/e2d_root.h"
+#include "base/e2d_stopwatch.h"
 
 namespace Easy2D
 {
@@ -24,7 +25,6 @@ namespace Easy2D
         ~E2dEngine();
 
         void update();
-        void draw();
         void stop();
 
         void setActive();
@@ -33,23 +33,13 @@ namespace Easy2D
         uint32 getCurrentFPS() const;
         uint32 getPreviousFPS() const;
 
-        void setTitle(const String& title);
-        void setSubTitle(const String & title);
-        const String& getTitle();
-        const String& getSubTitle();
-
-        bool hasTitleUpdated() const;
-        void resetTitleUpdateMark();
-
         void quit();
 
     private:
         E2dEngine();
 
         //FPS mFPS;
-        String mTitle = "";
-        String mSubTitle = "";
-        bool mTitleHasUpdated = false;
+        SPtr<UIRoot> mUIRoot = nullptr;
         SPtr<Stopwatch> mStopWatch = nullptr;
     };
 }

@@ -52,7 +52,7 @@ namespace Easy2D
     class EventSink
     {
     public:
-        virtual std::string getName() = 0;
+        virtual const String& getName() const = 0;
         virtual BubbleType onHandlerEvent(SPtr<Event> event)
         {
             return BubbleType::Next;

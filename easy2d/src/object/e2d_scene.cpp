@@ -2,6 +2,7 @@
 #include "e2d_camera.h"
 #include "e2d_scene_mgr.h"
 #include "math/e2d_pos.h"
+#include "base/e2d_input.h"
 #include "graphics/e2d_graphics_mgr.h"
 #include "graphics/e2d_render_batch.h"
 #include "component/e2d_transform_component.h"
@@ -36,6 +37,7 @@ void Scene::initialize()
             mDefaultCamera = std::make_shared<Camera>();
             addEntity(mDefaultCamera);
         }
+        InputSystem::getInstance()->addEventSink(std::dynamic_pointer_cast<EventSink>(shared_from_this()));
         setActiveCamera(mDefaultCamera);
         mInitialized = true;
     }
@@ -63,21 +65,13 @@ void Scene::update(const uint32& escapeMs)
     // m_pCollisionManager->Update(context);
 }
 
-void Scene::onSaveState(void** pData, size_t* pSize)
+BubbleType Scene::onHandlerEvent(SPtr<Event> event)
 {
-
+    for (auto entity : mEntitys)
+    {
+    }
+    return BubbleType::Next;
 }
-
-void Scene::onConfigurationChanged()
-{
-
-}
-
-void Scene::onLowMemory()
-{
-
-}
-
 
 void Scene::sortEntity()
 {

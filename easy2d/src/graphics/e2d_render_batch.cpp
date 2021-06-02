@@ -35,6 +35,13 @@ void RenderBatch::initialize()
     mTexSamplerID = mProgram->getUniformLocation("texSampler");
 }
 
+void RenderBatch::initializeGLStates()
+{
+    glClearColor(0.0f, 0.5f, 0.5f, 1.0f);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
+}
+
 void RenderBatch::setSortingMode(RenderSortingMode mode)
 {
     mSortingMode = mode;
@@ -144,6 +151,7 @@ void RenderBatch::end()
 
 void RenderBatch::draw()
 {
+    glClear(GL_COLOR_BUFFER_BIT);
     GLuint curTexture = 0;
     uint32 batchStart = 0, batchSize = 0;
     for (auto texture : mTextureQueue)
@@ -159,6 +167,7 @@ void RenderBatch::draw()
         ++batchSize;
     }
     drawTexture(batchStart, batchSize, curTexture);
+    glFlush();
 }
 
 void RenderBatch::drawRect(uint32 start, uint32 size)

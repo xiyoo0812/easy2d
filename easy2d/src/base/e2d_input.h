@@ -55,6 +55,6 @@ namespace Easy2D
         InputSystem() {}
         ~InputSystem() {}
 
-        void setup(GLFWwindow* window);
+        void initialize(GLFWwindow* window);
     };
 }

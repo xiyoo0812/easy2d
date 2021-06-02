@@ -37,7 +37,12 @@ void E2dEngine::initialize(SPtr<android_app> app)
     AssetManager::getInstance()->initialize("res");
     //初始化font资源路径，基于asset的路径
     FontManager::getInstance()->initialize("font");
+    //初始化RenderBatch
     RenderBatch::getInstance()->initialize();
+    RenderBatch::getInstance()->initializeGLStates();
+    //初始化UIRoot
+    mUIRoot = std::make_shared<UIRoot>();
+    mUIRoot->initialize();
 
     //AudioManager::getInstance()->start();
     //DebugDraw::getInstance()->initialize();
@@ -47,7 +52,7 @@ void E2dEngine::initialize(SPtr<android_app> app)
 
     auto tex = TextureManager::getInstance()->loadTexture("image/btn.png", "btn");
     auto image = std::make_shared<UIImage>("image");
-    scene->addEntity(image);
+    mUIRoot->addChild(image);
     image->setTexture(tex);
     image->setPosition(0, 0);
     image->setSize(Vec2(95, 42));
@@ -59,7 +64,7 @@ void E2dEngine::initialize(SPtr<android_app> app)
     auto font = FontManager::getInstance()->loadFont("felt-12", "fzltxh_gbk.ttf", 36);
 
     auto txt = std::make_shared<UITextField>("text");
-    scene->addEntity(txt);
+    mUIRoot->addChild(txt);
     txt->setFont(font);
     txt->setText(L"国人daAFKsbBgf123");
     txt->setShadowColor(Color::Black, 2);
@@ -75,7 +80,7 @@ void E2dEngine::initialize(SPtr<android_app> app)
     txt->setDockerAlign(DockerAlign::LeftTop);
 
      auto txt2 = std::make_shared<UITextField>("text2");
-     scene->addEntity(txt2);
+     mUIRoot->addChild(txt2);
      txt2->setFont(font);
      txt2->setItalic(true);
      //txt2->setShadowColor(Color::White, 1);
@@ -88,18 +93,12 @@ void E2dEngine::initialize(SPtr<android_app> app)
 void E2dEngine::update()
 {
     uint32 escapeMs = mStopWatch->elapsedMillSecondsNow();
+    //mFPS.update(escapeMs);
+    mUIRoot->update(escapeMs);
     TimerManager::getInstance()->update(escapeMs);
     SceneManager::getInstance()->update(escapeMs);
     GraphicsManager::getInstance()->update();
-    //mFPS.update(escapeMs);
-    //InputManager::getInstance()->Endupdate();
-}
-
-void E2dEngine::draw()
-{
-    GraphicsManager::getInstance()->startDraw();
-    SceneManager::getInstance()->draw();
-    GraphicsManager::getInstance()->stopDraw();
+    RenderBatch::getInstance()->flush();
 }
 
 void E2dEngine::stop()
@@ -137,38 +136,6 @@ uint32 E2dEngine::getCurrentFPS() const
 uint32 E2dEngine::getPreviousFPS() const
 {
     return 0; //mFPS.PreviousFPS;
-}
-
-void E2dEngine::setTitle(const String& title)
-{
-    mTitle = title;
-    mTitleHasUpdated = true;
-}
-
-void E2dEngine::setSubTitle(const String & title)
-{
-    mSubTitle = title;
-    mTitleHasUpdated = true;
-}
-
-const String& E2dEngine::getTitle()
-{
-    return mTitle;
-}
-
-const String& E2dEngine::getSubTitle()
-{
-    return mSubTitle;
-}
-
-bool E2dEngine::hasTitleUpdated() const
-{
-    return mTitleHasUpdated;
-}
-
-void E2dEngine::resetTitleUpdateMark()
-{
-    mTitleHasUpdated = false;
 }
 
 void E2dEngine::quit()
