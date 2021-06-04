@@ -1,8 +1,8 @@
 #ifndef TRANSFORM_COMPONENT_H
 #define TRANSFORM_COMPONENT_H
 
+#include "math/e2d_rect.h"
 #include "object/e2d_component.h"
-#include "math\e2d_pos.h"
 
 namespace Easy2D
 {
@@ -35,19 +35,21 @@ namespace Easy2D
         void moveX(float32 x);
         void moveY(float32 y);
 
-        const Vec2& getAbsolute();
-        const Vec2& getPosition();
-
         void scale(const Vec2& scale);
         void scale(float32 x, float32 y);
         void scale(float32 u);
         void scaleX(float32 x);
         void scaleY(float32 y);
-        const Vec2& getScale();
 
         void mirror(bool x, bool y);
         void mirrorX(bool x);
         void mirrorY(bool y);
+
+        const Rect getRect() const;
+        const Vec2& getScale() const;
+        const Vec2& getAbsolute() const;
+        const Vec2& getPosition() const;
+        bool isInRect(const Vec2& pos) const;
 
         float32 getRotation() const;
         void rotate(float32 rotation);

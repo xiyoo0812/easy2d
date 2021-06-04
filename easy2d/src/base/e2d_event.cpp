@@ -78,25 +78,3 @@ void EventDispatcher::notifyListener(SPtr<Event> event)
     }
 }
 
-//EventSinkDispatcher
-//--------------------------------------------------------------------------------
-bool EventSinkDispatcher::addEventSink(SPtr<EventSink> sink)
-{
-    auto pair = mEventSinks.insert(sink);
-    if (!pair.second)
-    {
-        LOG_ERROR << "EventSinkDispatcher::addEventSink Add EventSink(" << sink->getName() << ") Repeat!";
-    }
-    return pair.second;
-}
-
-void EventSinkDispatcher::onHandleEvent(SPtr<Event> event)
-{
-    for (auto sink : mEventSinks)
-    {
-        if (sink->onHandlerEvent(event) == BubbleType::Stop)
-        {
-            break;
-        }
-    }
-}

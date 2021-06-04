@@ -40,7 +40,7 @@ void Entity::destroy()
     }
     if (!mScene.expired())
     {
-        mScene.lock()->removeEntity(mGUID);
+        mScene.lock()->removeChild(mGUID);
     }
 }
 
@@ -55,6 +55,54 @@ void Entity::initialize()
         }
         mInitialized = true;
     }
+}
+
+BubbleType Entity::handleInputBefor(SPtr<KeyEvent> event, VisibleType& visable)
+{
+    visable = mVisible;
+    if (mDisable || !mFocus || mVisible == VisibleType::Hidden || mVisible == VisibleType::NotHitAll)
+    {
+        return BubbleType::Return;
+    }
+    return BubbleType::Continue;
+}
+
+BubbleType Entity::handleInputBefor(SPtr<MouseEvent> event, VisibleType& visable)
+{
+    visable = mVisible;
+    if (mDisable || mVisible == VisibleType::Hidden || mVisible == VisibleType::NotHitAll || !isInRect(event->mPos))
+    {
+        return BubbleType::Return;
+    }
+    return BubbleType::Continue;
+}
+
+BubbleType Entity::handleChildInput(SPtr<KeyEvent> event)
+{
+    for (auto it = mChildrens.rbegin(), itEnd = mChildrens.rend(); it != itEnd; ++it)
+    {
+        SPtr<Entity> child = *it;
+        BubbleType bubble = child->handleInput(event);
+        if (bubble == BubbleType::Break)
+        {
+            return bubble;
+        }
+    }
+    return BubbleType::Continue;
+}
+
+BubbleType Entity::handleChildInput(SPtr<MouseEvent> event)
+{
+    for (auto it = mChildrens.rbegin(), itEnd = mChildrens.rend(); it != itEnd; ++it)
+    {
+        SPtr<Entity> child = *it;
+        BubbleType bubble = child->handleInput(event);
+        if (bubble == BubbleType::Break)
+        {
+            return bubble;
+        }
+    }
+    return BubbleType::Continue;
 }
 
 void Entity::sortChild()
@@ -182,6 +230,11 @@ void Entity::setSize(const Vec2& dim)
     mTransform->setSize(dim);
 }
 
+const Rect Entity::getRect() const
+{
+    return mTransform->getRect();
+}
+
 const Vec2& Entity::getSize() const
 {
     return mTransform->getSize();
@@ -199,7 +252,7 @@ float32 Entity::getHeight() const
 
 void Entity::update(const uint32& escapeMs)
 {
-    if (!mDisable)
+    if (isEnabled() && isVisible())
     {
         for (auto action : mActions)
         {
@@ -336,7 +389,7 @@ void Entity::setChildDisabled(const uint64 guid, bool disabled)
     }
 }
 
-void Entity::setChildVisible(const uint64 guid, bool visible)
+void Entity::setChildVisible(const uint64 guid, VisibleType visible)
 {
     for (auto pEntity : mChildrens)
     {
@@ -356,7 +409,7 @@ void Entity::setChildrenDisabled(bool disable)
     }
 }
 
-void Entity::setChildrenVisible(bool visible)
+void Entity::setChildrenVisible(VisibleType visible)
 {
     for (auto child : mChildrens)
     {
@@ -490,16 +543,6 @@ void Entity::removeComponent(const String& name)
     }
 }
 
-void Entity::setVisible(bool visible)
-{
-    mVisible = visible;
-}
-
-bool Entity::isVisible() const
-{
-    return mVisible;
-}
-
 bool Entity::isChildNameExist(const String& name) const
 {
     for (auto pChild : mChildrens)
@@ -535,16 +578,51 @@ bool Entity::isComponentNameExist(const String& name) const
     }
     return false;
 }
+bool Entity::isInRect(const Vec2& pos) const
+{
+    return mTransform->isInRect(pos);
+}
+
+void Entity::setFocus(bool focus)
+{
+    mFocus = focus;
+}
+
+bool Entity::isFocus() const
+{
+    return mFocus;
+}
 
 void Entity::setDisabled(bool disabled)
 {
     mDisable = disabled;
 }
 
+bool Entity::isEnabled() const
+{
+    return !mDisable;
+}
+
 bool Entity::isDisabled() const
 {
     return mDisable;
 }
+
+bool Entity::isVisible() const
+{
+    return (mVisible != VisibleType::Hidden);
+}
+
+void Entity::setVisible(VisibleType visible)
+{
+    mVisible = visible;
+}
+
+VisibleType Entity::getVisible() const
+{
+    return mVisible;
+}
+
 
 int32 Entity::getZorder() const
 {
@@ -561,7 +639,7 @@ void Entity::setZorder(int32 order)
     }
     if (!mScene.expired())
     {
-        mScene.lock()->sortEntity();
+        mScene.lock()->sortChild();
     }
 }
 

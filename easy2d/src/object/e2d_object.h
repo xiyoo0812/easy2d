@@ -2,12 +2,12 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#include "base/e2d_event.h"
+#include "e2d_config.h"
 
 namespace Easy2D
 {
     // 子类需要调用shared_from_this()
-    class Object : public EventSink, public std::enable_shared_from_this<Object>
+    class Object : public std::enable_shared_from_this<Object>
     {
     public:
         Object();

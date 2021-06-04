@@ -9,7 +9,7 @@ namespace Easy2D
     {
     public:
         Rect() {}
-        Rect(const Vec2& leftTop, const Vec2& rightBottom);
+        Rect(const Vec2& leftTop, const Vec2& size);
         Rect operator=(const Rect& yRef);
 
         Rect operator*(float32 constant) const;
@@ -20,20 +20,18 @@ namespace Easy2D
         float32 getHeight() const;
 
         const Vec2& getLeftTop() const;
-        const Vec2& getRightBottom() const;
+        const Vec2& getSize() const;
 
         Vec2 getCenterPoint() const;
+        bool posInRect(const Vec2& pos) const;
 
         void setPoints(const Vec2& leftTop, const Vec2& rightBottom);
-        void setLeftTop(const Vec2& pos);
-        void setRightBottom(const Vec2& pos);
+        void setLeftTop(const Vec2& leftTop);
+        void setRightBottom(const Vec2& rightBottom);
 
     private:
         Vec2 mLeftTop;
-        Vec2 mRightBottom;
-
-        float32 mWidth = 0.0f;
-        float32 mHeight = 0.0f;
+        Vec2 mSize;
     };
 }
 

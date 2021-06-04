@@ -4,11 +4,6 @@
 
 namespace Easy2D
 {
-    enum class BubbleType
-    {
-        Stop,
-        Next
-    };
 
     //-------------------------------------------------------------------------------
     class Event
@@ -46,30 +41,5 @@ namespace Easy2D
     private:
         UnorderedMap<String, SPtr<EventListerner>> mListeners;
         UnorderedMap<String, Set<SPtr<EventListerner>>> mTriggers;
-    };
-
-    //-------------------------------------------------------------------------------
-    class EventSink
-    {
-    public:
-        virtual const String& getName() const = 0;
-        virtual BubbleType onHandlerEvent(SPtr<Event> event)
-        {
-            return BubbleType::Next;
-        }
-    };
-
-    //-------------------------------------------------------------------------------
-    class EventSinkDispatcher : public EventListerner
-    {
-    public:
-        EventSinkDispatcher() {}
-        ~EventSinkDispatcher() {}
-
-        bool addEventSink(SPtr<EventSink> sink);
-        virtual void onHandleEvent(SPtr<Event> event);
-
-    private:
-        Set<SPtr<EventSink>> mEventSinks;
     };
 }

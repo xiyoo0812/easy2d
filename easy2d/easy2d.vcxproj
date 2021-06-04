@@ -196,7 +196,6 @@
     <ClInclude Include="src\object\e2d_entity.hpp" />
     <ClInclude Include="src\object\e2d_object.h" />
     <ClInclude Include="src\object\e2d_scene.h" />
-    <ClInclude Include="src\object\e2d_scene.hpp" />
     <ClInclude Include="src\object\e2d_scene_mgr.h" />
     <ClInclude Include="src\object\e2d_scene_mgr.hpp" />
     <ClInclude Include="src\resource\e2d_asset_mgr.h" />

@@ -290,6 +290,8 @@ namespace Easy2D
     void mod(const Pos& posIn, const Vec2f& mod, Pos& posOut);
     void mod(const Pos& posIn, float32 mod, Pos& posOut);
 
+    bool posInRect(const Vec2& leftTop, const Vec2& size, const Vec2& pos);
+
     inline static std::mt19937 mMt19937 = std::mt19937(std::random_device()());
 }
 

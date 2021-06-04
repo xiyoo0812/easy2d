@@ -122,12 +122,22 @@ void TransformComponent::mirrorY(bool y)
     mChanged = true;
 }
 
-const Vec2& TransformComponent::getAbsolute()
+bool TransformComponent::isInRect(const Vec2& pos) const
+{
+    return Easy2D::posInRect(mAbsolute, mSize, pos);
+}
+
+const Rect TransformComponent::getRect() const
+{
+    return Rect(mPostion, mSize);
+}
+
+const Vec2& TransformComponent::getAbsolute() const
 {
     return mAbsolute;
 }
 
-const Vec2& TransformComponent::getPosition()
+const Vec2& TransformComponent::getPosition() const
 {
     return mPostion;
 }
@@ -137,7 +147,7 @@ float32 TransformComponent::getRotation() const
     return mRotation;
 }
 
-const Vec2& TransformComponent::getScale()
+const Vec2& TransformComponent::getScale() const
 {
     return mScale;
 }

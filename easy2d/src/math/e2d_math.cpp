@@ -1193,4 +1193,13 @@ namespace Easy2D
         Vec2f pos2D = posIn.pos2D();
         posOut = Pos(Easy2D::mod(pos2D, mod), posIn.l);
     }
+
+    bool posInRect(const Vec2& leftTop, const Vec2& size, const Vec2& pos)
+    {
+        if ((pos.x <= (leftTop.x + size.x) && pos.x >= leftTop.x) && (pos.y <= (leftTop.y + size.y) && pos.y >= leftTop.y))
+        {
+            return true;
+        }
+        return false;
+    }
    }

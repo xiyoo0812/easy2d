@@ -1,17 +1,17 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include "math/e2d_pos.h"
 #include "e2d_object.h"
 #include "e2d_action.h"
 #include "e2d_component.h"
-#include "base/e2d_event.h"
+#include "math/e2d_rect.h"
+#include "base/e2d_input.h"
 
 namespace Easy2D
 {
     class Scene;
     class TransformComponent;
-    class Entity : public Object, public EventDispatcher
+    class Entity : public Object, public InputSink, public EventDispatcher
     {
     public:
         Entity();
@@ -23,6 +23,11 @@ namespace Easy2D
         virtual void destroy();
         virtual void initialize();
         virtual void update(const uint32& escapeMs);
+
+        virtual BubbleType handleInputBefor(SPtr<KeyEvent> event, VisibleType& visable);
+        virtual BubbleType handleInputBefor(SPtr<MouseEvent> event, VisibleType& visable);
+        virtual BubbleType handleChildInput(SPtr<KeyEvent> event);
+        virtual BubbleType handleChildInput(SPtr<MouseEvent> event);
 
         void setPosition(const Vec2& pos);
         void setPosition(float32 x, float32 y);
@@ -49,9 +54,11 @@ namespace Easy2D
         void setSizeX(float32 x);
         void setSizeY(float32 y);
         void setSize(const Vec2& dim);
+        const Rect getRect() const;
         const Vec2& getSize() const;
         const Vec2& getAbsolute() const;
         const Vec2& getPosition() const;
+        bool isInRect(const Vec2& pos) const;
 
         const String& getPhysics() const;
         void setPhysics(const String& physics);
@@ -72,9 +79,9 @@ namespace Easy2D
         DockerAlign getDockerAlign() const;
 
         void setChildDisabled(const uint64 guid, bool disabled);
-        void setChildVisible(const uint64 guid, bool visible);
+        void setChildVisible(const uint64 guid, VisibleType visible);
         void setChildrenDisabled(bool disable);
-        void setChildrenVisible(bool visible);
+        void setChildrenVisible(VisibleType visible);
 
         bool addAction(SPtr<Action> pAction);
         void removeAction(const SPtr<Action> pAction);
@@ -89,10 +96,14 @@ namespace Easy2D
         void removeComponent(const uint64 guid);
         void removeComponent(const String& name);
 
-        void setVisible(bool visible);
-        void setDisabled(bool disabled);
-        bool isDisabled() const;
+        bool isFocus() const;
         bool isVisible() const;
+        bool isEnabled() const;
+        bool isDisabled() const;
+        void setFocus(bool focus);
+        void setDisabled(bool disabled);
+        VisibleType getVisible() const;
+        void setVisible(VisibleType visible);
 
         bool isChildNameExist(const String& name) const;
         bool isActionNameExist(const String& name) const;
@@ -121,8 +132,8 @@ namespace Easy2D
         virtual bool checkCulling(float32 left, float32 top, float32 right, float32 bottom);
 
         int32 mZorder = 0;
-        bool mVisible = true;
-        bool mDisable = false;
+        bool mFocus = false, mDisable = false;
+        VisibleType mVisible = VisibleType::NotHitSelfOnly;
         String mGroup = "default", mPhysics = "default";
 
         WPtr<Scene> mScene = {};

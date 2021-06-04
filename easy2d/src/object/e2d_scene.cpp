@@ -10,17 +10,12 @@
 /* Easy2D */
 using namespace Easy2D;
 
-bool Scene::CULLING_IS_ENABLED = false;
-
-Scene::Scene(const String& name) : Object(name)
+Scene::Scene(const String& name) : Entity(name)
 {
-    // m_pCollisionManager = std::make_shared<CollisionManager>();
 }
 
 Scene::~Scene()
 {
-    mEntitys.clear();
-    // m_pCollisionManager = nullptr;
 }
 
 void Scene::destroy()
@@ -32,12 +27,13 @@ void Scene::initialize()
 {
     if (!mInitialized)
     {
+        Entity::initialize();
         if (mDefaultCamera == nullptr)
         {
             mDefaultCamera = std::make_shared<Camera>();
-            addEntity(mDefaultCamera);
+            addChild(mDefaultCamera);
         }
-        InputSystem::getInstance()->addEventSink(std::dynamic_pointer_cast<EventSink>(shared_from_this()));
+        InputSystem::getInstance()->addInputSink(std::dynamic_pointer_cast<InputSink>(shared_from_this()));
         setActiveCamera(mDefaultCamera);
         mInitialized = true;
     }
@@ -50,161 +46,9 @@ void Scene::onActivate()
 
 void Scene::onDeactivate()
 {
-    for (auto entity : mEntitys)
+    for (auto entity : mChildrens)
     {
         entity->reset();
-    }
-}
-
-void Scene::update(const uint32& escapeMs)
-{
-    for (auto entity : mEntitys)
-    {
-        entity->update(escapeMs);
-    }
-    // m_pCollisionManager->Update(context);
-}
-
-BubbleType Scene::onHandlerEvent(SPtr<Event> event)
-{
-    for (auto entity : mEntitys)
-    {
-    }
-    return BubbleType::Next;
-}
-
-void Scene::sortEntity()
-{
-    switch (RenderBatch::getInstance()->getSortingMode())
-    {
-    case RenderSortingMode::BackFront:
-        std::sort(mEntitys.begin(), mEntitys.end(), [](SPtr<Entity> a, SPtr<Entity> b) -> bool
-        {
-            return a->getZorder() < b->getZorder();
-        });
-        break;
-    case RenderSortingMode::FrontBack:
-        std::sort(mEntitys.begin(), mEntitys.end(), [](SPtr<Entity> a, SPtr<Entity> b) -> bool
-        {
-            return a->getZorder() < b->getZorder();
-        });
-        break;
-    default:
-        break;
-    }
-}
-
-void Scene::addEntity(SPtr<Entity> pEntity)
-{
-    if (pEntity)
-    {
-        if (isEntityNameExist(pEntity->getName()))
-        {
-            LOG_ERROR << _T("Scene::addEntity: an object with the name '")
-                << pEntity->getName() << _T("' already exists. Object gets added but beware, duplicate names can become the cause of problems.");
-            return;
-        }
-        pEntity->setScene(std::dynamic_pointer_cast<Scene>(shared_from_this()));
-        mEntitys.push_back(pEntity);
-        pEntity->initialize();
-        sortEntity();
-    }
-}
-
-void Scene::addEntity(SPtr<Entity> pEntity, const String& name)
-{
-    if (pEntity)
-    {
-        pEntity->setName(name);
-        addEntity(pEntity);
-    }
-}
-
-void Scene::removeEntity(SPtr<Entity> pEntity)
-{
-    removeEntity(pEntity->getGUID());
-}
-
-void Scene::removeEntity(const uint64 guid)
-{
-    auto it = std::find_if(mEntitys.begin(), mEntitys.end(), [&](SPtr<Entity> pEntity) -> bool
-    {
-        return pEntity->compareGUID(guid);
-    });
-    if (it != mEntitys.end())
-    {
-        mEntitys.erase(it);
-        sortEntity();
-    }
-}
-
-void Scene::removeEntity(const String& name)
-{
-    auto it = std::find_if(mEntitys.begin(), mEntitys.end(), [&](SPtr<Entity> pEntity) -> bool
-    {
-        return pEntity->compareName(name);
-    });
-    if (it != mEntitys.end())
-    {
-        mEntitys.erase(it);
-        sortEntity();
-    }
-}
-
-void Scene::setEntityDisabled(const uint64 guid, bool disabled)
-{
-    for (auto entity : mEntitys)
-    {
-        if (entity->compareGUID(guid))
-        {
-            entity->setDisabled(disabled);
-            break;
-        }
-    }
-}
-
-void Scene::setEntityVisible(const uint64 guid, bool visible)
-{
-    for (auto entity : mEntitys)
-    {
-        if (entity->compareGUID(guid))
-        {
-            entity->setVisible(visible);
-            break;
-        }
-    }
-}
-
-void Scene::setGroupDisabled(const String& tag, bool visible)
-{
-    for (auto entity : mEntitys)
-    {
-        if (entity->compareGroup(tag))
-        {
-            entity->setDisabled(visible);
-        }
-    }
-}
-
-void Scene::setGroupVisible(const String& tag, bool visible)
-{
-    for (auto entity : mEntitys)
-    {
-        if (entity->compareGroup(tag))
-        {
-            entity->setVisible(visible);
-        }
-    }
-}
-
-void Scene::getGroup(const String& tag, Vector<SPtr<Entity>>& group)
-{
-    for (auto entity : mEntitys)
-    {
-        if (entity->compareGroup(tag))
-        {
-            group.push_back(entity);
-        }
     }
 }
 
@@ -226,38 +70,3 @@ SPtr<Camera> Scene::getActiveCamera() const
 {
     return mActiveCamera;
 }
-
-void Scene::setCullingIsEnabled(bool enabled)
-{
-    CULLING_IS_ENABLED = enabled;
-}
-
-bool Scene::isCullingEnabled()
-{
-    return CULLING_IS_ENABLED;
-}
-
-bool Scene::isEntityNameExist(const String& name) const
-{
-    for (auto entity : mEntitys)
-    {
-        if (entity->compareName(name))
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
-void Scene::setCullingOffset(int32 offset)
-{
-    mCullingOffsetX = offset;
-    mCullingOffsetY = offset;
-}
-
-void Scene::setCullingOffset(int32 offsetX, int32 offsetY)
-{
-    mCullingOffsetX = offsetX;
-    mCullingOffsetY = offsetY;
-}
-

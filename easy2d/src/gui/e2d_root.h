@@ -13,8 +13,6 @@ namespace Easy2D
         ~UIRoot(){}
 
         virtual void initialize();
-        virtual void update(const uint32& escapeMs);
-        virtual BubbleType onHandlerEvent(SPtr<Event> event);
 
         inline static String GUID = "gui_root";
     };

@@ -1,62 +1,49 @@
 #include "e2d_rect.h"
+#include "e2d_math.h"
 
 using namespace Easy2D;
 
-Rect::Rect(const Vec2& leftTop, const Vec2& rightBottom)
+Rect::Rect(const Vec2& leftTop, const Vec2& size)
     : mLeftTop(leftTop)
-    , mRightBottom(rightBottom)
+    , mSize(size)
 {
-    mWidth = rightBottom.x - mLeftTop.x;
-    mHeight = rightBottom.y - mLeftTop.y;
 }
 
 Rect Rect::operator=(const Rect& yRef)
 {
-    mHeight = yRef.mHeight;
     mLeftTop = yRef.mLeftTop;
-    mRightBottom = yRef.mRightBottom;
-    mWidth = yRef.mWidth;
+    mSize = yRef.mSize;
     return *this;
 }
 
 Rect Rect::operator*(float32 constant) const
 {
     Rect temp;
-    temp.mLeftTop = mLeftTop * constant;
-    temp.mRightBottom = mRightBottom * constant;
-    temp.mWidth = temp.mRightBottom.x - temp.mLeftTop.x;
-    temp.mHeight = temp.mRightBottom.y - temp.mLeftTop.y;
+    temp.mSize = mSize * constant;
     return temp;
 }
 
 Rect Rect::operator/(float32 constant) const
 {
     Rect temp;
-    temp.mLeftTop = mLeftTop / constant;
-    temp.mRightBottom = mRightBottom / constant;
-    temp.mWidth = temp.mRightBottom.x - temp.mLeftTop.x;
-    temp.mHeight = temp.mRightBottom.y - temp.mLeftTop.y;
-
+    temp.mSize = mSize / constant;
     return temp;
 }
 
 Rect& Rect::operator*=(float32 constant)
 {
-    mLeftTop *= constant;
-    mRightBottom *= constant;
-    mWidth = mRightBottom.x - mLeftTop.x;
-    mHeight = mRightBottom.y - mLeftTop.y;
+    mSize *= constant;
     return *this;
 }
 
 float32 Rect::getWidth() const
 {
-    return mWidth;
+    return mSize.x;
 }
 
 float32 Rect::getHeight() const
 {
-    return mHeight;
+    return mSize.y;
 }
 
 const Vec2& Rect::getLeftTop() const
@@ -64,33 +51,38 @@ const Vec2& Rect::getLeftTop() const
     return mLeftTop;
 }
 
-const Vec2& Rect::getRightBottom() const
+const Vec2& Rect::getSize() const
 {
-    return mRightBottom;
+    return mSize;
 }
 
 Vec2 Rect::getCenterPoint() const
 {
     Vec2 centerPos;
-    centerPos.x = (mLeftTop.x + mRightBottom.x) / 2.0f;
-    centerPos.y = (mLeftTop.y + mRightBottom.y) / 2.0f;
+    centerPos.x = mLeftTop.x + mSize.x / 2.0f;
+    centerPos.y = mLeftTop.y + mSize.y / 2.0f;
     return centerPos;
 }
 
 void Rect::setPoints(const Vec2& leftTop, const Vec2& rightBottom)
 {
     mLeftTop = leftTop;
-    mRightBottom = rightBottom;
-    mWidth = rightBottom.x - mLeftTop.x;
-    mHeight = rightBottom.y - mLeftTop.y;
+    mSize.x = rightBottom.x - mLeftTop.x;
+    mSize.y = rightBottom.y - mLeftTop.y;
 }
 
-void Rect::setLeftTop(const Vec2& pos)
+void Rect::setLeftTop(const Vec2& leftTop)
 {
-    mLeftTop = pos;
+    mLeftTop = leftTop;
 }
 
-void Rect::setRightBottom(const Vec2& pos)
+void Rect::setRightBottom(const Vec2& rightBottom)
 {
-    mRightBottom = pos;
+    mSize.x = rightBottom.x - mLeftTop.x;
+    mSize.y = rightBottom.y - mLeftTop.y;
+}
+
+bool Rect::posInRect(const Vec2& pos) const
+{
+    return Easy2D::posInRect(mLeftTop, mSize, pos);
 }

@@ -6,7 +6,7 @@
 namespace Easy2D
 {
     class Camera;
-    class Scene : public Object
+    class Scene : public Entity
     {
     public:
         explicit Scene(const String& name);
@@ -17,51 +17,13 @@ namespace Easy2D
         virtual void initialize();
         virtual void onActivate();
         virtual void onDeactivate();
-        virtual void update(const uint32& escapeMs);
-
-        virtual BubbleType onHandlerEvent(SPtr<Event> event);
-
-        void sortEntity();
-        void addEntity(SPtr<Entity> pEntity);
-        void addEntity(SPtr<Entity> pEntity, const String& name);
-        void removeEntity(const uint64 guid);
-        void removeEntity(const String& name);
-        void removeEntity(SPtr<Entity> pEntity);
-
-        template <typename T = Entity>
-        SPtr<T> getEntity(const uint64 guid) const;
-        template <typename T = Entity>
-        SPtr<T> getEntity(const String& name) const;
-
-        void setEntityDisabled(const uint64 guid, bool disabled);
-        void setEntityVisible(const uint64 guid, bool visible);
-
-        void setGroupDisabled(const String& tag, bool disabled);
-        void setGroupVisible(const String& tag, bool visable);
-        void getGroup(const String& tag, Vector<SPtr<Entity>> & group);
 
         void setActiveCamera(SPtr<Camera> pCamera);
         SPtr<Camera> getActiveCamera() const;
 
-        static void setCullingIsEnabled(bool enabled);
-        static bool isCullingEnabled();
-
-        bool isEntityNameExist(const String& name) const;
-
-        void setCullingOffset(int32 offset);
-        void setCullingOffset(int32 offsetX, int32 offsetY);
-
     protected:
-        //std::shared_ptr<CollisionManager> m_pCollisionManager;
-
-        Vector<SPtr<Entity>> mEntitys;
         SPtr<Camera> mDefaultCamera, mActiveCamera;
-
-        int32 mCullingOffsetX, mCullingOffsetY;
-        static bool CULLING_IS_ENABLED;
     };
 }
-
-#include "e2d_scene.hpp"
 
 #endif

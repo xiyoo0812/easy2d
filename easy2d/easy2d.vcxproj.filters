@@ -195,9 +195,6 @@
     <ClInclude Include="src\object\e2d_entity.hpp">
       <Filter>object</Filter>
     </ClInclude>
-    <ClInclude Include="src\object\e2d_scene.hpp">
-      <Filter>object</Filter>
-    </ClInclude>
     <ClInclude Include="src\math\e2d_math.hpp">
       <Filter>math</Filter>
     </ClInclude>
