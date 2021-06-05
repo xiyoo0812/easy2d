@@ -52,8 +52,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "glad", "extend\glad\glad.vc
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "glfw", "extend\glfw\glfw.vcxproj", "{6D8FBB97-3E18-4342-85C5-CACE30E956BE}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "glew", "extend\glew\glew.vcxproj", "{AAEEF4E0-9624-429C-9261-87A40E6AB57C}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		ReleaseDebug|x64 = ReleaseDebug|x64
@@ -124,10 +122,6 @@ Global
 		{6D8FBB97-3E18-4342-85C5-CACE30E956BE}.ReleaseDebug|x64.Build.0 = ReleaseDebug|x64
 		{6D8FBB97-3E18-4342-85C5-CACE30E956BE}.ReleaseDebug|x86.ActiveCfg = ReleaseDebug|Win32
 		{6D8FBB97-3E18-4342-85C5-CACE30E956BE}.ReleaseDebug|x86.Build.0 = ReleaseDebug|Win32
-		{AAEEF4E0-9624-429C-9261-87A40E6AB57C}.ReleaseDebug|x64.ActiveCfg = ReleaseDebug|x64
-		{AAEEF4E0-9624-429C-9261-87A40E6AB57C}.ReleaseDebug|x64.Build.0 = ReleaseDebug|x64
-		{AAEEF4E0-9624-429C-9261-87A40E6AB57C}.ReleaseDebug|x86.ActiveCfg = ReleaseDebug|Win32
-		{AAEEF4E0-9624-429C-9261-87A40E6AB57C}.ReleaseDebug|x86.Build.0 = ReleaseDebug|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -152,7 +146,6 @@ Global
 		{2B5B8B79-3656-45A0-AD7F-E5E7720E0111} = {F70FF6C0-FD69-49DD-A63B-54CD33AA35DB}
 		{F072E6AF-BCBD-4925-B69F-B3C900DF3DA0} = {63562A69-5B42-42D7-A086-2BE59AAE7077}
 		{6D8FBB97-3E18-4342-85C5-CACE30E956BE} = {63562A69-5B42-42D7-A086-2BE59AAE7077}
-		{AAEEF4E0-9624-429C-9261-87A40E6AB57C} = {63562A69-5B42-42D7-A086-2BE59AAE7077}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {89F4D576-CC3C-458E-ACD6-30B42E1869FA}

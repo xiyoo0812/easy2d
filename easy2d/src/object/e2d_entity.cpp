@@ -668,6 +668,10 @@ SPtr<Entity> Entity::getParent() const
 void Entity::setParent(SPtr<Entity> pEntity)
 {
     mParent = pEntity;
+    if (pEntity != nullptr)
+    {
+        mTransform->setChanged(true);
+    }
 }
 
 void Entity::reset()

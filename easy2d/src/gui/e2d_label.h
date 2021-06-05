@@ -1,5 +1,5 @@
-#ifndef TEXT_FIELD_H
-#define TEXT_FIELD_H
+#ifndef LABEL_H
+#define LABEL_H
 
 #include "e2d_widget.h"
 #include "base/e2d_color.h"
@@ -8,12 +8,12 @@
 namespace Easy2D
 {
     class TextComponent;
-    class UITextField : public UIWidget
+    class UILabel : public UIWidget
     {
     public:
-        UITextField(const String& name);
+        UILabel(const String& name);
 
-        virtual ~UITextField();
+        virtual ~UILabel();
 
         void setVerticalAlign(VerticalAlign align);
         void setHorizontalAlign(HorizontalAlign align);

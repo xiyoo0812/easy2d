@@ -1,11 +1,11 @@
-#include "e2d_text_field.h"
+#include "e2d_label.h"
 #include "object/component/e2d_text_component.h"
 #include "object/component/e2d_transform_component.h"
 
 /* Easy2D */
 using namespace Easy2D;
 
-UITextField::UITextField(const String& name)
+UILabel::UILabel(const String& name)
     : UIWidget(name)
 {
     mTextComponent = std::make_shared<TextComponent>();
@@ -13,121 +13,121 @@ UITextField::UITextField(const String& name)
     addComponent(mTextComponent);
 }
 
-UITextField::~UITextField(void)
+UILabel::~UILabel(void)
 {
 }
 
-void UITextField::setHorizontalAlign(HorizontalAlign align)
+void UILabel::setHorizontalAlign(HorizontalAlign align)
 {
     mTextComponent->setHorizontalAlign(align);
 }
 
-void UITextField::setVerticalAlign(VerticalAlign align)
+void UILabel::setVerticalAlign(VerticalAlign align)
 {
     mTextComponent->setVerticalAlign(align);
 }
 
-void UITextField::setText(const Wtring& text)
+void UILabel::setText(const Wtring& text)
 {
     mTextComponent->setText(text);
 }
 
-const Wtring& UITextField::getText() const
+const Wtring& UILabel::getText() const
 {
     return mTextComponent->getText();
 }
 
-void UITextField::setColor(const Color& color)
+void UILabel::setColor(const Color& color)
 {
     mTextComponent->setColor(color);
 }
 
-const Color& UITextField::getColor() const
+const Color& UILabel::getColor() const
 {
     return mTextComponent->getColor();
 }
 
-void UITextField::setShadowColor(const Color& color, uint16 shodowSize /* = 1 */)
+void UILabel::setShadowColor(const Color& color, uint16 shodowSize /* = 1 */)
 {
     mTextComponent->setShadowColor(color, shodowSize);
 }
 
-const Color& UITextField::getShadowColor() const
+const Color& UILabel::getShadowColor() const
 {
     return mTextComponent->getShadowColor();
 }
 
-void UITextField::setOutlineColor(const Color& color, uint16 outlineSize /* = 1 */)
+void UILabel::setOutlineColor(const Color& color, uint16 outlineSize /* = 1 */)
 {
     mTextComponent->setOutlineColor(color, outlineSize);
 }
 
-const Color& UITextField::getOutlineColor() const
+const Color& UILabel::getOutlineColor() const
 {
     return mTextComponent->getOutlineColor();
 }
 
-void UITextField::setBold(bool bold)
+void UILabel::setBold(bool bold)
 {
     mTextComponent->setBold(bold);
 }
 
-bool UITextField::isBold() const
+bool UILabel::isBold() const
 {
     return mTextComponent->isBold();
 }
 
-void UITextField::setItalic(bool italoc)
+void UILabel::setItalic(bool italoc)
 {
     mTextComponent->setItalic(italoc);
 }
 
-bool UITextField::isItalic() const
+bool UILabel::isItalic() const
 {
     return mTextComponent->isItalic();
 }
 
-void UITextField::setLineWidth(uint32 lineWrap)
+void UILabel::setLineWidth(uint32 lineWrap)
 {
     mTextComponent->setLineWidth(lineWrap);
 }
 
-uint32 UITextField::getLineWidth() const
+uint32 UILabel::getLineWidth() const
 {
     return mTextComponent->getLineWidth();
 }
 
-bool UITextField::isLineWarp() const
+bool UILabel::isLineWarp() const
 {
     return mTextComponent->isLineWarp();
 }
 
-void UITextField::setContentFollow(bool follow)
+void UILabel::setContentFollow(bool follow)
 {
     mTextComponent->setContentFollow(follow);
 }
 
-bool UITextField::isContentFollow() const
+bool UILabel::isContentFollow() const
 {
     return mTextComponent->isContentFollow();
 }
 
-void UITextField::setSpacing(uint32 spacing)
+void UILabel::setSpacing(uint32 spacing)
 {
     mTextComponent->setSpacing(spacing);
 }
 
-uint32 UITextField::getSpacing() const
+uint32 UILabel::getSpacing() const
 {
     return mTextComponent->getSpacing();
 }
 
-void UITextField::setFont(const SPtr<Font> font)
+void UILabel::setFont(const SPtr<Font> font)
 {
     mTextComponent->setFont(font);
 }
 
-const SPtr<Font> UITextField::getFont() const
+const SPtr<Font> UILabel::getFont() const
 {
     return mTextComponent->getFont();
 }

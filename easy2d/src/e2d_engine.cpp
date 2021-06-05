@@ -1,14 +1,11 @@
 #include "e2d_engine.h"
+#include "gui/e2d_factory.h"
 #include "base/e2d_timer_mgr.h"
 #include "object/e2d_scene_mgr.h"
 #include "graphics/e2d_font_mgr.h"
-#include "graphics/e2d_texture_mgr.h"
 #include "graphics/e2d_graphics_mgr.h"
 #include "graphics/e2d_render_batch.h"
 #include "resource/e2d_asset_mgr.h"
-
-#include "gui/e2d_text_field.h"
-#include "gui/e2d_image.h"
 
 /* Easy2D */
 using namespace Easy2D;
@@ -37,12 +34,13 @@ void E2dEngine::initialize(SPtr<android_app> app)
     AssetManager::getInstance()->initialize("res");
     //初始化font资源路径，基于asset的路径
     FontManager::getInstance()->initialize("font");
+    FontManager::getInstance()->loadFont("fzltxh-36", "fzltxh_gbk.ttf", 36);
+
     //初始化RenderBatch
     RenderBatch::getInstance()->initialize();
     RenderBatch::getInstance()->initializeGLStates();
     //初始化UIRoot
-    mUIRoot = std::make_shared<UIRoot>();
-    mUIRoot->initialize();
+    mUIRoot = UIFactory::getInstance()->createRoot();
 
     //AudioManager::getInstance()->start();
     //DebugDraw::getInstance()->initialize();
@@ -50,44 +48,29 @@ void E2dEngine::initialize(SPtr<android_app> app)
     auto scene = std::make_shared<Scene>("test");
     SceneManager::getInstance()->addScene(scene);
 
-    auto tex = TextureManager::getInstance()->loadTexture("image/btn.png", "btn");
-    auto image = std::make_shared<UIImage>("image");
-    mUIRoot->addChild(image);
-    image->setTexture(tex);
-    image->setPosition(0, 0);
-    image->setSize(Vec2(95, 42));
+    auto image = UIFactory::getInstance()->createImage("image", "image/btn.png", Vec2(0, 0), Vec2(95, 42), mUIRoot);
     //image->setScale9Tile(20, 12, 75, 30);
+    image->setDockerAlign(DockerAlign::LeftTop);
     image->setAnchor(0, 0);
     image->setZorder(1);
-    image->setDockerAlign(DockerAlign::LeftTop);
 
-    auto font = FontManager::getInstance()->loadFont("felt-12", "fzltxh_gbk.ttf", 36);
-
-    auto txt = std::make_shared<UITextField>("text");
-    mUIRoot->addChild(txt);
-    txt->setFont(font);
-    txt->setText(L"国人daAFKsbBgf123");
+    auto txt = UIFactory::getInstance()->createLabel("text", L"国人daAFKsbBgf123", "fzltxh-36", Vec2(0, 5), Vec2(200, 60), mUIRoot);
     txt->setShadowColor(Color::Black, 2);
     //txt->setBold(true);
     txt->setZorder(2);
     txt->setSpacing(5);
     txt->setColor(Color::Red);
-    txt->setSize(Vec2(200, 60));
-    txt->setPosition(0, 5);
     txt->setAnchor(0, 0);
     txt->setLineWidth(200);
     txt->setHorizontalAlign(HorizontalAlign::Left);
     txt->setDockerAlign(DockerAlign::LeftTop);
 
-     auto txt2 = std::make_shared<UITextField>("text2");
-     mUIRoot->addChild(txt2);
-     txt2->setFont(font);
-     txt2->setItalic(true);
-     //txt2->setShadowColor(Color::White, 1);
-     txt2->setOutlineColor(Color::Red, 1);
-     txt2->setZorder(2);
-     txt2->setText(L"我是国人daAFKsbB123");
-     txt2->setPosition(300, 100);
+    auto txt2 = UIFactory::getInstance()->createLabel("text2", L"国人daAFKsbBgf123", "fzltxh-36", Vec2(300, 100), Vec2(200, 60), mUIRoot);
+    txt2->setItalic(true);
+    //txt2->setShadowColor(Color::White, 1);
+    txt2->setOutlineColor(Color::Red, 1);
+    txt2->setZorder(2);
+    txt2->setText(L"我是国人daAFKsbB123");
 }
 
 void E2dEngine::update()
@@ -103,19 +86,7 @@ void E2dEngine::update()
 
 void E2dEngine::stop()
 {
-#ifdef ANDROID
-    GraphicsManager::getInstance() :destroy()
-#endif
-    //DebugDraw::earseInstance();
-    TimerManager::earseInstance();
-    FontManager::earseInstance();
-    RenderBatch::earseInstance();
-    SceneManager::earseInstance();
-    TextureManager::earseInstance();
-    GraphicsManager::earseInstance();
-    //AudioManager::earseInstance();
-    //PathFindManager::earseInstance();
-    //SpriteAnimationManager::earseInstance();
+
 }
 
 void E2dEngine::setActive()

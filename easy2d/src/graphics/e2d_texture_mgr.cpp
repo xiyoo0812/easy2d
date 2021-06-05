@@ -13,24 +13,17 @@ TextureManager::TextureManager() : Singleton<TextureManager>()
 
 }
 
-SPtr<Texture2D> TextureManager::loadTexture(const String& path, const String& name)
+SPtr<Texture2D> TextureManager::loadTexture(const String& path)
 {
-    auto it = mTextureMap.find(name);
-    if (it != mTextureMap.end())
-    {
-        return it->second;
-    }
     auto pathit = mPathList.find(path);
     if (pathit != mPathList.end())
     {
-        String nameOld = pathit->second;
-        auto nameit = mTextureMap.find(nameOld);
-        if (nameit != mTextureMap.end())
+        GLuint texID = pathit->second;
+        auto texIt = mTextureMap.find(texID);
+        if (texIt != mTextureMap.end())
         {
-            mTextureMap.insert(std::make_pair(name, nameit->second));
-            return nameit->second;
+            return texIt->second;
         }
-        mPathList.erase(pathit);
     }
     auto texture = std::make_shared<Texture2D>(path);
     if (!texture->load())
@@ -38,14 +31,15 @@ SPtr<Texture2D> TextureManager::loadTexture(const String& path, const String& na
         LOG_ERROR << _T("TextureManager::loadTexture texture load failed! path: ") << path;
         return nullptr;
     }
-    mTextureMap.insert(std::make_pair(name, texture));
-    mPathList.insert(std::make_pair(path, name));
+    GLuint texId = texture->getTextureID();
+    mTextureMap.insert(std::make_pair(texId, texture));
+    mPathList.insert(std::make_pair(path, texId));
     return texture;
 }
 
-bool TextureManager::removeTexture(const String& name)
+bool TextureManager::removeTexture(GLuint texID)
 {
-    auto it = mTextureMap.find(name);
+    auto it = mTextureMap.find(texID);
     if (it != mTextureMap.end())
     {
         mTextureMap.erase(it);
@@ -54,19 +48,19 @@ bool TextureManager::removeTexture(const String& name)
     return false;
 }
 
-GLuint TextureManager::getTextureID(const String& name)
+SPtr<Texture2D> TextureManager::getTexture(GLuint texID)
 {
-    auto it = mTextureMap.find(name);
+    auto it = mTextureMap.find(texID);
     if (it != mTextureMap.end())
     {
-        return it->second->getTextureID();
+        return it->second;
     }
     return 0;
 }
 
-Vec2 TextureManager::getTextureSize(const String& name)
+Vec2 TextureManager::getTextureSize(GLuint texID)
 {
-    auto it = mTextureMap.find(name);
+    auto it = mTextureMap.find(texID);
     if (it != mTextureMap.end())
     {
         return (Vec2(it->second->getWidth(), it->second->getHeight()));
