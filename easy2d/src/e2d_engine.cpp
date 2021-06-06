@@ -40,6 +40,7 @@ void E2dEngine::initialize(SPtr<android_app> app)
     RenderBatch::getInstance()->initialize();
     RenderBatch::getInstance()->initializeGLStates();
     //初始化UIRoot
+    UIFactory::getInstance()->setFont("fzltxh-36");
     mUIRoot = UIFactory::getInstance()->createRoot();
 
     //AudioManager::getInstance()->start();
@@ -54,7 +55,7 @@ void E2dEngine::initialize(SPtr<android_app> app)
     image->setAnchor(0, 0);
     image->setZorder(1);
 
-    auto txt = UIFactory::getInstance()->createLabel("text", L"国人daAFKsbBgf123", "fzltxh-36", Vec2(0, 5), Vec2(200, 60), mUIRoot);
+    auto txt = UIFactory::getInstance()->createLabel("text", L"国人daAFKsbBgf123", Vec2(0, 5), Vec2(200, 60), mUIRoot);
     txt->setShadowColor(Color::Black, 2);
     //txt->setBold(true);
     txt->setZorder(2);
@@ -65,7 +66,7 @@ void E2dEngine::initialize(SPtr<android_app> app)
     txt->setHorizontalAlign(HorizontalAlign::Left);
     txt->setDockerAlign(DockerAlign::LeftTop);
 
-    auto txt2 = UIFactory::getInstance()->createLabel("text2", L"国人daAFKsbBgf123", "fzltxh-36", Vec2(300, 100), Vec2(200, 60), mUIRoot);
+    auto txt2 = UIFactory::getInstance()->createLabel("text2", L"国人daAFKsbBgf123", Vec2(300, 100), Vec2(200, 60), mUIRoot);
     txt2->setItalic(true);
     //txt2->setShadowColor(Color::White, 1);
     txt2->setOutlineColor(Color::Red, 1);

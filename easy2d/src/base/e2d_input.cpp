@@ -109,7 +109,7 @@ BubbleType InputSink::handleInput(SPtr<KeyEvent> event)
             break;
         }
     }
-    if (bubble == BubbleType::Continue || vType == VisibleType::NotHitSelfOnly)
+    if (bubble == BubbleType::Continue && vType == VisibleType::HitChild)
     {
         bubble = handleChildInput(event);
     }
@@ -154,7 +154,7 @@ BubbleType InputSink::handleInput(SPtr<MouseEvent> event)
             break;
         }
     }
-    if (bubble == BubbleType::Continue || vType == VisibleType::NotHitSelfOnly)
+    if (bubble == BubbleType::Continue && vType == VisibleType::HitChild)
     {
         bubble = handleChildInput(event);
     }
@@ -235,4 +235,13 @@ BubbleType InputSink::onMouseMove(SPtr<MouseEvent> event)
 BubbleType InputSink::onMouseWheel(SPtr<MouseEvent> event)
 {
     return BubbleType::Continue;
+}
+
+void Easy2D::InputSink::onMouseEnter(SPtr<MouseEvent> event)
+{
+    
+}
+
+void Easy2D::InputSink::onMouseLeave(SPtr<MouseEvent> event)
+{
 }

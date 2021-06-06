@@ -1,9 +1,12 @@
 #include "e2d_factory.h"
-#include "graphics/e2d_font_mgr.h"
-#include "graphics/e2d_texture_mgr.h"
 
 /* Easy2D */
 using namespace Easy2D;
+
+void Easy2D::UIFactory::setFont(const String& fontName)
+{
+    mFontName = fontName;
+}
 
 SPtr<UIRoot> UIFactory::createRoot()
 {
@@ -12,9 +15,10 @@ SPtr<UIRoot> UIFactory::createRoot()
     return uiRoot;
 }
 
-SPtr<UIButton> UIFactory::createButton(const String& name, SPtr<UIWidget> parent /* = nullptr */)
+SPtr<UIButton> UIFactory::createButton(const String& name, const String& texPath, SPtr<UIWidget> parent /* = nullptr */)
 {
     auto button = std::make_shared<UIButton>(name);
+    button->setNormalImage(texPath);
     if (nullptr != parent)
     {
         parent->addChild(button);
@@ -22,27 +26,65 @@ SPtr<UIButton> UIFactory::createButton(const String& name, SPtr<UIWidget> parent
     return button;
 }
 
-SPtr<UILabel> UIFactory::createLabel(const String& name, const Wtring& text, const String& fontName, SPtr<UIWidget> parent /* = nullptr */)
+SPtr<UIButton> UIFactory::createButton(const String& name, const String& texPath, const Vec2& pos, const Vec2& size, SPtr<UIWidget> parent /* = nullptr */)
 {
-    auto font = FontManager::getInstance()->getFont(fontName);
-    if (nullptr == font)
+    auto button = createButton(name, texPath, parent);
+    if (nullptr != parent)
     {
-        LOG_ERROR << "UIFactory::createLabel error: font(" << fontName << ") not load!";
+        parent->addChild(button);
+    }
+    if (button)
+    {
+        button->setPosition(pos);
+        button->setSize(size);
+    }
+    return button;
+}
+
+SPtr<UIRadio> UIFactory::createRadio(const String& name, SPtr<UIWidget> parent /* = nullptr */)
+{
+    auto radio = std::make_shared<UIRadio>(name);
+    if (nullptr != parent)
+    {
+        parent->addChild(radio);
+    }
+    return radio;
+}
+
+SPtr<UICheckBox> UIFactory::createCheckBox(const String& name, SPtr<UIWidget> parent /* = nullptr */)
+{
+    auto checkbox = std::make_shared<UICheckBox>(name);
+    if (nullptr != parent)
+    {
+        parent->addChild(checkbox);
+    }
+    return checkbox;
+}
+
+SPtr<UILabel> UIFactory::createLabel(const String& name, const Wtring& text, SPtr<UIWidget> parent /* = nullptr */)
+{
+    if (mFontName.empty())
+    {
+        LOG_ERROR << "UIFactory::createLabel error: default not setupo!";
         return nullptr;
     }
     auto label = std::make_shared<UILabel>(name);
+    if (!label->setFont(mFontName))
+    {
+        LOG_ERROR << "UIFactory::createLabel error: font(" << mFontName << ") not load!";
+        return nullptr;
+    }
     if (nullptr != parent)
     {
         parent->addChild(label);
     }
     label->setText(text);
-    label->setFont(font);
     return label;
 }
 
-SPtr<UILabel> UIFactory::createLabel(const String& name, const Wtring& text, const String& fontName, Vec2& pos, Vec2& size, SPtr<UIWidget> parent /* = nullptr */)
+SPtr<UILabel> UIFactory::createLabel(const String& name, const Wtring& text, const Vec2& pos, const Vec2& size, SPtr<UIWidget> parent /* = nullptr */)
 {
-    auto label = createLabel(name, text, fontName, parent);
+    auto label = createLabel(name, text, parent);
     if (label)
     {
         label->setPosition(pos);
@@ -53,22 +95,20 @@ SPtr<UILabel> UIFactory::createLabel(const String& name, const Wtring& text, con
 
 SPtr<UIImage> UIFactory::createImage(const String& name, const String& texPath, SPtr<UIWidget> parent /* = nullptr */)
 {
-    auto texture = TextureManager::getInstance()->loadTexture(texPath);
-    if (nullptr == texture)
+    auto image = std::make_shared<UIImage>(name);
+    if (!image->loadTexture(texPath))
     {
         LOG_ERROR << "UIFactory::createImage error: texture(" << texPath << ") load failed!";
         return nullptr;
     }
-    auto image = std::make_shared<UIImage>(name);
     if (nullptr != parent)
     {
         parent->addChild(image);
     }
-    image->setTexture(texture);
     return image;
 }
 
-SPtr<UIImage> UIFactory::createImage(const String& name, const String& texPath, Vec2& pos, Vec2& size, SPtr<UIWidget> parent /* = nullptr */)
+SPtr<UIImage> UIFactory::createImage(const String& name, const String& texPath, const Vec2& pos, const Vec2& size, SPtr<UIWidget> parent /* = nullptr */)
 {
     auto image = createImage(name, texPath, parent);
     if (image)

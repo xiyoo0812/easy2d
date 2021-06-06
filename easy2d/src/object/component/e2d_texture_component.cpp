@@ -150,7 +150,6 @@ void TextureComponent::setScale9Tile(const float32 beginX, float32 beginY, float
     }
 }
 
-
 SPtr<RenderTexture> TextureComponent::buildRenderTexture()
 {
     auto renderTex = std::make_shared<RenderTexture>();

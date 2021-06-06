@@ -60,21 +60,28 @@ void Entity::initialize()
 BubbleType Entity::handleInputBefor(SPtr<KeyEvent> event, VisibleType& visable)
 {
     visable = mVisible;
-    if (mDisable || !mFocus || mVisible == VisibleType::Hidden || mVisible == VisibleType::NotHitAll)
+    if (mbFocus && isHitEnable())
     {
-        return BubbleType::Return;
+        return BubbleType::Continue;
     }
-    return BubbleType::Continue;
+    return BubbleType::Return;
 }
 
 BubbleType Entity::handleInputBefor(SPtr<MouseEvent> event, VisibleType& visable)
 {
     visable = mVisible;
-    if (mDisable || mVisible == VisibleType::Hidden || mVisible == VisibleType::NotHitAll || !isInRect(event->mPos))
+    if (isHitEnable())
     {
-        return BubbleType::Return;
+        if (event->mType == MouseType::MouseMove)
+        {
+            return BubbleType::Continue;
+        }
+        if (isInRect(event->mPos))
+        {
+            return BubbleType::Continue;
+        }
     }
-    return BubbleType::Continue;
+    return BubbleType::Return;
 }
 
 BubbleType Entity::handleChildInput(SPtr<KeyEvent> event)
@@ -252,7 +259,7 @@ float32 Entity::getHeight() const
 
 void Entity::update(const uint32& escapeMs)
 {
-    if (isEnabled() && isVisible())
+    if (isVisible())
     {
         for (auto action : mActions)
         {
@@ -377,18 +384,6 @@ const Vector<SPtr<Entity>>& Entity::getChildren() const
     return mChildrens;
 }
 
-void Entity::setChildDisabled(const uint64 guid, bool disabled)
-{
-    for (auto pEntity : mChildrens)
-    {
-        if (pEntity->compareGUID(guid))
-        {
-            pEntity->setDisabled(disabled);
-            break;
-        }
-    }
-}
-
 void Entity::setChildVisible(const uint64 guid, VisibleType visible)
 {
     for (auto pEntity : mChildrens)
@@ -398,14 +393,6 @@ void Entity::setChildVisible(const uint64 guid, VisibleType visible)
             pEntity->setVisible(visible);
             break;
         }
-    }
-}
-
-void Entity::setChildrenDisabled(bool disable)
-{
-    for (auto child : mChildrens)
-    {
-        child->setDisabled(disable);
     }
 }
 
@@ -585,37 +572,37 @@ bool Entity::isInRect(const Vec2& pos) const
 
 void Entity::setFocus(bool focus)
 {
-    mFocus = focus;
+    mbFocus = focus;
 }
 
 bool Entity::isFocus() const
 {
-    return mFocus;
+    return mbFocus;
 }
 
-void Entity::setDisabled(bool disabled)
+bool Entity::isCollapsed() const
 {
-    mDisable = disabled;
+    return (mVisible == VisibleType::Collapsed);
 }
 
-bool Entity::isEnabled() const
+bool Entity::isHitEnable() const
 {
-    return !mDisable;
-}
-
-bool Entity::isDisabled() const
-{
-    return mDisable;
+    return (mVisible == VisibleType::Visible || mVisible == VisibleType::HitSelf || mVisible == VisibleType::HitChild);
 }
 
 bool Entity::isVisible() const
 {
-    return (mVisible != VisibleType::Hidden);
+    return !(mVisible == VisibleType::Hidden || mVisible == VisibleType::Collapsed);
 }
 
 void Entity::setVisible(VisibleType visible)
 {
     mVisible = visible;
+}
+
+void Easy2D::Entity::setMouseHover(bool hover)
+{
+    mbMouseHover = hover;
 }
 
 VisibleType Entity::getVisible() const

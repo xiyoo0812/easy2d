@@ -14,14 +14,19 @@ UIWidget::~UIWidget()
 {
 }
 
-void UIWidget::initialize()
+BubbleType Easy2D::UIWidget::onMouseMove(SPtr<MouseEvent> event)
 {
-    Entity::initialize();
-}
-
-void UIWidget::update(const uint32& escapeMs)
-{
-    Entity::update(escapeMs);
+    bool inRect = isInRect(event->mPos);
+    if (mbMouseHover && !inRect)
+    {
+        onMouseLeave(event);
+    }
+    if (!mbMouseHover && inRect)
+    {
+        onMouseEnter(event);
+    }
+    setMouseHover(inRect);
+    return BubbleType::Continue;
 }
 
 //------------------------------------------------------------------------------

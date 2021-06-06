@@ -11,8 +11,7 @@ namespace Easy2D
         UIWidget(const String& name);
         virtual ~UIWidget();
 
-        virtual void initialize();
-        virtual void update(const uint32& escapeMs);
+        virtual BubbleType onMouseMove(SPtr<MouseEvent> event);
     };
 
     class UIRoot : public UIWidget

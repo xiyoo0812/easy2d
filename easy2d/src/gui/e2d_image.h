@@ -19,6 +19,8 @@ namespace Easy2D
 
         const Color& getColor() const;
 
+        bool loadTexture(const String& texPath);
+
         void setTexture(SPtr<Texture2D> mTexture);
 
         bool isScale9Tile() const;

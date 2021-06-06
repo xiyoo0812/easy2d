@@ -122,6 +122,18 @@ uint32 UILabel::getSpacing() const
     return mTextComponent->getSpacing();
 }
 
+bool UILabel::setFont(const String& fontName)
+{
+    auto font = FontManager::getInstance()->getFont(fontName);
+    if (nullptr == font)
+    {
+        LOG_ERROR << "UILabel::setFont error: font(" << fontName << ") not load!";
+        return false;
+    }
+    setFont(font);
+    return true;
+}
+
 void UILabel::setFont(const SPtr<Font> font)
 {
     mTextComponent->setFont(font);

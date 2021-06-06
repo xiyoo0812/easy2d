@@ -21,7 +21,7 @@ namespace Easy2D
     private:
         GLint   mFormat = 0;
         GLuint  mTextureId = 0;
-        uint32   mWidth = 0, mHeight = 0;
+        uint32  mWidth = 0, mHeight = 0;
 #ifdef ANDROID
         Resource mResource;
         static void CallbackRead(png_structp png, png_bytep data, png_size_t size);

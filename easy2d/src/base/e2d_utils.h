@@ -50,6 +50,9 @@ namespace Easy2D
             array = nullptr;
         }
     }
+
+    inline static const wchar_t ENTER = '\n';
+    inline static const Wtring EMPTY_STRING = L"";
 };
 
 #endif

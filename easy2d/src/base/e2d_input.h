@@ -18,12 +18,16 @@ namespace Easy2D
     {
         //可视并接收事件
         Visible,
-        //隐藏不接收事件
+        //不可见，不接收事件
+        Collapsed,
+        //不可见，不接收事件，但是占据空间
         Hidden,
-        //显示并不接收事件（自己和子节点）
-        NotHitAll,
-        //显示并不接收事件（仅自己）
-        NotHitSelfOnly,
+        //可视,仅自己接收事件
+        HitSelf,
+        //可视，仅子节点都接收事件
+        HitChild,
+        //可视，不接收事件
+        HitNobody,
     };
 
     enum class KeyType
@@ -42,7 +46,7 @@ namespace Easy2D
         MButtonUp,
         MButtonDown,
         MouseMove,
-        MouseWheel,
+        MouseWheel
     };
 
     //-------------------------------------------------------------------------------
@@ -91,6 +95,8 @@ namespace Easy2D
         virtual BubbleType onMButtonDown(SPtr<MouseEvent> event);
         virtual BubbleType onMouseMove(SPtr<MouseEvent> event);
         virtual BubbleType onMouseWheel(SPtr<MouseEvent> event);
+        virtual void onMouseEnter(SPtr<MouseEvent> event);
+        virtual void onMouseLeave(SPtr<MouseEvent> event);
     };
 
     //-------------------------------------------------------------------------------

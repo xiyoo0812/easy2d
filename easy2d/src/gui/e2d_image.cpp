@@ -1,4 +1,5 @@
 #include "e2d_image.h"
+#include "graphics/e2d_texture_mgr.h"
 #include "object/component/e2d_texture_component.h"
 #include "object/component/e2d_transform_component.h"
 
@@ -16,6 +17,18 @@ UIImage::UIImage(const String& name)
 UIImage::~UIImage()
 {
 
+}
+
+bool UIImage::loadTexture(const String& texPath)
+{
+    auto texture = TextureManager::getInstance()->loadTexture(texPath);
+    if (nullptr == texture)
+    {
+        LOG_ERROR << "UIImage::setTexture error: texture(" << texPath << ") load failed!";
+        return false;
+    }
+    setTexture(texture);
+    return true;
 }
 
 void UIImage::setTexture(SPtr<Texture2D> mTexture)

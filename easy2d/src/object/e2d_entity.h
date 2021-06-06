@@ -78,9 +78,7 @@ namespace Easy2D
         void setDockerAlign(DockerAlign align);
         DockerAlign getDockerAlign() const;
 
-        void setChildDisabled(const uint64 guid, bool disabled);
         void setChildVisible(const uint64 guid, VisibleType visible);
-        void setChildrenDisabled(bool disable);
         void setChildrenVisible(VisibleType visible);
 
         bool addAction(SPtr<Action> pAction);
@@ -97,13 +95,13 @@ namespace Easy2D
         void removeComponent(const String& name);
 
         bool isFocus() const;
-        bool isVisible() const;
-        bool isEnabled() const;
-        bool isDisabled() const;
         void setFocus(bool focus);
-        void setDisabled(bool disabled);
+        bool isVisible() const;
+        bool isCollapsed() const;
+        bool isHitEnable() const;
         VisibleType getVisible() const;
         void setVisible(VisibleType visible);
+        void setMouseHover(bool hover);
 
         bool isChildNameExist(const String& name) const;
         bool isActionNameExist(const String& name) const;
@@ -132,8 +130,9 @@ namespace Easy2D
         virtual bool checkCulling(float32 left, float32 top, float32 right, float32 bottom);
 
         int32 mZorder = 0;
-        bool mFocus = false, mDisable = false;
-        VisibleType mVisible = VisibleType::NotHitSelfOnly;
+        bool mbFocus = false;
+        bool mbMouseHover = false;
+        VisibleType mVisible = VisibleType::HitChild;
         String mGroup = "default", mPhysics = "default";
 
         WPtr<Scene> mScene = {};
