@@ -262,14 +262,15 @@ void RenderBatch::createSpriteQuad(SPtr<RenderTexture> sprite)
     *  BL    BR
     */
     //Push back all vertices
+    Mat4 matWorld = transpose(sprite->matWorld);
     Vec4 TL = Vec4(0, sprite->mVertices.y, 0, 1);
-    mul(TL, sprite->matWorld, TL);
+    mul(TL, matWorld, TL);
     Vec4 TR = Vec4(sprite->mVertices.x, sprite->mVertices.y, 0, 1);
-    mul(TR, sprite->matWorld, TR);
+    mul(TR, matWorld, TR);
     Vec4 BL = Vec4(0, 0, 0, 1);
-    mul(BL, sprite->matWorld, BL);
+    mul(BL, matWorld, BL);
     Vec4 BR = Vec4(sprite->mVertices.x, 0, 0, 1);
-    mul(BR, sprite->matWorld, BR);
+    mul(BR, matWorld, BR);
     //0
     mVertexBuffer.push_back(TL);
     //1

@@ -110,12 +110,13 @@ void Easy2D::UIButton::setNormalImage(const String& normal)
         return;
     }
     auto shared_this = std::dynamic_pointer_cast<UIWidget>(shared_from_this());
-    auto image = UIFactory::instance()->createImage(NORMAL_NAME, normal, Vec2(0, 0), getSize(), shared_this);
+    auto image = UIFactory::instance()->createImage(NORMAL_NAME, normal, Vec2(0, 0), shared_this);
     if (nullptr == image)
     {
         LOG_ERROR << "UIButton::setNormalImage error: image(" << normal << ") create failed!";
         return;
     }
+    updateSize(image);
     image->setAnchor(0.5, 0.5);
     image->setVisible(VisibleType::Visible);
     image->setDockerAlign(DockerAlign::Full);
@@ -134,12 +135,13 @@ void Easy2D::UIButton::setPushedImage(const String& pushed)
         return;
     }
     auto shared_this = std::dynamic_pointer_cast<UIWidget>(shared_from_this());
-    auto image = UIFactory::instance()->createImage(PUSHED_NAME, pushed, Vec2(0, 0), getSize(), shared_this);
+    auto image = UIFactory::instance()->createImage(PUSHED_NAME, pushed, Vec2(0, 0), shared_this);
     if (nullptr == image)
     {
         LOG_ERROR << "UIButton::setPushedImage error: image(" << pushed << ") create failed!";
         return;
     }
+    updateSize(image);
     image->setAnchor(0.5, 0.5);
     image->setVisible(VisibleType::Hidden);
     image->setDockerAlign(DockerAlign::Full);
@@ -158,12 +160,13 @@ void Easy2D::UIButton::setHoverImage(const String& hover)
         return;
     }
     auto shared_this = std::dynamic_pointer_cast<UIWidget>(shared_from_this());
-    auto image = UIFactory::instance()->createImage(HOVER_NAME, hover, Vec2(0, 0), getSize(), shared_this);
+    auto image = UIFactory::instance()->createImage(HOVER_NAME, hover, Vec2(0, 0), shared_this);
     if (nullptr == image)
     {
         LOG_ERROR << "UIButton::setHoverImage error: image(" << hover << ") create failed!";
         return;
     }
+    updateSize(image);
     image->setAnchor(0.5, 0.5);
     image->setVisible(VisibleType::Hidden);
     image->setDockerAlign(DockerAlign::Full);
@@ -182,12 +185,13 @@ void Easy2D::UIButton::setDisableImage(const String& disable)
         return;
     }
     auto shared_this = std::dynamic_pointer_cast<UIWidget>(shared_from_this());
-    auto image = UIFactory::instance()->createImage(DISABLE_NAME, disable, Vec2(0, 0), getSize(), shared_this);
+    auto image = UIFactory::instance()->createImage(DISABLE_NAME, disable, Vec2(0, 0), shared_this);
     if (nullptr == image)
     {
         LOG_ERROR << "UIButton::setDisableImage error: image(" << disable << ") create failed!";
         return;
     }
+    updateSize(image);
     image->setAnchor(0.5, 0.5);
     image->setVisible(VisibleType::Hidden);
     image->setDockerAlign(DockerAlign::Full);
@@ -210,7 +214,9 @@ void Easy2D::UIButton::setText(const Wtring& text)
     }
     label->setAnchor(0.5, 0.5);
     label->setVisible(VisibleType::Hidden);
-    label->setDockerAlign(DockerAlign::Center);
+    label->setVerticalAlign(VerticalAlign::Center);
+    label->setHorizontalAlign(HorizontalAlign::Center);
+    label->setDockerAlign(DockerAlign::Full);
     mLabel = label;
 }
 
@@ -254,5 +260,14 @@ void Easy2D::UIButton::updateStatus(bool showOrHide)
     if (ctrlImage)
     {
         ctrlImage->setVisible(showOrHide ? VisibleType::Visible : VisibleType::Hidden);
+    }
+}
+
+void Easy2D::UIButton::updateSize(SPtr<UIImage> image)
+{
+    auto dim = getSize();
+    if (dim.x <= 1 && dim.y <= 1)
+    {
+        setSize(image->getSize());
     }
 }

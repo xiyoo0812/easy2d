@@ -42,6 +42,7 @@ bool UIRoot::setup()
         LOG_WARN << _T("UIRoot::setup: Entity setup failed!");
         return false;
     }
+    setDockerAlign(DockerAlign::Full);
     InputSystem::instance()->addInputSink(std::dynamic_pointer_cast<InputSink>(shared_from_this()));
     return true;
 }

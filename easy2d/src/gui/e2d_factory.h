@@ -20,7 +20,7 @@ namespace Easy2D
         SPtr<UIRoot> createRoot();
 
         SPtr<UIButton> createButton(const String& name, const String& texPath, SPtr<UIWidget> parent = nullptr);
-        SPtr<UIButton> createButton(const String& name, const String& texPath, const Vec2& pos, const Vec2& size, SPtr<UIWidget> parent = nullptr);
+        SPtr<UIButton> createButton(const String& name, const String& texPath, const Vec2& pos, SPtr<UIWidget> parent = nullptr);
 
         SPtr<UIRadio> createRadio(const String& name, SPtr<UIWidget> parent = nullptr);
         SPtr<UICheckBox> createCheckBox(const String& name, SPtr<UIWidget> parent = nullptr);
@@ -29,7 +29,7 @@ namespace Easy2D
         SPtr<UILabel> createLabel(const String& name, const Wtring& text, const Vec2& pos, const Vec2& size, SPtr<UIWidget> parent = nullptr);
 
         SPtr<UIImage> createImage(const String& name, const String& texPath, SPtr<UIWidget> parent = nullptr);
-        SPtr<UIImage> createImage(const String& name, const String& texPath, const Vec2& pos, const Vec2& size, SPtr<UIWidget> parent = nullptr);
+        SPtr<UIImage> createImage(const String& name, const String& texPath, const Vec2& pos, SPtr<UIWidget> parent = nullptr);
 
     private:
         UIFactory(){}

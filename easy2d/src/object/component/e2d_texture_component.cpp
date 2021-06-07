@@ -193,11 +193,10 @@ void TextureComponent::setTexture(SPtr<Texture2D> texture)
 {
     mbChanged = true;
     mTexture = texture;
-    Vec2 transDim = getTransform()->getSize();
-    if (transDim.x == 1 && transDim.y == 1)
+    auto transDim = getTransform()->getSize();
+    if (transDim.x <= 1 && transDim.y <= 1)
     {
-        transDim = Vec2(texture->getWidth(), texture->getHeight());
-        getTransform()->setSize(transDim);
+        getTransform()->setSize(texture->getWidth(), texture->getHeight());
     }
     mRenderTex->mTextureID = mTexture->getTextureID();
 }

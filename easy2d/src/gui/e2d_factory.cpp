@@ -35,7 +35,7 @@ SPtr<UIButton> UIFactory::createButton(const String& name, const String& texPath
     return button;
 }
 
-SPtr<UIButton> UIFactory::createButton(const String& name, const String& texPath, const Vec2& pos, const Vec2& size, SPtr<UIWidget> parent /* = nullptr */)
+SPtr<UIButton> UIFactory::createButton(const String& name, const String& texPath, const Vec2& pos, SPtr<UIWidget> parent /* = nullptr */)
 {
     auto button = createButton(name, texPath, parent);
     if (nullptr == button)
@@ -44,7 +44,6 @@ SPtr<UIButton> UIFactory::createButton(const String& name, const String& texPath
         return nullptr;
     }
     button->setPosition(pos);
-    button->setSize(size);
     return button;
 }
 
@@ -137,7 +136,7 @@ SPtr<UIImage> UIFactory::createImage(const String& name, const String& texPath, 
     return image;
 }
 
-SPtr<UIImage> UIFactory::createImage(const String& name, const String& texPath, const Vec2& pos, const Vec2& size, SPtr<UIWidget> parent /* = nullptr */)
+SPtr<UIImage> UIFactory::createImage(const String& name, const String& texPath, const Vec2& pos, SPtr<UIWidget> parent /* = nullptr */)
 {
     auto image = createImage(name, texPath, parent);
     if (nullptr == image)
@@ -146,6 +145,5 @@ SPtr<UIImage> UIFactory::createImage(const String& name, const String& texPath, 
         return nullptr;
     }
     image->setPosition(pos);
-    image->setSize(size);
     return image;
 }

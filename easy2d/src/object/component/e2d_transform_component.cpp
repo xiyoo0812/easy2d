@@ -248,7 +248,7 @@ void TransformComponent::updateTransform()
         child->getTransform()->setChanged(mbChanged);
     }
     Vec3 transPos(transDockerX(mPostion.x), transDockerY(mPostion.y), 0);
-    Vec3 centerPos(mAnchor.x * mSize.x, -mAnchor.y * mSize.y, 0);
+    Vec3 centerPos(mAnchor.x * mSize.x, mAnchor.y * mSize.y, 0);
     Mat4 matRot, matTrans, matScale, matC;
     matTrans = Easy2D::translate(transPos - centerPos);
     matRot = Easy2D::toMat4(Quat(Vec3(0, 0, mRotation)));
@@ -258,7 +258,7 @@ void TransformComponent::updateTransform()
     auto parent = getMaster()->getParent();
     if (parent != nullptr)
     {
-        mWorld = parent->getTransform()->getWorldMatrix() * mWorld;
+        mWorld = mWorld * parent->getTransform()->getWorldMatrix();
     }
     Easy2D::getTranslation(mWorld, mAbsolute);
 

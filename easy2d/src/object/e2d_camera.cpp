@@ -5,10 +5,6 @@
 /* Easy2D */
 using namespace Easy2D;
 
-Camera::Camera() : Entity()
-{
-}
-
 Camera::Camera(const String& name) : Entity(name)
 {
 }

@@ -49,6 +49,7 @@ namespace Easy2D
 
     protected:
         void updateStatus(bool showOrHide);
+        void updateSize(SPtr<UIImage> image);
 
     protected:
         float32 mHoverFactor = 1.0f;

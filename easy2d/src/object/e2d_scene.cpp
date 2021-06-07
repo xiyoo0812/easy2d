@@ -30,7 +30,7 @@ bool Scene::setup()
         LOG_WARN << _T("Scene::setup: Entity setup failed!");
         return false;
     }
-    mDefCamera = std::make_shared<Camera>();
+    mDefCamera = std::make_shared<Camera>("def_camera");
     if (!mDefCamera->setup())
     {
         LOG_WARN << _T("Entity::setup: create Default Camera failed!");
@@ -39,6 +39,7 @@ bool Scene::setup()
     addChild(mDefCamera);
     setActiveCamera(mDefCamera);
     InputSystem::instance()->addInputSink(std::dynamic_pointer_cast<InputSink>(shared_from_this()));
+    return true;
 }
 
 void Scene::onActivate()
