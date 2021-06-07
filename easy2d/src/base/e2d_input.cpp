@@ -23,9 +23,11 @@ void OnMouseButton(GLFWwindow* window, int button, int action, int mods)
 {
     if (button >= GLFW_MOUSE_BUTTON_LEFT && button <= GLFW_MOUSE_BUTTON_MIDDLE)
     {
+        double x = 0, y = 0;
         MouseType mType = (MouseType)(button * 2 + action);
         auto event = std::make_shared<MouseEvent>(mType);
-        glfwGetCursorPos(window, (double*)&event->mPos.x, (double*)&event->mPos.y);
+        glfwGetCursorPos(window, (double*)&x, (double*)&y);
+        event->mPos = Vec2(x, y);
         InputSystem::instance()->handleInput(event);
     }
 }
@@ -40,10 +42,12 @@ void OnMouseMove(GLFWwindow* window, double x, double y)
 
 void OnMouseWheel(GLFWwindow* window, double x, double y)
 {
+    double xp = 0, yp = 0;
     auto event = std::make_shared<MouseEvent>(MouseType::MouseWheel);
     event->mWheelX = x;
     event->mWheelY = y;
-    glfwGetCursorPos(window, (double*)&event->mPos.x, (double*)&event->mPos.y);
+    glfwGetCursorPos(window, (double*)&xp, (double*)&yp);
+    event->mPos = Vec2(xp, yp);
     InputSystem::instance()->handleInput(event);
 }
 
@@ -124,7 +128,7 @@ BubbleType InputSink::handleInput(SPtr<MouseEvent> event)
         return BubbleType::Continue;
     }
     BubbleType bubble = BubbleType::Continue;
-    if (vType == VisibleType::Visible)
+    if (vType == VisibleType::Visible || vType == VisibleType::HitSelf)
     {
         switch (event->mType)
         {
