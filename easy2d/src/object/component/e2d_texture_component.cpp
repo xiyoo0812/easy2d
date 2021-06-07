@@ -1,5 +1,6 @@
 #include "e2d_texture_component.h"
 #include "e2d_transform_component.h"
+#include "object/e2d_entity.h"
 #include "graphics/e2d_render_batch.h"
 #include "graphics/e2d_graphics_mgr.h"
 
@@ -18,6 +19,7 @@ TextureComponent::~TextureComponent()
 bool TextureComponent::setup(SPtr<Entity> master)
 {
     setMaster(master);
+    master->addTrigger(TransformEvent::GUID, std::dynamic_pointer_cast<EventListerner>(shared_from_this()));
     return true;
 }
 
@@ -111,7 +113,6 @@ void TextureComponent::setScale9Tile(const Vec4& tiles)
 
 void TextureComponent::setScale9Tile(const float32 beginX, float32 beginY, float32 endX, float32 endY)
 {
-
     if (mTexture)
     {
         uint32 w = mTexture->getWidth();

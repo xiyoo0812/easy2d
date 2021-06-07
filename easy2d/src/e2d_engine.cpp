@@ -41,11 +41,11 @@ void E2dEngine::initialize(uint32 window_width, uint32 window_height)
 
     auto scene = SceneManager::instance()->createScene("test");
 
-    auto image = UIFactory::instance()->createImage("image", "image/bg.png", Vec2(0, 0), mUIRoot);
-    //image->setScale9Tile(20, 12, 75, 30);
-    image->setDockerAlign(DockerAlign::Center);
-    image->setAnchor(0.5, 0.5);
-    image->setZorder(1);
+    //auto image = UIFactory::instance()->createImage("image", "image/bg.png", Vec2(0, 0), mUIRoot);
+    ////image->setScale9Tile(20, 12, 75, 30);
+    //image->setDockerAlign(DockerAlign::Center);
+    //image->setAnchor(0.5, 0.5);
+    //image->setZorder(1);
 
     auto button = UIFactory::instance()->createButton("button", "image/btn.png", Vec2(0, 0), mUIRoot);
     //image->setScale9Tile(20, 12, 75, 30);

@@ -138,6 +138,7 @@
     <ClCompile Include="src\gui\e2d_button.cpp" />
     <ClCompile Include="src\gui\e2d_label.cpp" />
     <ClCompile Include="src\gui\e2d_radio.cpp" />
+    <ClCompile Include="src\gui\e2d_switch.cpp" />
     <ClCompile Include="src\gui\e2d_widget.cpp" />
     <ClCompile Include="src\math\e2d_math.cpp" />
     <ClCompile Include="src\math\e2d_pos.cpp" />
@@ -186,6 +187,7 @@
     <ClInclude Include="src\gui\e2d_button.h" />
     <ClInclude Include="src\gui\e2d_label.h" />
     <ClInclude Include="src\gui\e2d_radio.h" />
+    <ClInclude Include="src\gui\e2d_switch.h" />
     <ClInclude Include="src\gui\e2d_widget.h" />
     <ClInclude Include="src\math\e2d_math.h" />
     <ClInclude Include="src\math\e2d_math.hpp" />

@@ -247,41 +247,31 @@ void TransformComponent::updateTransform()
     {
         child->getTransform()->setChanged(mbChanged);
     }
-    Vec3 transPos(transDockerX(mPostion.x), transDockerY(mPostion.y), 0);
+    Mat4 transWorld{};
     Vec3 centerPos(mAnchor.x * mSize.x, mAnchor.y * mSize.y, 0);
-    Mat4 matRot, matTrans, matScale, matC;
-    matTrans = Easy2D::translate(transPos - centerPos);
-    matRot = Easy2D::toMat4(Quat(Vec3(0, 0, mRotation)));
-    matScale = Easy2D::scale(Vec3(mScale.x, mScale.y, 1.0f));
-
-    mWorld = matTrans * matRot * matScale;
+    Vec3 transPos(transDockerX(mPostion.x), transDockerY(mPostion.y), 0);
+    transWorld *= Easy2D::translate(transPos - centerPos);
+    transWorld *= Easy2D::translate(mSize.x / 2.0f, mSize.y / 2.0f, 0);
+    if (mRotation != 0)
+    {
+        transWorld *= Easy2D::toMat4(Quat(Vec3(0, 0, mRotation)));
+    }
+    if (mScale.x != 1.0f || mScale.y != 1.0f)
+    {
+        transWorld *= Easy2D::scale(Vec3(mScale.x, mScale.y, 1.0f));
+    }
+    if (mMirroredX || mMirroredY)
+    {
+        transWorld *= Easy2D::scale(Vec3(mMirroredX ? -1 : 1, mMirroredY  ? -1 : 1, 1));
+    }
+    transWorld *= Easy2D::translate(mSize.x / -2.0f, mSize.y / -2.0f, 0);
     auto parent = getMaster()->getParent();
     if (parent != nullptr)
     {
-        mWorld = mWorld * parent->getTransform()->getWorldMatrix();
+        transWorld *= parent->getTransform()->getWorldMatrix();
     }
-    Easy2D::getTranslation(mWorld, mAbsolute);
-
-    if (mMirroredX || mMirroredY)
-    {
-        mWorld *= Easy2D::translate(mSize.x / 2.0f, mSize.y / 2.0f, 0);
-        if (mMirroredX)
-        {
-            if (mMirroredY)
-            {
-                mWorld *= Easy2D::scale(Vec3(-1, -1, 1));
-            }
-            else
-            {
-                mWorld *= Easy2D::scale(Vec3(-1, 1, 1));
-            }
-        }
-        else
-        {
-            mWorld *= Easy2D::scale(Vec3(1, -1, 1));
-        }
-        mWorld *= Easy2D::translate(mSize.x / -2.0f, mSize.y / -2.0f, 0);
-    }
+    Easy2D::getTranslation(transWorld, mAbsolute);
+    mWorld = transWorld;
 }
 
 void TransformComponent::update(const uint32& escapeMs)

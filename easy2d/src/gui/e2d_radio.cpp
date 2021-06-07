@@ -3,7 +3,7 @@
 /* Easy2D */
 using namespace Easy2D;
 
-UIRadio::UIRadio(const String& name) : UIWidget(name)
+UIRadio::UIRadio(const String& name) : UICheckBox(name)
 {
 
 }

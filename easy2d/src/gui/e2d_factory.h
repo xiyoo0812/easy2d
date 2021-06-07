@@ -5,6 +5,7 @@
 #include "e2d_label.h"
 #include "e2d_radio.h"
 #include "e2d_button.h"
+#include "e2d_switch.h"
 #include "e2d_checkbox.h"
 #include "base/e2d_singleton.h"
 
@@ -19,11 +20,17 @@ namespace Easy2D
 
         SPtr<UIRoot> createRoot();
 
-        SPtr<UIButton> createButton(const String& name, const String& texPath, SPtr<UIWidget> parent = nullptr);
-        SPtr<UIButton> createButton(const String& name, const String& texPath, const Vec2& pos, SPtr<UIWidget> parent = nullptr);
+        SPtr<UIButton> createButton(const String& name, const String& normal, SPtr<UIWidget> parent = nullptr);
+        SPtr<UIButton> createButton(const String& name, const String& normal, const Vec2& pos, SPtr<UIWidget> parent = nullptr);
 
-        SPtr<UIRadio> createRadio(const String& name, SPtr<UIWidget> parent = nullptr);
-        SPtr<UICheckBox> createCheckBox(const String& name, SPtr<UIWidget> parent = nullptr);
+        SPtr<UIRadio> createRadio(const String& name, const String& off, const String& on, SPtr<UIWidget> parent = nullptr);
+        SPtr<UIRadio> createRadio(const String& name, const String& off, const String& on, const Vec2& pos, SPtr<UIWidget> parent = nullptr);
+
+        SPtr<UISwitch> createSwitch(const String& name, const String& off, const String& on, SPtr<UIWidget> parent = nullptr);
+        SPtr<UISwitch> createSwitch(const String& name, const String& off, const String& on, const Vec2& pos, SPtr<UIWidget> parent = nullptr);
+
+        SPtr<UICheckBox> createCheckBox(const String& name, const String& off, const String& on, SPtr<UIWidget> parent = nullptr);
+        SPtr<UICheckBox> createCheckBox(const String& name, const String& off, const String& on, const Vec2& pos, SPtr<UIWidget> parent = nullptr);
 
         SPtr<UILabel> createLabel(const String& name, const Wtring& text, SPtr<UIWidget> parent = nullptr);
         SPtr<UILabel> createLabel(const String& name, const Wtring& text, const Vec2& pos, const Vec2& size, SPtr<UIWidget> parent = nullptr);

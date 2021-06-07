@@ -19,7 +19,7 @@ SPtr<UIRoot> UIFactory::createRoot()
     return uiRoot;
 }
 
-SPtr<UIButton> UIFactory::createButton(const String& name, const String& texPath, SPtr<UIWidget> parent /* = nullptr */)
+SPtr<UIButton> UIFactory::createButton(const String& name, const String& normal, SPtr<UIWidget> parent /* = nullptr */)
 {
     auto button = std::make_shared<UIButton>(name);
     if (!button->setup())
@@ -27,7 +27,7 @@ SPtr<UIButton> UIFactory::createButton(const String& name, const String& texPath
         LOG_WARN << _T("UIFactory::createButton: UIButton setup failed!");
         return nullptr;
     }
-    button->setNormalImage(texPath);
+    button->setNormalImage(normal);
     if (nullptr != parent)
     {
         parent->addChild(button);
@@ -35,9 +35,9 @@ SPtr<UIButton> UIFactory::createButton(const String& name, const String& texPath
     return button;
 }
 
-SPtr<UIButton> UIFactory::createButton(const String& name, const String& texPath, const Vec2& pos, SPtr<UIWidget> parent /* = nullptr */)
+SPtr<UIButton> UIFactory::createButton(const String& name, const String& normal, const Vec2& pos, SPtr<UIWidget> parent /* = nullptr */)
 {
-    auto button = createButton(name, texPath, parent);
+    auto button = createButton(name, normal, parent);
     if (nullptr == button)
     {
         LOG_WARN << _T("UIFactory::createButton: create button failed!");
@@ -47,7 +47,7 @@ SPtr<UIButton> UIFactory::createButton(const String& name, const String& texPath
     return button;
 }
 
-SPtr<UIRadio> UIFactory::createRadio(const String& name, SPtr<UIWidget> parent /* = nullptr */)
+SPtr<UIRadio> UIFactory::createRadio(const String& name, const String& off, const String& on, SPtr<UIWidget> parent /* = nullptr */)
 {
     auto radio = std::make_shared<UIRadio>(name);
     if (!radio->setup())
@@ -62,7 +62,48 @@ SPtr<UIRadio> UIFactory::createRadio(const String& name, SPtr<UIWidget> parent /
     return radio;
 }
 
-SPtr<UICheckBox> UIFactory::createCheckBox(const String& name, SPtr<UIWidget> parent /* = nullptr */)
+SPtr<UIRadio> UIFactory::createRadio(const String& name, const String& off, const String& on, const Vec2& pos, SPtr<UIWidget> parent /* = nullptr */)
+{
+    auto radio = createRadio(name, off, on, parent);
+    if (nullptr == radio)
+    {
+        LOG_WARN << _T("UIFactory::createRadio: create radio  failed!");
+        return nullptr;
+    }
+    radio->setPosition(pos);
+    return radio;
+}
+
+SPtr<UISwitch> UIFactory::createSwitch(const String& name, const String& off, const String& on, SPtr<UIWidget> parent /* = nullptr */)
+{
+    auto uiSwitch = std::make_shared<UISwitch>(name);
+    if (!uiSwitch->setup())
+    {
+        LOG_WARN << _T("UIFactory::createSwitch: UISwitch setup failed!");
+        return nullptr;
+    }
+    uiSwitch->setOffImage(off);
+    uiSwitch->setOnImage(on);
+    if (nullptr != parent)
+    {
+        parent->addChild(uiSwitch);
+    }
+    return uiSwitch;
+}
+
+SPtr<UISwitch> UIFactory::createSwitch(const String& name, const String& off, const String& on, const Vec2& pos, SPtr<UIWidget> parent /* = nullptr */)
+{
+    auto uiSwitch = createSwitch(name, off, on, parent);
+    if (nullptr == uiSwitch)
+    {
+        LOG_WARN << _T("UIFactory::createSwitch: create switch  failed!");
+        return nullptr;
+    }
+    uiSwitch->setPosition(pos);
+    return uiSwitch;
+}
+
+SPtr<UICheckBox> UIFactory::createCheckBox(const String& name, const String& off, const String& on, SPtr<UIWidget> parent /* = nullptr */)
 {
     auto checkbox = std::make_shared<UICheckBox>(name);
     if (!checkbox->setup())
@@ -70,10 +111,24 @@ SPtr<UICheckBox> UIFactory::createCheckBox(const String& name, SPtr<UIWidget> pa
         LOG_WARN << _T("UIFactory::createCheckBox: UICheckBox setup failed!");
         return nullptr;
     }
+    checkbox->setOffImage(off);
+    checkbox->setOnImage(on);
     if (nullptr != parent)
     {
         parent->addChild(checkbox);
     }
+    return checkbox;
+}
+
+SPtr<UICheckBox> UIFactory::createCheckBox(const String& name, const String& off, const String& on, const Vec2& pos, SPtr<UIWidget> parent /* = nullptr */)
+{
+    auto checkbox = createCheckBox(name, off, on, parent);
+    if (nullptr == checkbox)
+    {
+        LOG_WARN << _T("UIFactory::createCheckBox: create checkbox failed!");
+        return nullptr;
+    }
+    checkbox->setPosition(pos);
     return checkbox;
 }
 

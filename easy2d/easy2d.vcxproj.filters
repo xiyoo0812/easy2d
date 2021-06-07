@@ -124,6 +124,9 @@
     <ClCompile Include="src\gui\e2d_checkbox.cpp">
       <Filter>gui</Filter>
     </ClCompile>
+    <ClCompile Include="src\gui\e2d_switch.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\base\e2d_color.h">
@@ -274,6 +277,9 @@
       <Filter>gui</Filter>
     </ClInclude>
     <ClInclude Include="src\gui\e2d_checkbox.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gui\e2d_switch.h">
       <Filter>gui</Filter>
     </ClInclude>
   </ItemGroup>

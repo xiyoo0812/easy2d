@@ -52,8 +52,8 @@ namespace Easy2D
         void updateSize(SPtr<UIImage> image);
 
     protected:
-        float32 mHoverFactor = 1.1f;
-        float32 mPushedFactor = 0.9f;
+        float32 mHoverFactor = 1.0f;
+        float32 mPushedFactor = 1.0f;
         SPtr<UILabel> mLabel = nullptr;
         SPtr<UIImage> mNormal = nullptr;
         SPtr<UIImage> mPushed = nullptr;

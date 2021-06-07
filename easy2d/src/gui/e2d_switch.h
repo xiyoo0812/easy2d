@@ -1,15 +1,15 @@
-#ifndef RADIO_H
-#define RADIO_H
+#ifndef SWITCH_H
+#define SWITCH_H
 
-#include "e2d_widget.h"
+#include "e2d_checkbox.h"
 
 namespace Easy2D
 {
-    class UIRadio : public UIWidget
+    class UISwitch : public UICheckBox
     {
     public:
-        UIRadio(const String& name);
-        ~UIRadio(){}
+        UISwitch(const String& name);
+        ~UISwitch(){}
 
     };
 }

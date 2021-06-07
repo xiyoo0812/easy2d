@@ -16,26 +16,34 @@ bool UIButton::setup()
         LOG_WARN << _T("UIButton::setup: Entity setup failed!");
         return false;
     }
+    mHoverFactor = 1.1f;
+    mPushedFactor = 0.9f;
     mVisible = VisibleType::HitSelf;
     return true;
 }
 
-BubbleType Easy2D::UIButton::onLButtonUp(SPtr<MouseEvent> event)
+BubbleType UIButton::onLButtonUp(SPtr<MouseEvent> event)
 {
-    if (mStatus != ButtonStatus::Disable)
+    if (mStatus == ButtonStatus::Pushed)
     {
-        setMouseHover(false);
-        setStatus(ButtonStatus::Normal);
+        if (mbMouseHover)
+        {
+            setStatus(ButtonStatus::Hover);
+            setScale(mHoverFactor);
+        }
+        else
+        {
+            setStatus(ButtonStatus::Normal);
+        }
         return BubbleType::Break;
     }
     return BubbleType::Continue;
 }
 
-BubbleType Easy2D::UIButton::onLButtonDown(SPtr<MouseEvent> event)
+BubbleType UIButton::onLButtonDown(SPtr<MouseEvent> event)
 {
-    if (mStatus != ButtonStatus::Disable)
+    if (mStatus == ButtonStatus::Hover || mStatus == ButtonStatus::Normal)
     {
-        setMouseHover(false);
         setStatus(ButtonStatus::Pushed);
         setScale(mPushedFactor);
         return BubbleType::Break;
@@ -43,29 +51,29 @@ BubbleType Easy2D::UIButton::onLButtonDown(SPtr<MouseEvent> event)
     return BubbleType::Continue;
 }
 
-void Easy2D::UIButton::onMouseEnter(SPtr<MouseEvent> event)
+void UIButton::onMouseEnter(SPtr<MouseEvent> event)
 {
-    if (mStatus != ButtonStatus::Disable)
+    if (mStatus == ButtonStatus::Normal)
     {
         setStatus(ButtonStatus::Hover);
         setScale(mHoverFactor);
     }
 }
 
-void Easy2D::UIButton::onMouseLeave(SPtr<MouseEvent> event)
+void UIButton::onMouseLeave(SPtr<MouseEvent> event)
 {
-    if (mStatus != ButtonStatus::Disable)
+    if (mStatus == ButtonStatus::Hover || mStatus == ButtonStatus::Pushed)
     {
         setStatus(ButtonStatus::Normal);
     }
 }
 
-ButtonStatus Easy2D::UIButton::getStatus()
+ButtonStatus UIButton::getStatus()
 {
     return mStatus;
 }
 
-void Easy2D::UIButton::setStatus(ButtonStatus status)
+void UIButton::setStatus(ButtonStatus status)
 {
     setScale(1.0f);
     updateStatus(false);
@@ -73,32 +81,32 @@ void Easy2D::UIButton::setStatus(ButtonStatus status)
     updateStatus(true);
 }
 
-SPtr<UIImage> Easy2D::UIButton::getNormalImage()
+SPtr<UIImage> UIButton::getNormalImage()
 {
     return mNormal;
 }
 
-SPtr<UIImage> Easy2D::UIButton::getPushedImage()
+SPtr<UIImage> UIButton::getPushedImage()
 {
     return mPushed;
 }
 
-SPtr<UIImage> Easy2D::UIButton::getHoverImage()
+SPtr<UIImage> UIButton::getHoverImage()
 {
     return mHover;
 }
 
-SPtr<UIImage> Easy2D::UIButton::getDisableImage()
+SPtr<UIImage> UIButton::getDisableImage()
 {
     return mDisable;
 }
 
-SPtr<UILabel> Easy2D::UIButton::getLabel()
+SPtr<UILabel> UIButton::getLabel()
 {
     return mLabel;
 }
 
-void Easy2D::UIButton::setNormalImage(const String& normal)
+void UIButton::setNormalImage(const String& normal)
 {
     if (mNormal)
     {
@@ -123,7 +131,7 @@ void Easy2D::UIButton::setNormalImage(const String& normal)
     mNormal = image;
 }
 
-void Easy2D::UIButton::setPushedImage(const String& pushed)
+void UIButton::setPushedImage(const String& pushed)
 {
     if (mPushed)
     {
@@ -148,7 +156,7 @@ void Easy2D::UIButton::setPushedImage(const String& pushed)
     mPushed = image;
 }
 
-void Easy2D::UIButton::setHoverImage(const String& hover)
+void UIButton::setHoverImage(const String& hover)
 {
     if (mHover)
     {
@@ -173,7 +181,7 @@ void Easy2D::UIButton::setHoverImage(const String& hover)
     mHover = image;
 }
 
-void Easy2D::UIButton::setDisableImage(const String& disable)
+void UIButton::setDisableImage(const String& disable)
 {
     if (mDisable)
     {
@@ -198,7 +206,7 @@ void Easy2D::UIButton::setDisableImage(const String& disable)
     mDisable = image;
 }
 
-void Easy2D::UIButton::setText(const Wtring& text)
+void UIButton::setText(const Wtring& text)
 {
     if (mLabel)
     {
@@ -220,7 +228,7 @@ void Easy2D::UIButton::setText(const Wtring& text)
     mLabel = label;
 }
 
-const Wtring& Easy2D::UIButton::getText()
+const Wtring& UIButton::getText()
 {
     if (mLabel)
     {
@@ -229,17 +237,17 @@ const Wtring& Easy2D::UIButton::getText()
     return EMPTY_STRING;
 }
 
-void Easy2D::UIButton::setHoverFactor(float32 hf)
+void UIButton::setHoverFactor(float32 hf)
 {
     mHoverFactor = hf;
 }
 
-void Easy2D::UIButton::setPushedFactor(float32 pf)
+void UIButton::setPushedFactor(float32 pf)
 {
     mPushedFactor = pf;
 }
 
-void Easy2D::UIButton::updateStatus(bool showOrHide)
+void UIButton::updateStatus(bool showOrHide)
 {
     SPtr<UIImage> ctrlImage = nullptr;
     switch (mStatus)
@@ -263,7 +271,7 @@ void Easy2D::UIButton::updateStatus(bool showOrHide)
     }
 }
 
-void Easy2D::UIButton::updateSize(SPtr<UIImage> image)
+void UIButton::updateSize(SPtr<UIImage> image)
 {
     auto dim = getSize();
     if (dim.x <= 1 && dim.y <= 1)

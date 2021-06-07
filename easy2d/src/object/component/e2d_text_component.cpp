@@ -1,5 +1,6 @@
 #include "e2d_text_component.h"
 #include "e2d_transform_component.h"
+#include "object/e2d_entity.h"
 #include "graphics/e2d_render_batch.h"
 #include "graphics/e2d_graphics_mgr.h"
 
@@ -18,6 +19,7 @@ TextComponent::~TextComponent()
 bool TextComponent::setup(SPtr<Entity> master)
 {
     setMaster(master);
+    master->addTrigger(TransformEvent::GUID, std::dynamic_pointer_cast<EventListerner>(shared_from_this()));
     return true;
 }
 
