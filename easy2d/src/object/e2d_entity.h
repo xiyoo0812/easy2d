@@ -19,9 +19,9 @@ namespace Easy2D
         Entity(const String& name, const String& group);
         virtual ~Entity(void);
 
+        virtual bool setup();
         virtual void reset();
         virtual void destroy();
-        virtual void initialize();
         virtual void update(const uint32& escapeMs);
 
         virtual BubbleType handleInputBefor(SPtr<KeyEvent> event, VisibleType& visable);
@@ -81,7 +81,6 @@ namespace Easy2D
         void setChildVisible(const uint64 guid, VisibleType visible);
         void setChildrenVisible(VisibleType visible);
 
-        bool addAction(SPtr<Action> pAction);
         void removeAction(const SPtr<Action> pAction);
         void removeAction(const uint64 guid);
         void removeAction(const String& name);
@@ -89,7 +88,6 @@ namespace Easy2D
         void pauseAction(const uint64 guid);
         void resumeAction(const uint64 guid);
 
-        bool addComponent(SPtr<Component> pComponent);
         void removeComponent(const SPtr<Component> pComponent);
         void removeComponent(const uint64 guid);
         void removeComponent(const String& name);
@@ -115,6 +113,10 @@ namespace Easy2D
         void setParent(SPtr<Entity> pParent);
         SPtr<TransformComponent> getTransform() const;
 
+        template <typename T>
+        SPtr<T> createAction();
+        template <typename T>
+        SPtr<T> createComponent();
         template <typename T = Entity>
         SPtr<T> getChild(const uint64 guid) const;
         template <typename T = Entity>

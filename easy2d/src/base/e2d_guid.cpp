@@ -19,7 +19,7 @@ uint64 Guid::newGuid(short world, short type)
     world %= (MAX_WORLD + 1);
 
     uint32 serial = 0;
-    std::time_t ts = TimerManager::getInstance()->systemTime();
+    std::time_t ts = TimerManager::instance()->systemTime();
     if (ts != mLasttime)
     {
         std::unique_lock<std::mutex> lock(mMutex);

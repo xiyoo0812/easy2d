@@ -15,8 +15,10 @@ TextComponent::~TextComponent()
 {
 }
 
-void TextComponent::initialize()
+bool TextComponent::setup(SPtr<Entity> master)
 {
+    setMaster(master);
+    return true;
 }
 
 void TextComponent::checkWrapping()
@@ -142,13 +144,13 @@ void TextComponent::update(const uint32& escapeMs)
 {
     if (mRenderText->mFont)
     {
-        if (mChanged)
+        if (mbChanged)
         {
             checkWrapping();
             mRenderText->matWorld = getTransform()->getWorldMatrix();
-            mChanged = false;
+            mbChanged = false;
         }
-        RenderBatch::getInstance()->addRenderQueue(mRenderText);
+        RenderBatch::instance()->addRenderQueue(mRenderText);
     }
 }
 
@@ -156,14 +158,14 @@ void TextComponent::onHandleEvent(SPtr<Event> event)
 {
     if (event->getGuid() == TransformEvent::GUID)
     {
-        mChanged = true;
+        mbChanged = true;
     }
 }
 
 void TextComponent::setText(const Wtring& text)
 {
     mOrigText = text;
-    mChanged = true;
+    mbChanged = true;
 }
 
 const Wtring& TextComponent::getText() const
@@ -216,7 +218,7 @@ uint16 TextComponent::getOutlineSize() const
 void TextComponent::setBold(bool bold)
 {
     mRenderText->mbBold = bold;
-    mChanged = true;
+    mbChanged = true;
 }
 
 bool TextComponent::isBold() const
@@ -227,7 +229,7 @@ bool TextComponent::isBold() const
 void TextComponent::setItalic(bool italoc)
 {
     mRenderText->mbItalic = italoc;
-    mChanged = true;
+    mbChanged = true;
 }
 
 bool TextComponent::isItalic() const
@@ -238,7 +240,7 @@ bool TextComponent::isItalic() const
 void TextComponent::setFont(const SPtr<Font> font)
 {
     mRenderText->mFont = font;
-    mChanged = true;
+    mbChanged = true;
 }
 
 const SPtr<Font> TextComponent::getFont() const
@@ -249,7 +251,7 @@ const SPtr<Font> TextComponent::getFont() const
 void TextComponent::setLineWidth(uint32 lineWidth)
 {
     mLineWidth = lineWidth;
-    mChanged = true;
+    mbChanged = true;
 }
 
 bool TextComponent::isLineWarp() const
@@ -265,7 +267,7 @@ uint32 TextComponent::getLineWidth() const
 void TextComponent::setSpacing(uint32 spacing)
 {
     mRenderText->mSpacing = spacing;
-    mChanged = true;
+    mbChanged = true;
 }
 
 uint32 TextComponent::getSpacing() const
@@ -286,7 +288,7 @@ bool TextComponent::isHUDEnabled() const
 void TextComponent::setContentFollow(bool follow)
 {
     mbContentFollow = follow;
-    mChanged = true;
+    mbChanged = true;
 }
 
 bool TextComponent::isContentFollow() const
@@ -297,13 +299,13 @@ bool TextComponent::isContentFollow() const
 void TextComponent::setVerticalAlign(VerticalAlign align)
 {
     mVerticalAlign = align;
-    mChanged = true;
+    mbChanged = true;
 }
 
 void TextComponent::setHorizontalAlign(HorizontalAlign align)
 {
     mHorizontalAlign = align;
-    mChanged = true;
+    mbChanged = true;
 }
 
 VerticalAlign TextComponent::getVerticalAlign() const

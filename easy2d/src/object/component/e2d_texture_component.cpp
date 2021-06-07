@@ -15,8 +15,10 @@ TextureComponent::~TextureComponent()
 {
 }
 
-void TextureComponent::initialize()
+bool TextureComponent::setup(SPtr<Entity> master)
 {
+    setMaster(master);
+    return true;
 }
 
 void TextureComponent::setUVCoords(float32 beginX, float32 beginY, float32 endX, float32 endY)
@@ -38,12 +40,12 @@ void TextureComponent::update(const uint32& escapeMs)
 {
     if (mTexture)
     {
-        if (mChanged)
+        if (mbChanged)
         {
             auto& pos = getTransform()->getPosition();
             auto& transDim = getTransform()->getSize();
             auto& matWorld = getTransform()->getWorldMatrix();
-            uint32 windowHeight = GraphicsManager::getInstance()->getWindowHeight();
+            uint32 windowHeight = GraphicsManager::instance()->getWindowHeight();
             if (mRenderTexScale9.size() > 0)
             {
                 uint32 centerWidth = transDim.x - mScale9Tile.x - mScale9Tile.z;
@@ -72,17 +74,17 @@ void TextureComponent::update(const uint32& escapeMs)
                 mRenderTex->mVertices = transDim;
                 mRenderTex->matWorld = matWorld;
             }
-            mChanged = false;
+            mbChanged = false;
         }
         if (mRenderTexScale9.size() > 0)
         {
             for (auto renderTex : mRenderTexScale9)
             {
-                 RenderBatch::getInstance()->addRenderQueue(renderTex);
+                 RenderBatch::instance()->addRenderQueue(renderTex);
             }
             return;
         }
-        RenderBatch::getInstance()->addRenderQueue(mRenderTex);
+        RenderBatch::instance()->addRenderQueue(mRenderTex);
     }
 }
 
@@ -146,7 +148,7 @@ void TextureComponent::setScale9Tile(const float32 beginX, float32 beginY, float
         auto renderTexBR = buildRenderTexture();
         renderTexBR->mUvCoords = Vec4(endX / w, uvCoordsY, uvCoordsZ, beginY / h);
         mRenderTexScale9.push_back(renderTexBR);
-        mChanged = true;
+        mbChanged = true;
     }
 }
 
@@ -163,7 +165,7 @@ void TextureComponent::onHandleEvent(SPtr<Event> event)
 {
     if (event->getGuid() == TransformEvent::GUID)
     {
-        mChanged = true;
+        mbChanged = true;
     }
 }
 
@@ -189,7 +191,7 @@ bool TextureComponent::isHUDEnabled() const
 
 void TextureComponent::setTexture(SPtr<Texture2D> texture)
 {
-    mChanged = true;
+    mbChanged = true;
     mTexture = texture;
     Vec2 transDim = getTransform()->getSize();
     if (transDim.x == 1 && transDim.y == 1)

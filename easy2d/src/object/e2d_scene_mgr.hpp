@@ -3,6 +3,23 @@
 namespace Easy2D
 {
     template <typename T>
+    SPtr<T> SceneManager::createScene(const String& name)
+    {
+        auto pScene = std::make_shared<T>(name);
+        if (!pScene->setup())
+        {
+            LOG_WARN << _T("SceneManager::createScene: setup '") << pScene->getName() << _T("' failed!");
+            return nullptr;
+        }
+        if (!addScene(pScene))
+        {
+            LOG_WARN << _T("SceneManager::createScene: addScene '") << pScene->getName() << _T("' failed!");
+            return nullptr;
+        }
+        return pScene;
+    }
+
+    template <typename T>
     SPtr<T> SceneManager::getScene(const uint64 guid)
     {
         auto it = mScenes.find(guid);

@@ -17,21 +17,15 @@ namespace Easy2D
         Component(const String& name);
         virtual ~Component();
 
-        void destroy();
+        virtual void destroy();
 
-        virtual void initialize() = 0;
+        virtual bool setup(SPtr<Entity> master) = 0;
 
         virtual void update(const uint32& escapeMs) = 0;
         virtual void onHandleEvent(SPtr<Event> event) {}
 
         SPtr<Scene> getScene() const;
         SPtr<TransformComponent> getTransform() const;
-
-        void setEnabled(bool enabled);
-        bool isEnabled() const;
-
-        void setVisible(bool visible);
-        bool isVisible() const;
 
         void setChanged(bool changed);
         bool isChanged() const;
@@ -41,7 +35,7 @@ namespace Easy2D
 
     protected:
         WPtr<Entity> mMaster = {};
-        bool mEnabled = true, mVisible = true, mChanged = false;
+        bool mbChanged = false;
     };
 }
 

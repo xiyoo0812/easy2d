@@ -34,7 +34,6 @@ bool SceneManager::setActiveScene(const uint64 guid)
         }
         mSwitchingScene = true;
         mNewActiveScene = it->second;
-        mInitialized = mNewActiveScene->isInitialized();
         mCurSceneID = guid;
         LOG_INFO << _T("Scene ") << guid << _T(" is now Active");
         return true;
@@ -60,7 +59,7 @@ bool SceneManager::addScene(SPtr<Scene> scene)
         LOG_WARN << _T("SceneManager::addScene: Scene Already Exists");
         return false;
     }
-    scene->initialize();
+    scene->setup();
     mScenes.insert(std::make_pair(scene->getGUID(), scene));
     LOG_INFO << _T("SceneManager::addScene: Adding scene");
     if (mCurSceneID == 0)
@@ -92,21 +91,6 @@ bool SceneManager::removeScene(const uint64 guid)
     return false;
 }
 
-bool SceneManager::initialized()
-{
-    if (mInitialized)
-    {
-        return true;
-    }
-    if (mNewActiveScene == nullptr)
-    {
-        return false;
-    }
-    LOG_INFO << _T("Initializing Scene :") << mCurSceneID;
-    mInitialized = mNewActiveScene->isInitialized();
-    return mInitialized;
-}
-
 void SceneManager::update(const uint32& escapeMs)
 {
     if (mSwitchingScene)
@@ -125,54 +109,3 @@ void SceneManager::update(const uint32& escapeMs)
         mActiveScene->update(escapeMs);
     }
 }
-
-#ifdef ANDROID
-#define INPUT_MANAGER (InputManager::getInstance())
-void SceneManager::processActivityEvent(int32 pCommand, android_app* pApplication)
-{
-    if (mActiveScene == nullptr)
-    {
-        return;
-    }
-    mApplicationPtr = pApplication;
-    switch (pCommand)
-    {
-        //First save state - then Stop - then Start - then Resume - then gained focus
-    case APP_CMD_STOP:
-        LOG_INFO << _T("SceneManager : APP_CMD_STOP");
-        break;
-
-    case APP_CMD_GAINED_FOCUS:
-        LOG_INFO << _T("SceneManager : APP_CMD_GAINED_FOCUS");
-        break;
-    case APP_CMD_SAVE_STATE:
-        LOG_INFO << _T("SceneManager : APP_CMD_SAVE_STATE");
-        mActiveScene->onSaveState(&mApplicationPtr->savedState, &mApplicationPtr->savedStateSize);
-        break;
-    }
-}
-
-int32 SceneManager::processInputEvent(AInputEvent* pEvent)
-{
-    //[TODO] Cast the input event to motionEvent and pass that type
-    int32_t lEventType = AInputEvent_getType(pEvent);
-    switch (lEventType)
-    {
-    case AINPUT_EVENT_TYPE_MOTION:
-        switch (AInputEvent_getSource(pEvent))
-        {
-        case AINPUT_SOURCE_TOUCHSCREEN:
-            INPUT_MANAGER->onTouchEvent(pEvent);
-            return (true);
-        default:
-            return (false);
-        }
-        break;
-    case AINPUT_EVENT_TYPE_KEY:
-        return INPUT_MANAGER->onKeyboardEvent(pEvent);
-    default:
-        return false;
-    }
-    return false;
-}
-#endif

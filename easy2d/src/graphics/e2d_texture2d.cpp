@@ -26,7 +26,7 @@ bool Texture2D::load()
     if (!mbLoad)
     {
         Bytes fileData;
-        if (!AssetManager::getInstance()->loadAssetData(mPath, fileData))
+        if (!AssetManager::instance()->loadAssetData(mPath, fileData))
         {
             LOG_ERROR << _T("Texture2D::load loadAssetData failed!");
             return false;

@@ -43,34 +43,14 @@ SPtr<TransformComponent> Component::getTransform() const
     return nullptr;
 }
 
-void Component::setEnabled(bool enabled)
-{
-    mEnabled = enabled;
-}
-
-bool Component::isEnabled() const
-{
-    return mEnabled;
-}
-
-void Component::setVisible(bool visible)
-{
-    mVisible = visible;
-}
-
-bool Component::isVisible() const
-{
-    return mVisible;
-}
-
 void Component::setChanged(bool changed)
 {
-    mChanged = changed;
+    mbChanged = changed;
 }
 
 bool Component::isChanged() const
 {
-    return mChanged;
+    return mbChanged;
 }
 
 SPtr<Entity> Component::getMaster() const

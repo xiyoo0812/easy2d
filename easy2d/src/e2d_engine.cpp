@@ -19,43 +19,35 @@ E2dEngine::~E2dEngine()
 {
 }
 
-#ifdef WIN32
 void E2dEngine::initialize(uint32 window_width, uint32 window_height)
 {
-    GraphicsManager::getInstance()->initialize(window_width, window_height);
-#endif
-#ifdef ANDROID
-void E2dEngine::initialize(SPtr<android_app> app)
-{
-    GraphicsManager::getInstance()->initialize(app);
-#endif
     mStopWatch = std::make_shared<Stopwatch>();
+    GraphicsManager::instance()->initialize(window_width, window_height);
     //初始化asset资源路径
-    AssetManager::getInstance()->initialize("res");
+    AssetManager::instance()->initialize("res");
     //初始化font资源路径，基于asset的路径
-    FontManager::getInstance()->initialize("font");
-    FontManager::getInstance()->loadFont("fzltxh-36", "fzltxh_gbk.ttf", 36);
+    FontManager::instance()->initialize("font");
+    FontManager::instance()->loadFont("fzltxh-36", "fzltxh_gbk.ttf", 36);
 
     //初始化RenderBatch
-    RenderBatch::getInstance()->initialize();
-    RenderBatch::getInstance()->initializeGLStates();
+    RenderBatch::instance()->initialize();
+    RenderBatch::instance()->initializeGLStates();
     //初始化UIRoot
-    UIFactory::getInstance()->setFont("fzltxh-36");
-    mUIRoot = UIFactory::getInstance()->createRoot();
+    UIFactory::instance()->setFont("fzltxh-36");
+    mUIRoot = UIFactory::instance()->createRoot();
 
     //AudioManager::getInstance()->start();
     //DebugDraw::getInstance()->initialize();
 
-    auto scene = std::make_shared<Scene>("test");
-    SceneManager::getInstance()->addScene(scene);
+    auto scene = SceneManager::instance()->createScene("test");
 
-    auto image = UIFactory::getInstance()->createImage("image", "image/btn.png", Vec2(0, 0), Vec2(95, 42), mUIRoot);
+    auto image = UIFactory::instance()->createImage("image", "image/btn.png", Vec2(0, 0), Vec2(95, 42), mUIRoot);
     //image->setScale9Tile(20, 12, 75, 30);
     image->setDockerAlign(DockerAlign::LeftTop);
     image->setAnchor(0, 0);
     image->setZorder(1);
 
-    auto txt = UIFactory::getInstance()->createLabel("text", L"国人daAFKsbBgf123", Vec2(0, 5), Vec2(200, 60), mUIRoot);
+    auto txt = UIFactory::instance()->createLabel("text", L"国人daAFKsbBgf123", Vec2(0, 5), Vec2(200, 60), mUIRoot);
     txt->setShadowColor(Color::Black, 2);
     //txt->setBold(true);
     txt->setZorder(2);
@@ -66,7 +58,7 @@ void E2dEngine::initialize(SPtr<android_app> app)
     txt->setHorizontalAlign(HorizontalAlign::Left);
     txt->setDockerAlign(DockerAlign::LeftTop);
 
-    auto txt2 = UIFactory::getInstance()->createLabel("text2", L"国人daAFKsbBgf123", Vec2(300, 100), Vec2(200, 60), mUIRoot);
+    auto txt2 = UIFactory::instance()->createLabel("text2", L"国人daAFKsbBgf123", Vec2(300, 100), Vec2(200, 60), mUIRoot);
     txt2->setItalic(true);
     //txt2->setShadowColor(Color::White, 1);
     txt2->setOutlineColor(Color::Red, 1);
@@ -79,10 +71,10 @@ void E2dEngine::update()
     uint32 escapeMs = mStopWatch->elapsedMillSecondsNow();
     //mFPS.update(escapeMs);
     mUIRoot->update(escapeMs);
-    TimerManager::getInstance()->update(escapeMs);
-    SceneManager::getInstance()->update(escapeMs);
-    GraphicsManager::getInstance()->update();
-    RenderBatch::getInstance()->flush();
+    TimerManager::instance()->update(escapeMs);
+    SceneManager::instance()->update(escapeMs);
+    GraphicsManager::instance()->update();
+    RenderBatch::instance()->flush();
 }
 
 void E2dEngine::stop()

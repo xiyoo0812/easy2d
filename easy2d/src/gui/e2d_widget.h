@@ -20,7 +20,7 @@ namespace Easy2D
         UIRoot();
         ~UIRoot() {}
 
-        virtual void initialize();
+        virtual bool setup();
 
         inline static String GUID = "gui_root";
     };

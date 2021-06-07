@@ -15,7 +15,7 @@ namespace Easy2D
 
         virtual ~TextureComponent();
 
-        virtual void initialize();
+        virtual bool setup(SPtr<Entity> master);
 
         virtual void update(const uint32& escapeMs);
 

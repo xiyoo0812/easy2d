@@ -36,7 +36,7 @@ namespace Easy2D
         ~UIFactory() {}
 
     private:
-        String mFontName = nullptr;
+        String mFontName = "";
     };
 }
 

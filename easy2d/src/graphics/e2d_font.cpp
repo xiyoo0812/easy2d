@@ -22,8 +22,8 @@ bool Font::load()
 {
     if (!mbLoad)
     {
-        FT_Library fLibrary = FontManager::getInstance()->getLibrary();
-        auto fontData = FontManager::getInstance()->getStream(mPath);
+        FT_Library fLibrary = FontManager::instance()->getLibrary();
+        auto fontData = FontManager::instance()->getStream(mPath);
         if (fontData == nullptr)
         {
             LOG_ERROR << _T("Font::load loadAsset failed!");

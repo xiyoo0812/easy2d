@@ -20,7 +20,7 @@ namespace Easy2D
         UIButton(const String& name);
         ~UIButton() {}
 
-        virtual void initialize();
+        virtual bool setup();
 
         virtual BubbleType onLButtonUp(SPtr<MouseEvent> event);
         virtual BubbleType onLButtonDown(SPtr<MouseEvent> event);

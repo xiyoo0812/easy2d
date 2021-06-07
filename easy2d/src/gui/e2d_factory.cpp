@@ -11,13 +11,22 @@ void Easy2D::UIFactory::setFont(const String& fontName)
 SPtr<UIRoot> UIFactory::createRoot()
 {
     auto uiRoot = std::make_shared<UIRoot>();
-    uiRoot->initialize();
+    if (!uiRoot->setup())
+    {
+        LOG_WARN << _T("UIFactory::createRoot: UIRoot setup failed!");
+        return nullptr;
+    }
     return uiRoot;
 }
 
 SPtr<UIButton> UIFactory::createButton(const String& name, const String& texPath, SPtr<UIWidget> parent /* = nullptr */)
 {
     auto button = std::make_shared<UIButton>(name);
+    if (!button->setup())
+    {
+        LOG_WARN << _T("UIFactory::createButton: UIButton setup failed!");
+        return nullptr;
+    }
     button->setNormalImage(texPath);
     if (nullptr != parent)
     {
@@ -29,21 +38,24 @@ SPtr<UIButton> UIFactory::createButton(const String& name, const String& texPath
 SPtr<UIButton> UIFactory::createButton(const String& name, const String& texPath, const Vec2& pos, const Vec2& size, SPtr<UIWidget> parent /* = nullptr */)
 {
     auto button = createButton(name, texPath, parent);
-    if (nullptr != parent)
+    if (nullptr == button)
     {
-        parent->addChild(button);
+        LOG_WARN << _T("UIFactory::createButton: create button failed!");
+        return nullptr;
     }
-    if (button)
-    {
-        button->setPosition(pos);
-        button->setSize(size);
-    }
+    button->setPosition(pos);
+    button->setSize(size);
     return button;
 }
 
 SPtr<UIRadio> UIFactory::createRadio(const String& name, SPtr<UIWidget> parent /* = nullptr */)
 {
     auto radio = std::make_shared<UIRadio>(name);
+    if (!radio->setup())
+    {
+        LOG_WARN << _T("UIFactory::createRadio: UIRadio setup failed!");
+        return nullptr;
+    }
     if (nullptr != parent)
     {
         parent->addChild(radio);
@@ -54,6 +66,11 @@ SPtr<UIRadio> UIFactory::createRadio(const String& name, SPtr<UIWidget> parent /
 SPtr<UICheckBox> UIFactory::createCheckBox(const String& name, SPtr<UIWidget> parent /* = nullptr */)
 {
     auto checkbox = std::make_shared<UICheckBox>(name);
+    if (!checkbox->setup())
+    {
+        LOG_WARN << _T("UIFactory::createCheckBox: UICheckBox setup failed!");
+        return nullptr;
+    }
     if (nullptr != parent)
     {
         parent->addChild(checkbox);
@@ -69,6 +86,11 @@ SPtr<UILabel> UIFactory::createLabel(const String& name, const Wtring& text, SPt
         return nullptr;
     }
     auto label = std::make_shared<UILabel>(name);
+    if (!label->setup())
+    {
+        LOG_WARN << _T("UIFactory::createLabel: UILabel setup failed!");
+        return nullptr;
+    }
     if (!label->setFont(mFontName))
     {
         LOG_ERROR << "UIFactory::createLabel error: font(" << mFontName << ") not load!";
@@ -85,17 +107,24 @@ SPtr<UILabel> UIFactory::createLabel(const String& name, const Wtring& text, SPt
 SPtr<UILabel> UIFactory::createLabel(const String& name, const Wtring& text, const Vec2& pos, const Vec2& size, SPtr<UIWidget> parent /* = nullptr */)
 {
     auto label = createLabel(name, text, parent);
-    if (label)
+    if (nullptr == label)
     {
-        label->setPosition(pos);
-        label->setSize(size);
+        LOG_WARN << _T("UIFactory::createLabel: create label failed!");
+        return nullptr;
     }
+    label->setPosition(pos);
+    label->setSize(size);
     return label;
 }
 
 SPtr<UIImage> UIFactory::createImage(const String& name, const String& texPath, SPtr<UIWidget> parent /* = nullptr */)
 {
     auto image = std::make_shared<UIImage>(name);
+    if (!image->setup())
+    {
+        LOG_WARN << _T("UIFactory::createImage: UIImage setup failed!");
+        return nullptr;
+    }
     if (!image->loadTexture(texPath))
     {
         LOG_ERROR << "UIFactory::createImage error: texture(" << texPath << ") load failed!";
@@ -111,10 +140,12 @@ SPtr<UIImage> UIFactory::createImage(const String& name, const String& texPath, 
 SPtr<UIImage> UIFactory::createImage(const String& name, const String& texPath, const Vec2& pos, const Vec2& size, SPtr<UIWidget> parent /* = nullptr */)
 {
     auto image = createImage(name, texPath, parent);
-    if (image)
+    if (nullptr == image)
     {
-        image->setPosition(pos);
-        image->setSize(size);
+        LOG_WARN << _T("UIFactory::createImage: create image failed!");
+        return nullptr;
     }
+    image->setPosition(pos);
+    image->setSize(size);
     return image;
 }

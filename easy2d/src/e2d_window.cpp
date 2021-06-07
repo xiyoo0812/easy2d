@@ -12,7 +12,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 void Window::initialize(HINSTANCE instance, uint32 width /* = 800 */, uint32 height/* = 600 */, bool useConsole /* = false */)
 {
-    mE2dEngine = SPtr<E2dEngine>(E2dEngine::getInstance());
+    mE2dEngine = SPtr<E2dEngine>(E2dEngine::instance());
     LOG_INIT("./logs/", "E2D_LOG", logger::rolling_type::HOURLY, 10000);
 
     glfwInit();
@@ -40,12 +40,11 @@ void Window::initialize(HINSTANCE instance, uint32 width /* = 800 */, uint32 hei
     printGlVersionInfo();
 
     //初始化输入系统
-    InputSystem::getInstance()->initialize(window);
+    InputSystem::instance()->initialize(window);
     //初始化引擎
     mE2dEngine->initialize(width, height);
     mainLoop();
     mE2dEngine->stop();
-    InputSystem::earseInstance();
     glfwTerminate();
 }
 

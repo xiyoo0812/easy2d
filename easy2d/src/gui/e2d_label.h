@@ -15,6 +15,8 @@ namespace Easy2D
 
         virtual ~UILabel();
 
+        virtual bool setup();
+
         void setVerticalAlign(VerticalAlign align);
         void setHorizontalAlign(HorizontalAlign align);
 

@@ -27,7 +27,7 @@ void FontManager::initialize(const String& path)
         LOG_ERROR << _T("FontManager::setPath FT_Init_FreeType failed! code: ") << error;
     }
     Path fontPath = Path(path);
-    for (Path filePath : AssetManager::getInstance()->enumerateDirectory(fontPath, false))
+    for (Path filePath : AssetManager::instance()->enumerateDirectory(fontPath, false))
     {
         Path fullPath = fontPath / filePath;
         mFontFiles.insert(std::make_pair(filePath.string(), fullPath));
@@ -52,7 +52,7 @@ const SPtr<Font> FontManager::loadFont(const String& name, const String& fontNam
     auto dit = mFontDatas.find(path.string());
     if (dit == mFontDatas.end())
     {
-        fontData = AssetManager::getInstance()->loadAsset(path);
+        fontData = AssetManager::instance()->loadAsset(path);
         if (fontData == nullptr || fontData->size() <= 0)
         {
             LOG_ERROR << _T("FontManager::loadFont loadAsset failed!");

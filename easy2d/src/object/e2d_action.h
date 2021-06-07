@@ -13,7 +13,7 @@ namespace Easy2D
         Action(const String& name);
         virtual ~Action();
 
-        virtual void initialize() = 0;
+        virtual bool setup(SPtr<Entity> master) = 0;
         virtual void update(const uint32& escapeMs) = 0;
 
         void destroy();

@@ -11,16 +11,8 @@ namespace Easy2D
     {
     public:
         friend Singleton<E2dEngine>;
-#ifdef WIN32
-        friend class Window;
+
         void initialize(uint32 window_width, uint32 window_height);
-#endif
-#ifdef ANDROID
-        void initialize(SPtr<android_app> app);
-        SPtr<android_app> getAndroidApp() const;
-    private:
-        SPtr<android_app> mAndroidApp;
-#endif
 
         ~E2dEngine();
 

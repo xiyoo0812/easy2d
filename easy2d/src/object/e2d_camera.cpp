@@ -7,53 +7,62 @@ using namespace Easy2D;
 
 Camera::Camera() : Entity()
 {
-    addComponent(std::make_shared<CameraComponent>());
 }
 
 Camera::Camera(const String& name) : Entity(name)
 {
-    addComponent(std::make_shared<CameraComponent>());
 }
 
 Camera::~Camera()
 {
 }
 
-void Camera::initialize()
+bool Camera::setup()
 {
-    Entity::initialize();
+    if (!Entity::setup())
+    {
+        LOG_WARN << _T("Camera::setup: Entity setup failed!");
+        return false;
+    }
+    mCamera = createComponent<CameraComponent>();
+    if (nullptr == mCamera)
+    {
+        LOG_WARN << _T("Camera::setup: create CameraComponent failed!");
+        return false;
+    }
+    return true;
 }
 
 void Camera::translate(const Vec2& translation)
 {
-    getComponent<CameraComponent>(CameraComponent::GUID)->translate(translation);
+    mCamera->translate(translation);
 }
 
 void Camera::translate(float32 x, float32 y)
 {
-    getComponent<CameraComponent>(CameraComponent::GUID)->translate(x, y);
+    mCamera->translate(x, y);
 }
 
 void Camera::translateX(float32 x)
 {
-    getComponent<CameraComponent>(CameraComponent::GUID)->translateX(x);
+    mCamera->translateX(x);
 }
 
 void Camera::translateY(float32 y)
 {
-    getComponent<CameraComponent>(CameraComponent::GUID)->translateY(y);
+    mCamera->translateY(y);
 }
 
 void Camera::activate()
 {
-    getComponent<CameraComponent>(CameraComponent::GUID)->activate();
+    mCamera->activate();
 }
 void Camera::deactivate()
 {
-    getComponent<CameraComponent>(CameraComponent::GUID)->deactivate();
+    mCamera->deactivate();
 }
 
 void Camera::convertScreenToWorld(Vec2& posInOut)
 {
-    getComponent<CameraComponent>(CameraComponent::GUID)->convertScreenToWorld(posInOut);
+    mCamera->convertScreenToWorld(posInOut);
 }

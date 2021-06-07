@@ -35,7 +35,13 @@ UIRoot::UIRoot() : UIWidget(GUID)
 
 }
 
-void UIRoot::initialize()
+bool UIRoot::setup()
 {
-    InputSystem::getInstance()->addInputSink(std::dynamic_pointer_cast<InputSink>(shared_from_this()));
+    if (!Entity::setup())
+    {
+        LOG_WARN << _T("UIRoot::setup: Entity setup failed!");
+        return false;
+    }
+    InputSystem::instance()->addInputSink(std::dynamic_pointer_cast<InputSink>(shared_from_this()));
+    return true;
 }

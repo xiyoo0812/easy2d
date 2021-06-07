@@ -5,6 +5,7 @@
 
 namespace Easy2D
 {
+    class CameraComponent;
 	class Camera : public Entity
 	{
 	public:
@@ -12,7 +13,7 @@ namespace Easy2D
 		Camera(const String& name);
 		virtual ~Camera();
 
-		virtual void initialize();
+        virtual bool setup();
 		virtual void translate(const Vec2& translation);
 		virtual void translate(float32 x, float32 y);
 		virtual void translateX(float32 x);
@@ -21,6 +22,9 @@ namespace Easy2D
 		virtual void deactivate();
 
 		virtual void convertScreenToWorld(Vec2& posInOut);
+
+	protected:
+        SPtr<CameraComponent> mCamera = nullptr;
 	};
 }
 

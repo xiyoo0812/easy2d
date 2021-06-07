@@ -21,14 +21,11 @@ namespace Easy2D
         uint64 getGUID() const;
         bool compareGUID(const uint64 guid) const;
 
-        bool isInitialized() const;
-        virtual void initialize() = 0;
         virtual void destroy() = 0;
 
     protected:
         uint64 mGUID = 0;
         String mName = "";
-        bool mInitialized = false;
     };
 }
 

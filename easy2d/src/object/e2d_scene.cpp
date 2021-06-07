@@ -20,23 +20,25 @@ Scene::~Scene()
 
 void Scene::destroy()
 {
-    SceneManager::getInstance()->removeScene(mGUID);
+    SceneManager::instance()->removeScene(mGUID);
 }
 
-void Scene::initialize()
+bool Scene::setup()
 {
-    if (!mInitialized)
+    if (!Entity::setup())
     {
-        Entity::initialize();
-        if (mDefaultCamera == nullptr)
-        {
-            mDefaultCamera = std::make_shared<Camera>();
-            addChild(mDefaultCamera);
-        }
-        InputSystem::getInstance()->addInputSink(std::dynamic_pointer_cast<InputSink>(shared_from_this()));
-        setActiveCamera(mDefaultCamera);
-        mInitialized = true;
+        LOG_WARN << _T("Scene::setup: Entity setup failed!");
+        return false;
     }
+    mDefCamera = std::make_shared<Camera>();
+    if (!mDefCamera->setup())
+    {
+        LOG_WARN << _T("Entity::setup: create Default Camera failed!");
+        return false;
+    }
+    addChild(mDefCamera);
+    setActiveCamera(mDefCamera);
+    InputSystem::instance()->addInputSink(std::dynamic_pointer_cast<InputSink>(shared_from_this()));
 }
 
 void Scene::onActivate()

@@ -33,7 +33,7 @@ bool Shader::load()
 bool Shader::compileShader()
 {
     Bytes shaderData;
-    if (!AssetManager::getInstance()->loadAssetData(mPath, shaderData))
+    if (!AssetManager::instance()->loadAssetData(mPath, shaderData))
     {
         LOG_ERROR << _T("Shader::compileShader loadAssetData failed!");
         return false;

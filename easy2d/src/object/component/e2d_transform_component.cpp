@@ -15,15 +15,17 @@ TransformComponent::~TransformComponent()
 {
 }
 
-void TransformComponent::initialize()
+bool TransformComponent::setup(SPtr<Entity> master)
 {
+    setMaster(master);
+    return true;
 }
 
 void TransformComponent::translate(const Vec2& translation)
 {
     mPostion.x = translation.x;
     mPostion.y = translation.y;
-    mChanged = true;
+    mbChanged = true;
 }
 
 void TransformComponent::translate(float32 x, float32 y)
@@ -34,51 +36,51 @@ void TransformComponent::translate(float32 x, float32 y)
 void TransformComponent::translateX(float32 x)
 {
     mPostion.x = x;
-    mChanged = true;
+    mbChanged = true;
 }
 
 void TransformComponent::translateY(float32 y)
 {
     mPostion.y = y;
-    mChanged = true;
+    mbChanged = true;
 }
 
 void TransformComponent::move(const Vec2& translation)
 {
     mPostion.x += translation.x;
     mPostion.y += translation.y;
-    mChanged = true;
+    mbChanged = true;
 }
 
 void TransformComponent::move(float32 x, float32 y)
 {
     mPostion.x += x;
     mPostion.y += y;
-    mChanged = true;
+    mbChanged = true;
 }
 
 void TransformComponent::moveX(float32 x)
 {
     mPostion.x += x;
-    mChanged = true;
+    mbChanged = true;
 }
 
 void TransformComponent::moveY(float32 y)
 {
     mPostion.y += y;
-    mChanged = true;
+    mbChanged = true;
 }
 
 void TransformComponent::rotate(float32 rotation)
 {
     mRotation = rotation;
-    mChanged = true;
+    mbChanged = true;
 }
 
 void TransformComponent::scale(const Vec2& scale)
 {
     mScale = scale;
-    mChanged = true;
+    mbChanged = true;
 }
 
 void TransformComponent::scale(float32 x, float32 y)
@@ -94,32 +96,32 @@ void TransformComponent::scale(float32 u)
 void TransformComponent::scaleX(float32 x)
 {
     mScale.x = x;
-    mChanged = true;
+    mbChanged = true;
 }
 
 void TransformComponent::scaleY(float32 y)
 {
     mScale.y = y;
-    mChanged = true;
+    mbChanged = true;
 }
 
 void TransformComponent::mirror(bool x, bool y)
 {
     mMirroredX = x;
     mMirroredY = y;
-    mChanged = true;
+    mbChanged = true;
 }
 
 void TransformComponent::mirrorX(bool x)
 {
     mMirroredX = x;
-    mChanged = true;
+    mbChanged = true;
 }
 
 void TransformComponent::mirrorY(bool y)
 {
     mMirroredY = y;
-    mChanged = true;
+    mbChanged = true;
 }
 
 bool TransformComponent::isInRect(const Vec2& pos) const
@@ -169,7 +171,7 @@ void TransformComponent::setAnchorX(float32 x)
     if (x >= 0.0f && x <= 1.0f)
     {
         mAnchor.x = x;
-        mChanged = true;
+        mbChanged = true;
     }
 }
 
@@ -178,7 +180,7 @@ void TransformComponent::setAnchorY(float32 y)
     if (y >= 0.0f && y <= 1.0f)
     {
         mAnchor.y = y;
-        mChanged = true;
+        mbChanged = true;
     }
 }
 
@@ -188,7 +190,7 @@ void TransformComponent::setSize(float32 x, float32 y)
     {
         mSize.x = x;
         mSize.y = y;
-        mChanged = true;
+        mbChanged = true;
     }
 }
 
@@ -197,7 +199,7 @@ void TransformComponent::setSize(const Vec2& size)
     if (mSize != size)
     {
         mSize = size;
-        mChanged = true;
+        mbChanged = true;
     }
 }
 
@@ -206,7 +208,7 @@ void TransformComponent::setSizeX(float32 x)
     if (x != mSize.x)
     {
         mSize.x = x;
-        mChanged = true;
+        mbChanged = true;
     }
 }
 
@@ -215,7 +217,7 @@ void TransformComponent::setSizeY(float32 y)
     if (y != mSize.y)
     {
         mSize.y = y;
-        mChanged = true;
+        mbChanged = true;
     }
 }
 
@@ -243,7 +245,7 @@ void TransformComponent::updateTransform()
 {
     for (auto child : getMaster()->getChildren())
     {
-        child->getTransform()->setChanged(mChanged);
+        child->getTransform()->setChanged(mbChanged);
     }
     Vec3 transPos(transDockerX(mPostion.x), transDockerY(mPostion.y), 0);
     Vec3 centerPos(mAnchor.x * mSize.x, -mAnchor.y * mSize.y, 0);
@@ -284,11 +286,11 @@ void TransformComponent::updateTransform()
 
 void TransformComponent::update(const uint32& escapeMs)
 {
-    if (mChanged)
+    if (mbChanged)
     {
         updateTransform();
         mMaster.lock()->notifyTrigger(std::make_shared<TransformEvent>());
-        mChanged = false;
+        mbChanged = false;
     }
 }
 
@@ -301,7 +303,7 @@ void TransformComponent::setDockerAlign(DockerAlign align)
         mAnchor = Vec2(0.5, 0.5);
         mSize = getDockerSize();
     }
-    mChanged = true;
+    mbChanged = true;
 }
 
 DockerAlign TransformComponent::getDockerAlign() const
@@ -367,5 +369,5 @@ const Vec2& TransformComponent::getDockerSize() const
             return parent->getSize();
         }
     }
-    return GraphicsManager::getInstance()->getDesignResolution();
+    return GraphicsManager::instance()->getDesignResolution();
 }

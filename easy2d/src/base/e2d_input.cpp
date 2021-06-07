@@ -8,7 +8,7 @@ void OnChar(GLFWwindow* window, unsigned int codepoint)
 {
     auto event = std::make_shared<KeyEvent>(KeyType::Char);
     event->mKey = codepoint;
-    InputSystem::getInstance()->handleInput(event);
+    InputSystem::instance()->handleInput(event);
 }
 
 void OnKey(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -16,7 +16,7 @@ void OnKey(GLFWwindow* window, int key, int scancode, int action, int mods)
     auto event = std::make_shared<KeyEvent>(KeyType(action));
     event->mSysKey = scancode;
     event->mKey = key;
-    InputSystem::getInstance()->handleInput(event);
+    InputSystem::instance()->handleInput(event);
 }
 
 void OnMouseButton(GLFWwindow* window, int button, int action, int mods)
@@ -26,7 +26,7 @@ void OnMouseButton(GLFWwindow* window, int button, int action, int mods)
         MouseType mType = (MouseType)(button * 2 + action);
         auto event = std::make_shared<MouseEvent>(mType);
         glfwGetCursorPos(window, (double*)&event->mPos.x, (double*)&event->mPos.y);
-        InputSystem::getInstance()->handleInput(event);
+        InputSystem::instance()->handleInput(event);
     }
 }
 
@@ -35,7 +35,7 @@ void OnMouseMove(GLFWwindow* window, double x, double y)
     auto event = std::make_shared<MouseEvent>(MouseType::MouseMove);
     event->mPos.x = x;
     event->mPos.y = y;
-    InputSystem::getInstance()->handleInput(event);
+    InputSystem::instance()->handleInput(event);
 }
 
 void OnMouseWheel(GLFWwindow* window, double x, double y)
@@ -44,7 +44,7 @@ void OnMouseWheel(GLFWwindow* window, double x, double y)
     event->mWheelX = x;
     event->mWheelY = y;
     glfwGetCursorPos(window, (double*)&event->mPos.x, (double*)&event->mPos.y);
-    InputSystem::getInstance()->handleInput(event);
+    InputSystem::instance()->handleInput(event);
 }
 
 //--------------------------------------------------------------------------------

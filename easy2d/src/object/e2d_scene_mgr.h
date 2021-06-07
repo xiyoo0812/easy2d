@@ -16,24 +16,18 @@ namespace Easy2D
         friend Singleton<SceneManager>;
 
         SPtr<Scene> getActiveScene();
-        template <typename T = Scene>
-        SPtr<T> getScene(const uint64 guid);
         bool setActiveScene(const uint64 guid);
         bool addScene(SPtr<Scene> scene);
         bool addScene(const String& name, SPtr<Scene> scene);
         bool removeScene(const uint64 guid);
 
-        bool initialized();
-
         void update(const uint32& escapeMs);
 
-#ifdef ANDROID
-        void processActivityEvent(int32 pCommand, android_app* pApplication);
-        int32 processInputEvent(AInputEvent* pEvent);
+        template <typename T = Scene>
+        SPtr<T> createScene(const String& name);
+        template <typename T = Scene>
+        SPtr<T> getScene(const uint64 guid);
 
-    private:
-        android_app* mApplicationPtr = nullptr;
-#endif
     private:
         SceneManager();
         ~SceneManager();

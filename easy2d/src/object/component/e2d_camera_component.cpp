@@ -18,15 +18,16 @@ CameraComponent::~CameraComponent()
 {
 }
 
-void CameraComponent::initialize()
+bool CameraComponent::setup(SPtr<Entity> master)
 {
-    mAspectRatio = GraphicsManager::getInstance()->getViewportAspectRatio();;
+    setMaster(master);
+    mAspectRatio = GraphicsManager::instance()->getViewportAspectRatio();;
     //calc ortho matrix
     if (mOrthoProjection)
     {
         if (mSize <= 0)
         {
-            mSize = GraphicsManager::getInstance()->getViewportHeight();
+            mSize = GraphicsManager::instance()->getViewportHeight();
         }
         mProjection = matrixOrtho(mSize * mAspectRatio * mZoom, mSize * mZoom, mNearPlane, mFarPlane);
     }
@@ -35,14 +36,15 @@ void CameraComponent::initialize()
     {
         mProjection = matrixPerspectiveFOV(mFOV, mAspectRatio, mNearPlane, mFarPlane);
     }
+    return true;
 }
 
 void CameraComponent::update(const uint32& escapeMs)
 {
     auto pos = getTransform()->getAbsolute();
     Vec3 eyeVec = Vec3(pos, 0);
-    eyeVec.x /= (GraphicsManager::getInstance()->getScreenWidth() / 2.0f);
-    eyeVec.y /= (GraphicsManager::getInstance()->getScreenHeight() / 2.0f);
+    eyeVec.x /= (GraphicsManager::instance()->getScreenWidth() / 2.0f);
+    eyeVec.y /= (GraphicsManager::instance()->getScreenHeight() / 2.0f);
 
     Vec3 lookAtVec, upVec;
     Mat4 rotTransform;
@@ -197,7 +199,7 @@ Mat4 CameraComponent::matrixLookAt(const Vec3& eye, const Vec3& at, const Vec3& 
 
 void CameraComponent::translate(const Vec2& translation)
 {
-    const Vec2& offset = GraphicsManager::getInstance()->getScreenResolution();
+    const Vec2& offset = GraphicsManager::instance()->getScreenResolution();
     auto finalPos = translation - offset / 2.0f;
     getTransform()->translate(finalPos);
 }
@@ -209,14 +211,14 @@ void CameraComponent::translate(float32 x, float32 y)
 
 void CameraComponent::translateX(float32 x)
 {
-    const Vec2& offset = GraphicsManager::getInstance()->getScreenResolution();
+    const Vec2& offset = GraphicsManager::instance()->getScreenResolution();
     auto finalPos = x - offset.x / 2.0f;
     getTransform()->translateX(finalPos);
 }
 
 void CameraComponent::translateY(float32 y)
 {
-    const Vec2& offset = GraphicsManager::getInstance()->getScreenResolution();
+    const Vec2& offset = GraphicsManager::instance()->getScreenResolution();
     auto finalPos = y - offset.y / 2.0f;
     getTransform()->translateY(finalPos);
 }

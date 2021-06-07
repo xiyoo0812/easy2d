@@ -20,11 +20,6 @@ Object::~Object()
 
 }
 
-bool Object::isInitialized() const
-{
-    return mInitialized;
-}
-
 bool Object::compareName(const String& name) const
 {
     return mName == name;

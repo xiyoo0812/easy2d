@@ -149,7 +149,7 @@ void GraphicsManager::destroy()
 
 void GraphicsManager::update()
 {
-    auto activeScene = SceneManager::getInstance()->getActiveScene();
+    auto activeScene = SceneManager::instance()->getActiveScene();
     if (activeScene)
     {
         auto camera = activeScene->getActiveCamera();

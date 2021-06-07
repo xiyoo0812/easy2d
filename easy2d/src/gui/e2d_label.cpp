@@ -5,16 +5,29 @@
 /* Easy2D */
 using namespace Easy2D;
 
-UILabel::UILabel(const String& name)
-    : UIWidget(name)
+UILabel::UILabel(const String& name) : UIWidget(name)
 {
-    mTextComponent = std::make_shared<TextComponent>();
-    mTextComponent->setHUDEnabled(true);
-    addComponent(mTextComponent);
 }
 
 UILabel::~UILabel(void)
 {
+}
+
+bool UILabel::setup()
+{
+    if (!Entity::setup())
+    {
+        LOG_WARN << _T("UILabel::setup: Entity setup failed!");
+        return false;
+    }
+    mTextComponent = createComponent<TextComponent>();
+    if (nullptr == mTextComponent)
+    {
+        LOG_WARN << _T("UILabel::setup: create TextureComponent failed!");
+        return false;
+    }
+    mTextComponent->setHUDEnabled(true);
+    return true;
 }
 
 void UILabel::setHorizontalAlign(HorizontalAlign align)
@@ -124,7 +137,7 @@ uint32 UILabel::getSpacing() const
 
 bool UILabel::setFont(const String& fontName)
 {
-    auto font = FontManager::getInstance()->getFont(fontName);
+    auto font = FontManager::instance()->getFont(fontName);
     if (nullptr == font)
     {
         LOG_ERROR << "UILabel::setFont error: font(" << fontName << ") not load!";

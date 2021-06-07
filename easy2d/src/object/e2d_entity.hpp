@@ -3,6 +3,44 @@
 namespace Easy2D
 {
     template <typename T>
+    SPtr<T> Entity::createAction()
+    {
+        auto pAction = std::make_shared<T>();
+        if (isActionNameExist(pAction->getName()))
+        {
+            LOG_WARN << _T("Entity::createAction: a child with the name '") << pAction->getName() <<
+                _T("' already exists. Action gets added but beware, duplicate names can become the cause of problems.");
+            return nullptr;
+        }
+        if (!pAction->setup(std::dynamic_pointer_cast<Entity>(shared_from_this())))
+        {
+            LOG_WARN << _T("Entity::createAction: setup '") << pAction->getName() << _T("' failed!");
+            return nullptr;
+        }
+        mActions.push_back(pAction);
+        return pAction;
+    }
+
+    template <typename T>
+    SPtr<T> Entity::createComponent()
+    {
+        auto pComponent = std::make_shared<T>();
+        if (isActionNameExist(pComponent->getName()))
+        {
+            LOG_WARN << _T("Entity::createComponent: a child with the name '") << pComponent->getName() <<
+                _T("' already exists. Component gets added but beware, duplicate names can become the cause of problems.");
+            return nullptr;
+        }
+        if (!pComponent->setup(std::dynamic_pointer_cast<Entity>(shared_from_this())))
+        {
+            LOG_WARN << _T("Entity::createComponent: setup '") << pComponent->getName() << _T("' failed!");
+            return nullptr;
+        }
+        mComponents.push_back(pComponent);
+        return pComponent;
+    }
+
+    template <typename T>
     SPtr<T> Entity::getChild(const uint64 guid) const
     {
         for (auto child : mChildrens)

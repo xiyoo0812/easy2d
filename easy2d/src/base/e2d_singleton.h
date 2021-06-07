@@ -7,7 +7,7 @@ namespace Easy2D
     class Singleton
     {
     public:
-        static T* getInstance()
+        static T* instance()
         {
             if (mInatance == nullptr)
             {
@@ -16,7 +16,7 @@ namespace Easy2D
             return mInatance;
         }
 
-        static void earseInstance()
+        static void destroy()
         {
             if (mInatance != nullptr)
             {

@@ -15,6 +15,8 @@ namespace Easy2D
 
         virtual ~UIImage();
 
+        virtual bool setup();
+
         void setColor(const Color& color);
 
         const Color& getColor() const;

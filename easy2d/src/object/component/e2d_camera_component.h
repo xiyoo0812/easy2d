@@ -11,8 +11,8 @@ namespace Easy2D
         CameraComponent();
         virtual ~CameraComponent();
 
-        virtual void update(const uint32 &escapeMs);
-        virtual void initialize();
+        virtual void update(const uint32& escapeMs);
+        virtual bool setup(SPtr<Entity> master);
 
         void setFieldOfView(float32 fov);
         void setOrthoSize(float32 size);

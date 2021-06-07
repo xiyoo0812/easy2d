@@ -12,9 +12,9 @@ namespace Easy2D
         explicit Scene(const String& name);
         virtual ~Scene();
 
-        void destroy();
+        virtual bool setup();
+        virtual void destroy();
 
-        virtual void initialize();
         virtual void onActivate();
         virtual void onDeactivate();
 
@@ -22,7 +22,7 @@ namespace Easy2D
         SPtr<Camera> getActiveCamera() const;
 
     protected:
-        SPtr<Camera> mDefaultCamera, mActiveCamera;
+        SPtr<Camera> mDefCamera, mActiveCamera;
     };
 }
 

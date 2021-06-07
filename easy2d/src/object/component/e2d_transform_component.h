@@ -21,9 +21,9 @@ namespace Easy2D
         TransformComponent();
         ~TransformComponent();
 
-        virtual void initialize();
+        virtual bool setup(SPtr<Entity> master);
 
-        void update(const uint32& escapeMs);
+        virtual void update(const uint32& escapeMs);
 
         void translate(const Vec2& translation);
         void translate(float32 x, float32 y);

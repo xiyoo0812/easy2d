@@ -6,7 +6,7 @@ using namespace Easy2D;
 int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow)
 {
     CoInitialize(NULL);
-    Window* pWindow = Window::getInstance();
+    Window* pWindow = Window::instance();
     pWindow->initialize(hInstance);
     return 0;
 }

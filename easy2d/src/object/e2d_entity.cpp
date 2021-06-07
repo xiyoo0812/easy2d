@@ -8,21 +8,15 @@ using namespace Easy2D;
 
 Entity::Entity(void) : Object()
 {
-    mTransform = std::make_shared<TransformComponent>();
-    addComponent(mTransform);
 }
 
 Entity::Entity(const String& name) : Object(name)
 {
-    mTransform = std::make_shared<TransformComponent>();
-    addComponent(mTransform);
 }
 
 Entity::Entity(const String& name, const String& group)
     : Object(name), mGroup(group)
 {
-    mTransform = std::make_shared<TransformComponent>();
-    addComponent(mTransform);
 }
 
 Entity::~Entity()
@@ -44,17 +38,15 @@ void Entity::destroy()
     }
 }
 
-void Entity::initialize()
+bool Entity::setup()
 {
-    if (!mInitialized)
+    mTransform = createComponent<TransformComponent>();
+    if (nullptr == mTransform)
     {
-        for (auto component : mComponents)
-        {
-            component->setMaster(std::dynamic_pointer_cast<Entity>(shared_from_this()));
-            component->initialize();
-        }
-        mInitialized = true;
+        LOG_WARN << _T("Entity::setup: create TransformComponent Failed!");
+        return false;
     }
+    return true;
 }
 
 BubbleType Entity::handleInputBefor(SPtr<KeyEvent> event, VisibleType& visable)
@@ -114,7 +106,7 @@ BubbleType Entity::handleChildInput(SPtr<MouseEvent> event)
 
 void Entity::sortChild()
 {
-    switch (RenderBatch::getInstance()->getSortingMode())
+    switch (RenderBatch::instance()->getSortingMode())
     {
     case RenderSortingMode::BackFront:
         std::sort(mChildrens.begin(), mChildrens.end(), [](SPtr<Entity> a, SPtr<Entity> b) -> bool
@@ -269,7 +261,6 @@ void Entity::update(const uint32& escapeMs)
         {
             component->update(escapeMs);
         }
-        Vec2 dim = getSize();
         for (auto child : mChildrens)
         {
             child->update(escapeMs);
@@ -343,7 +334,6 @@ bool Entity::addChild(SPtr<Entity> pChild)
     pChild->setScene(mScene.lock());
     pChild->setParent(std::dynamic_pointer_cast<Entity>(shared_from_this()));
     mChildrens.push_back(pChild);
-    pChild->initialize();
     sortChild();
     return true;
 }
@@ -402,20 +392,6 @@ void Entity::setChildrenVisible(VisibleType visible)
     {
         child->setVisible(visible);
     }
-}
-
-bool Entity::addAction(SPtr<Action> pAction)
-{
-    if (isActionNameExist(pAction->getName()))
-    {
-        LOG_WARN << _T("Entity::addAction: a child with the name '") << pAction->getName() <<
-            _T("' already exists. Action gets added but beware, duplicate names can become the cause of problems.");
-        return false;
-    }
-    pAction->setMaster(std::dynamic_pointer_cast<Entity>(shared_from_this()));
-    mActions.push_back(pAction);
-    pAction->initialize();
-    return true;
 }
 
 void Entity::removeAction(const SPtr<Action> pAction)
@@ -483,22 +459,6 @@ void Entity::resumeAction(const uint64 guid)
             break;
         }
     }
-}
-
-bool Entity::addComponent(SPtr<Component> pComponent)
-{
-    if (isActionNameExist(pComponent->getName()))
-    {
-        LOG_WARN << _T("Entity::addComponent: a child with the name '") << pComponent->getName() <<
-            _T("' already exists. Component gets added but beware, duplicate names can become the cause of problems.");
-        return false;
-    }
-    mComponents.push_back(pComponent);
-    if (mInitialized)
-    {
-        pComponent->initialize();
-    }
-    return true;
 }
 
 void Entity::removeComponent(const SPtr<Component> pComponent)

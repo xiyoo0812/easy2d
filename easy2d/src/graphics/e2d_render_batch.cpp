@@ -124,11 +124,11 @@ void RenderBatch::begin()
     glVertexAttribPointer(mTexCoordID, 2, GL_FLOAT, GL_FALSE, sizeof(Vec2), (void*)0);
     glEnableVertexAttribArray(mTexCoordID);
 
-    const Mat4& scaleMat = GraphicsManager::getInstance()->getScaleMatrix();
+    const Mat4& scaleMat = GraphicsManager::instance()->getScaleMatrix();
     glUniformMatrix4fv(mScaleID, 1, GL_FALSE, toPointer(scaleMat));
-    const Mat4& viewInverseMat = GraphicsManager::getInstance()->getViewInverseMatrix();
+    const Mat4& viewInverseMat = GraphicsManager::instance()->getViewInverseMatrix();
     glUniformMatrix4fv(mViewID, 1, GL_FALSE, toPointer(viewInverseMat));
-    const Mat4& projectionMat = GraphicsManager::getInstance()->getProjectionMatrix();
+    const Mat4& projectionMat = GraphicsManager::instance()->getProjectionMatrix();
     glUniformMatrix4fv(mProjID, 1, GL_FALSE, toPointer(projectionMat));
 }
 

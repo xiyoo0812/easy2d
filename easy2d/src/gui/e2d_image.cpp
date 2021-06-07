@@ -6,12 +6,8 @@
 /* Easy2D */
 using namespace Easy2D;
 
-UIImage::UIImage(const String& name)
-    : UIWidget(name)
+UIImage::UIImage(const String& name) : UIWidget(name)
 {
-    mTextureComponent = std::make_shared<TextureComponent>();
-    mTextureComponent->setHUDEnabled(true);
-    addComponent(mTextureComponent);
 }
 
 UIImage::~UIImage()
@@ -19,9 +15,26 @@ UIImage::~UIImage()
 
 }
 
+bool UIImage::setup()
+{
+    if (!Entity::setup())
+    {
+        LOG_WARN << _T("UIImage::setup: Entity setup failed!");
+        return false;
+    }
+    mTextureComponent = createComponent<TextureComponent>();
+    if (nullptr == mTextureComponent)
+    {
+        LOG_WARN << _T("UIImage::setup: create TextureComponent failed!");
+        return false;
+    }
+    mTextureComponent->setHUDEnabled(true);
+    return true;
+}
+
 bool UIImage::loadTexture(const String& texPath)
 {
-    auto texture = TextureManager::getInstance()->loadTexture(texPath);
+    auto texture = TextureManager::instance()->loadTexture(texPath);
     if (nullptr == texture)
     {
         LOG_ERROR << "UIImage::setTexture error: texture(" << texPath << ") load failed!";
