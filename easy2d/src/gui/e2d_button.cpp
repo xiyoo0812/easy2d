@@ -16,39 +16,35 @@ bool UIButton::setup()
         LOG_WARN << _T("UIButton::setup: Entity setup failed!");
         return false;
     }
-    mHoverFactor = 1.1f;
-    mPushedFactor = 0.9f;
     mVisible = VisibleType::HitSelf;
     return true;
 }
 
 BubbleType UIButton::onLButtonUp(SPtr<MouseEvent> event)
 {
+    if (mStatus == ButtonStatus::Disable)
+    {
+        return BubbleType::Continue;
+    }
     if (mStatus == ButtonStatus::Pushed)
     {
-        if (mbMouseHover)
-        {
-            setStatus(ButtonStatus::Hover);
-            setScale(mHoverFactor);
-        }
-        else
-        {
-            setStatus(ButtonStatus::Normal);
-        }
-        return BubbleType::Break;
+        setStatus(ButtonStatus::Normal);
+        setMouseHover(false);
     }
-    return BubbleType::Continue;
+    return BubbleType::Break;
 }
 
 BubbleType UIButton::onLButtonDown(SPtr<MouseEvent> event)
 {
+    if (mStatus == ButtonStatus::Disable)
+    {
+        return BubbleType::Continue;
+    }
     if (mStatus == ButtonStatus::Hover || mStatus == ButtonStatus::Normal)
     {
         setStatus(ButtonStatus::Pushed);
-        setScale(mPushedFactor);
-        return BubbleType::Break;
     }
-    return BubbleType::Continue;
+    return BubbleType::Break;
 }
 
 void UIButton::onMouseEnter(SPtr<MouseEvent> event)
@@ -75,7 +71,6 @@ ButtonStatus UIButton::getStatus()
 
 void UIButton::setStatus(ButtonStatus status)
 {
-    setScale(1.0f);
     updateStatus(false);
     mStatus = status;
     updateStatus(true);
@@ -237,30 +232,34 @@ const Wtring& UIButton::getText()
     return EMPTY_STRING;
 }
 
-void UIButton::setHoverFactor(float32 hf)
+void UIButton::setHoverScale(float32 hf)
 {
     mHoverFactor = hf;
 }
 
-void UIButton::setPushedFactor(float32 pf)
+void UIButton::setPushedScale(float32 pf)
 {
     mPushedFactor = pf;
 }
 
 void UIButton::updateStatus(bool showOrHide)
 {
-    SPtr<UIImage> ctrlImage = nullptr;
+    float32 scale = 1.0f;
+    SPtr<UIImage> ctrlImage = mNormal;
     switch (mStatus)
     {
-    case ButtonStatus::Normal:
-        ctrlImage = mNormal;
-        break;
     case ButtonStatus::Pushed:
+    {
         ctrlImage = mPushed ? mPushed : mNormal;
+        scale = mPushed ? 1.0f : mPushedFactor;
         break;
+    }
     case ButtonStatus::Hover:
+    {
         ctrlImage = mHover ? mHover : mNormal;
+        scale = mHover ? 1.0f : mHoverFactor;
         break;
+    }
     case ButtonStatus::Disable:
         ctrlImage = mDisable ? mDisable : mNormal;
         break;
@@ -268,6 +267,10 @@ void UIButton::updateStatus(bool showOrHide)
     if (ctrlImage)
     {
         ctrlImage->setVisible(showOrHide ? VisibleType::Visible : VisibleType::Hidden);
+    }
+    if (showOrHide)
+    {
+        setScale(scale);
     }
 }
 

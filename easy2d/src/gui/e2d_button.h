@@ -44,8 +44,8 @@ namespace Easy2D
         void setText(const Wtring& text);
         const Wtring& getText();
 
-        void setHoverFactor(float32 hf);
-        void setPushedFactor(float32 pf);
+        void setHoverScale(float32 hs);
+        void setPushedScale(float32 ps);
 
     protected:
         void updateStatus(bool showOrHide);

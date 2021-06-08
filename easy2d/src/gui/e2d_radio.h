@@ -1,24 +1,31 @@
 #ifndef RADIO_H
 #define RADIO_H
 
+#include "e2d_image.h"
 #include "e2d_checkbox.h"
 
 namespace Easy2D
 {
     class UIRadio;
-    class UIRadioGroup : public Object
+    class UIRadioGroup : public UIImage
     {
     public:
+        friend class UIRadio;
         UIRadioGroup(const String& name);
         ~UIRadioGroup();
 
+        virtual bool setup();
+
+        void clean();
         void select(size_t index);
-        void select(SPtr<UIRadio> radio);
-        size_t addRadio(SPtr<UIRadio> radio);
+        void unselect(size_t index);
 
     protected:
-        SPtr<UIRadio> mSelect = nullptr;
-        Vector<SPtr<UIRadio>> mRadios {};
+        void select(SPtr<UIRadio> radio);
+        void unselect(SPtr<UIRadio> radio);
+
+    protected:
+        SPtr<UIRadio> mSelect;
     };
 
     class UIRadio : public UICheckBox
@@ -27,12 +34,10 @@ namespace Easy2D
         UIRadio(const String& name);
         ~UIRadio(){}
 
-        uint64 getRadioGroup();
-        void setRadioGroup(uint64 guid);
+        virtual void select();
+        virtual void unselect();
 
-    protected:
-        size_t mIndex = 0;
-        uint64 mGroupGuid = 0;
+        virtual BubbleType onLButtonUp(SPtr<MouseEvent> event);
     };
 }
 

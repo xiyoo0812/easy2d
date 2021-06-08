@@ -251,6 +251,11 @@ void TransformComponent::updateTransform()
     Vec3 centerPos(mAnchor.x * mSize.x, mAnchor.y * mSize.y, 0);
     Vec3 transPos(transDockerX(mPostion.x), transDockerY(mPostion.y), 0);
     transWorld *= Easy2D::translate(transPos - centerPos);
+    auto parent = getMaster()->getParent();
+    if (parent != nullptr)
+    {
+        transWorld *= parent->getTransform()->getWorldMatrix();
+    }
     transWorld *= Easy2D::translate(mSize.x / 2.0f, mSize.y / 2.0f, 0);
     if (mRotation != 0)
     {
@@ -265,11 +270,6 @@ void TransformComponent::updateTransform()
         transWorld *= Easy2D::scale(Vec3(mMirroredX ? -1 : 1, mMirroredY  ? -1 : 1, 1));
     }
     transWorld *= Easy2D::translate(mSize.x / -2.0f, mSize.y / -2.0f, 0);
-    auto parent = getMaster()->getParent();
-    if (parent != nullptr)
-    {
-        transWorld *= parent->getTransform()->getWorldMatrix();
-    }
     Easy2D::getTranslation(transWorld, mAbsolute);
     mWorld = transWorld;
 }

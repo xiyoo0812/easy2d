@@ -28,6 +28,7 @@ bool UIImage::setup()
         LOG_WARN << _T("UIImage::setup: create TextureComponent failed!");
         return false;
     }
+    mVisible = VisibleType::Visible;
     mTextureComponent->setHUDEnabled(true);
     return true;
 }

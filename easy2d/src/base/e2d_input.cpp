@@ -93,29 +93,29 @@ void InputSystem::handleInput(SPtr<MouseEvent> event)
 BubbleType InputSink::handleInput(SPtr<KeyEvent> event)
 {
     VisibleType vType = VisibleType::Visible;
-    if (handleInputBefor(event, vType) == BubbleType::Return)
+    if (enableInput(event, vType) == BubbleType::Return)
     {
         return BubbleType::Continue;
     }
-    BubbleType bubble = BubbleType::Continue;
-    if (vType == VisibleType::Visible)
+    if (vType == VisibleType::HitChild || vType == VisibleType::Visible)
     {
-        switch (event->mType)
+        if (handleChildInput(event) == BubbleType::Break)
         {
-        case KeyType::KeyUp:
-            bubble = onKeyUp(std::dynamic_pointer_cast<KeyEvent>(event));
-            break;
-        case KeyType::KeyDown:
-            bubble = onKeyDown(std::dynamic_pointer_cast<KeyEvent>(event));
-            break;
-        case KeyType::Char:
-            bubble = onChar(std::dynamic_pointer_cast<KeyEvent>(event));
-            break;
+            return BubbleType::Break;
         }
     }
-    if (bubble == BubbleType::Continue && vType == VisibleType::HitChild)
+    BubbleType bubble = BubbleType::Continue;
+    switch (event->mType)
     {
-        bubble = handleChildInput(event);
+    case KeyType::KeyUp:
+        bubble = onKeyUp(std::dynamic_pointer_cast<KeyEvent>(event));
+        break;
+    case KeyType::KeyDown:
+        bubble = onKeyDown(std::dynamic_pointer_cast<KeyEvent>(event));
+        break;
+    case KeyType::Char:
+        bubble = onChar(std::dynamic_pointer_cast<KeyEvent>(event));
+        break;
     }
     return bubble;
 }
@@ -123,55 +123,54 @@ BubbleType InputSink::handleInput(SPtr<KeyEvent> event)
 BubbleType InputSink::handleInput(SPtr<MouseEvent> event)
 {
     VisibleType vType = VisibleType::Visible;
-    if (handleInputBefor(event, vType) == BubbleType::Return)
+    if (enableInput(event, vType) == BubbleType::Return)
     {
         return BubbleType::Continue;
     }
-    BubbleType bubble = BubbleType::Continue;
-    if (vType == VisibleType::Visible || vType == VisibleType::HitSelf)
+    if (vType == VisibleType::HitChild || vType == VisibleType::Visible)
     {
-        switch (event->mType)
+        if (handleChildInput(event) == BubbleType::Break)
         {
-        case MouseType::LButtonUp:
-            bubble = onLButtonUp(std::dynamic_pointer_cast<MouseEvent>(event));
-            break;
-        case MouseType::RButtonUp:
-            bubble = onRButtonUp(std::dynamic_pointer_cast<MouseEvent>(event));
-            break;
-        case MouseType::MButtonUp:
-            bubble = onMButtonUp(std::dynamic_pointer_cast<MouseEvent>(event));
-            break;
-        case MouseType::LButtonDown:
-            bubble = onLButtonDown(std::dynamic_pointer_cast<MouseEvent>(event));
-            break;
-        case MouseType::RButtonDown:
-            bubble = onRButtonDown(std::dynamic_pointer_cast<MouseEvent>(event));
-            break;
-        case MouseType::MButtonDown:
-            bubble = onMButtonDown(std::dynamic_pointer_cast<MouseEvent>(event));
-            break;
-        case MouseType::MouseMove:
-            bubble = onMouseMove(std::dynamic_pointer_cast<MouseEvent>(event));
-            break;
-        case MouseType::MouseWheel:
-            bubble = onMouseWheel(std::dynamic_pointer_cast<MouseEvent>(event));
-            break;
+            return BubbleType::Break;
         }
     }
-    if (bubble == BubbleType::Continue && vType == VisibleType::HitChild)
+    BubbleType bubble = BubbleType::Continue;
+    switch (event->mType)
     {
-        bubble = handleChildInput(event);
+    case MouseType::LButtonUp:
+        bubble = onLButtonUp(std::dynamic_pointer_cast<MouseEvent>(event));
+        break;
+    case MouseType::RButtonUp:
+        bubble = onRButtonUp(std::dynamic_pointer_cast<MouseEvent>(event));
+        break;
+    case MouseType::MButtonUp:
+        bubble = onMButtonUp(std::dynamic_pointer_cast<MouseEvent>(event));
+        break;
+    case MouseType::LButtonDown:
+        bubble = onLButtonDown(std::dynamic_pointer_cast<MouseEvent>(event));
+        break;
+    case MouseType::RButtonDown:
+        bubble = onRButtonDown(std::dynamic_pointer_cast<MouseEvent>(event));
+        break;
+    case MouseType::MButtonDown:
+        bubble = onMButtonDown(std::dynamic_pointer_cast<MouseEvent>(event));
+        break;
+    case MouseType::MouseMove:
+        bubble = onMouseMove(std::dynamic_pointer_cast<MouseEvent>(event));
+        break;
+    case MouseType::MouseWheel:
+        bubble = onMouseWheel(std::dynamic_pointer_cast<MouseEvent>(event));
+        break;
     }
     return bubble;
 }
 
-
-BubbleType InputSink::handleInputBefor(SPtr<KeyEvent> event, VisibleType& visable)
+BubbleType InputSink::enableInput(SPtr<KeyEvent> event, VisibleType& visable)
 {
     return BubbleType::Continue;
 }
 
-BubbleType InputSink::handleInputBefor(SPtr<MouseEvent> event, VisibleType& visable)
+BubbleType InputSink::enableInput(SPtr<MouseEvent> event, VisibleType& visable)
 {
     return BubbleType::Continue;
 }

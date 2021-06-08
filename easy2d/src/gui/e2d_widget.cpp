@@ -14,7 +14,7 @@ UIWidget::~UIWidget()
 {
 }
 
-BubbleType Easy2D::UIWidget::onMouseMove(SPtr<MouseEvent> event)
+BubbleType UIWidget::onMouseMove(SPtr<MouseEvent> event)
 {
     bool inRect = isInRect(event->mPos);
     if (mbMouseHover && !inRect)

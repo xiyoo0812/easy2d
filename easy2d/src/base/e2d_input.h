@@ -80,8 +80,8 @@ namespace Easy2D
     public:
         virtual BubbleType handleInput(SPtr<KeyEvent> event);
         virtual BubbleType handleInput(SPtr<MouseEvent> event);
-        virtual BubbleType handleInputBefor(SPtr<KeyEvent> event, VisibleType& visable);
-        virtual BubbleType handleInputBefor(SPtr<MouseEvent> event, VisibleType& visable);
+        virtual BubbleType enableInput(SPtr<KeyEvent> event, VisibleType& visable);
+        virtual BubbleType enableInput(SPtr<MouseEvent> event, VisibleType& visable);
         virtual BubbleType handleChildInput(SPtr<KeyEvent> event);
         virtual BubbleType handleChildInput(SPtr<MouseEvent> event);
         virtual BubbleType onKeyUp(SPtr<KeyEvent> event);

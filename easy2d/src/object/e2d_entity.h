@@ -24,8 +24,8 @@ namespace Easy2D
         virtual void destroy();
         virtual void update(const uint32& escapeMs);
 
-        virtual BubbleType handleInputBefor(SPtr<KeyEvent> event, VisibleType& visable);
-        virtual BubbleType handleInputBefor(SPtr<MouseEvent> event, VisibleType& visable);
+        virtual BubbleType enableInput(SPtr<KeyEvent> event, VisibleType& visable);
+        virtual BubbleType enableInput(SPtr<MouseEvent> event, VisibleType& visable);
         virtual BubbleType handleChildInput(SPtr<KeyEvent> event);
         virtual BubbleType handleChildInput(SPtr<MouseEvent> event);
 

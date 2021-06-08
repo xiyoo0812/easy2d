@@ -25,7 +25,7 @@ BubbleType UICheckBox::onLButtonUp(SPtr<MouseEvent> event)
 {
     if (mStatus != ChoseStatus::Disable)
     {
-        setStatus(mStatus == ChoseStatus::ChoseOff ? ChoseStatus::ChoseOn : ChoseStatus::ChoseOn);
+        setStatus(mStatus == ChoseStatus::ChoseOff ? ChoseStatus::ChoseOn : ChoseStatus::ChoseOff);
         return BubbleType::Break;
     }
     return BubbleType::Continue;

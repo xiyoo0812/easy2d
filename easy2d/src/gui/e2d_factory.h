@@ -26,6 +26,9 @@ namespace Easy2D
         SPtr<UIRadio> createRadio(const String& name, const String& off, const String& on, SPtr<UIWidget> parent = nullptr);
         SPtr<UIRadio> createRadio(const String& name, const String& off, const String& on, const Vec2& pos, SPtr<UIWidget> parent = nullptr);
 
+        SPtr<UIRadioGroup> createRadioGroup(const String& name, const String& texture, SPtr<UIWidget> parent = nullptr);
+        SPtr<UIRadioGroup> createRadioGroup(const String& name, const String& texture, const Vec2& pos, SPtr<UIWidget> parent = nullptr);
+
         SPtr<UISwitch> createSwitch(const String& name, const String& off, const String& on, SPtr<UIWidget> parent = nullptr);
         SPtr<UISwitch> createSwitch(const String& name, const String& off, const String& on, const Vec2& pos, SPtr<UIWidget> parent = nullptr);
 
@@ -35,8 +38,8 @@ namespace Easy2D
         SPtr<UILabel> createLabel(const String& name, const Wtring& text, SPtr<UIWidget> parent = nullptr);
         SPtr<UILabel> createLabel(const String& name, const Wtring& text, const Vec2& pos, const Vec2& size, SPtr<UIWidget> parent = nullptr);
 
-        SPtr<UIImage> createImage(const String& name, const String& texPath, SPtr<UIWidget> parent = nullptr);
-        SPtr<UIImage> createImage(const String& name, const String& texPath, const Vec2& pos, SPtr<UIWidget> parent = nullptr);
+        SPtr<UIImage> createImage(const String& name, const String& texture, SPtr<UIWidget> parent = nullptr);
+        SPtr<UIImage> createImage(const String& name, const String& texture, const Vec2& pos, SPtr<UIWidget> parent = nullptr);
 
     private:
         UIFactory(){}

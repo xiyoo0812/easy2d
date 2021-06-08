@@ -49,17 +49,17 @@ bool Entity::setup()
     return true;
 }
 
-BubbleType Entity::handleInputBefor(SPtr<KeyEvent> event, VisibleType& visable)
+BubbleType Entity::enableInput(SPtr<KeyEvent> event, VisibleType& visable)
 {
     visable = mVisible;
-    if (mbFocus && isHitEnable())
+    if (isHitEnable())
     {
         return BubbleType::Continue;
     }
     return BubbleType::Return;
 }
 
-BubbleType Entity::handleInputBefor(SPtr<MouseEvent> event, VisibleType& visable)
+BubbleType Entity::enableInput(SPtr<MouseEvent> event, VisibleType& visable)
 {
     visable = mVisible;
     if (isHitEnable())

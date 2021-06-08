@@ -23,12 +23,12 @@ namespace Easy2D
 
         virtual BubbleType onLButtonUp(SPtr<MouseEvent> event);
 
+        virtual void select();
+        virtual void unselect();
+        bool isSelected();
+
         ChoseStatus getStatus();
         void setStatus(ChoseStatus status);
-
-        void select();
-        void unselect();
-        bool isSelected();
 
         SPtr<UIImage> getOffImage();
         SPtr<UIImage> getOnImage();

@@ -55,6 +55,8 @@ SPtr<UIRadio> UIFactory::createRadio(const String& name, const String& off, cons
         LOG_WARN << _T("UIFactory::createRadio: UIRadio setup failed!");
         return nullptr;
     }
+    radio->setOffImage(off);
+    radio->setOnImage(on);
     if (nullptr != parent)
     {
         parent->addChild(radio);
@@ -72,6 +74,38 @@ SPtr<UIRadio> UIFactory::createRadio(const String& name, const String& off, cons
     }
     radio->setPosition(pos);
     return radio;
+}
+
+SPtr<UIRadioGroup> UIFactory::createRadioGroup(const String& name, const String& texture, SPtr<UIWidget> parent /* = nullptr */)
+{
+    auto radioGroup = std::make_shared<UIRadioGroup>(name);
+    if (!radioGroup->setup())
+    {
+        LOG_WARN << _T("UIFactory::createRadioGroup: UIImage setup failed!");
+        return nullptr;
+    }
+    if (!radioGroup->loadTexture(texture))
+    {
+        LOG_ERROR << "UIFactory::createRadioGroup error: texture(" << texture << ") load failed!";
+        return nullptr;
+    }
+    if (nullptr != parent)
+    {
+        parent->addChild(radioGroup);
+    }
+    return radioGroup;
+}
+
+SPtr<UIRadioGroup> UIFactory::createRadioGroup(const String& name, const String& texture, const Vec2& pos, SPtr<UIWidget> parent /* = nullptr */)
+{
+    auto radioGroup = createRadioGroup(name, texture, parent);
+    if (nullptr == radioGroup)
+    {
+        LOG_WARN << _T("UIFactory::createRadioGroup: create image failed!");
+        return nullptr;
+    }
+    radioGroup->setPosition(pos);
+    return radioGroup;
 }
 
 SPtr<UISwitch> UIFactory::createSwitch(const String& name, const String& off, const String& on, SPtr<UIWidget> parent /* = nullptr */)
@@ -171,7 +205,7 @@ SPtr<UILabel> UIFactory::createLabel(const String& name, const Wtring& text, con
     return label;
 }
 
-SPtr<UIImage> UIFactory::createImage(const String& name, const String& texPath, SPtr<UIWidget> parent /* = nullptr */)
+SPtr<UIImage> UIFactory::createImage(const String& name, const String& texture, SPtr<UIWidget> parent /* = nullptr */)
 {
     auto image = std::make_shared<UIImage>(name);
     if (!image->setup())
@@ -179,9 +213,9 @@ SPtr<UIImage> UIFactory::createImage(const String& name, const String& texPath, 
         LOG_WARN << _T("UIFactory::createImage: UIImage setup failed!");
         return nullptr;
     }
-    if (!image->loadTexture(texPath))
+    if (!image->loadTexture(texture))
     {
-        LOG_ERROR << "UIFactory::createImage error: texture(" << texPath << ") load failed!";
+        LOG_ERROR << "UIFactory::createImage error: texture(" << texture << ") load failed!";
         return nullptr;
     }
     if (nullptr != parent)
@@ -191,9 +225,9 @@ SPtr<UIImage> UIFactory::createImage(const String& name, const String& texPath, 
     return image;
 }
 
-SPtr<UIImage> UIFactory::createImage(const String& name, const String& texPath, const Vec2& pos, SPtr<UIWidget> parent /* = nullptr */)
+SPtr<UIImage> UIFactory::createImage(const String& name, const String& texture, const Vec2& pos, SPtr<UIWidget> parent /* = nullptr */)
 {
-    auto image = createImage(name, texPath, parent);
+    auto image = createImage(name, texture, parent);
     if (nullptr == image)
     {
         LOG_WARN << _T("UIFactory::createImage: create image failed!");
