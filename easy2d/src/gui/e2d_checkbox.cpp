@@ -43,6 +43,27 @@ void UICheckBox::setStatus(ChoseStatus status)
     updateStatus(true);
 }
 
+bool UICheckBox::isSelected()
+{
+    return mStatus == ChoseStatus::ChoseOn;
+}
+
+void UICheckBox::select()
+{
+    if (mStatus == ChoseStatus::ChoseOff)
+    {
+        setStatus(ChoseStatus::ChoseOn);
+    }
+}
+
+void UICheckBox::unselect()
+{
+    if (mStatus == ChoseStatus::ChoseOn)
+    {
+        setStatus(ChoseStatus::ChoseOff);
+    }
+}
+
 SPtr<UIImage> UICheckBox::getOffImage()
 {
     return mChoseOff;

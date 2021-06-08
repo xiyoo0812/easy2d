@@ -26,6 +26,10 @@ namespace Easy2D
         ChoseStatus getStatus();
         void setStatus(ChoseStatus status);
 
+        void select();
+        void unselect();
+        bool isSelected();
+
         SPtr<UIImage> getOffImage();
         SPtr<UIImage> getOnImage();
         SPtr<UIImage> getDisableImage();
