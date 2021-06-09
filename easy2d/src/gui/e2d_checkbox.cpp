@@ -1,7 +1,6 @@
 #include "e2d_checkbox.h"
 #include "e2d_factory.h"
 
-
 /* Easy2D */
 using namespace Easy2D;
 
@@ -74,12 +73,6 @@ SPtr<UIImage> UICheckBox::getOnImage()
     return mChoseOn;
 }
 
-SPtr<UIImage> UICheckBox::getDisableImage()
-{
-    return mDisable;
-}
-
-
 void UICheckBox::setOffImage(const String& off)
 {
     if (mChoseOff)
@@ -92,14 +85,13 @@ void UICheckBox::setOffImage(const String& off)
         return;
     }
     auto shared_this = std::dynamic_pointer_cast<UIWidget>(shared_from_this());
-    auto image = UIFactory::instance()->createImage(CHOSEOFF_NAME, off, Vec2(0, 0), shared_this);
+    auto image = UIFactory::instance()->createImage(CHOSEOFF_NAME, off, shared_this);
     if (nullptr == image)
     {
         LOG_ERROR << "UICheckBox::setOffImage error: image(" << off << ") create failed!";
         return;
     }
     updateSize(image);
-    image->setAnchor(0.5, 0.5);
     image->setVisible(VisibleType::Visible);
     image->setDockerAlign(DockerAlign::Full);
     mChoseOff = image;
@@ -117,42 +109,16 @@ void UICheckBox::setOnImage(const String& on)
         return;
     }
     auto shared_this = std::dynamic_pointer_cast<UIWidget>(shared_from_this());
-    auto image = UIFactory::instance()->createImage(CHOSEON_NAME, on, Vec2(0, 0), shared_this);
+    auto image = UIFactory::instance()->createImage(CHOSEON_NAME, on, shared_this);
     if (nullptr == image)
     {
         LOG_ERROR << "UICheckBox::setOnImage error: image(" << on << ") create failed!";
         return;
     }
     updateSize(image);
-    image->setAnchor(0.5, 0.5);
     image->setVisible(VisibleType::Hidden);
     image->setDockerAlign(DockerAlign::Full);
     mChoseOn = image;
-}
-
-void UICheckBox::setDisableImage(const String& disable)
-{
-    if (mDisable)
-    {
-        if (disable.empty())
-        {
-            return mDisable->setTexture(nullptr);
-        }
-        mDisable->loadTexture(disable);
-        return;
-    }
-    auto shared_this = std::dynamic_pointer_cast<UIWidget>(shared_from_this());
-    auto image = UIFactory::instance()->createImage(DISABLE_NAME, disable, Vec2(0, 0), shared_this);
-    if (nullptr == image)
-    {
-        LOG_ERROR << "UICheckBox::setDisableImage error: image(" << disable << ") create failed!";
-        return;
-    }
-    updateSize(image);
-    image->setAnchor(0.5, 0.5);
-    image->setVisible(VisibleType::Hidden);
-    image->setDockerAlign(DockerAlign::Full);
-    mDisable = image;
 }
 
 void UICheckBox::updateStatus(bool showOrHide)
@@ -161,13 +127,11 @@ void UICheckBox::updateStatus(bool showOrHide)
     switch (mStatus)
     {
     case ChoseStatus::ChoseOff:
+    case ChoseStatus::Disable:
         ctrlImage = mChoseOff;
         break;
     case ChoseStatus::ChoseOn:
         ctrlImage = mChoseOn ? mChoseOn : mChoseOff;
-        break;
-    case ChoseStatus::Disable:
-        ctrlImage = mDisable ? mDisable : mChoseOff;
         break;
     }
     if (ctrlImage)

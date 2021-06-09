@@ -24,7 +24,7 @@ namespace Easy2D
         virtual BubbleType onLButtonUp(SPtr<MouseEvent> event);
 
         virtual void select();
-        virtual void unselect();
+        void unselect();
         bool isSelected();
 
         ChoseStatus getStatus();
@@ -32,11 +32,9 @@ namespace Easy2D
 
         SPtr<UIImage> getOffImage();
         SPtr<UIImage> getOnImage();
-        SPtr<UIImage> getDisableImage();
 
         void setOnImage(const String& on);
         void setOffImage(const String& off);
-        void setDisableImage(const String& disable);
 
     protected:
         void updateStatus(bool showOrHide);
@@ -45,12 +43,10 @@ namespace Easy2D
     protected:
         SPtr<UIImage> mChoseOff = nullptr;
         SPtr<UIImage> mChoseOn = nullptr;
-        SPtr<UIImage> mDisable = nullptr;
         ChoseStatus mStatus = ChoseStatus::ChoseOff;
 
         inline static String CHOSEOFF_NAME  = _T("__choseoff_image");
         inline static String CHOSEON_NAME   = _T("__choseon_image");
-        inline static String DISABLE_NAME   = _T("__disable_image");
     };
 }
 

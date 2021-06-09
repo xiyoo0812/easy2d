@@ -28,6 +28,7 @@ void E2dEngine::initialize(uint32 window_width, uint32 window_height)
     //初始化font资源路径，基于asset的路径
     FontManager::instance()->initialize("font");
     FontManager::instance()->loadFont("fzltxh-36", "fzltxh_gbk.ttf", 36);
+    FontManager::instance()->loadFont("fzltxh-12", "fzltxh_gbk.ttf", 12);
 
     //初始化RenderBatch
     RenderBatch::instance()->initialize();
@@ -55,19 +56,23 @@ void E2dEngine::initialize(uint32 window_width, uint32 window_height)
     button->setAnchor(0.5, 0.5);
     button->setZorder(2);
 
-    auto buttonb = UIFactory::instance()->createButton("buttonb", "skin/btn_b_n.png", Vec2(0, 0), image);
+    auto buttonb = UIFactory::instance()->createButton("buttonb", "skin/btn_b_n.png", "skin/btn_b_p.png", Vec2(0, 0), image);
     //image->setScale9Tile(20, 12, 75, 30);
-    buttonb->setPushedImage("skin/btn_b_p.png");
     buttonb->setDockerAlign(DockerAlign::LeftTop);
     buttonb->setAnchor(0, 0);
     buttonb->setZorder(2);
 
-    auto buttony = UIFactory::instance()->createButton("buttony", "skin/btn_y_n.png", Vec2(0, 0), image);
+    auto buttony = UIFactory::instance()->createButton("buttony", "skin/btn_y_n.png","skin/btn_y_p.png", Vec2(0, 0), image);
     //image->setScale9Tile(20, 12, 75, 30);
-    buttony->setPushedImage("skin/btn_y_p.png");
     buttony->setDockerAlign(DockerAlign::RightTop);
     buttony->setAnchor(1, 0);
     buttonb->setZorder(2);
+
+    auto progress = UIFactory::instance()->createProgress("progress", "skin/progress_bg.png","skin/progress_bar.png", Vec2(0, 0), image);
+    //image->setScale9Tile(20, 12, 75, 30);
+    progress->setDockerAlign(DockerAlign::Bottom);
+    progress->setAnchor(0.5, 1);
+    progress->setZorder(2);
 
     auto checkbox = UIFactory::instance()->createCheckBox("checkbox", "skin/chbox_b_off.png","skin/chbox_b_on.png", Vec2(0, 0), mUIRoot);
     //image->setScale9Tile(20, 12, 75, 30);
@@ -75,16 +80,28 @@ void E2dEngine::initialize(uint32 window_width, uint32 window_height)
     checkbox->setAnchor(0, 0);
     checkbox->setZorder(2);
 
-    auto radio = UIFactory::instance()->createRadio("radio", "skin/radio_b_off.png", "skin/radio_b_on.png", Vec2(0, 0), mUIRoot);
+    auto radioGroup = UIFactory::instance()->createRadioGroup("radioGroup", "skin/frame.png", Vec2(0, 0), mUIRoot);
     //image->setScale9Tile(20, 12, 75, 30);
-    radio->setDockerAlign(DockerAlign::RightTop);
-    radio->setAnchor(1, 0);
-    radio->setZorder(2);
+    radioGroup->setDockerAlign(DockerAlign::Top);
+    radioGroup->setAnchor(0.5, 0.5);
+    radioGroup->setZorder(2);
+
+    auto radio1 = UIFactory::instance()->createRadio("radio1", "skin/radio_b_off.png", "skin/radio_b_on.png", Vec2(5, 0), radioGroup);
+    //image->setScale9Tile(20, 12, 75, 30);
+    radio1->setDockerAlign(DockerAlign::Left);
+    radio1->setAnchor(0, 0);
+    radio1->setZorder(2);
+
+    auto radio2 = UIFactory::instance()->createRadio("radio2", "skin/radio_b_off.png", "skin/radio_b_on.png", Vec2(5, 0), radioGroup);
+    //image->setScale9Tile(20, 12, 75, 30);
+    radio2->setDockerAlign(DockerAlign::Right);
+    radio2->setAnchor(1, 0);
+    radio2->setZorder(2);
 
     auto switchb = UIFactory::instance()->createSwitch("switchb", "skin/switch_b_off.png", "skin/switch_b_on.png", Vec2(0, 0), mUIRoot);
     //image->setScale9Tile(20, 12, 75, 30);
-    switchb->setDockerAlign(DockerAlign::Top);
-    switchb->setAnchor(0, 0);
+    switchb->setDockerAlign(DockerAlign::RightTop);
+    switchb->setAnchor(1, 0);
     switchb->setZorder(2);
 
     auto txt = UIFactory::instance()->createLabel("text", L"国人daAFKsbBgf123", Vec2(0, 5), Vec2(200, 60), mUIRoot);
@@ -102,7 +119,7 @@ void E2dEngine::initialize(uint32 window_width, uint32 window_height)
     txt2->setItalic(true);
     //txt2->setShadowColor(Color::White, 1);
     txt2->setOutlineColor(Color::Red, 1);
-    txt2->setZorder(2);
+    txt2->setZorder(3);
     txt2->setText(L"我是国人daAFKsbB123");
 }
 

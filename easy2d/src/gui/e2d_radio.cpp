@@ -20,7 +20,7 @@ bool UIRadioGroup::setup()
         return false;
     }
     mVisible = VisibleType::HitChild;
-    return false;
+    return true;
 }
 
 void Easy2D::UIRadioGroup::clean()
@@ -102,26 +102,13 @@ void Easy2D::UIRadio::select()
     }
 }
 
-void Easy2D::UIRadio::unselect()
-{
-    UICheckBox::unselect();
-    if (!mParent.expired())
-    {
-        auto radioGroup = std::dynamic_pointer_cast<UIRadioGroup>(mParent.lock());
-        if (radioGroup)
-        {
-            radioGroup->unselect(std::dynamic_pointer_cast<UIRadio>(shared_from_this()));
-        }
-    }
-}
-
 BubbleType UIRadio::onLButtonUp(SPtr<MouseEvent> event)
 {
     if (mStatus != ChoseStatus::Disable)
     {
         if (mStatus == ChoseStatus::ChoseOff)
         {
-            setStatus(ChoseStatus::ChoseOn);
+            select();
         }
         return BubbleType::Break;
     }

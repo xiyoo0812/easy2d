@@ -268,6 +268,10 @@ void Entity::update(const uint32& escapeMs)
     }
 }
 
+void Entity::onTransformUpdate()
+{
+}
+
 void Entity::setDockerAlign(DockerAlign align)
 {
     mTransform->setDockerAlign(align);
@@ -372,6 +376,11 @@ void Entity::removeChild(const String& name)
 const Vector<SPtr<Entity>>& Entity::getChildren() const
 {
     return mChildrens;
+}
+
+size_t Entity::getChildrenCount() const
+{
+    return mChildrens.size();
 }
 
 void Entity::setChildVisible(const uint64 guid, VisibleType visible)

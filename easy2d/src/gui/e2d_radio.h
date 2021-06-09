@@ -35,7 +35,6 @@ namespace Easy2D
         ~UIRadio(){}
 
         virtual void select();
-        virtual void unselect();
 
         virtual BubbleType onLButtonUp(SPtr<MouseEvent> event);
     };

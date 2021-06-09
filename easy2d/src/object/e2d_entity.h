@@ -23,6 +23,7 @@ namespace Easy2D
         virtual void reset();
         virtual void destroy();
         virtual void update(const uint32& escapeMs);
+        virtual void onTransformUpdate();
 
         virtual BubbleType enableInput(SPtr<KeyEvent> event, VisibleType& visable);
         virtual BubbleType enableInput(SPtr<MouseEvent> event, VisibleType& visable);
@@ -74,6 +75,7 @@ namespace Easy2D
         void removeChild(const String& name);
         void removeChild(const SPtr<Entity> pEntity);
         const Vector<SPtr<Entity>>& getChildren() const;
+        size_t getChildrenCount() const;
 
         void setDockerAlign(DockerAlign align);
         DockerAlign getDockerAlign() const;

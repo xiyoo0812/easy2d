@@ -59,7 +59,6 @@ bool SceneManager::addScene(SPtr<Scene> scene)
         LOG_WARN << _T("SceneManager::addScene: Scene Already Exists");
         return false;
     }
-    scene->setup();
     mScenes.insert(std::make_pair(scene->getGUID(), scene));
     LOG_INFO << _T("SceneManager::addScene: Adding scene");
     if (mCurSceneID == 0)

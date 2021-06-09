@@ -279,7 +279,11 @@ void TransformComponent::update(const uint32& escapeMs)
     if (mbChanged)
     {
         updateTransform();
-        mMaster.lock()->notifyTrigger(std::make_shared<TransformEvent>());
+        if (!mMaster.expired())
+        {
+            mMaster.lock()->notifyTrigger(std::make_shared<TransformEvent>());
+            mMaster.lock()->onTransformUpdate();
+        }
         mbChanged = false;
     }
 }
