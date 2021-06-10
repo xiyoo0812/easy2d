@@ -27,3 +27,7 @@
 - OpenGL
 - FreeType
 - [lua](https://github.com/xiyoo0812/lua.git)5.2以上
+
+# 截图
+
+![image](https://github.com/xiyoo0812/easy2d/blob/master/screenshot/gui-demo.png)
