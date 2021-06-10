@@ -21,6 +21,7 @@ namespace Easy2D
     typedef unsigned short      ushort;
     typedef unsigned int        uint;
     typedef unsigned long       ulong;
+    typedef void*               handle;
 
     //char types
     typedef char                char8;

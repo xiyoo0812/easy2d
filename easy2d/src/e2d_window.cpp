@@ -1,5 +1,6 @@
 #include "e2d_window.h"
 #include "base/e2d_input.h"
+#include "base/e2d_console.h"
 #include "graphics/e2d_graphics_mgr.h"
 
 /* Easy2D */
@@ -12,6 +13,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 
 void Window::initialize(HINSTANCE instance, uint32 width /* = 800 */, uint32 height/* = 600 */, bool useConsole /* = false */)
 {
+    Console::instance()->initialize(_T("E2DGAME"));
     mE2dEngine = SPtr<E2dEngine>(E2dEngine::instance());
     LOG_INIT("./logs/", "E2D_LOG", logger::rolling_type::HOURLY, 10000);
 
@@ -53,6 +55,7 @@ void Window::mainLoop()
     while (!glfwWindowShouldClose(window))
     {
         mE2dEngine->update();
+        Console::instance()->peekComand();
         //交换颜色缓冲，并显示到窗口
         glfwSwapBuffers(window);
         //检查触发事件，更新窗口状态，并调用对应回调函数

@@ -69,7 +69,7 @@ namespace Easy2D
         ~MouseEvent() {}
 
         Vec2 mPos;
-        double mWheelX, mWheelY = 0;
+        double mWheelX = 0, mWheelY = 0;
         MouseType mType = MouseType::LButtonUp;
         inline static String GUID = "mouse_event";
     };

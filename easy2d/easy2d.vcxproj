@@ -116,6 +116,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\base\e2d_color.cpp" />
+    <ClCompile Include="src\base\e2d_console.cpp" />
     <ClCompile Include="src\base\e2d_event.cpp" />
     <ClCompile Include="src\base\e2d_guid.cpp" />
     <ClCompile Include="src\base\e2d_input.cpp" />
@@ -161,6 +162,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\base\e2d_color.h" />
+    <ClInclude Include="src\base\e2d_console.h" />
     <ClInclude Include="src\base\e2d_event.h" />
     <ClInclude Include="src\base\e2d_guid.h" />
     <ClInclude Include="src\base\e2d_input.h" />
