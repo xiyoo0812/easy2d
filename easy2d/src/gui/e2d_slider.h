@@ -1,15 +1,15 @@
-#ifndef RADIO_H
-#define RADIO_H
+#ifndef SLIDER_H
+#define SLIDER_H
 
 #include "e2d_widget.h"
 
 namespace Easy2D
 {
-    class UIRadio : public UIWidget
+    class UISlider : public UIWidget
     {
     public:
-        UIRadio(const String& name);
-        ~UIRadio(){}
+        UISlider(const String& name);
+        ~UISlider(){}
 
     };
 }

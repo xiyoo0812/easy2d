@@ -6,6 +6,8 @@
 #include "e2d_radio.h"
 #include "e2d_button.h"
 #include "e2d_switch.h"
+#include "e2d_slider.h"
+#include "e2d_editbox.h"
 #include "e2d_checkbox.h"
 #include "e2d_progress.h"
 #include "base/e2d_singleton.h"
@@ -45,6 +47,12 @@ namespace Easy2D
 
         SPtr<UIProgress> createProgress(const String& name, const String& ground, const String& bar, SPtr<UIWidget> parent);
         SPtr<UIProgress> createProgress(const String& name, const String& ground, const String& bar, const Vec2& pos, SPtr<UIWidget> parent);
+
+        SPtr<UIEditbox> createEditbox(const String& name, const Wtring& text, SPtr<UIWidget> parent);
+        SPtr<UIEditbox> createEditbox(const String& name, const Wtring& text, const Vec2& pos, const Vec2& size, SPtr<UIWidget> parent);
+
+        SPtr<UISlider> createSlider(const String& name, const String& ground, const String& slider , SPtr<UIWidget> parent);
+        SPtr<UISlider> createSlider(const String& name, const String& ground, const String& slider, const Vec2& pos, const Vec2& size, SPtr<UIWidget> parent);
 
     private:
         UIFactory(){}

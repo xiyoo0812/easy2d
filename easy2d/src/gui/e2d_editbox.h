@@ -1,15 +1,15 @@
-#ifndef RADIO_H
-#define RADIO_H
+#ifndef EDITBOX_H
+#define EDITBOX_H
 
-#include "e2d_widget.h"
+#include "e2d_label.h"
 
 namespace Easy2D
 {
-    class UIRadio : public UIWidget
+    class UIEditbox : public UILabel
     {
     public:
-        UIRadio(const String& name);
-        ~UIRadio(){}
+        UIEditbox(const String& name);
+        ~UIEditbox(){}
 
     };
 }

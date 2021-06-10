@@ -1,9 +1,9 @@
-#include "e2d_radio.h"
+#include "e2d_editbox.h"
 
 /* Easy2D */
 using namespace Easy2D;
 
-UIRadio::UIRadio(const String& name) : UIWidget(name)
+UIEditbox::UIEditbox(const String& name) : UILabel(name)
 {
 
 }

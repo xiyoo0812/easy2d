@@ -35,7 +35,7 @@ namespace Easy2D
 
         String mCommand = "";
         ConsoleMode mMode = ConsoleMode::None;
-        const String mDebugFlag = _T("Input>");
+        const String INPUT_PREFIX = _T("Input>");
     };
 }
 

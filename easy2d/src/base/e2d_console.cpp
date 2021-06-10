@@ -81,12 +81,12 @@ String& Console::peekComand()
                 switch (mMode)
                 {
                 case ConsoleMode::None:
-                    WriteConsoleA(m_hStdOut, mDebugFlag.c_str(), mDebugFlag.size(), NULL, NULL);
+                    WriteConsoleA(m_hStdOut, INPUT_PREFIX.c_str(), INPUT_PREFIX.size(), NULL, NULL);
                     mMode = ConsoleMode::Debug;
                     mCommand.clear();
                     break;
                 case ConsoleMode::Debug:
-                    for (int i = 0; i < mDebugFlag.size(); ++i) 
+                    for (int i = 0; i < INPUT_PREFIX.size(); ++i) 
                     {
                         c = VK_BACK;
                         WriteConsoleA(m_hStdOut, &c, 1, NULL, NULL);
