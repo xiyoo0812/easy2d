@@ -7,7 +7,6 @@
 *.dump
 *.dmp
 *.dat 
-*.mak 
 
 # Prerequisites
 *.d
