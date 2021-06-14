@@ -68,3 +68,4 @@
 temp/
 tools/cfg_dir/
 tools/cfg_xls/
+.DS_Store
