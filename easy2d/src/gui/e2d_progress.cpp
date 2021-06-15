@@ -4,16 +4,16 @@
 /* Easy2D */
 using namespace Easy2D;
 
-UIProgress::UIProgress(const String& name) : UIWidget(name)
+UIProgress::UIProgress(const String& name) : UIImage(name)
 {
 
 }
 
 bool UIProgress::setup()
 {
-    if (!Entity::setup())
+    if (!UIImage::setup())
     {
-        LOG_WARN << _T("UIProgress::setup: Entity setup failed!");
+        LOG_WARN << _T("UIProgress::setup: UIImage setup failed!");
         return false;
     }
     auto shared_this = std::dynamic_pointer_cast<UIWidget>(shared_from_this());
@@ -30,18 +30,13 @@ bool UIProgress::setup()
     mLabel->setVerticalAlign(VerticalAlign::Center);
     mLabel->setHorizontalAlign(HorizontalAlign::Center);
     mLabel->setDockerAlign(DockerAlign::Full);
-    mVisible = VisibleType::HitNobody;
+    mVisible = VisibleType::HitSelf;
     return true;
 }
 
 void UIProgress::onTransformUpdate()
 {
     updateProgress();
-}
-
-SPtr<UIImage> UIProgress::getGroundImage()
-{
-    return mGround;
 }
 
 SPtr<UIImage> UIProgress::getBarImage()
@@ -56,26 +51,14 @@ SPtr<UILabel> UIProgress::getLabel()
 
 void UIProgress::setGroundImage(const String& ground)
 {
-    if (mGround)
+    if (ground.empty())
     {
-        if (ground.empty())
-        {
-            return mGround->setTexture(nullptr);
-        }
-        mGround->loadTexture(ground);
-        return;
+        return setTexture(nullptr);
     }
-    auto shared_this = std::dynamic_pointer_cast<UIWidget>(shared_from_this());
-    auto image = UIFactory::instance()->createImage(GROUND_NAME, ground, shared_this);
-    if (nullptr == image)
+    if (!loadTexture(ground))
     {
         LOG_ERROR << "UIProgress::setGroundImage error: image(" << ground << ") create failed!";
-        return;
     }
-    updateSize(image);
-    image->setVisible(VisibleType::Visible);
-    image->setDockerAlign(DockerAlign::Full);
-    mGround = image;
 }
 
 void UIProgress::setBarImage(const String& bar)
@@ -93,12 +76,12 @@ void UIProgress::setBarImage(const String& bar)
     auto image = UIFactory::instance()->createImage(BAR_NAME, bar, Vec2(0, 0), shared_this);
     if (nullptr == image)
     {
-        LOG_ERROR << "UIProgress::setGroundImage error: image(" << bar << ") create failed!";
+        LOG_ERROR << "UIProgress::setBarImage error: image(" << bar << ") create failed!";
         return;
     }
     image->setZorder(1);
     image->setAnchor(0, 0.5);
-    image->setVisible(VisibleType::Visible);
+    image->setVisible(VisibleType::HitSelf);
     image->setDockerAlign(DockerAlign::Left);
     mBar = image;
 }
@@ -108,16 +91,14 @@ uint32 UIProgress::getProgress() const
     return mProgress;
 }
 
-
 uint32 UIProgress::getProgressMax() const
 {
     return mProgressMax;
 }
 
-
 void UIProgress::setProgress(uint32 progress)
 {
-    mProgress = (progress > mProgressMax) ? mProgressMax : progress;
+    mProgress = std::min(progress, mProgressMax);
     updateProgress();
 }
 
@@ -134,13 +115,4 @@ void UIProgress::updateProgress()
     mBar->setSizeX(bar_width);
     Wtring text = std::to_wstring(mProgress) + L"/" + std::to_wstring(mProgressMax);
     mLabel->setText(text);
-}
-
-void UIProgress::updateSize(SPtr<UIImage> image)
-{
-    auto dim = getSize();
-    if (dim.x <= 1 && dim.y <= 1)
-    {
-        setSize(image->getSize());
-    }
 }

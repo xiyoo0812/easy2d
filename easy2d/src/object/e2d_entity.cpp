@@ -539,6 +539,11 @@ bool Entity::isInRect(const Vec2& pos) const
     return mTransform->isInRect(pos);
 }
 
+Vec2 Entity::getInnerPos(const Vec2& pos) const
+{
+    return mTransform->getInnerPos(pos);
+}
+
 void Entity::setFocus(bool focus)
 {
     mbFocus = focus;

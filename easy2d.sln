@@ -35,7 +35,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lfs", "extend\luaext\lfs.vc
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lualog", "extend\lualog\lualog.vcxproj", "{C2DD1C67-5A7A-48F9-A860-FE4B92F6D1BD}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lnet", "extend\lnet\lnet.vcxproj", "{623A966A-1F99-450C-8BE1-D17F3FE84620}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lnet", "extend\luaext\lnet.vcxproj", "{623A966A-1F99-450C-8BE1-D17F3FE84620}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{FD583DBB-C1CE-4D85-B9B9-EF52FF77E8B3}"
 EndProject

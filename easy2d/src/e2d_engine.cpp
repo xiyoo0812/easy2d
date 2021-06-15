@@ -51,8 +51,8 @@ void E2dEngine::initialize(uint32 window_width, uint32 window_height)
     auto button = UIFactory::instance()->createButton("button", "image/btn.png", Vec2(0, 0), image);
     //image->setScale9Tile(20, 12, 75, 30);
     button->setDockerAlign(DockerAlign::Center);
-    button->setHoverScale(1.2f);
-    button->setPushedScale(0.8f);
+    button->setHoverScale(1.05f);
+    button->setPushedScale(0.95f);
     button->setAnchor(0.5, 0.5);
     button->setZorder(2);
 
@@ -73,6 +73,13 @@ void E2dEngine::initialize(uint32 window_width, uint32 window_height)
     progress->setDockerAlign(DockerAlign::Bottom);
     progress->setAnchor(0.5, 1);
     progress->setZorder(2);
+
+
+    auto slider = UIFactory::instance()->createSlider("slider", "skin/progress_bg.png", "skin/slider.png", Vec2(0, 60), image);
+    //image->setScale9Tile(20, 12, 75, 30);
+    slider->setDockerAlign(DockerAlign::Bottom);
+    slider->setAnchor(0.5, 1);
+    slider->setZorder(2);
 
     auto checkbox = UIFactory::instance()->createCheckBox("checkbox", "skin/chbox_b_off.png","skin/chbox_b_on.png", Vec2(0, 0), mUIRoot);
     //image->setScale9Tile(20, 12, 75, 30);

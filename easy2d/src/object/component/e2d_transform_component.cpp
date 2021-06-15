@@ -305,6 +305,11 @@ DockerAlign TransformComponent::getDockerAlign() const
     return mDockerAlign;
 }
 
+Vec2 TransformComponent::getInnerPos(const Vec2& pos)
+{
+    return pos - mAbsolute;
+}
+
 float32 TransformComponent::transDockerX(float32 x)
 {
     const Vec2& size = getDockerSize();

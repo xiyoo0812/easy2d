@@ -281,3 +281,32 @@ SPtr<UIProgress> UIFactory::createProgress(const String& name, const String& gro
     progress->setPosition(pos);
     return progress;
 }
+
+SPtr<UISlider> UIFactory::createSlider(const String& name, const String& ground, const String& normal, SPtr<UIWidget> parent)
+{
+    auto slider = std::make_shared<UISlider>(name);
+    if (!slider->setup())
+    {
+        LOG_WARN << _T("UIFactory::createSlider: UISlider setup failed!");
+        return nullptr;
+    }
+    slider->setGroundImage(ground);
+    slider->setNormalSlider(normal);
+    if (nullptr != parent)
+    {
+        parent->addChild(slider);
+    }
+    return slider;
+}
+
+SPtr<UISlider> UIFactory::createSlider(const String& name, const String& ground, const String& normal, const Vec2& pos, SPtr<UIWidget> parent)
+{
+    auto progress = createSlider(name, ground, normal, parent);
+    if (nullptr == progress)
+    {
+        LOG_WARN << _T("UIFactory::createSlider: create slider failed!");
+        return nullptr;
+    }
+    progress->setPosition(pos);
+    return progress;
+}

@@ -60,6 +60,7 @@ namespace Easy2D
         const Vec2& getAbsolute() const;
         const Vec2& getPosition() const;
         bool isInRect(const Vec2& pos) const;
+        Vec2 getInnerPos(const Vec2& pos) const;
 
         const String& getPhysics() const;
         void setPhysics(const String& physics);

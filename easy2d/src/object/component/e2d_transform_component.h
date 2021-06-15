@@ -71,6 +71,8 @@ namespace Easy2D
         void setDockerAlign(DockerAlign align);
         DockerAlign getDockerAlign() const;
 
+        Vec2 getInnerPos(const Vec2& pos);
+
     private:
         void updateTransform();
         const Vec2& getDockerSize() const;
