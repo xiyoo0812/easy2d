@@ -16,6 +16,7 @@ void Stopwatch::start()
     if (!mbRunning)
     {
         mbRunning = true;
+        mLastTime = high_resolution_clock::now();
         mStartTime = high_resolution_clock::now();
     }
 }
@@ -59,6 +60,30 @@ time_t Stopwatch::elapsedMillSecondsNow()
     auto elapsedTime = nowTime - mStartTime;
     mStartTime = nowTime;
     return duration_cast<milliseconds>(elapsedTime).count();
+}
+
+bool Stopwatch::elapsedSeconds(time_t elapsedS)
+{
+    auto nowTime = high_resolution_clock::now();
+    auto elapsedTime = nowTime - mLastTime;
+    if (duration_cast<seconds>(elapsedTime).count() >= elapsedS)
+    {
+        mLastTime = nowTime;
+        return true;
+    }
+    return false;
+}
+
+bool Stopwatch::elapsedMillSeconds(time_t elapsedMs)
+{
+    auto nowTime = high_resolution_clock::now();
+    auto elapsedTime = nowTime - mLastTime;
+    if (duration_cast<milliseconds>(elapsedTime).count() >= elapsedMs)
+    {
+        mLastTime = nowTime;
+        return true;
+    }
+    return false;
 }
 
 StopwatchAvg::StopwatchAvg(int samples) : mSamples(samples)

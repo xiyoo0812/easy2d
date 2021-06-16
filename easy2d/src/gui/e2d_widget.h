@@ -24,15 +24,14 @@ namespace Easy2D
 
         virtual bool setup();
 
+        virtual BubbleType handleInput(SPtr<KeyEvent> event);
         virtual BubbleType onLButtonUp(SPtr<MouseEvent> event);
 
-        void setCtrlWidget(SPtr<UIWidget> widget);
-        void setFocusWidget(SPtr<UIWidget> widget);
+        void setInputFocus(SPtr<UIWidget> widget);
 
     private:
         UIRoot();
-        SPtr<UIWidget> mCtrlWidget;
-        SPtr<UIWidget> mFocusWidget;
+        SPtr<UIWidget> mInputFocus;
 
         inline static String GUID = "gui_root";
     };

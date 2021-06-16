@@ -22,7 +22,7 @@ namespace Easy2D
         virtual bool setup();
         virtual void reset();
         virtual void destroy();
-        virtual void update(const uint32& escapeMs);
+        virtual void update(const uint32& escapeMs, bool escapeSec);
         virtual void onTransformUpdate();
 
         virtual BubbleType enableInput(SPtr<KeyEvent> event, VisibleType& visable);
@@ -103,6 +103,7 @@ namespace Easy2D
         VisibleType getVisible() const;
         void setVisible(VisibleType visible);
         void setMouseHover(bool hover);
+        bool enbaleMouseMove();
 
         bool isChildNameExist(const String& name) const;
         bool isActionNameExist(const String& name) const;
@@ -136,6 +137,7 @@ namespace Easy2D
 
         int32 mZorder = 0;
         bool mbFocus = false;
+        bool mbMouseMove = false;
         bool mbMouseHover = false;
         VisibleType mVisible = VisibleType::HitChild;
         String mGroup = "default", mPhysics = "default";

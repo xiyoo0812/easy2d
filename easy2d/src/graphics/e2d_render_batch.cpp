@@ -33,6 +33,8 @@ void RenderBatch::initialize()
     mProjID = mProgram->getUniformLocation("matProj");
     mViewID = mProgram->getUniformLocation("matView");
     mTexSamplerID = mProgram->getUniformLocation("texSampler");
+    glGenVertexArrays(1, &mVAO);
+    glGenBuffers(4, mVBO);
 }
 
 void RenderBatch::initializeGLStates()
@@ -95,41 +97,40 @@ void RenderBatch::begin()
 {
     mProgram->bind();
 
-    GLuint VAO;
-    GLuint VBO[4] = {};
-    glGenVertexArrays(2, &VAO);
-    glGenBuffers(4, VBO);
-    glBindVertexArray(VAO);
+    glBindVertexArray(mVAO);
 
     glUniform1i(mTexSamplerID, 0);
-    size_t vSize = mVertexBuffer.size();
-    // position attribute
-    glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Vec4) * vSize, reinterpret_cast<GLvoid*>(&mVertexBuffer.at(0)), GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(mVertexID, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4), (void*)0);
-    glEnableVertexAttribArray(mVertexID);
-    // color attribute
-    glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Vec4) * vSize, reinterpret_cast<GLvoid*>(&mColorBuffer.at(0)), GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(mColorID, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4), (void*)0);
-    glEnableVertexAttribArray(mColorID);
-    // hud attribute
-    glBindBuffer(GL_ARRAY_BUFFER, VBO[2]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float32) * vSize, reinterpret_cast<GLvoid*>(&mIsHUDBuffer.at(0)), GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(mHUDID, 1, GL_FLOAT, GL_FALSE, sizeof(float32), (void*)0);
-    glEnableVertexAttribArray(mHUDID);
-    //// hud attribute
-    glBindBuffer(GL_ARRAY_BUFFER, VBO[3]);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Vec2) * vSize, reinterpret_cast<GLvoid*>(&mUvCoordBuffer.at(0)), GL_DYNAMIC_DRAW);
-    glVertexAttribPointer(mTexCoordID, 2, GL_FLOAT, GL_FALSE, sizeof(Vec2), (void*)0);
-    glEnableVertexAttribArray(mTexCoordID);
-
     const Mat4& scaleMat = GraphicsManager::instance()->getScaleMatrix();
     glUniformMatrix4fv(mScaleID, 1, GL_FALSE, toPointer(scaleMat));
     const Mat4& viewInverseMat = GraphicsManager::instance()->getViewInverseMatrix();
     glUniformMatrix4fv(mViewID, 1, GL_FALSE, toPointer(viewInverseMat));
     const Mat4& projectionMat = GraphicsManager::instance()->getProjectionMatrix();
     glUniformMatrix4fv(mProjID, 1, GL_FALSE, toPointer(projectionMat));
+
+    size_t vSize = mVertexBuffer.size();
+    if (vSize > 0)
+    {
+        // position attribute
+        glBindBuffer(GL_ARRAY_BUFFER, mVBO[0]);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(Vec4) * vSize, reinterpret_cast<GLvoid*>(&mVertexBuffer.at(0)), GL_DYNAMIC_DRAW);
+        glVertexAttribPointer(mVertexID, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4), (void*)0);
+        glEnableVertexAttribArray(mVertexID);
+        // color attribute
+        glBindBuffer(GL_ARRAY_BUFFER, mVBO[1]);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(Vec4) * vSize, reinterpret_cast<GLvoid*>(&mColorBuffer.at(0)), GL_DYNAMIC_DRAW);
+        glVertexAttribPointer(mColorID, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4), (void*)0);
+        glEnableVertexAttribArray(mColorID);
+        // hud attribute
+        glBindBuffer(GL_ARRAY_BUFFER, mVBO[2]);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float32) * vSize, reinterpret_cast<GLvoid*>(&mIsHUDBuffer.at(0)), GL_DYNAMIC_DRAW);
+        glVertexAttribPointer(mHUDID, 1, GL_FLOAT, GL_FALSE, sizeof(float32), (void*)0);
+        glEnableVertexAttribArray(mHUDID);
+        //// hud attribute
+        glBindBuffer(GL_ARRAY_BUFFER, mVBO[3]);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(Vec2) * vSize, reinterpret_cast<GLvoid*>(&mUvCoordBuffer.at(0)), GL_DYNAMIC_DRAW);
+        glVertexAttribPointer(mTexCoordID, 2, GL_FLOAT, GL_FALSE, sizeof(Vec2), (void*)0);
+        glEnableVertexAttribArray(mTexCoordID);
+    }
 }
 
 void RenderBatch::end()

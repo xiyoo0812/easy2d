@@ -13,7 +13,8 @@ void OnChar(GLFWwindow* window, unsigned int codepoint)
 
 void OnKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-    auto event = std::make_shared<KeyEvent>(KeyType(action));
+    KeyType kType = (action == GLFW_RELEASE) ? KeyType::KeyUp : KeyType::KeyDown;
+    auto event = std::make_shared<KeyEvent>(KeyType(kType));
     event->mSysKey = scancode;
     event->mKey = key;
     InputSystem::instance()->handleInput(event);
@@ -105,17 +106,20 @@ BubbleType InputSink::handleInput(SPtr<KeyEvent> event)
         }
     }
     BubbleType bubble = BubbleType::Continue;
-    switch (event->mType)
+    if (vType == VisibleType::HitSelf || vType == VisibleType::Visible)
     {
-    case KeyType::KeyUp:
-        bubble = onKeyUp(std::dynamic_pointer_cast<KeyEvent>(event));
-        break;
-    case KeyType::KeyDown:
-        bubble = onKeyDown(std::dynamic_pointer_cast<KeyEvent>(event));
-        break;
-    case KeyType::Char:
-        bubble = onChar(std::dynamic_pointer_cast<KeyEvent>(event));
-        break;
+        switch (event->mType)
+        {
+        case KeyType::KeyUp:
+            bubble = onKeyUp(std::dynamic_pointer_cast<KeyEvent>(event));
+            break;
+        case KeyType::KeyDown:
+            bubble = onKeyDown(std::dynamic_pointer_cast<KeyEvent>(event));
+            break;
+        case KeyType::Char:
+            bubble = onChar(std::dynamic_pointer_cast<KeyEvent>(event));
+            break;
+        }
     }
     return bubble;
 }

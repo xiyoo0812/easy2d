@@ -17,10 +17,19 @@ namespace Easy2D
         time_t elapsedMillSeconds();
         time_t elapsedSecondsNow();
         time_t elapsedMillSecondsNow();
+        bool elapsedSeconds(time_t elapsedS);
+        bool elapsedMillSeconds(time_t elapsedMs);
 
     private:
         bool mbRunning = false;
+        std::chrono::time_point<std::chrono::high_resolution_clock> mLastTime;
         std::chrono::time_point<std::chrono::high_resolution_clock> mStartTime;
+
+    public:
+        inline static time_t SECOND = 1;
+        inline static time_t MINUTE = 60;
+        inline static time_t MILLSECOND = 1000;
+        inline static time_t MILLMINUTE = 60000;
     };
 
     class StopwatchAvg

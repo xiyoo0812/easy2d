@@ -30,7 +30,7 @@ namespace Easy2D
         E2dEngine();
 
         //FPS mFPS;
-        SPtr<Stopwatch> mStopWatch = nullptr;
+        SPtr<Stopwatch> mWatchUpdate = nullptr;
     };
 }
 

@@ -48,6 +48,13 @@ namespace Easy2D
         inline static String CHOSEOFF_NAME  = _T("__choseoff_image");
         inline static String CHOSEON_NAME   = _T("__choseon_image");
     };
+
+    class UISwitch : public UICheckBox
+    {
+    public:
+        UISwitch(const String& name);
+        ~UISwitch() {}
+    };
 }
 
 #endif

@@ -51,6 +51,8 @@ namespace Easy2D
         Vector<Vec2> mUvCoordBuffer;
         Vector<GLuint> mTextureQueue;
 
+        GLuint mVAO = 0;
+        GLuint mVBO[4] = {};
         SPtr<Program> mProgram = nullptr;
         GLuint mVertexID = 0, mTexCoordID = 0, mHUDID = 0;
         GLuint mTexSamplerID = 0, mColorID = 0, mScaleID = 0, mViewID = 0, mProjID = 0;

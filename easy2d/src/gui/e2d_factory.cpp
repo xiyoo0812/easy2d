@@ -274,6 +274,35 @@ SPtr<UIProgress> UIFactory::createProgress(const String& name, const String& gro
     return progress;
 }
 
+SPtr<UIEditbox> UIFactory::createEditbox(const String& name, const String& ground, SPtr<UIWidget> parent)
+{
+    auto editbox = std::make_shared<UIEditbox>(name);
+    if (!editbox->setup())
+    {
+        LOG_WARN << _T("UIFactory::createEditbox: UIEditbox setup failed!");
+        return nullptr;
+    }
+    editbox->setGroundImage(ground);
+    if (nullptr != parent)
+    {
+        parent->addChild(editbox);
+    }
+    return editbox;
+}
+
+SPtr<UIEditbox> UIFactory::createEditbox(const String& name, const String& ground, const Vec2& pos, const Vec2& size, SPtr<UIWidget> parent)
+{
+    auto editbox = createEditbox(name, ground, parent);
+    if (nullptr == editbox)
+    {
+        LOG_WARN << _T("UIFactory::createEditbox: create editbox failed!");
+        return nullptr;
+    }
+    editbox->setPosition(pos);
+    editbox->setSize(size);
+    return editbox;
+}
+
 SPtr<UISlider> UIFactory::createSlider(const String& name, const String& ground, const String& normal, SPtr<UIWidget> parent)
 {
     auto slider = std::make_shared<UISlider>(name);
@@ -293,12 +322,12 @@ SPtr<UISlider> UIFactory::createSlider(const String& name, const String& ground,
 
 SPtr<UISlider> UIFactory::createSlider(const String& name, const String& ground, const String& normal, const Vec2& pos, SPtr<UIWidget> parent)
 {
-    auto progress = createSlider(name, ground, normal, parent);
-    if (nullptr == progress)
+    auto slider = createSlider(name, ground, normal, parent);
+    if (nullptr == slider)
     {
         LOG_WARN << _T("UIFactory::createSlider: create slider failed!");
         return nullptr;
     }
-    progress->setPosition(pos);
-    return progress;
+    slider->setPosition(pos);
+    return slider;
 }

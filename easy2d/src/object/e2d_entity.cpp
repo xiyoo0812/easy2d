@@ -54,6 +54,13 @@ BubbleType Entity::enableInput(SPtr<KeyEvent> event, VisibleType& visable)
     visable = mVisible;
     if (isHitEnable())
     {
+        if (event->mType == KeyType::Char)
+        {
+            if (!isFocus())
+            {
+                return BubbleType::Return;
+            }
+        }
         return BubbleType::Continue;
     }
     return BubbleType::Return;
@@ -249,7 +256,7 @@ float32 Entity::getHeight() const
     return mTransform->getHeight();
 }
 
-void Entity::update(const uint32& escapeMs)
+void Entity::update(const uint32& escapeMs, bool escapeSec)
 {
     if (isVisible())
     {
@@ -263,7 +270,7 @@ void Entity::update(const uint32& escapeMs)
         }
         for (auto child : mChildrens)
         {
-            child->update(escapeMs);
+            child->update(escapeMs, escapeSec);
         }
     }
 }
@@ -574,9 +581,14 @@ void Entity::setVisible(VisibleType visible)
     mVisible = visible;
 }
 
-void Easy2D::Entity::setMouseHover(bool hover)
+void Entity::setMouseHover(bool hover)
 {
     mbMouseHover = hover;
+}
+
+bool Entity::enbaleMouseMove()
+{
+    return mbMouseMove;
 }
 
 VisibleType Entity::getVisible() const

@@ -6,7 +6,6 @@ using namespace Easy2D;
 
 UIEditbox::UIEditbox(const String& name) : UIImage(name)
 {
-
 }
 
 bool UIEditbox::setup()
@@ -25,24 +24,93 @@ bool UIEditbox::setup()
     }
     mLabel->setVisible(VisibleType::HitNobody);
     mLabel->setVerticalAlign(VerticalAlign::Center);
-    mLabel->setHorizontalAlign(HorizontalAlign::Center);
+    mLabel->setHorizontalAlign(HorizontalAlign::Left);
     mLabel->setDockerAlign(DockerAlign::Full);
     return true;
 }
 
-BubbleType UIEditbox::onChar(SPtr<KeyEvent> event)
+void UIEditbox::update(const uint32& escapeMs, bool escapeSec)
 {
-    return BubbleType::Continue;
+    Entity::update(escapeMs, escapeSec);
+    if (escapeSec && mbFocus)
+    {
+        mbShowInput = !mbShowInput;
+        showText();
+    }
 }
 
-BubbleType UIEditbox::onKeyUp(SPtr<KeyEvent> event)
+void UIEditbox::showText()
 {
+    if (mbFocus)
+    {
+        Wtring text = mEditText;
+        if (mbShowInput)
+        {
+            text.insert(mFocusIdx, 1, INPUT);
+            mLabel->setText(text);
+        }
+        else
+        {
+            text.insert(mFocusIdx, 1, ' ');
+            mLabel->setText(text);
+        }
+    }
+    else
+    {
+        mLabel->setText(mEditText);
+    }
+}
+
+BubbleType UIEditbox::onChar(SPtr<KeyEvent> event)
+{
+    mEditText.insert(mFocusIdx++, 1, event->mKey);
+    showText();
+    return BubbleType::Break;
+}
+
+BubbleType UIEditbox::onKeyDown(SPtr<KeyEvent> event)
+{
+    if (mbFocus)
+    {
+        switch (event->mKey)
+        {
+        case GLFW_KEY_BACKSPACE:
+            if (mFocusIdx > 0 && !mEditText.empty())
+            {
+                mEditText.erase(--mFocusIdx, 1);
+                showText();
+            }
+            return BubbleType::Break;
+        case GLFW_KEY_LEFT:
+            if (mFocusIdx > 0 && !mEditText.empty())
+            {
+                mFocusIdx--;
+                showText();
+            }
+            return BubbleType::Break;
+        case GLFW_KEY_RIGHT:
+            if (mFocusIdx < mEditText.size())
+            {
+                mFocusIdx++;
+                showText();
+            }
+            return BubbleType::Break;
+        }
+    }
     return BubbleType::Continue;
 }
 
 BubbleType UIEditbox::onLButtonUp(SPtr<MouseEvent> event)
 {
-    Vec2 innerPos = getInnerPos(event->mPos);
+    setFocus(isInRect(event->mPos));
+    showText();
+    return BubbleType::Continue;
+}
+
+BubbleType UIEditbox::onLButtonDown(SPtr<MouseEvent> event)
+{
+    setFocus(true);
+    UIRoot::instance()->setInputFocus(std::dynamic_pointer_cast<UIWidget>(shared_from_this()));
     return BubbleType::Break;
 }
 
@@ -55,6 +123,14 @@ void UIEditbox::setGroundImage(const String& ground)
     if (!loadTexture(ground))
     {
         LOG_ERROR << "UISlider::setGroundImage error: image(" << ground << ") create failed!";
+    }
+}
+
+void UIEditbox::setFont(const String& fontName)
+{
+    if (mLabel)
+    {
+        mLabel->setFont(fontName);
     }
 }
 

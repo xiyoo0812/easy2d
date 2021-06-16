@@ -21,7 +21,7 @@ namespace Easy2D
         bool addScene(const String& name, SPtr<Scene> scene);
         bool removeScene(const uint64 guid);
 
-        void update(const uint32& escapeMs);
+        void update(const uint32& escapeMs, bool escapeSec);
 
         template <typename T = Scene>
         SPtr<T> createScene(const String& name);

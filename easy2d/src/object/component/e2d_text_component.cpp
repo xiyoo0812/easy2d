@@ -278,6 +278,17 @@ uint32 TextComponent::getSpacing() const
     return mRenderText->mSpacing;
 }
 
+void TextComponent::setFrameOffset(uint32 offset)
+{
+    mFrameOffset = offset;
+    mbChanged = true;
+}
+
+uint32 TextComponent::getFrameOffset() const
+{
+    return mFrameOffset;
+}
+
 void TextComponent::setHUDEnabled(bool enabled)
 {
     mRenderText->mbHud = enabled;

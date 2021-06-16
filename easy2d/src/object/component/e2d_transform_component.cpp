@@ -278,6 +278,7 @@ void TransformComponent::update(const uint32& escapeMs)
 {
     if (mbChanged)
     {
+        updateFulllAlign();
         updateTransform();
         if (!mMaster.expired())
         {
@@ -288,15 +289,20 @@ void TransformComponent::update(const uint32& escapeMs)
     }
 }
 
-void TransformComponent::setDockerAlign(DockerAlign align)
+void TransformComponent::updateFulllAlign()
 {
-    mDockerAlign = align;
-    if (align == DockerAlign::Full)
+    if (mDockerAlign == DockerAlign::Full)
     {
         mPostion = Vec2(0, 0);
         mAnchor = Vec2(0.5, 0.5);
         mSize = getDockerSize();
     }
+}
+
+void TransformComponent::setDockerAlign(DockerAlign align)
+{
+    mDockerAlign = align;
+    updateFulllAlign();
     mbChanged = true;
 }
 

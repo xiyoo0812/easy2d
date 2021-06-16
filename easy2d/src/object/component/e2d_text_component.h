@@ -50,6 +50,9 @@ namespace Easy2D
         void setSpacing(uint32 spacing);
         uint32 getSpacing() const;
 
+        void setFrameOffset(uint32 offset);
+        uint32 getFrameOffset() const;
+
         void setHUDEnabled(bool enabled);
         bool isHUDEnabled() const;
 

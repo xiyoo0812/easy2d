@@ -16,6 +16,7 @@ bool UIButton::setup()
         LOG_WARN << _T("UIButton::setup: Entity setup failed!");
         return false;
     }
+    mbMouseMove = true;
     mVisible = VisibleType::HitSelf;
     return true;
 }
@@ -47,7 +48,7 @@ BubbleType UIButton::onLButtonDown(SPtr<MouseEvent> event)
     if (mStatus == ButtonStatus::Hover || mStatus == ButtonStatus::Normal)
     {
         setStatus(ButtonStatus::Pushed);
-        UIRoot::instance()->setCtrlWidget(std::dynamic_pointer_cast<UIWidget>(shared_from_this()));
+        UIRoot::instance()->setInputFocus(std::dynamic_pointer_cast<UIWidget>(shared_from_this()));
     }
     return BubbleType::Break;
 }

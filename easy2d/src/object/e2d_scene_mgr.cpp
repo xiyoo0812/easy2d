@@ -90,7 +90,7 @@ bool SceneManager::removeScene(const uint64 guid)
     return false;
 }
 
-void SceneManager::update(const uint32& escapeMs)
+void SceneManager::update(const uint32& escapeMs, bool escapeSec)
 {
     if (mSwitchingScene)
     {
@@ -105,6 +105,6 @@ void SceneManager::update(const uint32& escapeMs)
     }
     if (mActiveScene)
     {
-        mActiveScene->update(escapeMs);
+        mActiveScene->update(escapeMs, escapeSec);
     }
 }

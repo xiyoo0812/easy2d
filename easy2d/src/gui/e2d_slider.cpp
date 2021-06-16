@@ -16,6 +16,7 @@ bool UISlider::setup()
         LOG_WARN << _T("UISlider::setup: UIImage setup failed!");
         return false;
     }
+    mbMouseMove = true;
     return true;
 }
 

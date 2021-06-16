@@ -135,6 +135,16 @@ uint32 UILabel::getSpacing() const
     return mTextComponent->getSpacing();
 }
 
+void UILabel::setFrameOffset(uint32 offset)
+{
+    mTextComponent->setFrameOffset(offset);
+}
+
+uint32 UILabel::getFrameOffset() const
+{
+    return mTextComponent->getFrameOffset();
+}
+
 bool UILabel::setFont(const String& fontName)
 {
     auto font = FontManager::instance()->getFont(fontName);

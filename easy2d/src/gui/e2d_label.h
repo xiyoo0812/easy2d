@@ -48,6 +48,9 @@ namespace Easy2D
         void setSpacing(uint32 spacing);
         uint32 getSpacing() const;
 
+        void setFrameOffset(uint32 offset);
+        uint32 getFrameOffset() const;
+
         bool setFont(const String& fontName);
         void setFont(const SPtr<Font> font);
         const SPtr<Font> getFont() const;

@@ -47,22 +47,26 @@ bool UIRoot::setup()
     return true;
 }
 
+BubbleType Easy2D::UIRoot::handleInput(SPtr<KeyEvent> event)
+{
+    if (mInputFocus && mInputFocus->handleInput(event) == BubbleType::Break)
+    {
+        return BubbleType::Break;
+    }
+    return InputSink::handleInput(event);
+}
+
 BubbleType Easy2D::UIRoot::onLButtonUp(SPtr<MouseEvent> event)
 {
-    if (mCtrlWidget)
+    if (mInputFocus && !mInputFocus->isInRect(event->mPos))
     {
-        mCtrlWidget->onLButtonUp(event);
-        mCtrlWidget = nullptr;
+        mInputFocus->onLButtonUp(event);
+        mInputFocus = nullptr;
     }
     return BubbleType::Continue;
 }
 
-void Easy2D::UIRoot::setCtrlWidget(SPtr<UIWidget> widget)
+void Easy2D::UIRoot::setInputFocus(SPtr<UIWidget> widget)
 {
-    mCtrlWidget = widget;
-}
-
-void Easy2D::UIRoot::setFocusWidget(SPtr<UIWidget> widget)
-{
-    mFocusWidget = widget;
+    mInputFocus = widget;
 }

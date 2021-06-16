@@ -21,7 +21,7 @@ E2dEngine::~E2dEngine()
 
 void E2dEngine::initialize(uint32 window_width, uint32 window_height)
 {
-    mStopWatch = std::make_shared<Stopwatch>();
+    mWatchUpdate = std::make_shared<Stopwatch>();
     GraphicsManager::instance()->initialize(window_width, window_height);
     //初始化asset资源路径
     AssetManager::instance()->initialize("res");
@@ -72,12 +72,17 @@ void E2dEngine::initialize(uint32 window_width, uint32 window_height)
     progress->setAnchor(0.5, 1);
     progress->setZorder(2);
 
-
-    auto slider = UIFactory::instance()->createSlider("slider", "skin/progress_bg.png", "skin/slider.png", Vec2(0, 60), image);
+    auto slider = UIFactory::instance()->createSlider("slider", "skin/progress_bg.png", "skin/slider.png", Vec2(0, 40), image);
     //image->setScale9Tile(20, 12, 75, 30);
     slider->setDockerAlign(DockerAlign::Bottom);
     slider->setAnchor(0.5, 1);
     slider->setZorder(2);
+
+    auto editbox = UIFactory::instance()->createEditbox("editbox", "skin/editbox.png", Vec2(0, 80), Vec2(200, 30), image);
+    editbox->setDockerAlign(DockerAlign::Bottom);
+    editbox->setFont("fzltxh-12");
+    editbox->setAnchor(0.5, 1);
+    editbox->setZorder(3);
 
     auto checkbox = UIFactory::instance()->createCheckBox("checkbox", "skin/chbox_b_off.png","skin/chbox_b_on.png", Vec2(0, 0), mUIRoot);
     //image->setScale9Tile(20, 12, 75, 30);
@@ -125,16 +130,16 @@ void E2dEngine::initialize(uint32 window_width, uint32 window_height)
     //txt2->setShadowColor(Color::White, 1);
     txt2->setOutlineColor(Color::Red, 1);
     txt2->setZorder(3);
-    txt2->setText(L"我是国人daAFKsbB123");
 }
 
 void E2dEngine::update()
 {
-    uint32 escapeMs = mStopWatch->elapsedMillSecondsNow();
+    uint32 escapeMs = mWatchUpdate->elapsedMillSecondsNow();
+    bool escapeSec = mWatchUpdate->elapsedMillSeconds(Stopwatch::MILLSECOND);
     //mFPS.update(escapeMs);
-    UIRoot::instance()->update(escapeMs);
     TimerManager::instance()->update(escapeMs);
-    SceneManager::instance()->update(escapeMs);
+    UIRoot::instance()->update(escapeMs, escapeSec);
+    SceneManager::instance()->update(escapeMs, escapeSec);
     GraphicsManager::instance()->update();
     RenderBatch::instance()->flush();
 }

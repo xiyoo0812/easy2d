@@ -4,6 +4,7 @@
 /* Easy2D */
 using namespace Easy2D;
 
+//-------------------------------------------------------------------
 UICheckBox::UICheckBox(const String& name) : UIWidget(name)
 {
 
@@ -147,4 +148,10 @@ void UICheckBox::updateSize(SPtr<UIImage> image)
     {
         setSize(image->getSize());
     }
+}
+
+//-------------------------------------------------------------------
+UISwitch::UISwitch(const String& name) : UICheckBox(name)
+{
+
 }
