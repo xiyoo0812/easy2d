@@ -92,9 +92,10 @@ void TextComponent::calculateTextSize(uint32 textWidth, uint32 textHeight)
         getTransform()->setSize(textWidth + mFrameOffset * 2, textHeight + mFrameOffset * 2);
         return;
     }
-    if (textHeight > getTransform()->getHeight() - mFrameOffset * 2)
+    uint32 fontHeight = mRenderText->mFont->getFontHeight();
+    if (fontHeight > getTransform()->getHeight() - mFrameOffset * 2)
     {
-        getTransform()->setSizeY(textHeight + mFrameOffset * 2);
+        getTransform()->setSizeY(fontHeight + mFrameOffset * 2);
     }
 }
 

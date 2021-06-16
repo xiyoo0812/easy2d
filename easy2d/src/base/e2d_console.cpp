@@ -24,7 +24,7 @@ void Console::initialize(const String& name, short width, short height)
     m_hStdOut = GetStdHandle(STD_OUTPUT_HANDLE); //指明句柄为标准输出HANDLE
     m_hStdIn = GetStdHandle(STD_INPUT_HANDLE);
 
-    COORD co = { 800, 600 };
+    COORD co = { 400, 300 };
     SetConsoleScreenBufferSize(m_hStdOut, co);  //指明缓冲区大小
 
     freopen("conin$", "r+t", stdin);            // in redirect.    

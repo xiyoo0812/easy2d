@@ -1,6 +1,8 @@
 #ifndef SINGLETON_H
 #define SINGLETON_H
 
+#include "e2d_config.h"
+
 namespace Easy2D
 {
     template<typename T>
@@ -11,7 +13,7 @@ namespace Easy2D
         {
             if (mInatance == nullptr)
             {
-                mInatance = new T();
+                mInatance = new T;
             }
             return mInatance;
         }

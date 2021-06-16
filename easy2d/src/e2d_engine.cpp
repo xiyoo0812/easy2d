@@ -120,7 +120,7 @@ void E2dEngine::initialize(uint32 window_width, uint32 window_height)
     txt->setHorizontalAlign(HorizontalAlign::Left);
     txt->setDockerAlign(DockerAlign::LeftTop);
 
-    auto txt2 = UIFactory::instance()->createLabel("text2", L"国人daAFKsbBgf123", Vec2(300, 100), Vec2(200, 60), mUIRoot);
+    auto txt2 = UIFactory::instance()->createLabel("text2", L"国人daAFKsbBgf123", Vec2(300, 100), Vec2(100, 60), mUIRoot);
     txt2->setItalic(true);
     //txt2->setShadowColor(Color::White, 1);
     txt2->setOutlineColor(Color::Red, 1);

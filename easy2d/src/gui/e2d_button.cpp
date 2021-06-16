@@ -210,7 +210,7 @@ void UIButton::setText(const Wtring& text)
         return;
     }
     auto shared_this = std::dynamic_pointer_cast<UIWidget>(shared_from_this());
-    auto label = UIFactory::instance()->createLabel(DISABLE_NAME, text, shared_this);
+    auto label = UIFactory::instance()->createLabel(LABEL_NAME, text, shared_this);
     if (nullptr == label)
     {
         LOG_ERROR << "UIButton::setText error: label(" << text.c_str() << ") create failed!";

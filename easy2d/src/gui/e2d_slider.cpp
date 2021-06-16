@@ -33,13 +33,10 @@ BubbleType UISlider::onLButtonUp(SPtr<MouseEvent> event)
 
 BubbleType UISlider::onMouseMove(SPtr<MouseEvent> event)
 {
-    if (isInRect(event->mPos))
+    if (mButton->getStatus() == ButtonStatus::Pushed)
     {
-        if (mButton->getStatus() == ButtonStatus::Pushed)
-        {
-            Vec2 innerPos = getInnerPos(event->mPos);
-            setProgress(innerPos.x / getWidth());
-        }
+        Vec2 innerPos = getInnerPos(event->mPos);
+        setProgress(innerPos.x / getWidth());
     }
     return BubbleType::Continue;
 }
