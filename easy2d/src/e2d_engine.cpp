@@ -34,12 +34,10 @@ void E2dEngine::initialize(uint32 window_width, uint32 window_height)
     RenderBatch::instance()->initialize();
     RenderBatch::instance()->initializeGLStates();
     //³õÊ¼»¯UIRoot
-    UIFactory::instance()->setFont("fzltxh-36");
-    mUIRoot = UIFactory::instance()->createRoot();
-
+    auto mUIRoot = UIFactory::instance()->initialize("fzltxh-36");
+   
     //AudioManager::getInstance()->start();
     //DebugDraw::getInstance()->initialize();
-
     auto scene = SceneManager::instance()->createScene("test");
 
     auto image = UIFactory::instance()->createImage("image", "image/bg.png", Vec2(0, 0), mUIRoot);
@@ -134,7 +132,7 @@ void E2dEngine::update()
 {
     uint32 escapeMs = mStopWatch->elapsedMillSecondsNow();
     //mFPS.update(escapeMs);
-    mUIRoot->update(escapeMs);
+    UIRoot::instance()->update(escapeMs);
     TimerManager::instance()->update(escapeMs);
     SceneManager::instance()->update(escapeMs);
     GraphicsManager::instance()->update();

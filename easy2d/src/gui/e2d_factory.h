@@ -19,9 +19,7 @@ namespace Easy2D
     public:
         friend class Singleton<UIFactory>;
 
-        void setFont(const String& fontName);
-
-        SPtr<UIRoot> createRoot();
+        SPtr<UIRoot> initialize(const String& fontName);
 
         SPtr<UIImage> createImage(const String& name, const String& texture, SPtr<UIWidget> parent);
         SPtr<UIImage> createImage(const String& name, const String& texture, const Vec2& pos, SPtr<UIWidget> parent);

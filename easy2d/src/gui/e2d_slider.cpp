@@ -33,10 +33,13 @@ BubbleType UISlider::onLButtonUp(SPtr<MouseEvent> event)
 
 BubbleType UISlider::onMouseMove(SPtr<MouseEvent> event)
 {
-    if (mButton->getStatus() == ButtonStatus::Pushed)
+    if (isInRect(event->mPos))
     {
-        Vec2 innerPos = getInnerPos(event->mPos);
-        setProgress(innerPos.x / getWidth());
+        if (mButton->getStatus() == ButtonStatus::Pushed)
+        {
+            Vec2 innerPos = getInnerPos(event->mPos);
+            setProgress(innerPos.x / getWidth());
+        }
     }
     return BubbleType::Continue;
 }
@@ -73,8 +76,7 @@ void UISlider::setNormalSlider(const String& normal)
         return;
     }
     button->setZorder(1);
-    button->setAnchor(0, 0.5);
-    button->setVisible(VisibleType::HitSelf);
+    button->setAnchor(0.5, 0.5);
     button->setDockerAlign(DockerAlign::Left);
     mButton = button;
 }
@@ -111,6 +113,6 @@ void UISlider::updateProgress()
 {
     float32 width = getWidth();
     float32 btnWidth = mButton->getWidth();
-    float32 btnPosX = (width - btnWidth) * mProgress;
+    float32 btnPosX = btnWidth / 2 + (width - btnWidth) * mProgress;
     mButton->setPositionX(btnPosX);
 }

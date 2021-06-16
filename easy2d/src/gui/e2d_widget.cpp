@@ -46,3 +46,23 @@ bool UIRoot::setup()
     InputSystem::instance()->addInputSink(std::dynamic_pointer_cast<InputSink>(shared_from_this()));
     return true;
 }
+
+BubbleType Easy2D::UIRoot::onLButtonUp(SPtr<MouseEvent> event)
+{
+    if (mCtrlWidget)
+    {
+        mCtrlWidget->onLButtonUp(event);
+        mCtrlWidget = nullptr;
+    }
+    return BubbleType::Continue;
+}
+
+void Easy2D::UIRoot::setCtrlWidget(SPtr<UIWidget> widget)
+{
+    mCtrlWidget = widget;
+}
+
+void Easy2D::UIRoot::setFocusWidget(SPtr<UIWidget> widget)
+{
+    mFocusWidget = widget;
+}

@@ -30,6 +30,10 @@ BubbleType UIButton::onLButtonUp(SPtr<MouseEvent> event)
     {
         setStatus(ButtonStatus::Normal);
         setMouseHover(false);
+        if (isInRect(event->mPos))
+        {
+            //onClick();
+        }
     }
     return BubbleType::Break;
 }
@@ -43,6 +47,7 @@ BubbleType UIButton::onLButtonDown(SPtr<MouseEvent> event)
     if (mStatus == ButtonStatus::Hover || mStatus == ButtonStatus::Normal)
     {
         setStatus(ButtonStatus::Pushed);
+        UIRoot::instance()->setCtrlWidget(std::dynamic_pointer_cast<UIWidget>(shared_from_this()));
     }
     return BubbleType::Break;
 }
@@ -58,7 +63,7 @@ void UIButton::onMouseEnter(SPtr<MouseEvent> event)
 
 void UIButton::onMouseLeave(SPtr<MouseEvent> event)
 {
-    if (mStatus == ButtonStatus::Hover || mStatus == ButtonStatus::Pushed)
+    if (mStatus == ButtonStatus::Hover)
     {
         setStatus(ButtonStatus::Normal);
     }

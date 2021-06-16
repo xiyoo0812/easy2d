@@ -3,20 +3,12 @@
 /* Easy2D */
 using namespace Easy2D;
 
-void Easy2D::UIFactory::setFont(const String& fontName)
+SPtr<UIRoot> Easy2D::UIFactory::initialize(const String& fontName)
 {
     mFontName = fontName;
-}
-
-SPtr<UIRoot> UIFactory::createRoot()
-{
-    auto uiRoot = std::make_shared<UIRoot>();
-    if (!uiRoot->setup())
-    {
-        LOG_WARN << _T("UIFactory::createRoot: UIRoot setup failed!");
-        return nullptr;
-    }
-    return uiRoot;
+    auto mUIRoot = SPtr<UIRoot>(UIRoot::instance());
+    mUIRoot->setup();
+    return mUIRoot;
 }
 
 SPtr<UIImage> UIFactory::createImage(const String& name, const String& texture, SPtr<UIWidget> parent)

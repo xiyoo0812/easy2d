@@ -2,7 +2,6 @@
 #define ENGINE_H
 
 #include "e2d_config.h"
-#include "gui/e2d_widget.h"
 #include "base/e2d_stopwatch.h"
 
 namespace Easy2D
@@ -31,7 +30,6 @@ namespace Easy2D
         E2dEngine();
 
         //FPS mFPS;
-        SPtr<UIRoot> mUIRoot = nullptr;
         SPtr<Stopwatch> mStopWatch = nullptr;
     };
 }
