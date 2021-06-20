@@ -13,6 +13,14 @@ namespace Easy2D
         FrontBack,
     };
 
+    class DrawRect
+    {
+    public:
+        bool mbScisser = false;
+        Rect mScisser = {};
+        GLuint mTexture = 0;
+    };
+
     class RenderBatch final : public Singleton<RenderBatch>
     {
     public:
@@ -38,12 +46,6 @@ namespace Easy2D
         void createSpriteQuad(SPtr<RenderTexture> sprite);
         void createTextQuad(SPtr<RenderText> text, Vec2& offset, Color& color);
         void drawTexture(uint32 start, uint32 size, uint32 texture);
-        void drawRect(uint32 start, uint32 size);
-
-        static const uint32 BATCHSIZE = 50;
-        static const uint32 UV_AMOUNT = 12;
-        static const uint32 VERTEX_AMOUNT = 18;
-        static const uint32 FIRST_REAL_ASCII_CHAR = 31;
 
         Vector<Vec4> mVertexBuffer;
         Vector<Color> mColorBuffer;

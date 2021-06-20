@@ -171,29 +171,6 @@ void RenderBatch::draw()
     glFlush();
 }
 
-void RenderBatch::drawRect(uint32 start, uint32 size)
-{
-    if (size > 0)
-    {
-        GLuint VAO, VBO[2];
-        glGenVertexArrays(1, &VAO);
-        glGenBuffers(2, VBO);
-        glBindVertexArray(VAO);
- 
-        glBindBuffer(GL_ARRAY_BUFFER, VBO[0]);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(Vec4) * size, reinterpret_cast<GLvoid*>(&mVertexBuffer.at(0)), GL_STATIC_DRAW);
-        glVertexAttribPointer(mVertexID, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(mVertexID);
- 
-        glBindBuffer(GL_ARRAY_BUFFER, VBO[1]);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(Vec4) * size, reinterpret_cast<GLvoid*>(&mColorBuffer.at(0)), GL_STATIC_DRAW);
-        glVertexAttribPointer(mColorID, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(0));
-        glEnableVertexAttribArray(mColorID);
-
-        glDrawArrays(GL_TRIANGLES, start, size);
-    }
-}
-
 void RenderBatch::drawTexture(uint32 start, uint32 size, uint32 texture)
 {
     if (size > 0)
@@ -228,20 +205,30 @@ void RenderBatch::createRectQuad(SPtr<RenderRect> rect)
     Vec4 BR = Vec4(rect->mVertices.x, 0, 0, 1);
     mul(BR, rect->matWorld, BR);
     //0
-     mVertexBuffer.push_back(TL);
+    mVertexBuffer.push_back(TL);
      //1
-     mVertexBuffer.push_back(TR);
+    mVertexBuffer.push_back(TR);
      //2
-     mVertexBuffer.push_back(BL);
+    mVertexBuffer.push_back(BL);
     //1
     mVertexBuffer.push_back(TR);
     //3
     mVertexBuffer.push_back(BR);
     //2
     mVertexBuffer.push_back(BL);
+    //0
+    mUvCoordBuffer.push_back(Vec2(0, 0));
+    mUvCoordBuffer.push_back(Vec2(0, 0));
+    mUvCoordBuffer.push_back(Vec2(0, 0));
+    mUvCoordBuffer.push_back(Vec2(0, 0));
+    mUvCoordBuffer.push_back(Vec2(0, 0));
+    mUvCoordBuffer.push_back(Vec2(0, 0));
+    //tex
+    mTextureQueue.push_back(0);
     //bool & color buffer
     for (uint32 i = 0; i < 6; ++i)
     {
+        mIsHUDBuffer.push_back(float32(true));
         //rgba
         mColorBuffer.push_back(Color::Red);
     }
