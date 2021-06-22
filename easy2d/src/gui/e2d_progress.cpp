@@ -34,7 +34,7 @@ bool UIProgress::setup()
     return true;
 }
 
-void UIProgress::onTransformUpdate()
+void UIProgress::onSizeChanged(const Vec2& size)
 {
     updateProgress();
 }
@@ -84,6 +84,7 @@ void UIProgress::setBarImage(const String& bar)
     image->setVisible(VisibleType::HitSelf);
     image->setDockerAlign(DockerAlign::Left);
     mBar = image;
+    updateProgress();
 }
 
 uint32 UIProgress::getProgress() const
@@ -110,9 +111,12 @@ void UIProgress::setProgressMax(uint32 progressMax)
 
 void UIProgress::updateProgress()
 {
-    float32 width = getWidth();
-    float32 bar_width = width * mProgress / mProgressMax;
-    mBar->setSizeX(bar_width);
-    Wtring text = std::to_wstring(mProgress) + L"/" + std::to_wstring(mProgressMax);
-    mLabel->setText(text);
+    if (mBar)
+    {
+        float32 width = getWidth();
+        float32 bar_width = width * mProgress / mProgressMax;
+        mBar->setSizeX(bar_width);
+        Wtring text = std::to_wstring(mProgress) + L"/" + std::to_wstring(mProgressMax);
+        mLabel->setText(text);
+    }
 }

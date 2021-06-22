@@ -20,7 +20,7 @@ bool UISlider::setup()
     return true;
 }
 
-void UISlider::onTransformUpdate()
+void UISlider::onSizeChanged(const Vec2& size)
 {
     updateProgress();
 }
@@ -77,6 +77,7 @@ void UISlider::setNormalSlider(const String& normal)
     button->setAnchor(0.5, 0.5);
     button->setDockerAlign(DockerAlign::Left);
     mButton = button;
+    updateProgress();
 }
 
 void UISlider::setPushedSlider(const String& pushed)
@@ -109,8 +110,11 @@ void UISlider::setProgress(float32 progress)
 
 void UISlider::updateProgress()
 {
-    float32 width = getWidth();
-    float32 btnWidth = mButton->getWidth();
-    float32 btnPosX = btnWidth / 2 + (width - btnWidth) * mProgress;
-    mButton->setPositionX(btnPosX);
+    if (mButton)
+    {
+        float32 width = getWidth();
+        float32 btnWidth = mButton->getWidth();
+        float32 btnPosX = btnWidth / 2 + (width - btnWidth) * mProgress;
+        mButton->setPositionX(btnPosX);
+    }
 }

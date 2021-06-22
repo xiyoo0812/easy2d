@@ -23,12 +23,14 @@ namespace Easy2D
         virtual void reset();
         virtual void destroy();
         virtual void update(const uint32& escapeMs, bool escapeSec);
-        virtual void onTransformUpdate();
+        virtual void onSizeChanged(const Vec2& size);
 
         virtual BubbleType enableInput(SPtr<KeyEvent> event, VisibleType& visable);
         virtual BubbleType enableInput(SPtr<MouseEvent> event, VisibleType& visable);
         virtual BubbleType handleChildInput(SPtr<KeyEvent> event);
         virtual BubbleType handleChildInput(SPtr<MouseEvent> event);
+
+        virtual const Vec2& getContentSize() const;
 
         void setPosition(const Vec2& pos);
         void setPosition(float32 x, float32 y);

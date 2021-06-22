@@ -13,13 +13,13 @@ namespace Easy2D
         FrontBack,
     };
 
-    class DrawRect
-    {
-    public:
-        bool mbScisser = false;
-        Rect mScisser = {};
-        GLuint mTexture = 0;
-    };
+    //class DrawRect
+    //{
+    //public:
+    //    bool mbScisser = false;
+    //    Rect mScisser = {};
+    //    GLuint mTexture = 0;
+    //};
 
     class RenderBatch final : public Singleton<RenderBatch>
     {

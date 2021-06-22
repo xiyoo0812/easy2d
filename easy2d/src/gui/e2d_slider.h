@@ -13,7 +13,7 @@ namespace Easy2D
         ~UISlider() {}
 
         virtual bool setup();
-        virtual void onTransformUpdate();
+        virtual void onSizeChanged(const Vec2& size);
 
         virtual BubbleType onLButtonUp(SPtr<MouseEvent> event);
         virtual BubbleType onMouseMove(SPtr<MouseEvent> event);

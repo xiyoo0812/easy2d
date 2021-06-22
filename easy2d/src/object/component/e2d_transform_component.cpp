@@ -191,34 +191,23 @@ void TransformComponent::setSize(float32 x, float32 y)
         mSize.x = x;
         mSize.y = y;
         mbChanged = true;
+        mMaster.lock()->onSizeChanged(mSize);
     }
 }
 
 void TransformComponent::setSize(const Vec2& size)
 {
-    if (mSize != size)
-    {
-        mSize = size;
-        mbChanged = true;
-    }
+    setSize(size.x, size.y);
 }
 
 void TransformComponent::setSizeX(float32 x)
 {
-    if (x != mSize.x)
-    {
-        mSize.x = x;
-        mbChanged = true;
-    }
+    setSize(x, mSize.y);
 }
 
 void TransformComponent::setSizeY(float32 y)
 {
-    if (y != mSize.y)
-    {
-        mSize.y = y;
-        mbChanged = true;
-    }
+    setSize(mSize.x, y);
 }
 
 const Vec2& TransformComponent::getSize() const
@@ -243,10 +232,6 @@ const Mat4& TransformComponent::getWorldMatrix() const
 
 void TransformComponent::updateTransform()
 {
-    for (auto child : getMaster()->getChildren())
-    {
-        child->getTransform()->setChanged(mbChanged);
-    }
     Mat4 transWorld{};
     Vec3 centerPos(mAnchor.x * mSize.x, mAnchor.y * mSize.y, 0);
     Vec3 transPos(transDockerX(mPostion.x), transDockerY(mPostion.y), 0);
@@ -282,8 +267,12 @@ void TransformComponent::update(const uint32& escapeMs)
         updateTransform();
         if (!mMaster.expired())
         {
-            mMaster.lock()->notifyTrigger(std::make_shared<TransformEvent>());
-            mMaster.lock()->onTransformUpdate();
+            auto master = mMaster.lock();
+            for (auto child : master->getChildren())
+            {
+                child->getTransform()->setChanged(true);
+            }
+            master->notifyTrigger(std::make_shared<TransformEvent>());
         }
         mbChanged = false;
     }
@@ -295,7 +284,7 @@ void TransformComponent::updateFulllAlign()
     {
         mPostion = Vec2(0, 0);
         mAnchor = Vec2(0.5, 0.5);
-        mSize = getDockerSize();
+        mSize = getContentSize();
     }
 }
 
@@ -318,7 +307,7 @@ Vec2 TransformComponent::getInnerPos(const Vec2& pos)
 
 float32 TransformComponent::transDockerX(float32 x)
 {
-    const Vec2& size = getDockerSize();
+    const Vec2& size = getContentSize();
     switch (mDockerAlign)
     {
     case DockerAlign::Top:
@@ -342,7 +331,7 @@ float32 TransformComponent::transDockerX(float32 x)
 
 float32 TransformComponent::transDockerY(float32 y)
 {
-    const Vec2& size = getDockerSize();
+    const Vec2& size = getContentSize();
     switch (mDockerAlign)
     {
     case DockerAlign::Left:
@@ -364,14 +353,14 @@ float32 TransformComponent::transDockerY(float32 y)
     return y;
 }
 
-const Vec2& TransformComponent::getDockerSize() const
+const Vec2& TransformComponent::getContentSize() const
 {
     if (!mMaster.expired())
     {
         auto parent = mMaster.lock()->getParent();
         if (parent)
         {
-            return parent->getSize();
+            return parent->getContentSize();
         }
     }
     return GraphicsManager::instance()->getDesignResolution();

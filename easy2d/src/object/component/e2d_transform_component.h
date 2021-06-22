@@ -76,7 +76,7 @@ namespace Easy2D
     private:
         void updateTransform();
         void updateFulllAlign();
-        const Vec2& getDockerSize() const;
+        const Vec2& getContentSize() const;
         float32 transDockerX(float32 x);
         float32 transDockerY(float32 y);
 

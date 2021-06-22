@@ -13,7 +13,7 @@ namespace Easy2D
         ~UIProgress(){}
 
         virtual bool setup();
-        virtual void onTransformUpdate();
+        virtual void onSizeChanged(const Vec2& size);
 
         SPtr<UIImage> getBarImage();
         SPtr<UILabel> getLabel();

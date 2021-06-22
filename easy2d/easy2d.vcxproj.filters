@@ -136,6 +136,9 @@
     <ClCompile Include="src\gui\e2d_editbox.cpp">
       <Filter>gui</Filter>
     </ClCompile>
+    <ClCompile Include="src\gui\e2d_scrollview.cpp">
+      <Filter>gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\base\e2d_color.h">
@@ -298,6 +301,9 @@
       <Filter>gui</Filter>
     </ClInclude>
     <ClInclude Include="src\gui\e2d_editbox.h">
+      <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gui\e2d_scrollview.h">
       <Filter>gui</Filter>
     </ClInclude>
   </ItemGroup>

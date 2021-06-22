@@ -246,6 +246,11 @@ const Vec2& Entity::getSize() const
     return mTransform->getSize();
 }
 
+const Vec2& Entity::getContentSize() const
+{
+    return mTransform->getSize();
+}
+
 float32 Entity::getWidth() const
 {
     return mTransform->getWidth();
@@ -275,7 +280,7 @@ void Entity::update(const uint32& escapeMs, bool escapeSec)
     }
 }
 
-void Entity::onTransformUpdate()
+void Entity::onSizeChanged(const Vec2& size)
 {
 }
 

@@ -100,8 +100,12 @@ namespace Easy2D
     typedef Mat3f Mat3;
     typedef Mat4f Mat4;
 
-    const float32 PI = float32(3.141592);
-    const float32 EPSILON = 0.0000001f;
+    const Vec2 VEC2_ZERO = Vec2(0, 0);
+    const Vec3 VEC3_ZERO = Vec3(0, 0, 0);
+    const Vec4 VEC4_ZERO = Vec4(0, 0, 0, 0);
+
+    const float32 PI        = float32(3.141592);
+    const float32 EPSILON   = 0.0000001f;
 };
 
 #endif
