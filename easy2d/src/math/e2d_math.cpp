@@ -431,6 +431,16 @@ namespace Easy2D
         Easy2D::getRotationAndScaling(matrix, rotation, scaling);
     }
 
+    Vec3 project(const Vec3& pos, const Mat4& model, const Mat4& proj, const Vec4& viewport)
+    {
+        return glm::project<float32, float32>(pos, model, proj, viewport);
+    }
+
+    Vec3 unProject(const Vec3& pos, const Mat4& model, const Mat4& proj, const Vec4& viewport)
+    {
+        return glm::unProject<float32, float32>(pos, model, proj, viewport);
+    }
+
     int32 random(int32 min, int32 max)
     {
         std::uniform_int_distribution<int32> dist(min, max);

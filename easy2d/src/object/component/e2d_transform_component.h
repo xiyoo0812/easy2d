@@ -66,6 +66,10 @@ namespace Easy2D
         float32 getWidth() const;
         float32 getHeight() const;
         const Vec2& getSize() const;
+        float32 getAbsoluteWidth() const;
+        float32 getAbsoluteHeight() const;
+        const Vec2& getAbsoluteSize() const;
+
         const Mat4& getWorldMatrix() const;
 
         void setDockerAlign(DockerAlign align);
@@ -84,7 +88,7 @@ namespace Easy2D
         float32 mRotation = 0;
         bool mMirroredX = false, mMirroredY = false;
         DockerAlign mDockerAlign = DockerAlign::LeftTop;
-        Vec2 mAbsolute{ 0, 0 }, mPostion{ 0, 0 }, mAnchor{ 0, 0 }, mScale{ 1,1 }, mSize{ 1, 1 };
+        Vec2 mAbsolute{ 0, 0 }, mPostion{ 0, 0 }, mAnchor{ 0, 0 }, mScale{ 1,1 }, mSize{ 1, 1 }, mAbsoluteSize{ 1,1 };
 
     public:
         inline static String GUID = "transform";

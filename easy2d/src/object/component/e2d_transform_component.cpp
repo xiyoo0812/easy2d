@@ -126,12 +126,19 @@ void TransformComponent::mirrorY(bool y)
 
 bool TransformComponent::isInRect(const Vec2& pos) const
 {
-    return Easy2D::posInRect(mAbsolute, mSize, pos);
+    auto gm = GraphicsManager::instance();
+    auto vp = gm->getViewport();
+    auto wv = transpose(mWorld);
+    auto pv = gm->getProjectionMatrix();
+    auto mv = wv * gm->getViewInverseMatrix();
+    Vec3 lp = Easy2D::unProject(Vec3(pos.x, pos.y, 1), mv, pv, vp);
+    lp = lp / lp.z;
+    return Easy2D::posInRect(mAbsolute, mAbsoluteSize, pos);
 }
 
 const Rect TransformComponent::getRect() const
 {
-    return Rect(mPostion, mSize);
+    return Rect(mAbsolute, mAbsoluteSize);
 }
 
 const Vec2& TransformComponent::getAbsolute() const
@@ -215,6 +222,21 @@ const Vec2& TransformComponent::getSize() const
     return mSize;
 }
 
+const Vec2& TransformComponent::getAbsoluteSize() const
+{
+    return mAbsoluteSize;
+}
+
+float32 TransformComponent::getAbsoluteWidth() const
+{
+    return mAbsoluteSize.x;
+}
+
+float32 TransformComponent::getAbsoluteHeight() const
+{
+    return mAbsoluteSize.y;
+}
+
 float32 TransformComponent::getWidth() const
 {
     return mSize.x;
@@ -233,19 +255,17 @@ const Mat4& TransformComponent::getWorldMatrix() const
 void TransformComponent::updateTransform()
 {
     Mat4 transWorld{};
-    Vec3 centerPos(mAnchor.x * mSize.x, mAnchor.y * mSize.y, 0);
-    Vec3 transPos(transDockerX(mPostion.x), transDockerY(mPostion.y), 0);
-    transWorld *= Easy2D::translate(transPos - centerPos);
     auto parent = getMaster()->getParent();
     if (parent != nullptr)
     {
         transWorld *= parent->getTransform()->getWorldMatrix();
     }
-    transWorld *= Easy2D::translate(mSize.x / 2.0f, mSize.y / 2.0f, 0);
-    if (mRotation != 0)
-    {
-        transWorld *= Easy2D::toMat4(Quat(Vec3(0, 0, mRotation)));
-    }
+    float32 offsetx = mAnchor.x * mSize.x;
+    float32 offsety = mAnchor.y * mSize.y;
+    float32 dockx = transDockerX(mPostion.x);
+    float32 docky = transDockerY(mPostion.y);
+    transWorld *= Easy2D::translate(dockx - offsetx, docky - offsety, 0);
+    transWorld *= Easy2D::translate(offsetx, offsety, 0);
     if (mScale.x != 1.0f || mScale.y != 1.0f)
     {
         transWorld *= Easy2D::scale(Vec3(mScale.x, mScale.y, 1.0f));
@@ -254,8 +274,18 @@ void TransformComponent::updateTransform()
     {
         transWorld *= Easy2D::scale(Vec3(mMirroredX ? -1 : 1, mMirroredY  ? -1 : 1, 1));
     }
-    transWorld *= Easy2D::translate(mSize.x / -2.0f, mSize.y / -2.0f, 0);
+    transWorld *= Easy2D::translate(-offsetx, -offsety, 0);
+    if (mRotation != 0)
+    {
+        transWorld *= Easy2D::translate(mSize.x / 2, mSize.y / 2, 0);
+        transWorld *= Easy2D::toMat4(Quat(Vec3(0, 0, mRotation)));
+        transWorld *= Easy2D::translate(mSize.x / -2, mSize.y / -2, 0);
+    }
     Easy2D::getTranslation(transWorld, mAbsolute);
+
+    Vec2 scaleing;
+    Easy2D::getScaling(transWorld, scaleing);
+    mAbsoluteSize = mSize * scaleing;
     mWorld = transWorld;
 }
 

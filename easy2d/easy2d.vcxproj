@@ -141,6 +141,7 @@
     <ClCompile Include="src\gui\e2d_label.cpp" />
     <ClCompile Include="src\gui\e2d_progress.cpp" />
     <ClCompile Include="src\gui\e2d_radio.cpp" />
+    <ClCompile Include="src\gui\e2d_scrollbar.cpp" />
     <ClCompile Include="src\gui\e2d_scrollview.cpp" />
     <ClCompile Include="src\gui\e2d_slider.cpp" />
     <ClCompile Include="src\gui\e2d_widget.cpp" />
@@ -194,6 +195,7 @@
     <ClInclude Include="src\gui\e2d_label.h" />
     <ClInclude Include="src\gui\e2d_progress.h" />
     <ClInclude Include="src\gui\e2d_radio.h" />
+    <ClInclude Include="src\gui\e2d_scrollbar.h" />
     <ClInclude Include="src\gui\e2d_scrollview.h" />
     <ClInclude Include="src\gui\e2d_slider.h" />
     <ClInclude Include="src\gui\e2d_widget.h" />

@@ -39,6 +39,7 @@ void GraphicsManager::calculateViewPort()
         mViewportResolution.x = width;
         mViewportResolution.y = height;
         float32 scale = mViewportResolution.x / mDesignResolution.x;
+        mViewport = Vec4(mHorizontalViewportOffset, mVerticalViewportOffset, width, height);
         glViewport(mHorizontalViewportOffset, mVerticalViewportOffset, static_cast<int32>(width), static_cast<int32>(height));
         mScaleMatrix = Easy2D::scale(scale, scale, 0);
     }
@@ -198,6 +199,11 @@ int32 GraphicsManager::getScreenWidth() const
 int32 GraphicsManager::getScreenHeight() const
 {
     return mScreenResolution.y;
+}
+
+const Vec4& GraphicsManager::getViewport() const
+{
+    return mViewport;
 }
 
 const Mat4& GraphicsManager::getScaleMatrix() const

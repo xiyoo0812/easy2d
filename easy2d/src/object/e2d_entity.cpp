@@ -171,6 +171,16 @@ void Entity::setScaleY(float32 y)
     mTransform->scaleY(y);
 }
 
+float32 Entity::getRotation() const
+{
+    return mTransform->getRotation();
+}
+
+void Entity::setRotate(float32 rotation)
+{
+    mTransform->rotate(rotation);
+}
+
 void Entity::setPosition(const Vec2& pos)
 {
     mTransform->translate(pos);
@@ -259,6 +269,16 @@ float32 Entity::getWidth() const
 float32 Entity::getHeight() const
 {
     return mTransform->getHeight();
+}
+
+float32 Entity::getAbsoluteWidth() const
+{
+    return mTransform->getAbsoluteWidth();
+}
+
+float32 Entity::getAbsoluteHeight() const
+{
+    return mTransform->getAbsoluteHeight();
 }
 
 void Entity::update(const uint32& escapeMs, bool escapeSec)

@@ -109,6 +109,9 @@ namespace Easy2D
     void getRotationAndScaling(const Mat4& matrix, float32& rotation, Vec2& scaling);
     void decomposeMatrix(const Mat4& matrix, Vec2& position, Vec2& scaling, float32& rotation);
 
+    Vec3 project(const Vec3& pos, const Mat4& model, const Mat4& proj, const Vec4& viewport);
+    Vec3 unProject(const Vec3& pos, const Mat4& model, const Mat4& proj, const Vec4& viewport);
+
     int32 random(int32 min, int32 max);
     uint32 random(uint32 min, uint32 max);
     float32 random(float32 min, float32 max);

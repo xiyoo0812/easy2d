@@ -29,6 +29,7 @@ namespace Easy2D
         int32 getScreenWidth() const;
         int32 getScreenHeight() const;
 
+        const Vec4& getViewport() const;
         const Mat4& getScaleMatrix() const;
         const Mat4& getViewMatrix() const;
         const Mat4& getProjectionMatrix() const;
@@ -54,6 +55,7 @@ namespace Easy2D
 
         void calculateViewPort();
 
+        Vec4 mViewport = {};
         Mat4 mViewMatrix = {};
         Mat4 mScaleMatrix = {};
         Mat4 mProjectionMatrix = {};

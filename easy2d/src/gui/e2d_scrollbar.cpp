@@ -1,9 +1,9 @@
-#include "e2d_radio.h"
+#include "e2d_scrollbar.h"
 
 /* Easy2D */
 using namespace Easy2D;
 
-UIRadio::UIRadio(const String& name) : UIWidget(name)
+UIScrollBar::UIScrollBar(const String& name) : UIWidget(name)
 {
 
 }
