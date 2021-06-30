@@ -41,8 +41,8 @@ bool CameraComponent::setup(SPtr<Entity> master)
 
 void CameraComponent::update(const uint32& escapeMs)
 {
-    auto pos = getTransform()->getAbsolute();
-    Vec3 eyeVec = Vec3(pos, 0);
+    auto pos = getTransform()->getPosition();
+    Vec3 eyeVec = Vec3(400, 300, 0);
     eyeVec.x /= (GraphicsManager::instance()->getScreenWidth() / 2.0f);
     eyeVec.y /= (GraphicsManager::instance()->getScreenHeight() / 2.0f);
 
@@ -179,6 +179,7 @@ Mat4 CameraComponent::matrixOrtho(float32 width, float32 height, float32 nearPla
         0, 0, 0, 1
     );
     //·­×ªY×ø±êÏµ
+    //auto matOrtho = glm::ortho<float32>(0, width, 0, height, nearPlane, farPlane);
     return Easy2D::scale(matOrtho, 1, -1, 1);
 }
 
@@ -225,5 +226,5 @@ void CameraComponent::translateY(float32 y)
 
 void CameraComponent::convertScreenToWorld(Vec2& posInOut)
 {
-    posInOut += getTransform()->getAbsolute();
+    posInOut += getTransform()->getPosition();
 }

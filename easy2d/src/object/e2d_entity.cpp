@@ -171,6 +171,17 @@ void Entity::setScaleY(float32 y)
     mTransform->scaleY(y);
 }
 
+void Entity::setScaleTemp(float32 scale)
+{
+    mTransform->scaleTemp(scale);
+}
+
+void Entity::setScaleTemp(float32 x, float32 y)
+{
+    mTransform->scaleTemp(x, y);
+}
+
+
 float32 Entity::getRotation() const
 {
     return mTransform->getRotation();
@@ -221,11 +232,6 @@ void Entity::setAnchorY(float32 y)
     mTransform->setAnchorY(y);
 }
 
-const Vec2& Entity::getAbsolute() const
-{
-    return mTransform->getAbsolute();
-}
-
 const Vec2& Entity::getPosition() const
 {
     return mTransform->getPosition();
@@ -246,11 +252,6 @@ void Entity::setSize(const Vec2& dim)
     mTransform->setSize(dim);
 }
 
-const Rect Entity::getRect() const
-{
-    return mTransform->getRect();
-}
-
 const Vec2& Entity::getSize() const
 {
     return mTransform->getSize();
@@ -269,16 +270,6 @@ float32 Entity::getWidth() const
 float32 Entity::getHeight() const
 {
     return mTransform->getHeight();
-}
-
-float32 Entity::getAbsoluteWidth() const
-{
-    return mTransform->getAbsoluteWidth();
-}
-
-float32 Entity::getAbsoluteHeight() const
-{
-    return mTransform->getAbsoluteHeight();
 }
 
 void Entity::update(const uint32& escapeMs, bool escapeSec)
@@ -571,9 +562,14 @@ bool Entity::isInRect(const Vec2& pos) const
     return mTransform->isInRect(pos);
 }
 
-Vec2 Entity::getInnerPos(const Vec2& pos) const
+Vec2 Entity::screen2Local(const Vec2& pos) const
 {
-    return mTransform->getInnerPos(pos);
+    return mTransform->screen2Local(pos);
+}
+
+Vec2 Entity::screen2Ratio(const Vec2& pos) const
+{
+    return mTransform->screen2Ratio(pos);
 }
 
 void Entity::setFocus(bool focus)

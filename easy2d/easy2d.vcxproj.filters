@@ -142,6 +142,9 @@
     <ClCompile Include="src\gui\e2d_scrollbar.cpp">
       <Filter>gui</Filter>
     </ClCompile>
+    <ClCompile Include="src\math\e2d_vertix_rect.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\base\e2d_color.h">
@@ -311,6 +314,9 @@
     </ClInclude>
     <ClInclude Include="src\gui\e2d_scrollbar.h">
       <Filter>gui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\math\e2d_vertix_rect.h">
+      <Filter>math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

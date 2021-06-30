@@ -196,26 +196,18 @@ void RenderBatch::createRectQuad(SPtr<RenderRect> rect)
     *  BL    BR
     */
     //Push back all vertices
-    Vec4 TL = Vec4(0, rect->mVertices.y, 0, 1);
-    mul(TL, rect->matWorld, TL);
-    Vec4 TR = Vec4(rect->mVertices.x, rect->mVertices.y, 0, 1);
-    mul(TR, rect->matWorld, TR);
-    Vec4 BL = Vec4(0, 0, 0, 1);
-    mul(BL, rect->matWorld, BL);
-    Vec4 BR = Vec4(rect->mVertices.x, 0, 0, 1);
-    mul(BR, rect->matWorld, BR);
     //0
-    mVertexBuffer.push_back(TL);
+    mVertexBuffer.push_back(rect->mVertices.getTopLeft());
      //1
-    mVertexBuffer.push_back(TR);
+    mVertexBuffer.push_back(rect->mVertices.getTopRight());
      //2
-    mVertexBuffer.push_back(BL);
+    mVertexBuffer.push_back(rect->mVertices.getBottomLeft());
     //1
-    mVertexBuffer.push_back(TR);
+    mVertexBuffer.push_back(rect->mVertices.getTopRight());
     //3
-    mVertexBuffer.push_back(BR);
+    mVertexBuffer.push_back(rect->mVertices.getBottomRight());
     //2
-    mVertexBuffer.push_back(BL);
+    mVertexBuffer.push_back(rect->mVertices.getBottomLeft());
     //0
     mUvCoordBuffer.push_back(Vec2(0, 0));
     mUvCoordBuffer.push_back(Vec2(0, 0));
@@ -250,27 +242,18 @@ void RenderBatch::createSpriteQuad(SPtr<RenderTexture> sprite)
     *  BL    BR
     */
     //Push back all vertices
-    Mat4 matWorld = transpose(sprite->matWorld);
-    Vec4 TL = Vec4(0, sprite->mVertices.y, 0, 1);
-    mul(TL, matWorld, TL);
-    Vec4 TR = Vec4(sprite->mVertices.x, sprite->mVertices.y, 0, 1);
-    mul(TR, matWorld, TR);
-    Vec4 BL = Vec4(0, 0, 0, 1);
-    mul(BL, matWorld, BL);
-    Vec4 BR = Vec4(sprite->mVertices.x, 0, 0, 1);
-    mul(BR, matWorld, BR);
     //0
-    mVertexBuffer.push_back(TL);
+    mVertexBuffer.push_back(sprite->mVertices.getTopLeft());
     //1
-    mVertexBuffer.push_back(TR);
+    mVertexBuffer.push_back(sprite->mVertices.getTopRight());
     //2
-    mVertexBuffer.push_back(BL);
+    mVertexBuffer.push_back(sprite->mVertices.getBottomLeft());
     //1
-    mVertexBuffer.push_back(TR);
+    mVertexBuffer.push_back(sprite->mVertices.getTopRight());
     //3
-    mVertexBuffer.push_back(BR);
+    mVertexBuffer.push_back(sprite->mVertices.getBottomRight());
     //2
-    mVertexBuffer.push_back(BL);
+    mVertexBuffer.push_back(sprite->mVertices.getBottomLeft());
     //Push back all uv's
     //0
     mUvCoordBuffer.push_back(Vec2(sprite->mUvCoords.x, sprite->mUvCoords.y));

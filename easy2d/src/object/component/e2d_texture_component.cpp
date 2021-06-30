@@ -44,37 +44,34 @@ void TextureComponent::update(const uint32& escapeMs)
     {
         if (mbChanged)
         {
-            auto& pos = getTransform()->getPosition();
-            auto& transDim = getTransform()->getSize();
-            auto& matWorld = getTransform()->getWorldMatrix();
-            uint32 windowHeight = GraphicsManager::instance()->getWindowHeight();
             if (mRenderTexScale9.size() > 0)
             {
+                auto& transDim = getTransform()->getSize();
+                auto& matWorld = getTransform()->getWorldMatrix();
                 uint32 centerWidth = transDim.x - mScale9Tile.x - mScale9Tile.z;
                 uint32 centerHeight = transDim.y - mScale9Tile.y - mScale9Tile.w;
-                mRenderTexScale9[0]->mVertices = Vec2(mScale9Tile.x, mScale9Tile.y);    //tl
-                mRenderTexScale9[0]->matWorld = Easy2D::transpose(matWorld * Easy2D::translate(Vec3(0, 0, 0)));
-                mRenderTexScale9[1]->mVertices = Vec2(centerWidth, mScale9Tile.y);      //tc
-                mRenderTexScale9[1]->matWorld = Easy2D::transpose(matWorld * Easy2D::translate(Vec3(mScale9Tile.x, 0, 0)));
-                mRenderTexScale9[2]->mVertices = Vec2(mScale9Tile.z, mScale9Tile.y);    //tr
-                mRenderTexScale9[2]->matWorld = Easy2D::transpose(matWorld * Easy2D::translate(Vec3(transDim.x - mScale9Tile.z, 0, 0)));
-                mRenderTexScale9[3]->mVertices = Vec2(mScale9Tile.x, centerHeight);     //cl
-                mRenderTexScale9[3]->matWorld = Easy2D::transpose(matWorld * Easy2D::translate(Vec3(0, mScale9Tile.y, 0)));
-                mRenderTexScale9[4]->mVertices = Vec2(centerWidth, centerHeight);       //cc
-                mRenderTexScale9[4]->matWorld = Easy2D::transpose(matWorld * Easy2D::translate(Vec3(mScale9Tile.x, mScale9Tile.y, 0)));
-                mRenderTexScale9[5]->mVertices = Vec2(mScale9Tile.z, centerHeight);     //cr
-                mRenderTexScale9[5]->matWorld = Easy2D::transpose(matWorld * Easy2D::translate(Vec3(transDim.x - mScale9Tile.z, mScale9Tile.y, 0)));
-                mRenderTexScale9[6]->mVertices = Vec2(mScale9Tile.x, mScale9Tile.w);    //bl
-                mRenderTexScale9[6]->matWorld = Easy2D::transpose(matWorld * Easy2D::translate(Vec3(0, transDim.y - mScale9Tile.w, 0)));
-                mRenderTexScale9[7]->mVertices = Vec2(centerWidth, mScale9Tile.w);      //bc
-                mRenderTexScale9[7]->matWorld = Easy2D::transpose(matWorld * Easy2D::translate(Vec3(mScale9Tile.x, transDim.y - mScale9Tile.w, 0)));
-                mRenderTexScale9[8]->mVertices = Vec2(mScale9Tile.z, mScale9Tile.w);    //br
-                mRenderTexScale9[8]->matWorld = Easy2D::transpose(matWorld * Easy2D::translate(Vec3(transDim.x - mScale9Tile.z, transDim.y - mScale9Tile.w, 0)));
+                mRenderTexScale9[0]->mVertices = VertixRect(Vec2(0), Vec2(mScale9Tile.x, mScale9Tile.y));    //tl
+                mRenderTexScale9[0]->mVertices.mul(Easy2D::transpose(matWorld * Easy2D::translate(Vec3(0, 0, 0))));
+                mRenderTexScale9[1]->mVertices = VertixRect(Vec2(0), Vec2(centerWidth, mScale9Tile.y));      //tc
+                mRenderTexScale9[1]->mVertices.mul(Easy2D::transpose(matWorld * Easy2D::translate(Vec3(mScale9Tile.x, 0, 0))));
+                mRenderTexScale9[2]->mVertices = VertixRect(Vec2(0), Vec2(mScale9Tile.z, mScale9Tile.y));    //tr
+                mRenderTexScale9[2]->mVertices.mul(Easy2D::transpose(matWorld * Easy2D::translate(Vec3(transDim.x - mScale9Tile.z, 0, 0))));
+                mRenderTexScale9[3]->mVertices = VertixRect(Vec2(0), Vec2(mScale9Tile.x, centerHeight));     //cl
+                mRenderTexScale9[3]->mVertices.mul(Easy2D::transpose(matWorld * Easy2D::translate(Vec3(0, mScale9Tile.y, 0))));
+                mRenderTexScale9[4]->mVertices = VertixRect(Vec2(0), Vec2(centerWidth, centerHeight));       //cc
+                mRenderTexScale9[4]->mVertices.mul(Easy2D::transpose(matWorld * Easy2D::translate(Vec3(mScale9Tile.x, mScale9Tile.y, 0))));
+                mRenderTexScale9[5]->mVertices = VertixRect(Vec2(0), Vec2(mScale9Tile.z, centerHeight));     //cr
+                mRenderTexScale9[5]->mVertices.mul(Easy2D::transpose(matWorld * Easy2D::translate(Vec3(transDim.x - mScale9Tile.z, mScale9Tile.y, 0))));
+                mRenderTexScale9[6]->mVertices = VertixRect(Vec2(0), Vec2(mScale9Tile.x, mScale9Tile.w));    //bl
+                mRenderTexScale9[6]->mVertices.mul(Easy2D::transpose(matWorld * Easy2D::translate(Vec3(0, transDim.y - mScale9Tile.w, 0))));
+                mRenderTexScale9[7]->mVertices = VertixRect(Vec2(0), Vec2(centerWidth, mScale9Tile.w));      //bc
+                mRenderTexScale9[7]->mVertices.mul(Easy2D::transpose(matWorld * Easy2D::translate(Vec3(mScale9Tile.x, transDim.y - mScale9Tile.w, 0))));
+                mRenderTexScale9[8]->mVertices = VertixRect(Vec2(0), Vec2(mScale9Tile.z, mScale9Tile.w));    //br
+                mRenderTexScale9[8]->mVertices.mul(Easy2D::transpose(matWorld * Easy2D::translate(Vec3(transDim.x - mScale9Tile.z, transDim.y - mScale9Tile.w, 0))));
             }
             else
             {
-                mRenderTex->mVertices = transDim;
-                mRenderTex->matWorld = matWorld;
+                mRenderTex->mVertices = getTransform()->getVertices();
             }
             mbChanged = false;
         }
@@ -82,7 +79,7 @@ void TextureComponent::update(const uint32& escapeMs)
         {
             for (auto renderTex : mRenderTexScale9)
             {
-                 RenderBatch::instance()->addRenderQueue(renderTex);
+                RenderBatch::instance()->addRenderQueue(renderTex);
             }
             return;
         }

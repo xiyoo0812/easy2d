@@ -38,7 +38,7 @@ bool Scene::setup()
     }
     addChild(mDefCamera);
     setActiveCamera(mDefCamera);
-    InputSystem::instance()->addInputSink(std::dynamic_pointer_cast<InputSink>(shared_from_this()));
+//    InputSystem::instance()->addInputSink(std::dynamic_pointer_cast<InputSink>(shared_from_this()));
     return true;
 }
 

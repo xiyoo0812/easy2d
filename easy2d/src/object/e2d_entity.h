@@ -51,23 +51,22 @@ namespace Easy2D
         void setScale(float32 u);
         void setScaleX(float32 x);
         void setScaleY(float32 y);
+        void setScaleTemp(float32 u);
+        void setScaleTemp(float32 x, float32 y);
 
         float32 getRotation() const;
         void setRotate(float32 rotation);
 
         float32 getWidth() const;
         float32 getHeight() const;
-        float32 getAbsoluteWidth() const;
-        float32 getAbsoluteHeight() const;
         void setSizeX(float32 x);
         void setSizeY(float32 y);
         void setSize(const Vec2& dim);
-        const Rect getRect() const;
         const Vec2& getSize() const;
-        const Vec2& getAbsolute() const;
         const Vec2& getPosition() const;
         bool isInRect(const Vec2& pos) const;
-        Vec2 getInnerPos(const Vec2& pos) const;
+        Vec2 screen2Local(const Vec2& pos) const;
+        Vec2 screen2Ratio(const Vec2& pos) const;
 
         const String& getPhysics() const;
         void setPhysics(const String& physics);

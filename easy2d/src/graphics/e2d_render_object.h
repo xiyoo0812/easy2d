@@ -2,6 +2,7 @@
 #define RENDER_OBJECT_H
 
 #include "base/e2d_color.h"
+#include "math/e2d_vertix_rect.h"
 
 namespace Easy2D
 {
@@ -13,13 +14,12 @@ namespace Easy2D
     public:
         bool mbHud = false;
         Color mColor = Color::White;
-        Mat4 matWorld{};
     };
 
     class RenderRect : public RenderObject
     {
     public:
-        Vec2 mVertices{ 1, 1 };
+        VertixRect mVertices;
     };
 
     class RenderTexture : public RenderRect
@@ -32,6 +32,7 @@ namespace Easy2D
     class RenderText : public RenderObject
     {
     public:
+        Mat4 matWorld{};
         uint16 mSpacing = 1;
         uint16 mShadowSize = 0;
         uint16 mOutlineSize = 0;

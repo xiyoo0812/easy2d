@@ -1,7 +1,7 @@
 #ifndef TRANSFORM_COMPONENT_H
 #define TRANSFORM_COMPONENT_H
 
-#include "math/e2d_rect.h"
+#include "math/e2d_vertix_rect.h"
 #include "object/e2d_component.h"
 
 namespace Easy2D
@@ -40,16 +40,18 @@ namespace Easy2D
         void scale(float32 u);
         void scaleX(float32 x);
         void scaleY(float32 y);
+        void scaleTemp(float32 u);
+        void scaleTemp(float32 x, float32 y);
 
         void mirror(bool x, bool y);
         void mirrorX(bool x);
         void mirrorY(bool y);
 
-        const Rect getRect() const;
         const Vec2& getScale() const;
-        const Vec2& getAbsolute() const;
         const Vec2& getPosition() const;
         bool isInRect(const Vec2& pos) const;
+        Vec2 screen2Local(const Vec2& pos) const;
+        Vec2 screen2Ratio(const Vec2& pos) const;
 
         float32 getRotation() const;
         void rotate(float32 rotation);
@@ -66,16 +68,12 @@ namespace Easy2D
         float32 getWidth() const;
         float32 getHeight() const;
         const Vec2& getSize() const;
-        float32 getAbsoluteWidth() const;
-        float32 getAbsoluteHeight() const;
-        const Vec2& getAbsoluteSize() const;
 
         const Mat4& getWorldMatrix() const;
+        const VertixRect& getVertices() const;
 
         void setDockerAlign(DockerAlign align);
         DockerAlign getDockerAlign() const;
-
-        Vec2 getInnerPos(const Vec2& pos);
 
     private:
         void updateTransform();
@@ -85,10 +83,11 @@ namespace Easy2D
         float32 transDockerY(float32 y);
 
         Mat4 mWorld = {};
+        VertixRect mVertices;
         float32 mRotation = 0;
         bool mMirroredX = false, mMirroredY = false;
         DockerAlign mDockerAlign = DockerAlign::LeftTop;
-        Vec2 mAbsolute{ 0, 0 }, mPostion{ 0, 0 }, mAnchor{ 0, 0 }, mScale{ 1,1 }, mSize{ 1, 1 }, mAbsoluteSize{ 1,1 };
+        Vec2 mPostion{ 0 }, mAnchor{ 0 }, mScale { 1 }, mSize{ 1 }, mScaletmp{ 1 };
 
     public:
         inline static String GUID = "transform";

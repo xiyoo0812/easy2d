@@ -27,8 +27,8 @@ void UISlider::onSizeChanged(const Vec2& size)
 
 BubbleType UISlider::onLButtonUp(SPtr<MouseEvent> event)
 {
-    Vec2 innerPos = getInnerPos(event->mPos);
-    setProgress(innerPos.x / getAbsoluteWidth());
+    Vec2 ratio = screen2Ratio(event->mPos);
+    setProgress(ratio.x);
     return BubbleType::Break;
 }
 
@@ -36,8 +36,8 @@ BubbleType UISlider::onMouseMove(SPtr<MouseEvent> event)
 {
     if (mButton->getStatus() == ButtonStatus::Pushed)
     {
-        Vec2 innerPos = getInnerPos(event->mPos);
-        setProgress(innerPos.x / getAbsoluteWidth());
+        Vec2 ratio = screen2Ratio(event->mPos);
+        setProgress(ratio.x);
     }
     return BubbleType::Continue;
 }

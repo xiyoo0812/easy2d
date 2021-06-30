@@ -271,7 +271,7 @@ void UIButton::updateStatus(bool showOrHide)
     }
     if (showOrHide)
     {
-        setScale(scale);
+       setScaleTemp(scale);
     }
 }
 
