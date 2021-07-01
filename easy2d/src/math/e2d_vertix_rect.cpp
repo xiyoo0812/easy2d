@@ -3,15 +3,20 @@
 
 using namespace Easy2D;
 
-VertixRect::VertixRect(const Vec2& bl, const Vec2& size)
-    : mTL(bl.x, bl.y + size.y, 0, 1), mTR(bl.x + size.x, bl.y + size.y, 0, 1), mBL(bl.x, bl.y, 0, 1), mBR(bl.x + size.x, bl.y, 0, 1)
-    , mSize(size)
+VertixRect::VertixRect(const Vec2& bl, const Vec2& size) : mSize(size)
 {
+    mVectics =
+    {
+        Vec4(bl.x, bl.y + size.y, 0, 1),
+        Vec4(bl.x + size.x, bl.y + size.y, 0, 1),
+        Vec4(bl.x, bl.y, 0, 1),
+        Vec4(bl.x + size.x, bl.y, 0, 1)
+    };
 }
 
 VertixRect::VertixRect(const Vec4& tl, const Vec4& tr, const Vec4& bl, const Vec4& br)
-    : mTL(tl), mTR(tr), mBL(bl), mBR(br)
 {
+    mVectics = { tl, tr, bl, br };
     mSize.x = sqrt((tr.x - tl.x) * (tr.x - tl.x) + (tr.y - tl.y) * (tr.y - tl.y));
     mSize.y = sqrt((bl.x - tl.x) * (bl.x - tl.x) + (bl.y - tl.y) * (bl.y - tl.y));
 }
@@ -19,20 +24,17 @@ VertixRect::VertixRect(const Vec4& tl, const Vec4& tr, const Vec4& bl, const Vec
 
 VertixRect VertixRect::operator=(const VertixRect& yRef)
 {
-    mTL = yRef.mTL;
-    mTR = yRef.mTR;
-    mBL = yRef.mBL;
-    mBR = yRef.mBR;
+    mVectics = yRef.mVectics;
     mSize = yRef.mSize;
     return *this;
 }
 
 void VertixRect::mul(const Mat4& mat)
 {
-    Easy2D::mul(mTL, mat, mTL);
-    Easy2D::mul(mTR, mat, mTR);
-    Easy2D::mul(mBL, mat, mBL);
-    Easy2D::mul(mBR, mat, mBR);
+    Easy2D::mul(mVectics[0], mat, mVectics[0]);
+    Easy2D::mul(mVectics[1], mat, mVectics[1]);
+    Easy2D::mul(mVectics[2], mat, mVectics[2]);
+    Easy2D::mul(mVectics[3], mat, mVectics[3]);
 }
 
 float32 VertixRect::getWidth() const
@@ -52,26 +54,31 @@ const Vec2& VertixRect::getSize() const
 
 const Vec4& VertixRect::getTopLeft() const
 {
-    return mTL;
+    return mVectics[0];
 }
 
 const Vec4& VertixRect::getTopRight() const
 {
-    return mTR;
+    return mVectics[1];
 }
 
 const Vec4& VertixRect::getBottomLeft() const
 {
-    return mBL;
+    return mVectics[2];
 }
 
 const Vec4& VertixRect::getBottomRight() const
 {
-    return mBR;
+    return mVectics[3];
+}
+
+const Vector<Vec4>& VertixRect::getVectics() const
+{
+    return mVectics;
 }
 
 bool VertixRect::posInRect(const Vec2& pos) const
 {
 #define cross(p1, p2, p) ((p2.x - p1.x) * (p.y - p1.y) - (p.x - p1.x) * (p2.y - p1.y))
-    return cross(mTL, mTR, pos) * cross(mBR, mBL, pos) >= 0 && cross(mTR, mBR, pos) * cross(mBL, mTL, pos) >= 0;
+    return cross(mVectics[0], mVectics[1], pos) * cross(mVectics[3], mVectics[2], pos) >= 0 && cross(mVectics[1], mVectics[3], pos) * cross(mVectics[2], mVectics[0], pos) >= 0;
 }

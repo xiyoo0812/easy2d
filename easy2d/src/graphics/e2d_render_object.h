@@ -19,7 +19,7 @@ namespace Easy2D
     class RenderRect : public RenderObject
     {
     public:
-        VertixRect mVertices;
+        VertixRect mVexRect;
     };
 
     class RenderTexture : public RenderRect

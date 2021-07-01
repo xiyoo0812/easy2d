@@ -13,6 +13,8 @@ RenderBatch::RenderBatch() : Singleton<RenderBatch>()
 
 RenderBatch::~RenderBatch()
 {
+    glDeleteVertexArrays(1, &mVAO);
+    glDeleteBuffers(4, mVBO);
 }
 
 void RenderBatch::initialize()
@@ -108,28 +110,32 @@ void RenderBatch::begin()
     glUniformMatrix4fv(mProjID, 1, GL_FALSE, toPointer(projectionMat));
 
     size_t vSize = mVertexBuffer.size();
-    if (vSize > 0)
+    size_t iSize = mIndexBuffer.size();
+    if (vSize > 0 && iSize > 0)
     {
         // position attribute
         glBindBuffer(GL_ARRAY_BUFFER, mVBO[0]);
         glBufferData(GL_ARRAY_BUFFER, sizeof(Vec4) * vSize, reinterpret_cast<GLvoid*>(&mVertexBuffer.at(0)), GL_DYNAMIC_DRAW);
         glVertexAttribPointer(mVertexID, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4), (void*)0);
         glEnableVertexAttribArray(mVertexID);
-        // color attribute
+        // coord attribute
+        size_t uvSize = mUvCoordBuffer.size();
         glBindBuffer(GL_ARRAY_BUFFER, mVBO[1]);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(Vec4) * vSize, reinterpret_cast<GLvoid*>(&mColorBuffer.at(0)), GL_DYNAMIC_DRAW);
-        glVertexAttribPointer(mColorID, 4, GL_FLOAT, GL_FALSE, sizeof(Vec4), (void*)0);
-        glEnableVertexAttribArray(mColorID);
-        // hud attribute
-        glBindBuffer(GL_ARRAY_BUFFER, mVBO[2]);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float32) * vSize, reinterpret_cast<GLvoid*>(&mIsHUDBuffer.at(0)), GL_DYNAMIC_DRAW);
-        glVertexAttribPointer(mHUDID, 1, GL_FLOAT, GL_FALSE, sizeof(float32), (void*)0);
-        glEnableVertexAttribArray(mHUDID);
-        //// hud attribute
-        glBindBuffer(GL_ARRAY_BUFFER, mVBO[3]);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(Vec2) * vSize, reinterpret_cast<GLvoid*>(&mUvCoordBuffer.at(0)), GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(Vec2) * uvSize, reinterpret_cast<GLvoid*>(&mUvCoordBuffer.at(0)), GL_DYNAMIC_DRAW);
         glVertexAttribPointer(mTexCoordID, 2, GL_FLOAT, GL_FALSE, sizeof(Vec2), (void*)0);
         glEnableVertexAttribArray(mTexCoordID);
+        // color attribute
+        size_t cSize = mColorBuffer.size();
+        glBindBuffer(GL_ARRAY_BUFFER, mVBO[2]);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(Color) * cSize, reinterpret_cast<GLvoid*>(&mColorBuffer.at(0)), GL_DYNAMIC_DRAW);
+        glVertexAttribPointer(mColorID, 4, GL_FLOAT, GL_FALSE, sizeof(Color), (void*)0);
+        glEnableVertexAttribArray(mColorID);
+        // hud attribute
+        size_t uSize = mIsHUDBuffer.size();
+        glBindBuffer(GL_ARRAY_BUFFER, mVBO[3]);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float32) * uSize, reinterpret_cast<GLvoid*>(&mIsHUDBuffer.at(0)), GL_DYNAMIC_DRAW);
+        glVertexAttribPointer(mHUDID, 1, GL_FLOAT, GL_FALSE, sizeof(float32), (void*)0);
+        glEnableVertexAttribArray(mHUDID);
     }
 }
 
@@ -143,6 +149,7 @@ void RenderBatch::end()
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
     mProgram->unbind();
+    mIndexBuffer.clear();
     mVertexBuffer.clear();
     mUvCoordBuffer.clear();
     mIsHUDBuffer.clear();
@@ -175,8 +182,9 @@ void RenderBatch::drawTexture(uint32 start, uint32 size, uint32 texture)
 {
     if (size > 0)
     {
+        size_t index = start * 6;
         glBindTexture(GL_TEXTURE_2D, texture);
-        glDrawArrays(GL_TRIANGLES, start * 6, size * 6);
+        glDrawElements(GL_TRIANGLES, size * 6, GL_UNSIGNED_INT, reinterpret_cast<GLvoid*>(&mIndexBuffer.at(index)));
     }
 }
 
@@ -196,34 +204,21 @@ void RenderBatch::createRectQuad(SPtr<RenderRect> rect)
     *  BL    BR
     */
     //Push back all vertices
-    //0
-    mVertexBuffer.push_back(rect->mVertices.getTopLeft());
-     //1
-    mVertexBuffer.push_back(rect->mVertices.getTopRight());
-     //2
-    mVertexBuffer.push_back(rect->mVertices.getBottomLeft());
-    //1
-    mVertexBuffer.push_back(rect->mVertices.getTopRight());
-    //3
-    mVertexBuffer.push_back(rect->mVertices.getBottomRight());
-    //2
-    mVertexBuffer.push_back(rect->mVertices.getBottomLeft());
-    //0
-    mUvCoordBuffer.push_back(Vec2(0, 0));
-    mUvCoordBuffer.push_back(Vec2(0, 0));
-    mUvCoordBuffer.push_back(Vec2(0, 0));
-    mUvCoordBuffer.push_back(Vec2(0, 0));
-    mUvCoordBuffer.push_back(Vec2(0, 0));
-    mUvCoordBuffer.push_back(Vec2(0, 0));
+    GLuint index = mVertexBuffer.size();
+    auto vextics = rect->mVexRect.getVectics();
+    //vextics0123
+    mVertexBuffer.insert(mVertexBuffer.end(), vextics.begin(), vextics.end());
+    //indices 012,132
+    Vector<GLuint> indices = { index, index + 1, index + 2, index + 1, index + 3, index + 2 };
+    mIndexBuffer.insert(mIndexBuffer.end(), indices.begin(), indices.end());
+    //uv
+    mUvCoordBuffer.insert(mUvCoordBuffer.end(), 4, Vec2(0, 0));
+    //hud
+    mIsHUDBuffer.insert(mIsHUDBuffer.end(), 4, float32(true));
+    //color
+    mColorBuffer.insert(mColorBuffer.end(), 4, rect->mColor);
     //tex
     mTextureQueue.push_back(0);
-    //bool & color buffer
-    for (uint32 i = 0; i < 6; ++i)
-    {
-        mIsHUDBuffer.push_back(float32(true));
-        //rgba
-        mColorBuffer.push_back(Color::Red);
-    }
 }
 
 void RenderBatch::createSpriteQuad(SPtr<RenderTexture> sprite)
@@ -242,18 +237,13 @@ void RenderBatch::createSpriteQuad(SPtr<RenderTexture> sprite)
     *  BL    BR
     */
     //Push back all vertices
-    //0
-    mVertexBuffer.push_back(sprite->mVertices.getTopLeft());
-    //1
-    mVertexBuffer.push_back(sprite->mVertices.getTopRight());
-    //2
-    mVertexBuffer.push_back(sprite->mVertices.getBottomLeft());
-    //1
-    mVertexBuffer.push_back(sprite->mVertices.getTopRight());
-    //3
-    mVertexBuffer.push_back(sprite->mVertices.getBottomRight());
-    //2
-    mVertexBuffer.push_back(sprite->mVertices.getBottomLeft());
+    GLuint index = mVertexBuffer.size();
+    auto vextics = sprite->mVexRect.getVectics();
+    //vextics 0123
+    mVertexBuffer.insert(mVertexBuffer.end(), vextics.begin(), vextics.end());
+    //indices 012,132
+    Vector<GLuint> indices = { index, index + 1, index + 2, index + 1, index + 3, index + 2 };
+    mIndexBuffer.insert(mIndexBuffer.end(), indices.begin(), indices.end());
     //Push back all uv's
     //0
     mUvCoordBuffer.push_back(Vec2(sprite->mUvCoords.x, sprite->mUvCoords.y));
@@ -261,21 +251,14 @@ void RenderBatch::createSpriteQuad(SPtr<RenderTexture> sprite)
     mUvCoordBuffer.push_back(Vec2(sprite->mUvCoords.z, sprite->mUvCoords.y));
     //2
     mUvCoordBuffer.push_back(Vec2(sprite->mUvCoords.x, sprite->mUvCoords.w));
-    //1
-    mUvCoordBuffer.push_back(Vec2(sprite->mUvCoords.z, sprite->mUvCoords.y));
     //3
     mUvCoordBuffer.push_back(Vec2(sprite->mUvCoords.z, sprite->mUvCoords.w));
-    //2
-    mUvCoordBuffer.push_back(Vec2(sprite->mUvCoords.x, sprite->mUvCoords.w));
+    //hud
+    mIsHUDBuffer.insert(mIsHUDBuffer.end(), 4, float32(sprite->mbHud));
+    //color
+    mColorBuffer.insert(mColorBuffer.end(), 4, sprite->mColor);
     //tex
     mTextureQueue.push_back(sprite->mTextureID);
-    //bool & color buffer
-    for (uint32 i = 0; i < 6; ++i)
-    {
-        mIsHUDBuffer.push_back(float32(sprite->mbHud));
-        //rgba
-        mColorBuffer.push_back(sprite->mColor);
-    }
 }
 
 void RenderBatch::createTextQuad(SPtr<RenderText> text, Vec2& offset, Color& color)
@@ -317,18 +300,16 @@ void RenderBatch::createTextQuad(SPtr<RenderText> text, Vec2& offset, Color& col
             mul(BL, transformMat, BL);
             Vec4 BR = Vec4(fChar->vertexSize.x, 0, 0, 1);
             mul(BR, transformMat, BR);
-            //0
+
+            GLuint index = mVertexBuffer.size();
+            //vextics 0123
             mVertexBuffer.push_back(TL);
-            //1
             mVertexBuffer.push_back(TR);
-            //2
             mVertexBuffer.push_back(BL);
-            //1
-            mVertexBuffer.push_back(TR);
-            //3
             mVertexBuffer.push_back(BR);
-            //2
-            mVertexBuffer.push_back(BL);
+            //indices 012,132
+            Vector<GLuint> indices = { index, index + 1, index + 2, index + 1, index + 3, index + 2 };
+            mIndexBuffer.insert(mIndexBuffer.end(), indices.begin(), indices.end());
             //Push back all uv's
             //0
             mUvCoordBuffer.push_back(Vec2(fChar->uvCoords.x, fChar->uvCoords.y));
@@ -336,20 +317,14 @@ void RenderBatch::createTextQuad(SPtr<RenderText> text, Vec2& offset, Color& col
             mUvCoordBuffer.push_back(Vec2(fChar->uvCoords.z, fChar->uvCoords.y));
             //2
             mUvCoordBuffer.push_back(Vec2(fChar->uvCoords.x, fChar->uvCoords.w));
-            //1
-            mUvCoordBuffer.push_back(Vec2(fChar->uvCoords.z, fChar->uvCoords.y));
             //3
             mUvCoordBuffer.push_back(Vec2(fChar->uvCoords.z, fChar->uvCoords.w));
-            //2
-            mUvCoordBuffer.push_back(Vec2(fChar->uvCoords.x, fChar->uvCoords.w));
+            //hud
+            mIsHUDBuffer.insert(mIsHUDBuffer.end(), 4, float32(text->mbHud));
+            //color
+            mColorBuffer.insert(mColorBuffer.end(), 4, color);
             //tex
             mTextureQueue.push_back(fChar->textureID);
-            //bool & color buffer
-            for (uint32 i = 0; i < 6; ++i)
-            {
-                mIsHUDBuffer.push_back(float32(text->mbHud));
-                mColorBuffer.push_back(color);
-            }
         }
     }
 }

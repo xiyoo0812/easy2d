@@ -51,6 +51,7 @@ namespace Easy2D
         Vector<Color> mColorBuffer;
         Vector<float32> mIsHUDBuffer;
         Vector<Vec2> mUvCoordBuffer;
+        Vector<GLuint> mIndexBuffer;
         Vector<GLuint> mTextureQueue;
 
         GLuint mVAO = 0;

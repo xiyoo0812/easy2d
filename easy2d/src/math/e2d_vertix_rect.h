@@ -24,11 +24,12 @@ namespace Easy2D
         const Vec4& getTopRight() const;
         const Vec4& getBottomLeft() const;
         const Vec4& getBottomRight() const;
+        const Vector<Vec4>& getVectics() const;
 
         bool posInRect(const Vec2& pos) const;
 
     private:
-        Vec4 mTL, mTR, mBL, mBR;
+        Vector<Vec4> mVectics;
         Vec2 mSize;
     };
 }
