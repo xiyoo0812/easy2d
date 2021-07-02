@@ -57,7 +57,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>./src;$(SolutionDir)extend/stb;$(SolutionDir)extend/glm;$(SolutionDir)extend/glad;$(SolutionDir)extend/lua/lua;$(SolutionDir)extend/luna/src;$(SolutionDir)extend/glew/src;$(SolutionDir)extend/lualog/src;$(SolutionDir)extend/glfw/include;$(SolutionDir)extend/freetype/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./src;$(SolutionDir)extend/stb;$(SolutionDir)extend/glm;$(SolutionDir)extend/glad;$(SolutionDir)extend/glew/src;$(SolutionDir)extend/glfw/include;$(SolutionDir)extend/luaext/lua/lua;$(SolutionDir)extend/luaext/lualog/src;$(SolutionDir)extend/freetype/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>RELEASEDEBUG;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -88,7 +88,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDebug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>./src;$(SolutionDir)extend/stb;$(SolutionDir)extend/glm;$(SolutionDir)extend/glad;$(SolutionDir)extend/lua/lua;$(SolutionDir)extend/luna/src;$(SolutionDir)extend/glew/src;$(SolutionDir)extend/lualog/src;$(SolutionDir)extend/glfw/include;$(SolutionDir)extend/freetype/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./src;$(SolutionDir)extend/stb;$(SolutionDir)extend/glm;$(SolutionDir)extend/glad;$(SolutionDir)extend/glew/src;$(SolutionDir)extend/glfw/include;$(SolutionDir)extend/luaext/lua/lua;$(SolutionDir)extend/luaext/lualog/src;$(SolutionDir)extend/freetype/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>RELEASEDEBUG;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
