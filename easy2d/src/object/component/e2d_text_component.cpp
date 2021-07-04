@@ -27,7 +27,7 @@ void TextComponent::checkWrapping()
 {
     Vector<Wtring> renderWords;
     Vector<uint16> lineWidths = {};
-    Wtring wrapText = EMPTY_STRING;
+    Wtring wrapText = EMPTY_STR;
     uint16 lineWidth = 0, textWidth = 0;
     Vec2 transDim = getTransform()->getSize();
     if (isLineWarp() && mLineWidth > transDim.x - mFrameOffset * 2)
@@ -42,7 +42,7 @@ void TextComponent::checkWrapping()
             {
                 lineWidths.push_back(lineWidth);
                 renderWords.push_back(wrapText);
-                wrapText = EMPTY_STRING;
+                wrapText = EMPTY_STR;
                 lineWidth = 0;
             }
             continue;
@@ -60,7 +60,7 @@ void TextComponent::checkWrapping()
                 {
                     lineWidths.push_back(lineWidth);
                     renderWords.push_back(wrapText);
-                    wrapText = EMPTY_STRING;
+                    wrapText = EMPTY_STR;
                     lineWidth = 0;
                 }
             }

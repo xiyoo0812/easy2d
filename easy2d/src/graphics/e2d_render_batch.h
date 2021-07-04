@@ -29,7 +29,7 @@ namespace Easy2D
         void initialize();
         void initializeGLStates();
         void addRenderQueue(SPtr<RenderText> text);
-        void addRenderQueue(SPtr<RenderRect> rect);
+        void addRenderQueue(SPtr<RenderObject> obj);
         void addRenderQueue(SPtr<RenderTexture> texture);
         void setSortingMode(RenderSortingMode mode);
         const RenderSortingMode getSortingMode();
@@ -42,7 +42,7 @@ namespace Easy2D
         void begin();
         void end();
         void draw();
-        void createRectQuad(SPtr<RenderRect> rect);
+        void createObjQuad(SPtr<RenderObject> obj);
         void createSpriteQuad(SPtr<RenderTexture> sprite);
         void createTextQuad(SPtr<RenderText> text, Vec2& offset, Color& color);
         void drawTexture(uint32 start, uint32 size, uint32 texture);

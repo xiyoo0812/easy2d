@@ -14,21 +14,21 @@ namespace Easy2D
     public:
         bool mbHud = false;
         Color mColor = Color::White;
+        VertixRect mRect{};
+
+        void buildRect(const Vec2& bl, const Vec2& size, const Mat4& mat)
+        {
+            mRect.buildRect(bl, size, mat);
+        }
     };
 
-    class RenderRect : public RenderObject
-    {
-    public:
-        VertixRect mVexRect;
-    };
-
-    class RenderTexture : public RenderRect
+    class RenderTexture : public RenderObject
     {
     public:
         uint32 mTextureID = 0;
         Vector<Vec2> mUvCoords{};
 
-        void buildUvCooreds(Vec4 uvcoods)
+        void setUvCooreds(const Vec4& uvcoods)
         {
             /*
             *  TL    TR

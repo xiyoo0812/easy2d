@@ -20,7 +20,6 @@ namespace Easy2D
         float32 getHeight() const;
 
         const Vec2& getLeftTop() const;
-        const Vec2& getSize() const;
 
         Vec2 getCenterPoint() const;
         bool posInRect(const Vec2& pos) const;
@@ -29,7 +28,6 @@ namespace Easy2D
         void setLeftTop(const Vec2& leftTop);
         void setRightBottom(const Vec2& rightBottom);
 
-    private:
         Vec2 mLeftTop;
         Vec2 mSize;
     };

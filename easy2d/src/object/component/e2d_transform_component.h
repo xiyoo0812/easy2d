@@ -1,8 +1,8 @@
 #ifndef TRANSFORM_COMPONENT_H
 #define TRANSFORM_COMPONENT_H
 
-#include "math/e2d_vertix_rect.h"
 #include "object/e2d_component.h"
+#include "math/e2d_vertix_rect.h"
 
 namespace Easy2D
 {
@@ -50,7 +50,6 @@ namespace Easy2D
         const Vec2& getScale() const;
         const Vec2& getPosition() const;
         bool isInRect(const Vec2& pos) const;
-        Vec2 screen2Local(const Vec2& pos) const;
         Vec2 screen2Ratio(const Vec2& pos) const;
 
         float32 getRotation() const;
@@ -68,9 +67,9 @@ namespace Easy2D
         float32 getWidth() const;
         float32 getHeight() const;
         const Vec2& getSize() const;
-
+        
+        const VertixRect& getRect() const;
         const Mat4& getWorldMatrix() const;
-        const VertixRect& getVertices() const;
 
         void setDockerAlign(DockerAlign align);
         DockerAlign getDockerAlign() const;
@@ -83,8 +82,8 @@ namespace Easy2D
         float32 transDockerY(float32 y);
 
         Mat4 mWorld = {};
-        VertixRect mVertices;
         float32 mRotation = 0;
+        VertixRect mVectics{};
         bool mMirroredX = false, mMirroredY = false;
         DockerAlign mDockerAlign = DockerAlign::LeftTop;
         Vec2 mPostion{ 0 }, mAnchor{ 0 }, mScale { 1 }, mSize{ 1 }, mScaletmp{ 1 };

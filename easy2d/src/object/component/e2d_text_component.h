@@ -8,6 +8,11 @@
 
 namespace Easy2D
 {
+    class RenderChar : public RenderTexture
+    {
+        Vec2 mLocal;
+    };
+
     class TextComponent : public Component
     {
     public:
@@ -73,7 +78,8 @@ namespace Easy2D
 
         uint32 mLineWidth = 0;
         uint32 mFrameOffset = 1;
-        Wtring mOrigText = EMPTY_STRING;
+        Wtring mOrigText = EMPTY_STR;
+        Vector<RenderChar> mRenderChars{};
         SPtr<RenderText> mRenderText = nullptr;
         VerticalAlign mVerticalAlign = VerticalAlign::Center;
         HorizontalAlign mHorizontalAlign = HorizontalAlign::Left;

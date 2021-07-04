@@ -53,7 +53,7 @@ namespace Easy2D
 
     inline static const wchar_t INPUT = '|';
     inline static const wchar_t ENTER = '\n';
-    inline static const Wtring EMPTY_STRING = L"";
+    inline static const Wtring EMPTY_STR = L"";
 };
 
 #endif

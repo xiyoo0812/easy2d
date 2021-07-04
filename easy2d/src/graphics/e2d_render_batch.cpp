@@ -61,9 +61,9 @@ void RenderBatch::addRenderQueue(SPtr<RenderTexture> texture)
     createSpriteQuad(texture);
 }
 
-void RenderBatch::addRenderQueue(SPtr<RenderRect> rect)
+void RenderBatch::addRenderQueue(SPtr<RenderObject> obj)
 {
-    createRectQuad(rect);
+    createObjQuad(obj);
 }
 
 void RenderBatch::addRenderQueue(SPtr<RenderText> text)
@@ -188,26 +188,12 @@ void RenderBatch::drawTexture(uint32 start, uint32 size, uint32 texture)
     }
 }
 
-void RenderBatch::createRectQuad(SPtr<RenderRect> rect)
+void RenderBatch::createObjQuad(SPtr<RenderObject> obj)
 {
-    //for every sprite that has to be drawn, push back all vertices 
-    //(VERTEX_AMOUNT per sprite) into the vertexbuffer and all uvcoords 
-    //(UV_AMOUNT per sprite) into the uvbuffer and the isHUD bool
-    /*
-    *  TL    TR
-    *   0----1
-    *   |   /|
-    *   |  / |
-    *   | /  |
-    *   |/   |
-    *   2----3
-    *  BL    BR
-    */
     //Push back all vertices
     GLuint index = mVertexBuffer.size();
-    auto vextics = rect->mVexRect.getVectics();
     //vextics0123
-    mVertexBuffer.insert(mVertexBuffer.end(), vextics.begin(), vextics.end());
+    mVertexBuffer.insert(mVertexBuffer.end(), obj->mRect.mVectics.begin(), obj->mRect.mVectics.end());
     //indices 012,132
     Vector<GLuint> indices = { index, index + 1, index + 2, index + 1, index + 3, index + 2 };
     mIndexBuffer.insert(mIndexBuffer.end(), indices.begin(), indices.end());
@@ -216,31 +202,17 @@ void RenderBatch::createRectQuad(SPtr<RenderRect> rect)
     //hud
     mIsHUDBuffer.insert(mIsHUDBuffer.end(), 4, float32(true));
     //color
-    mColorBuffer.insert(mColorBuffer.end(), 4, rect->mColor);
+    mColorBuffer.insert(mColorBuffer.end(), 4, obj->mColor);
     //tex
     mTextureQueue.push_back(0);
 }
 
 void RenderBatch::createSpriteQuad(SPtr<RenderTexture> sprite)
 {
-    //for every sprite that has to be drawn, push back all vertices 
-    //(VERTEX_AMOUNT per sprite) into the vertexbuffer and all uvcoords 
-    //(UV_AMOUNT per sprite) into the uvbuffer and the isHUD bool
-    /*
-    *  TL    TR
-    *   0----1
-    *   |   /|
-    *   |  / |
-    *   | /  |
-    *   |/   |
-    *   2----3
-    *  BL    BR
-    */
     //Push back all vertices
     GLuint index = mVertexBuffer.size();
-    auto vextics = sprite->mVexRect.getVectics();
     //Push vextics 0123
-    mVertexBuffer.insert(mVertexBuffer.end(), vextics.begin(), vextics.end());
+    mVertexBuffer.insert(mVertexBuffer.end(), sprite->mRect.mVectics.begin(), sprite->mRect.mVectics.end());
     //Push indices 012,132
     Vector<GLuint> indices = { index, index + 1, index + 2, index + 1, index + 3, index + 2 };
     mIndexBuffer.insert(mIndexBuffer.end(), indices.begin(), indices.end());
@@ -256,19 +228,6 @@ void RenderBatch::createSpriteQuad(SPtr<RenderTexture> sprite)
 
 void RenderBatch::createTextQuad(SPtr<RenderText> text, Vec2& offset, Color& color)
 {
-    //for every sprite that has to be drawn, push back all vertices 
-    //(VERTEX_AMOUNT per sprite) into the vertexbuffer and all uvcoords 
-    //(UV_AMOUNT per sprite) into the uvbuffer and the isHUD bool
-    /*
-    *  TL    TR
-    *   0----1
-    *   |   /|
-    *   |  / |
-    *   | /  |
-    *   |/   |
-    *   2----3
-    *  BL    BR
-    */
     //Variables per textcomponent
     size_t line_count = text->mTextList.size();
     for (size_t line = 0; line < line_count; ++line)

@@ -109,9 +109,6 @@ namespace Easy2D
     void getRotationAndScaling(const Mat4& matrix, float32& rotation, Vec2& scaling);
     void decomposeMatrix(const Mat4& matrix, Vec2& position, Vec2& scaling, float32& rotation);
 
-    Vec3 project(const Vec3& pos, const Mat4& model, const Mat4& proj, const Vec4& viewport);
-    Vec3 unProject(const Vec3& pos, const Mat4& model, const Mat4& proj, const Vec4& viewport);
-
     int32 random(int32 min, int32 max);
     uint32 random(uint32 min, uint32 max);
     float32 random(float32 min, float32 max);
@@ -148,6 +145,9 @@ namespace Easy2D
     float32 distance(const Vec2f& vecA, const Vec2f& vecB);
     float32 distance(const Vec3f& vecA, const Vec3f& vecB);
     float32 distance(const Vec4f& vecA, const Vec4f& vecB);
+
+    template <typename T>
+    float32 distanceLine(const T& vecA, const T& vecB, const T& vecC);
 
     Mat3f toMat3(const Quatf& quaternion);
     void toMat3(const Quatf& quaternion, Mat3f& out);
@@ -251,6 +251,9 @@ namespace Easy2D
 
     Mat3f project(const Mat3f& mat, const Vec3f& normal);
     void project(const Mat3f& matIn, const Vec3f& normal, Mat3f& matOut);
+
+    Vec3 project(const Vec3& pos, const Mat4& model, const Mat4& proj, const Vec4& viewport);
+    Vec3 unProject(const Vec3& pos, const Mat4& model, const Mat4& proj, const Vec4& viewport);
 
     const float32* toPointer(const Mat2f& mat);
     const float32* toPointer(const Mat3f& mat);

@@ -230,7 +230,7 @@ const Wtring& UIButton::getText()
     {
         return mLabel->getText();
     }
-    return EMPTY_STRING;
+    return EMPTY_STR;
 }
 
 void UIButton::setHoverScale(float32 hf)

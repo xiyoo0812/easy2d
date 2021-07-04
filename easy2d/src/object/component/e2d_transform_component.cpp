@@ -138,29 +138,12 @@ void TransformComponent::mirrorY(bool y)
 
 bool TransformComponent::isInRect(const Vec2& pos) const
 {
-    Vec2 local = screen2Local(pos);
-    return true;
-    //turn Easy2D::posInRect(mLocal, mSize, local);
-}
-
-Vec2 TransformComponent::screen2Local(const Vec2& pos) const
-{
-    auto gm = GraphicsManager::instance();
-    auto viewport = gm->getViewport();
-    auto view = gm->getViewInverseMatrix();
-    auto proj = gm->getProjectionMatrix();
-    auto model = view * mWorld;
-    float mouseX = pos.x / (viewport.z * 0.5f) - 1;
-    float mouseY = pos.y / (viewport.w * 0.5f) - 1;
-    glm::mat4 invVP = glm::inverse(proj * model);
-    glm::vec4 screenPos = glm::vec4(mouseX, -mouseY, 1.0f, 1.0f);
-    glm::vec4 worldPos = invVP * screenPos;
-    return Vec2(worldPos.x, worldPos.y);
+    return mVectics.posInRect(pos);
 }
 
 Vec2 TransformComponent::screen2Ratio(const Vec2& pos) const
 {
-    return screen2Local(pos);
+    return mVectics.pos2Ratio(pos);
 }
 
 const Vec2& TransformComponent::getPosition() const
@@ -249,14 +232,14 @@ float32 TransformComponent::getHeight() const
     return mSize.y;
 }
 
+const VertixRect& TransformComponent::getRect() const
+{
+    return mVectics;
+}
+
 const Mat4& TransformComponent::getWorldMatrix() const
 {
     return mWorld;
-}
-
-const VertixRect& TransformComponent::getVertices() const
-{
-    return mVertices;
 }
 
 void TransformComponent::updateTransform()
@@ -289,9 +272,7 @@ void TransformComponent::updateTransform()
         transWorld *= Easy2D::translate(mSize.x / -2, mSize.y / -2, 0);
     }
     mWorld = transWorld;
-    //¼ÆËã×ø±êÎ»ÖÃ
-    mVertices = VertixRect(Vec2(0), mSize);
-    mVertices.mul(Easy2D::transpose(transWorld));
+    mVectics.buildRect(Vec2(0), mSize, Easy2D::transpose(transWorld));
 }
 
 void TransformComponent::update(const uint32& escapeMs)

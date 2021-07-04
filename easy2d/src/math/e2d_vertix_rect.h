@@ -14,21 +14,20 @@ namespace Easy2D
 
         VertixRect operator=(const VertixRect& yRef);
 
-        void mul(const Mat4& mat);
-
         float32 getWidth() const;
         float32 getHeight() const;
-        const Vec2& getSize() const;
 
         const Vec4& getTopLeft() const;
         const Vec4& getTopRight() const;
         const Vec4& getBottomLeft() const;
         const Vec4& getBottomRight() const;
-        const Vector<Vec4>& getVectics() const;
+
+        void mul(const Mat4& mat);
+        void buildRect(const Vec2& bl, const Vec2& size, const Mat4& mat);
 
         bool posInRect(const Vec2& pos) const;
+        Vec2 pos2Ratio(const Vec2& pos) const;
 
-    private:
         Vector<Vec4> mVectics;
         Vec2 mSize;
     };

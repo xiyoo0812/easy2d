@@ -51,11 +51,6 @@ const Vec2& Rect::getLeftTop() const
     return mLeftTop;
 }
 
-const Vec2& Rect::getSize() const
-{
-    return mSize;
-}
-
 Vec2 Rect::getCenterPoint() const
 {
     Vec2 centerPos;

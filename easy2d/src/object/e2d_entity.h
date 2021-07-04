@@ -65,7 +65,6 @@ namespace Easy2D
         const Vec2& getSize() const;
         const Vec2& getPosition() const;
         bool isInRect(const Vec2& pos) const;
-        Vec2 screen2Local(const Vec2& pos) const;
         Vec2 screen2Ratio(const Vec2& pos) const;
 
         const String& getPhysics() const;

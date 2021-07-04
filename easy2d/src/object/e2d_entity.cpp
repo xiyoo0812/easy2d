@@ -562,11 +562,6 @@ bool Entity::isInRect(const Vec2& pos) const
     return mTransform->isInRect(pos);
 }
 
-Vec2 Entity::screen2Local(const Vec2& pos) const
-{
-    return mTransform->screen2Local(pos);
-}
-
 Vec2 Entity::screen2Ratio(const Vec2& pos) const
 {
     return mTransform->screen2Ratio(pos);

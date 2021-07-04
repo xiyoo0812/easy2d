@@ -38,4 +38,20 @@ namespace Easy2D
         return glm::saturate<T>(x);
     }
 
+    template <typename T>
+    float32 distanceLine(const T& vecA, const T& vecB, const T& vecC)
+    {
+        T vecAB = vecB - vecA;
+        T vecAC = vecC - vecA;
+        //C1处的点
+        float f = glm::dot(vecAB, vecAC);
+        if (f < 0) return glm::distance(vecC, vecA);
+        //C2处的点，d=f*cos（theta）
+        float d = glm::dot(vecAB, vecAB);
+        if (f > d) return glm::distance(vecC, vecB);
+        f = f / d;
+        // c在ab线段上的投影点
+        T vecD = vecA + f * vecAB;
+        return glm::distance(vecC, vecD);
+    }
 }

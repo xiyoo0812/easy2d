@@ -148,5 +148,5 @@ const Wtring& UIEditbox::getText()
     {
         return mLabel->getText();
     }
-    return EMPTY_STRING;
+    return EMPTY_STR;
 }

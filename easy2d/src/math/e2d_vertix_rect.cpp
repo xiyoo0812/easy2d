@@ -21,7 +21,6 @@ VertixRect::VertixRect(const Vec4& tl, const Vec4& tr, const Vec4& bl, const Vec
     mSize.y = sqrt((bl.x - tl.x) * (bl.x - tl.x) + (bl.y - tl.y) * (bl.y - tl.y));
 }
 
-
 VertixRect VertixRect::operator=(const VertixRect& yRef)
 {
     mVectics = yRef.mVectics;
@@ -29,12 +28,36 @@ VertixRect VertixRect::operator=(const VertixRect& yRef)
     return *this;
 }
 
+void VertixRect::buildRect(const Vec2& bl, const Vec2& size, const Mat4& mat)
+{
+    Vec2 scale;
+    Easy2D::getScaling(mat, scale);
+    mSize = size * scale;
+    mVectics =
+    {
+        Easy2D::mul(Vec4(bl.x, bl.y + size.y, 0, 1), mat),
+        Easy2D::mul(Vec4(bl.x + size.x, bl.y + size.y, 0, 1), mat),
+        Easy2D::mul(Vec4(bl.x, bl.y, 0, 1), mat),
+        Easy2D::mul(Vec4(bl.x + size.x, bl.y, 0, 1), mat)
+    };
+}
+
+Vec2 VertixRect::pos2Ratio(const Vec2& pos) const
+{
+    float32 y = Easy2D::distanceLine(Vec2(mVectics[0]), Vec2(mVectics[1]), pos);
+    float32 x = Easy2D::distanceLine(Vec2(mVectics[0]), Vec2(mVectics[2]), pos);
+    return Vec2(x / mSize.x, y / mSize.y);
+}
+
 void VertixRect::mul(const Mat4& mat)
 {
+    Vec2 scale;
+    Easy2D::getScaling(mat, scale);
     Easy2D::mul(mVectics[0], mat, mVectics[0]);
     Easy2D::mul(mVectics[1], mat, mVectics[1]);
     Easy2D::mul(mVectics[2], mat, mVectics[2]);
     Easy2D::mul(mVectics[3], mat, mVectics[3]);
+    mSize *= scale;
 }
 
 float32 VertixRect::getWidth() const
@@ -45,11 +68,6 @@ float32 VertixRect::getWidth() const
 float32 VertixRect::getHeight() const
 {
     return mSize.y;
-}
-
-const Vec2& VertixRect::getSize() const
-{
-    return mSize;
 }
 
 const Vec4& VertixRect::getTopLeft() const
@@ -70,11 +88,6 @@ const Vec4& VertixRect::getBottomLeft() const
 const Vec4& VertixRect::getBottomRight() const
 {
     return mVectics[3];
-}
-
-const Vector<Vec4>& VertixRect::getVectics() const
-{
-    return mVectics;
 }
 
 bool VertixRect::posInRect(const Vec2& pos) const
