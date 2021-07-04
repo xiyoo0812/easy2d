@@ -111,10 +111,12 @@ SPtr<FontChar> Font::loadFontChar(wchar_t ch, bool bBold, bool bItalic)
     GLubyte* expanded_data = new GLubyte[2 * width * height];
     for (uint32 j = 0; j < height; ++j)
     {
+        //先翻转一下
+        uint32 mirrorj = height - j;
         for (uint32 i = 0; i < width; ++i)
         {
             expanded_data[2 * (i + j * width)] = 255;
-            expanded_data[2 * (i + j * width) + 1] = (i >= bitmap.width || j >= bitmap.rows) ? 0 : bitmap.buffer[i + bitmap.width * j];
+            expanded_data[2 * (i + j * width) + 1] = (i >= bitmap.width || mirrorj >= bitmap.rows) ? 0 : bitmap.buffer[i + bitmap.width * mirrorj];
         }
     }
     //letter height

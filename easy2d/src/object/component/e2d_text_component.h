@@ -10,7 +10,9 @@ namespace Easy2D
 {
     class RenderChar : public RenderTexture
     {
+    public:
         Vec2 mLocal;
+        uint16 mIndex = 0;
     };
 
     class TextComponent : public Component
@@ -71,15 +73,14 @@ namespace Easy2D
 
     private:
         void checkWrapping();
-        void calculateTextSize(uint32 textWidth, uint32 textHeight);
-        void calculateTextOffset(Vector<uint16>& lineWidths);
+        void calculateTextOffset(Vector<uint16>& lineWidths, uint32 textHeight);
 
         bool mbContentFollow = false;
 
         uint32 mLineWidth = 0;
         uint32 mFrameOffset = 1;
         Wtring mOrigText = EMPTY_STR;
-        Vector<RenderChar> mRenderChars{};
+        Vector<Vector<RenderChar>> mRenderChars{};
         SPtr<RenderText> mRenderText = nullptr;
         VerticalAlign mVerticalAlign = VerticalAlign::Center;
         HorizontalAlign mHorizontalAlign = HorizontalAlign::Left;
