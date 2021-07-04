@@ -239,20 +239,13 @@ void RenderBatch::createSpriteQuad(SPtr<RenderTexture> sprite)
     //Push back all vertices
     GLuint index = mVertexBuffer.size();
     auto vextics = sprite->mVexRect.getVectics();
-    //vextics 0123
+    //Push vextics 0123
     mVertexBuffer.insert(mVertexBuffer.end(), vextics.begin(), vextics.end());
-    //indices 012,132
+    //Push indices 012,132
     Vector<GLuint> indices = { index, index + 1, index + 2, index + 1, index + 3, index + 2 };
     mIndexBuffer.insert(mIndexBuffer.end(), indices.begin(), indices.end());
     //Push back all uv's
-    //0
-    mUvCoordBuffer.push_back(Vec2(sprite->mUvCoords.x, sprite->mUvCoords.y));
-    //1
-    mUvCoordBuffer.push_back(Vec2(sprite->mUvCoords.z, sprite->mUvCoords.y));
-    //2
-    mUvCoordBuffer.push_back(Vec2(sprite->mUvCoords.x, sprite->mUvCoords.w));
-    //3
-    mUvCoordBuffer.push_back(Vec2(sprite->mUvCoords.z, sprite->mUvCoords.w));
+    mUvCoordBuffer.insert(mUvCoordBuffer.end(), sprite->mUvCoords.begin(), sprite->mUvCoords.end());
     //hud
     mIsHUDBuffer.insert(mIsHUDBuffer.end(), 4, float32(sprite->mbHud));
     //color
@@ -311,13 +304,9 @@ void RenderBatch::createTextQuad(SPtr<RenderText> text, Vec2& offset, Color& col
             Vector<GLuint> indices = { index, index + 1, index + 2, index + 1, index + 3, index + 2 };
             mIndexBuffer.insert(mIndexBuffer.end(), indices.begin(), indices.end());
             //Push back all uv's
-            //0
             mUvCoordBuffer.push_back(Vec2(fChar->uvCoords.x, fChar->uvCoords.y));
-            //1
             mUvCoordBuffer.push_back(Vec2(fChar->uvCoords.z, fChar->uvCoords.y));
-            //2
             mUvCoordBuffer.push_back(Vec2(fChar->uvCoords.x, fChar->uvCoords.w));
-            //3
             mUvCoordBuffer.push_back(Vec2(fChar->uvCoords.z, fChar->uvCoords.w));
             //hud
             mIsHUDBuffer.insert(mIsHUDBuffer.end(), 4, float32(text->mbHud));

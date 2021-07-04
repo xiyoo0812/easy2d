@@ -46,10 +46,12 @@ namespace Easy2D
         void setTexture(SPtr<Texture2D> mTexture);
 
     protected:
-        SPtr<RenderTexture> buildRenderTexture();
+        SPtr<RenderTexture> buildRenderTexture(const Vec4& uvCoords);
 
     private:
-        Vec4 mScale9Tile { 0, 0, 1, 1 };
+        bool mScale9Enable = false;
+        Vec4 mUvCoords{ 0, 0, 1, 1 };
+        Vec4 mScale9Tile{ 0, 0, 0, 0 };
         SPtr<Texture2D> mTexture = nullptr;
         SPtr<RenderTexture> mRenderTex = nullptr;
         Vector<SPtr<RenderTexture>> mRenderTexScale9 = {};

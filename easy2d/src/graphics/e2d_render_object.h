@@ -25,8 +25,30 @@ namespace Easy2D
     class RenderTexture : public RenderRect
     {
     public:
-        Vec4 mUvCoords{ 0, 0, 1, 1 };
         uint32 mTextureID = 0;
+        Vector<Vec2> mUvCoords{};
+
+        void buildUvCooreds(Vec4 uvcoods)
+        {
+            /*
+            *  TL    TR
+            *   0----1
+            *   |   /|
+            *   |  / |
+            *   | /  |
+            *   |/   |
+            *   2----3
+            *  BL    BR
+            */
+            mUvCoords = 
+            {
+                //0123
+                Vec2(uvcoods.x, uvcoods.y),
+                Vec2(uvcoods.z, uvcoods.y),
+                Vec2(uvcoods.x, uvcoods.w),
+                Vec2(uvcoods.z, uvcoods.w)
+            };
+        }
     };
 
     class RenderText : public RenderObject
