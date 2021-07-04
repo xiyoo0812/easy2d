@@ -9,10 +9,7 @@ namespace Easy2D
     {
     public:
         UIScrollView(const String& name);
-        ~UIScrollView(){}
-
-        void setContentSize(const Vec2& dim);
-        const Vec2& getContentSize() const;
+        ~UIScrollView() {}
 
         void setScrollPercent(const Vec2& pos);
         const Vec2& getScrollPercent() const;
@@ -21,15 +18,15 @@ namespace Easy2D
         void showHorizontalBar(bool bShow);
 
         virtual void onSizeChanged(const Vec2& pos);
+        virtual void onContentChanged(const Vec2& contentSize);
 
     protected:
-        void updateScrollPercent(const Vec2& size);
+        void updateScrollPercent(const Vec2& size, const Vec2& contentSize);
 
     protected:
         bool mbShowVerticalBar = false;
         bool mbShowHorizontalBar = false;
         Vec2 mScrollPos = VEC2_ZERO;
-        Vec2 mContentSize = VEC2_ZERO;
         Vec2 mScrollPercent = VEC2_ZERO;
     };
 }

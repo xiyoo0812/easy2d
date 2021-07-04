@@ -199,6 +199,7 @@ void TransformComponent::setSize(float32 x, float32 y)
         mSize.y = y;
         mbChanged = true;
         mMaster.lock()->onSizeChanged(mSize);
+        setContentSize(std::max(x, mContentSize.x), std::max(y, mContentSize.y));
     }
 }
 

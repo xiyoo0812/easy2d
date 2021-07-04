@@ -9,25 +9,6 @@ UIScrollView::UIScrollView(const String& name) : UIWidget(name)
 
 }
 
-void UIScrollView::setContentSize(const Vec2& dim)
-{
-    if (mContentSize != dim)
-    {
-        auto size = mTransform->getSize();
-        mContentSize = Vec2(std::max(size.x, dim.x), std::max(size.y, dim.y));
-        updateScrollPercent(size);
-    }
-}
-
-const Vec2& UIScrollView::getContentSize() const
-{
-    if (mContentSize == VEC2_ZERO)
-    {
-        return mTransform->getSize();
-    }
-    return mContentSize;
-}
-
 void UIScrollView::setScrollPercent(const Vec2& percent)
 {
     if (mScrollPercent != percent)
@@ -57,17 +38,18 @@ void UIScrollView::showHorizontalBar(bool bShow)
 
 void UIScrollView::onSizeChanged(const Vec2& size)
 {
-    if (size.x > mContentSize.x || size.y > mContentSize.y)
-    {
-        mContentSize = Vec2(std::max(size.x, mContentSize.x), std::max(size.y, mContentSize.y));
-        updateScrollPercent(size);
-    }
+    updateScrollPercent(size, getContentSize());
 }
 
-void UIScrollView::updateScrollPercent(const Vec2& size)
+void UIScrollView::onContentChanged(const Vec2& contentSize)
 {
-    auto dx = mContentSize.x - size.x;
-    auto dy = mContentSize.y - size.y;
+    updateScrollPercent(getSize(), contentSize);
+}
+
+void UIScrollView::updateScrollPercent(const Vec2& size, const Vec2& contentSize)
+{
+    auto dx = contentSize.x - size.x;
+    auto dy = contentSize.y - size.y;
     mScrollPos = Vec2(dx * mScrollPercent.x, dy * mScrollPercent.y);
     //todo ¸üĞÂscrollbarÎ»ÖÃ
     mTransform->setChanged(true);
