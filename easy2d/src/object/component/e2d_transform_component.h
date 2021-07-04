@@ -67,6 +67,9 @@ namespace Easy2D
         float32 getWidth() const;
         float32 getHeight() const;
         const Vec2& getSize() const;
+        const Vec2& getContentSize() const;
+        void setContentSize(const Vec2& size);
+        void setContentSize(float32 x, float32 y);
         
         const VertixRect& getRect() const;
         const Mat4& getWorldMatrix() const;
@@ -77,16 +80,16 @@ namespace Easy2D
     private:
         void updateTransform();
         void updateFulllAlign();
-        const Vec2& getContentSize() const;
         float32 transDockerX(float32 x);
         float32 transDockerY(float32 y);
+        const Vec2& getDockerSize() const;
 
         Mat4 mWorld = {};
         float32 mRotation = 0;
         VertixRect mVectics{};
         bool mMirroredX = false, mMirroredY = false;
         DockerAlign mDockerAlign = DockerAlign::LeftTop;
-        Vec2 mPostion{ 0 }, mAnchor{ 0 }, mScale { 1 }, mSize{ 1 }, mScaletmp{ 1 };
+        Vec2 mPostion{ 0 }, mAnchor{ 0 }, mScale { 1 }, mSize{ 1 }, mContentSize{ 0 }, mScaletmp{ 1 };
 
     public:
         inline static String GUID = "transform";

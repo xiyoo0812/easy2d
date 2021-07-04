@@ -16,7 +16,6 @@ bool UIButton::setup()
         LOG_WARN << _T("UIButton::setup: Entity setup failed!");
         return false;
     }
-    mbMouseMove = true;
     mVisible = VisibleType::HitSelf;
     return true;
 }

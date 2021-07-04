@@ -232,6 +232,31 @@ float32 TransformComponent::getHeight() const
     return mSize.y;
 }
 
+const Vec2& TransformComponent::getContentSize() const
+{
+    if (mContentSize == VEC2_ZERO)
+    {
+        return mSize;
+    }
+    return mContentSize;
+}
+
+void TransformComponent::setContentSize(float32 x, float32 y)
+{
+    if (x != mContentSize.x || y != mContentSize.y)
+    {
+        mContentSize.x = x;
+        mContentSize.y = y;
+        mbChanged = true;
+        mMaster.lock()->onContentChanged(mSize);
+    }
+}
+
+void TransformComponent::setContentSize(const Vec2& size)
+{
+    setContentSize(size.x, size.y);
+}
+
 const VertixRect& TransformComponent::getRect() const
 {
     return mVectics;
@@ -318,7 +343,7 @@ DockerAlign TransformComponent::getDockerAlign() const
 
 float32 TransformComponent::transDockerX(float32 x)
 {
-    const Vec2& size = getContentSize();
+    const Vec2& size = getDockerSize();
     switch (mDockerAlign)
     {
     case DockerAlign::Top:
@@ -342,7 +367,7 @@ float32 TransformComponent::transDockerX(float32 x)
 
 float32 TransformComponent::transDockerY(float32 y)
 {
-    const Vec2& size = getContentSize();
+    const Vec2& size = getDockerSize();
     switch (mDockerAlign)
     {
     case DockerAlign::Left:
@@ -364,7 +389,7 @@ float32 TransformComponent::transDockerY(float32 y)
     return y;
 }
 
-const Vec2& TransformComponent::getContentSize() const
+const Vec2& TransformComponent::getDockerSize() const
 {
     if (!mMaster.expired())
     {

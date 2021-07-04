@@ -259,7 +259,16 @@ const Vec2& Entity::getSize() const
 
 const Vec2& Entity::getContentSize() const
 {
-    return mTransform->getSize();
+    return mTransform->getContentSize();
+}
+
+void Entity::setContentSize(const Vec2& size)
+{
+    mTransform->setContentSize(size);
+}
+void Entity::setContentSize(float32 x, float32 y)
+{
+    mTransform->setContentSize(x, y);
 }
 
 float32 Entity::getWidth() const
@@ -292,6 +301,10 @@ void Entity::update(const uint32& escapeMs, bool escapeSec)
 }
 
 void Entity::onSizeChanged(const Vec2& size)
+{
+}
+
+void Entity::onContentChanged(const Vec2& size)
 {
 }
 
@@ -602,16 +615,10 @@ void Entity::setMouseHover(bool hover)
     mbMouseHover = hover;
 }
 
-bool Entity::enbaleMouseMove()
-{
-    return mbMouseMove;
-}
-
 VisibleType Entity::getVisible() const
 {
     return mVisible;
 }
-
 
 int32 Entity::getZorder() const
 {

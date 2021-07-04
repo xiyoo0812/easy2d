@@ -39,19 +39,13 @@ namespace Easy2D
     }
 
     template <typename T>
-    float32 distanceLine(const T& vecA, const T& vecB, const T& vecC)
+    Vec2 distanceLine(const T& vecA, const T& vecB, const T& vecC)
     {
         T vecAB = vecB - vecA;
         T vecAC = vecC - vecA;
-        //C1处的点
-        float f = glm::dot(vecAB, vecAC);
-        if (f < 0) return glm::distance(vecC, vecA);
-        //C2处的点，d=f*cos（theta）
-        float d = glm::dot(vecAB, vecAB);
-        if (f > d) return glm::distance(vecC, vecB);
-        f = f / d;
-        // c在ab线段上的投影点
-        T vecD = vecA + f * vecAB;
-        return glm::distance(vecC, vecD);
+        float32 absAB = glm::length(vecAB);
+        float32 absAP = glm::dot(vecAB, vecAC) / absAB;
+        float32 absCP = sqrt(pow(glm::length(vecAC), 2) - pow(absAP, 2));
+        return Vec2(absCP, absAP / absAB);
     }
 }

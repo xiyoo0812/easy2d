@@ -17,8 +17,8 @@ VertixRect::VertixRect(const Vec2& bl, const Vec2& size) : mSize(size)
 VertixRect::VertixRect(const Vec4& tl, const Vec4& tr, const Vec4& bl, const Vec4& br)
 {
     mVectics = { tl, tr, bl, br };
-    mSize.x = sqrt((tr.x - tl.x) * (tr.x - tl.x) + (tr.y - tl.y) * (tr.y - tl.y));
-    mSize.y = sqrt((bl.x - tl.x) * (bl.x - tl.x) + (bl.y - tl.y) * (bl.y - tl.y));
+    mSize.x = Easy2D::distance(tl, tr);
+    mSize.y = Easy2D::distance(tl, bl);
 }
 
 VertixRect VertixRect::operator=(const VertixRect& yRef)
@@ -44,9 +44,11 @@ void VertixRect::buildRect(const Vec2& bl, const Vec2& size, const Mat4& mat)
 
 Vec2 VertixRect::pos2Ratio(const Vec2& pos) const
 {
-    float32 y = Easy2D::distanceLine(Vec2(mVectics[0]), Vec2(mVectics[1]), pos);
-    float32 x = Easy2D::distanceLine(Vec2(mVectics[0]), Vec2(mVectics[2]), pos);
-    return Vec2(x / mSize.x, y / mSize.y);
+    Vec2 dy = Easy2D::distanceLine(Vec2(mVectics[0]), Vec2(mVectics[1]), pos);
+    Vec2 dx = Easy2D::distanceLine(Vec2(mVectics[0]), Vec2(mVectics[2]), pos);
+    float32 x = (dy.y >= 1) ? 1 : ((dy.y <= 0) ? 0 : dx.x / mSize.x);
+    float32 y = (dx.y >= 1) ? 1 : ((dx.y <= 0) ? 0 : dy.x / mSize.y);
+    return Vec2(x, y);
 }
 
 void VertixRect::mul(const Mat4& mat)

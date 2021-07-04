@@ -147,7 +147,7 @@ namespace Easy2D
     float32 distance(const Vec4f& vecA, const Vec4f& vecB);
 
     template <typename T>
-    float32 distanceLine(const T& vecA, const T& vecB, const T& vecC);
+    Vec2 distanceLine(const T& vecA, const T& vecB, const T& vecC);
 
     Mat3f toMat3(const Quatf& quaternion);
     void toMat3(const Quatf& quaternion, Mat3f& out);

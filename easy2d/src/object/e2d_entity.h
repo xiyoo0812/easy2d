@@ -24,13 +24,12 @@ namespace Easy2D
         virtual void destroy();
         virtual void update(const uint32& escapeMs, bool escapeSec);
         virtual void onSizeChanged(const Vec2& size);
-
+        virtual void onContentChanged(const Vec2& size);
+        
         virtual BubbleType enableInput(SPtr<KeyEvent> event, VisibleType& visable);
         virtual BubbleType enableInput(SPtr<MouseEvent> event, VisibleType& visable);
         virtual BubbleType handleChildInput(SPtr<KeyEvent> event);
         virtual BubbleType handleChildInput(SPtr<MouseEvent> event);
-
-        virtual const Vec2& getContentSize() const;
 
         void setPosition(const Vec2& pos);
         void setPosition(float32 x, float32 y);
@@ -62,7 +61,10 @@ namespace Easy2D
         void setSizeX(float32 x);
         void setSizeY(float32 y);
         void setSize(const Vec2& dim);
+        void setContentSize(const Vec2& size);
+        void setContentSize(float32 x, float32 y);
         const Vec2& getSize() const;
+        const Vec2& getContentSize() const;
         const Vec2& getPosition() const;
         bool isInRect(const Vec2& pos) const;
         Vec2 screen2Ratio(const Vec2& pos) const;
@@ -108,7 +110,6 @@ namespace Easy2D
         VisibleType getVisible() const;
         void setVisible(VisibleType visible);
         void setMouseHover(bool hover);
-        bool enbaleMouseMove();
 
         bool isChildNameExist(const String& name) const;
         bool isActionNameExist(const String& name) const;
@@ -142,7 +143,6 @@ namespace Easy2D
 
         int32 mZorder = 0;
         bool mbFocus = false;
-        bool mbMouseMove = false;
         bool mbMouseHover = false;
         VisibleType mVisible = VisibleType::HitChild;
         String mGroup = "default", mPhysics = "default";
