@@ -17,7 +17,7 @@ void UIScrollView::setScrollPercent(const Vec2& percent)
         mScrollPercent.x = std::min(100.0f, percent.x);
         mScrollPercent.y = std::max(0.0f, percent.y);
         mScrollPercent.y = std::min(100.0f, percent.y);
-        updateScrollPercent(mTransform->getSize());
+        updateScrollPercent(mTransform->getSize(), mTransform->getContentSize());
     }
 }
 
