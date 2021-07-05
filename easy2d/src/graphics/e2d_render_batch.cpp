@@ -56,38 +56,6 @@ const RenderSortingMode RenderBatch::getSortingMode()
     return mSortingMode;
 }
 
-void RenderBatch::addRenderQueue(SPtr<RenderTexture> texture)
-{
-    createSpriteQuad(texture);
-}
-
-void RenderBatch::addRenderQueue(SPtr<RenderObject> obj)
-{
-    createObjQuad(obj);
-}
-
-void RenderBatch::addRenderQueue(SPtr<RenderText> text)
-{
-    if (text->mShadowSize > 0)
-    {
-        for (int16 shadow = text->mShadowSize + text->mOutlineSize; shadow > text->mOutlineSize; shadow--)
-        {
-            createTextQuad(text, Vec2(shadow, shadow), text->mShadowColor);
-        }
-    }
-    if (text->mOutlineSize > 0)
-    {
-        for (int16 outline = text->mOutlineSize; outline > 0; outline--)
-        {
-            createTextQuad(text, Vec2(-outline, -outline), text->mOutlineColor);
-            createTextQuad(text, Vec2(-outline, outline), text->mOutlineColor);
-            createTextQuad(text, Vec2(outline, -outline), text->mOutlineColor);
-            createTextQuad(text, Vec2(outline, outline), text->mOutlineColor);
-        }
-    }
-    createTextQuad(text, Vec2(0, 0), text->mColor);
-}
-
 void RenderBatch::flush()
 {
     begin();
@@ -224,55 +192,4 @@ void RenderBatch::createSpriteQuad(SPtr<RenderTexture> sprite)
     mColorBuffer.insert(mColorBuffer.end(), 4, sprite->mColor);
     //tex
     mTextureQueue.push_back(sprite->mTextureID);
-}
-
-void RenderBatch::createTextQuad(SPtr<RenderText> text, Vec2& offset, Color& color)
-{
-    //Variables per textcomponent
-    size_t line_count = text->mTextList.size();
-    for (size_t line = 0; line < line_count; ++line)
-    {
-        uint32 fontHeight = text->mFont->getFontHeight();
-        int32 offsetY = offset.y + text->mVerticalOffset[line];
-        int32 offsetX = offset.x + text->mHorizontalOffset[line];
-        for (auto it : text->mTextList[line])
-        {
-            auto fChar = text->mFont->getFontChar(it, text->mbBold, text->mbItalic);
-            Mat4 offsetMatrix = text->matWorld * Easy2D::translate(Vec3(offsetX + fChar->letterSize.x, offsetY - fChar->letterSize.y, 0));
-            offsetMatrix *= Easy2D::translate(0, fontHeight / 2.0f, 0);
-            offsetMatrix *= Easy2D::scale(1, -1, 1);
-            offsetMatrix *= Easy2D::translate(0, fontHeight / -2.0f, 0);
-            Mat4 transformMat = Easy2D::transpose(offsetMatrix);
-            offsetX += fChar->advence + text->mOutlineSize;
-            Vec4 TL = Vec4(0, fChar->vertexSize.y, 0, 1);
-            mul(TL, transformMat, TL);
-            Vec4 TR = Vec4(fChar->vertexSize.x, fChar->vertexSize.y, 0, 1);
-            mul(TR, transformMat, TR);
-            Vec4 BL = Vec4(0, 0, 0, 1);
-            mul(BL, transformMat, BL);
-            Vec4 BR = Vec4(fChar->vertexSize.x, 0, 0, 1);
-            mul(BR, transformMat, BR);
-
-            GLuint index = mVertexBuffer.size();
-            //vextics 0123
-            mVertexBuffer.push_back(TL);
-            mVertexBuffer.push_back(TR);
-            mVertexBuffer.push_back(BL);
-            mVertexBuffer.push_back(BR);
-            //indices 012,132
-            Vector<GLuint> indices = { index, index + 1, index + 2, index + 1, index + 3, index + 2 };
-            mIndexBuffer.insert(mIndexBuffer.end(), indices.begin(), indices.end());
-            //Push back all uv's
-            mUvCoordBuffer.push_back(Vec2(fChar->uvCoords.x, fChar->uvCoords.y));
-            mUvCoordBuffer.push_back(Vec2(fChar->uvCoords.z, fChar->uvCoords.y));
-            mUvCoordBuffer.push_back(Vec2(fChar->uvCoords.x, fChar->uvCoords.w));
-            mUvCoordBuffer.push_back(Vec2(fChar->uvCoords.z, fChar->uvCoords.w));
-            //hud
-            mIsHUDBuffer.insert(mIsHUDBuffer.end(), 4, float32(text->mbHud));
-            //color
-            mColorBuffer.insert(mColorBuffer.end(), 4, color);
-            //tex
-            mTextureQueue.push_back(fChar->textureID);
-        }
-    }
 }

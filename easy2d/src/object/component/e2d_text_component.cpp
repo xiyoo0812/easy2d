@@ -9,7 +9,7 @@ using namespace Easy2D;
 
 TextComponent::TextComponent() : Component(TextComponent::GUID)
 {
-    mRenderText = std::make_shared<RenderText>();
+
 }
 
 TextComponent::~TextComponent()
@@ -29,8 +29,8 @@ void TextComponent::checkWrapping()
     Vector<uint16> lineWidths;
     Vector<RenderChar> lineChars;
     float32 textWidth = 0, offsetX = mFrameOffset, offsetY = mFrameOffset;
-    uint16 fontHeight = mRenderText->mFont->getFontHeight();
-    uint16 lineHeight = fontHeight + mRenderText->mSpacing;
+    uint16 fontHeight = mFont->getFontHeight();
+    uint16 lineHeight = fontHeight + mSpacing;
     uint16 index = 0;
     for (auto it : mOrigText)
     {
@@ -44,7 +44,7 @@ void TextComponent::checkWrapping()
             lineChars.clear();
             continue;
         }
-        auto fChar = mRenderText->mFont->getFontChar(it, mRenderText->mbBold, mRenderText->mbItalic);
+        auto fChar = mFont->getFontChar(it, mbBold, mbItalic);
         if (!fChar)
         {
             continue;
@@ -71,10 +71,10 @@ void TextComponent::checkWrapping()
             textWidth += charWidth;
         }
         RenderChar rChar;
+        rChar.mChar = fChar;
         rChar.mIndex = index++;
-        rChar.mTextureID = fChar->textureID;
         rChar.mLocal = Vec2(offsetX, offsetY);
-        rChar.setUvCooreds(fChar->uvCoords);
+        rChar.mTexture = std::make_shared<RenderTexture>();
         lineChars.push_back(rChar);
         offsetX += charWidth;
     }
@@ -103,6 +103,7 @@ void TextComponent::calculateTextOffset(Vector<uint16>& lineWidths, uint32 textH
 {
     uint32 diffY = 0;
     size_t lineCount = lineWidths.size();
+    const Mat4& matWorld = getTransform()->getWorldMatrix();
     const Vec2& contentSize = getTransform()->getContentSize();
     if (mVerticalAlign == VerticalAlign::Center)
     {
@@ -130,21 +131,58 @@ void TextComponent::calculateTextOffset(Vector<uint16>& lineWidths, uint32 textH
         {
             rChar.mLocal.x += diffX;
             rChar.mLocal.y += diffY;
+            Mat4 matTrans = Easy2D::transpose(matWorld * Easy2D::translate(diffX, diffY, 0));
+            rChar.mTexture->buildRect(Vec2(0), rChar.mChar->vertexSize, matTrans);
+            rChar.mTexture->mTextureID = rChar.mChar->textureID;
+            rChar.mTexture->setUvCooreds(rChar.mChar->uvCoords);
         }
     }
 }
 
 void TextComponent::update(const uint32& escapeMs)
 {
-    if (mRenderText->mFont)
+    if (mFont)
     {
         if (mbChanged)
         {
             checkWrapping();
-            mRenderText->matWorld = getTransform()->getWorldMatrix();
             mbChanged = false;
         }
-        RenderBatch::instance()->addRenderQueue(mRenderText);
+        const Mat4& matWorld = getTransform()->getWorldMatrix();
+        for (auto renders : mRenderChars)
+        {
+            for (auto rChar : renders)
+            {
+                /*if (mShadowSize > 0)
+                {
+                    for (int16 shadow = mShadowSize + mOutlineSize; shadow > mOutlineSize; shadow--)
+                    {
+                        auto texture = std::make_shared<RenderTexture>();
+                        texture->mbHud = true;
+                        texture->mColor = mShadowColor;
+                        texture->mTextureID = rChar.mChar->textureID;
+                        texture->setUvCooreds(rChar.mChar->uvCoords);
+                        Mat4 matTrans = Easy2D::transpose(matWorld * Easy2D::translate(rChar.mLocal.x, rChar.mLocal.y, 0));
+                        texture->buildRect(Vec2(0), rChar.mChar->vertexSize, matTrans);
+                        RenderBatch::instance()->createSpriteQuad(texture);
+
+                        createTextQuad(text, Vec2(shadow, shadow), text->mShadowColor);
+                    }
+                }
+                if (text->mOutlineSize > 0)
+                {
+                    for (int16 outline = text->mOutlineSize; outline > 0; outline--)
+                    {
+                        createTextQuad(text, Vec2(-outline, -outline), text->mOutlineColor);
+                        createTextQuad(text, Vec2(-outline, outline), text->mOutlineColor);
+                        createTextQuad(text, Vec2(outline, -outline), text->mOutlineColor);
+                        createTextQuad(text, Vec2(outline, outline), text->mOutlineColor);
+                    }
+                }
+                createTextQuad(text, Vec2(0, 0), text->mColor);*/
+                RenderBatch::instance()->createSpriteQuad(rChar.mTexture);
+            }
+        }
     }
 }
 
@@ -169,77 +207,77 @@ const Wtring& TextComponent::getText() const
 
 void TextComponent::setColor(const Color& color)
 {
-    mRenderText->mColor = color;
+    mColor = color;
 }
 
 const Color& TextComponent::getColor() const
 {
-    return mRenderText->mColor;
+    return mColor;
 }
 
 void TextComponent::setShadowColor(const Color& color, uint16 shodowSize /* = 1 */)
 {
-    mRenderText->mShadowColor = color;
-    mRenderText->mShadowSize = shodowSize;
+    mShadowColor = color;
+    mShadowSize = shodowSize;
 }
 
 const Color& TextComponent::getShadowColor() const
 {
-    return mRenderText->mShadowColor;
+    return mShadowColor;
 }
 
 uint16 TextComponent::getShadowSize() const
 {
-    return mRenderText->mShadowSize;
+    return mShadowSize;
 }
 
 void TextComponent::setOutlineColor(const Color& color, uint16 outlineSize /* = 1 */)
 {
-    mRenderText->mOutlineColor = color;
-    mRenderText->mOutlineSize = outlineSize;
+    mOutlineColor = color;
+    mOutlineSize = outlineSize;
 }
 
 const Color& TextComponent::getOutlineColor() const
 {
-    return mRenderText->mOutlineColor;
+    return mOutlineColor;
 }
 
 uint16 TextComponent::getOutlineSize() const
 {
-    return mRenderText->mOutlineSize;
+    return mOutlineSize;
 }
 
 void TextComponent::setBold(bool bold)
 {
-    mRenderText->mbBold = bold;
+    mbBold = bold;
     mbChanged = true;
 }
 
 bool TextComponent::isBold() const
 {
-    return mRenderText->mbBold;
+    return mbBold;
 }
 
 void TextComponent::setItalic(bool italoc)
 {
-    mRenderText->mbItalic = italoc;
+    mbItalic = italoc;
     mbChanged = true;
 }
 
 bool TextComponent::isItalic() const
 {
-    return mRenderText->mbItalic;
+    return mbItalic;
 }
 
 void TextComponent::setFont(const SPtr<Font> font)
 {
-    mRenderText->mFont = font;
+    mFont = font;
     mbChanged = true;
 }
 
 const SPtr<Font> TextComponent::getFont() const
 {
-    return mRenderText->mFont;
+    return mFont;
 }
 
 void TextComponent::setLineWidth(uint32 lineWidth)
@@ -260,13 +298,13 @@ uint32 TextComponent::getLineWidth() const
 
 void TextComponent::setSpacing(uint32 spacing)
 {
-    mRenderText->mSpacing = spacing;
+    mSpacing = spacing;
     mbChanged = true;
 }
 
 uint32 TextComponent::getSpacing() const
 {
-    return mRenderText->mSpacing;
+    return mSpacing;
 }
 
 void TextComponent::setFrameOffset(uint32 offset)
@@ -282,12 +320,12 @@ uint32 TextComponent::getFrameOffset() const
 
 void TextComponent::setHUDEnabled(bool enabled)
 {
-    mRenderText->mbHud = enabled;
+    mbHud = enabled;
 }
 
 bool TextComponent::isHUDEnabled() const
 {
-    return mRenderText->mbHud;
+    return mbHud;
 }
 
 void TextComponent::setContentFollow(bool follow)

@@ -95,11 +95,11 @@ void TextureComponent::update(const uint32& escapeMs)
         {
             for (auto renderTex : mRenderTexScale9)
             {
-                RenderBatch::instance()->addRenderQueue(renderTex);
+                RenderBatch::instance()->createSpriteQuad(renderTex);
             }
             return;
         }
-        RenderBatch::instance()->addRenderQueue(mRenderTex);
+        RenderBatch::instance()->createSpriteQuad(mRenderTex);
     }
 }
 

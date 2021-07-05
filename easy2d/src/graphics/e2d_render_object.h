@@ -63,7 +63,6 @@ namespace Easy2D
         Vector<int16> mHorizontalOffset = {};
         Color mShadowColor = Color::Black;
         Color mOutlineColor = Color::Black;
-        SPtr<Font> mFont = nullptr;
         bool mbItalic = false;
         bool mbBold = false;
     };
