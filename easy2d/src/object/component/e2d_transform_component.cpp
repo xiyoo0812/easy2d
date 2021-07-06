@@ -138,12 +138,12 @@ void TransformComponent::mirrorY(bool y)
 
 bool TransformComponent::isInRect(const Vec2& pos) const
 {
-    return mVectics.posInRect(pos);
+    return mVertexs.posInRect(pos);
 }
 
 Vec2 TransformComponent::screen2Ratio(const Vec2& pos) const
 {
-    return mVectics.pos2Ratio(pos);
+    return mVertexs.pos2Ratio(pos);
 }
 
 const Vec2& TransformComponent::getPosition() const
@@ -258,9 +258,9 @@ void TransformComponent::setContentSize(const Vec2& size)
     setContentSize(size.x, size.y);
 }
 
-const VertixRect& TransformComponent::getRect() const
+const VertexRect& TransformComponent::getRect() const
 {
-    return mVectics;
+    return mVertexs;
 }
 
 const Mat4& TransformComponent::getWorldMatrix() const
@@ -298,7 +298,7 @@ void TransformComponent::updateTransform()
         transWorld *= Easy2D::translate(mSize.x / -2, mSize.y / -2, 0);
     }
     mWorld = transWorld;
-    mVectics.buildRect(Vec2(0), mSize, Easy2D::transpose(transWorld));
+    mVertexs.general(Vec2(0), mSize, Easy2D::transpose(transWorld));
 }
 
 void TransformComponent::update(const uint32& escapeMs)
@@ -326,7 +326,7 @@ void TransformComponent::updateFulllAlign()
     {
         mPostion = Vec2(0, 0);
         mAnchor = Vec2(0.5, 0.5);
-        mSize = getContentSize();
+        mSize = getDockerSize();
     }
 }
 

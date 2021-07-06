@@ -148,7 +148,7 @@
     <ClCompile Include="src\math\e2d_math.cpp" />
     <ClCompile Include="src\math\e2d_pos.cpp" />
     <ClCompile Include="src\math\e2d_rect.cpp" />
-    <ClCompile Include="src\math\e2d_vertix_rect.cpp" />
+    <ClCompile Include="src\math\e2d_vertex_rect.cpp" />
     <ClCompile Include="src\object\component\e2d_camera_component.cpp" />
     <ClCompile Include="src\object\component\e2d_texture_component.cpp" />
     <ClCompile Include="src\object\component\e2d_text_component.cpp" />
@@ -204,7 +204,7 @@
     <ClInclude Include="src\math\e2d_math.hpp" />
     <ClInclude Include="src\math\e2d_pos.h" />
     <ClInclude Include="src\math\e2d_rect.h" />
-    <ClInclude Include="src\math\e2d_vertix_rect.h" />
+    <ClInclude Include="src\math\e2d_vertex_rect.h" />
     <ClInclude Include="src\object\component\e2d_camera_component.h" />
     <ClInclude Include="src\object\component\e2d_texture_component.h" />
     <ClInclude Include="src\object\component\e2d_text_component.h" />

@@ -9,7 +9,7 @@ using namespace Easy2D;
 
 TextComponent::TextComponent() : Component(TextComponent::GUID)
 {
-    mRenderText = std::make_shared<RenderText>();
+
 }
 
 TextComponent::~TextComponent()
@@ -19,141 +19,158 @@ TextComponent::~TextComponent()
 bool TextComponent::setup(SPtr<Entity> master)
 {
     setMaster(master);
+    mRenderText = std::make_shared<RenderText>();
     master->addTrigger(TransformEvent::GUID, std::dynamic_pointer_cast<EventListerner>(shared_from_this()));
     return true;
 }
 
 void TextComponent::checkWrapping()
 {
-    Vector<Wtring> renderWords;
-    Vector<uint16> lineWidths = {};
-    Wtring wrapText = EMPTY_STR;
-    uint16 lineWidth = 0, textWidth = 0;
-    Vec2 transDim = getTransform()->getSize();
-    if (isLineWarp() && mLineWidth > transDim.x - mFrameOffset * 2)
+    for (auto it : mOrigText)
     {
-        mLineWidth = transDim.x - mFrameOffset * 2;
+        mFont->getFontChar(it, mbBold, mbItalic);
     }
+    mRenderChars.clear();
+    Vector<uint16> lineWidths;
+    Vector<RenderChar> lineChars;
+    float32 textWidth = 0, offsetX = mFrameOffset, offsetY = mFrameOffset;
+    uint16 fontHeight = mFont->getFontHeight();
+    uint16 lineHeight = fontHeight + mSpacing;
+    uint16 index = 0;
     for (auto it : mOrigText)
     {
         if (it == ENTER)
         {
-            if (isLineWarp() && lineWidth > 0)
-            {
-                lineWidths.push_back(lineWidth);
-                renderWords.push_back(wrapText);
-                wrapText = EMPTY_STR;
-                lineWidth = 0;
-            }
+            index++;
+            offsetX = mFrameOffset;
+            offsetY += lineHeight;
+            lineWidths.push_back(textWidth);
+            mRenderChars.push_back(lineChars);
+            lineChars.clear();
             continue;
         }
-        uint32 charWidth = mRenderText->mFont->getCharWidth(it, mRenderText->mbBold, mRenderText->mbItalic);
+        auto fChar = mFont->getFontChar(it, mbBold, mbItalic);
+        if (!fChar)
+        {
+            continue;
+        }
+        uint32 charWidth = fChar->advence;
         if (isLineWarp())
         {
-            if (lineWidth + charWidth > mLineWidth)
+            uint32 curWidth = offsetX + charWidth + mFrameOffset;
+            if (curWidth > mLineWidth)
             {
-                if (lineWidth > textWidth)
+                if (curWidth > textWidth)
                 {
-                    textWidth = lineWidth;
+                    textWidth = curWidth;
                 }
-                if (lineWidth > 0)
-                {
-                    lineWidths.push_back(lineWidth);
-                    renderWords.push_back(wrapText);
-                    wrapText = EMPTY_STR;
-                    lineWidth = 0;
-                }
+                offsetX = mFrameOffset;
+                offsetY += lineHeight;
+                lineWidths.push_back(textWidth);
+                mRenderChars.push_back(lineChars);
+                lineChars.clear();
             }
         }
         else
         {
             textWidth += charWidth;
         }
-        lineWidth += charWidth;
-        wrapText.append(&it, 1);
+        RenderChar rChar;
+        rChar.mChar = fChar;
+        rChar.mIndex = index++;
+        rChar.mLocal = Vec2(offsetX, offsetY);
+        lineChars.push_back(rChar);
+        offsetX += charWidth;
     }
-    if (lineWidth > 0)
+    float32 textHeight = offsetY + mFrameOffset;
+    if (!lineChars.empty())
     {
-        lineWidths.push_back(lineWidth);
-        renderWords.push_back(wrapText);
+        lineWidths.push_back(textWidth);
+        mRenderChars.push_back(lineChars);
+        textHeight += lineHeight;
     }
-    mRenderText->mTextList = renderWords;
-    size_t lineCount = renderWords.size();
-    uint32 fontHeight = mRenderText->mFont->getFontHeight();
-    uint32 textHeight = fontHeight * lineCount + mRenderText->mSpacing * (lineCount - 1);
-    calculateTextSize(textWidth, textHeight);
-    calculateTextOffset(lineWidths);
+    const Vec2& contentSize = getTransform()->getContentSize();
+    if (textWidth > contentSize.x || textHeight > contentSize.y)
+    {
+        float32 cx = std::max(textWidth, contentSize.x);
+        float32 cy = std::max(textHeight, contentSize.y);
+        getTransform()->setContentSize(cx, cy);
+        if (mbContentFollow)
+        {
+            getTransform()->setSize(cx, cy);
+        }
+    }
+    calculateTextOffset(lineWidths, textHeight);
 }
 
-void TextComponent::calculateTextSize(uint32 textWidth, uint32 textHeight)
+void TextComponent::calculateTextOffset(Vector<uint16>& lineWidths, uint32 textHeight)
 {
-    if (mbContentFollow)
-    {
-        getTransform()->setSize(textWidth + mFrameOffset * 2, textHeight + mFrameOffset * 2);
-        return;
-    }
-    uint32 fontHeight = mRenderText->mFont->getFontHeight();
-    if (fontHeight > getTransform()->getHeight() - mFrameOffset * 2)
-    {
-        getTransform()->setSizeY(fontHeight + mFrameOffset * 2);
-    }
-}
-
-void TextComponent::calculateTextOffset(Vector<uint16>& lineWidths)
-{
-    mRenderText->mVerticalOffset.clear();
-    mRenderText->mHorizontalOffset.clear();
+    uint32 diffY = 0;
+    mRenderText->clear();
     size_t lineCount = lineWidths.size();
-    Vec2 transDim = getTransform()->getSize();
-    uint32 lineWidth = isLineWarp() ? mLineWidth : (transDim.x - mFrameOffset * 2);
-    uint32 fontHeight = mRenderText->mFont->getFontHeight();
-    uint32 textHeight = fontHeight * lineCount + mRenderText->mSpacing * (lineCount - 1);
+    uint16 fontHeight = mFont->getFontHeight();
+    const Mat4& matWorld = getTransform()->getWorldMatrix();
+    const Vec2& contentSize = getTransform()->getContentSize();
+    if (mVerticalAlign == VerticalAlign::Center)
+    {
+        diffY = (contentSize.y - textHeight) / 2;
+    }
+    else if (mVerticalAlign == VerticalAlign::Bottom)
+    {
+        diffY = contentSize.y - textHeight;
+    }
+    uint32 lineWidth = contentSize.x - mFrameOffset * 2;
     for (size_t line = 0; line < lineCount; ++line)
     {
+        uint32 diffX = 0;
         uint32 length = lineWidths[line];
+        Vector<RenderChar>& rChars = mRenderChars[line];
         if (mHorizontalAlign == HorizontalAlign::Center)
         {
-            int32 diff = lineWidth - length;
-            mRenderText->mHorizontalOffset.push_back(mFrameOffset + diff / 2);
+            diffX = (lineWidth - length / 2);
         }
         else if (mHorizontalAlign == HorizontalAlign::Right)
         {
-            int32 diff = lineWidth - length;
-            mRenderText->mHorizontalOffset.push_back(mFrameOffset + diff);
+            diffX = lineWidth - length;
         }
-        else
+        Mat4 offsetMatrix = matWorld;
+        for (auto rChar : rChars)
         {
-            mRenderText->mHorizontalOffset.push_back(mFrameOffset);
-        }
-        uint32 lineHeight = mFrameOffset + line * fontHeight + line * mRenderText->mSpacing;
-        if (mVerticalAlign == VerticalAlign::Center)
-        {
-            int32 diff = transDim.y - textHeight;
-            mRenderText->mVerticalOffset.push_back(lineHeight + diff / 2);
-        }
-        else if (mVerticalAlign == VerticalAlign::Bottom)
-        {
-            int32 diff = transDim.y - textHeight;
-            mRenderText->mVerticalOffset.push_back(lineHeight + diff);
-        }
-        else
-        {
-            mRenderText->mVerticalOffset.push_back(lineHeight);
+            auto fChar = rChar.mChar;
+            rChar.mLocal.x += diffX;
+            rChar.mLocal.y += diffY;
+            if (mShadowSize > 0)
+            {
+                for (int16 shadow = mShadowSize + mOutlineSize; shadow > mOutlineSize; shadow--)
+                {
+                    mRenderText->pushChar(rChar.mChar, mShadowColor, Vec4(rChar.mLocal, shadow, shadow), matWorld, fontHeight);
+                }
+            }
+            if (mOutlineSize > 0)
+            {
+                for (int16 outline = mOutlineSize; outline > 0; outline--)
+                {
+                    mRenderText->pushChar(rChar.mChar, mOutlineColor, Vec4(rChar.mLocal, -outline, -outline), matWorld, fontHeight);
+                    mRenderText->pushChar(rChar.mChar, mOutlineColor, Vec4(rChar.mLocal, -outline, outline), matWorld, fontHeight);
+                    mRenderText->pushChar(rChar.mChar, mOutlineColor, Vec4(rChar.mLocal, outline, -outline), matWorld, fontHeight);
+                    mRenderText->pushChar(rChar.mChar, mOutlineColor, Vec4(rChar.mLocal, outline, outline), matWorld, fontHeight);
+                }
+            }
+            mRenderText->pushChar(rChar.mChar, mColor, Vec4(rChar.mLocal, 0, 0), matWorld, fontHeight);
         }
     }
 }
 
 void TextComponent::update(const uint32& escapeMs)
 {
-    if (mRenderText->mFont)
+    if (mFont)
     {
         if (mbChanged)
         {
             checkWrapping();
-            mRenderText->matWorld = getTransform()->getWorldMatrix();
             mbChanged = false;
         }
-        RenderBatch::instance()->addRenderQueue(mRenderText);
+        RenderBatch::instance()->createTextQuad(mRenderText);
     }
 }
 
@@ -178,77 +195,77 @@ const Wtring& TextComponent::getText() const
 
 void TextComponent::setColor(const Color& color)
 {
-    mRenderText->mColor = color;
+    mColor = color;
 }
 
 const Color& TextComponent::getColor() const
 {
-    return mRenderText->mColor;
+    return mColor;
 }
 
 void TextComponent::setShadowColor(const Color& color, uint16 shodowSize /* = 1 */)
 {
-    mRenderText->mShadowColor = color;
-    mRenderText->mShadowSize = shodowSize;
+    mShadowColor = color;
+    mShadowSize = shodowSize;
 }
 
 const Color& TextComponent::getShadowColor() const
 {
-    return mRenderText->mShadowColor;
+    return mShadowColor;
 }
 
 uint16 TextComponent::getShadowSize() const
 {
-    return mRenderText->mShadowSize;
+    return mShadowSize;
 }
 
 void TextComponent::setOutlineColor(const Color& color, uint16 outlineSize /* = 1 */)
 {
-    mRenderText->mOutlineColor = color;
-    mRenderText->mOutlineSize = outlineSize;
+    mOutlineColor = color;
+    mOutlineSize = outlineSize;
 }
 
 const Color& TextComponent::getOutlineColor() const
 {
-    return mRenderText->mOutlineColor;
+    return mOutlineColor;
 }
 
 uint16 TextComponent::getOutlineSize() const
 {
-    return mRenderText->mOutlineSize;
+    return mOutlineSize;
 }
 
 void TextComponent::setBold(bool bold)
 {
-    mRenderText->mbBold = bold;
+    mbBold = bold;
     mbChanged = true;
 }
 
 bool TextComponent::isBold() const
 {
-    return mRenderText->mbBold;
+    return mbBold;
 }
 
 void TextComponent::setItalic(bool italoc)
 {
-    mRenderText->mbItalic = italoc;
+    mbItalic = italoc;
     mbChanged = true;
 }
 
 bool TextComponent::isItalic() const
 {
-    return mRenderText->mbItalic;
+    return mbItalic;
 }
 
 void TextComponent::setFont(const SPtr<Font> font)
 {
-    mRenderText->mFont = font;
+    mFont = font;
     mbChanged = true;
 }
 
 const SPtr<Font> TextComponent::getFont() const
 {
-    return mRenderText->mFont;
+    return mFont;
 }
 
 void TextComponent::setLineWidth(uint32 lineWidth)
@@ -269,13 +286,13 @@ uint32 TextComponent::getLineWidth() const
 
 void TextComponent::setSpacing(uint32 spacing)
 {
-    mRenderText->mSpacing = spacing;
+    mSpacing = spacing;
     mbChanged = true;
 }
 
 uint32 TextComponent::getSpacing() const
 {
-    return mRenderText->mSpacing;
+    return mSpacing;
 }
 
 void TextComponent::setFrameOffset(uint32 offset)
@@ -291,12 +308,12 @@ uint32 TextComponent::getFrameOffset() const
 
 void TextComponent::setHUDEnabled(bool enabled)
 {
-    mRenderText->mbHud = enabled;
+    mbHud = enabled;
 }
 
 bool TextComponent::isHUDEnabled() const
 {
-    return mRenderText->mbHud;
+    return mbHud;
 }
 
 void TextComponent::setContentFollow(bool follow)

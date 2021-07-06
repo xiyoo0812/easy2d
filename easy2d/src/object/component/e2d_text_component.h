@@ -8,9 +8,12 @@
 
 namespace Easy2D
 {
-    class RenderChar : public RenderTexture
+    class RenderChar
     {
+    public:
         Vec2 mLocal;
+        uint16 mIndex = 0;
+        SPtr<FontChar> mChar = nullptr;
     };
 
     class TextComponent : public Component
@@ -71,18 +74,20 @@ namespace Easy2D
 
     private:
         void checkWrapping();
-        void calculateTextSize(uint32 textWidth, uint32 textHeight);
-        void calculateTextOffset(Vector<uint16>& lineWidths);
+        void calculateTextOffset(Vector<uint16>& lineWidths, uint32 textHeight);
 
+        bool mbHud = true;
+        bool mbBold = false;
+        bool mbItalic = false;
         bool mbContentFollow = false;
-
-        uint32 mLineWidth = 0;
-        uint32 mFrameOffset = 1;
         Wtring mOrigText = EMPTY_STR;
-        Vector<RenderChar> mRenderChars{};
+        SPtr<Font> mFont = nullptr;
         SPtr<RenderText> mRenderText = nullptr;
+        Vector<Vector<RenderChar>> mRenderChars{};
         VerticalAlign mVerticalAlign = VerticalAlign::Center;
         HorizontalAlign mHorizontalAlign = HorizontalAlign::Left;
+        Color mColor = Color::White, mShadowColor = Color::Black, mOutlineColor = Color::Black;
+        uint16 mSpacing = 0, mShadowSize = 0, mOutlineSize = 0, mLineWidth = 0, mFrameOffset = 1;
 
     public:
         inline static String GUID = "render_text";
