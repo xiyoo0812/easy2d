@@ -31,7 +31,8 @@ namespace Easy2D
         void setSortingMode(RenderSortingMode mode);;
         const RenderSortingMode getSortingMode();
 
-        void createObjQuad(SPtr<RenderObject> obj);
+        void createRectQuad(SPtr<RenderRect> rect);
+        void createTextQuad(SPtr<RenderText> text);
         void createSpriteQuad(SPtr<RenderTexture> sprite);
 
         void flush();

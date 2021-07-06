@@ -19,12 +19,17 @@ TextComponent::~TextComponent()
 bool TextComponent::setup(SPtr<Entity> master)
 {
     setMaster(master);
+    mRenderText = std::make_shared<RenderText>();
     master->addTrigger(TransformEvent::GUID, std::dynamic_pointer_cast<EventListerner>(shared_from_this()));
     return true;
 }
 
 void TextComponent::checkWrapping()
 {
+    for (auto it : mOrigText)
+    {
+        mFont->getFontChar(it, mbBold, mbItalic);
+    }
     mRenderChars.clear();
     Vector<uint16> lineWidths;
     Vector<RenderChar> lineChars;
@@ -74,7 +79,6 @@ void TextComponent::checkWrapping()
         rChar.mChar = fChar;
         rChar.mIndex = index++;
         rChar.mLocal = Vec2(offsetX, offsetY);
-        rChar.mTexture = std::make_shared<RenderTexture>();
         lineChars.push_back(rChar);
         offsetX += charWidth;
     }
@@ -102,7 +106,9 @@ void TextComponent::checkWrapping()
 void TextComponent::calculateTextOffset(Vector<uint16>& lineWidths, uint32 textHeight)
 {
     uint32 diffY = 0;
+    mRenderText->clear();
     size_t lineCount = lineWidths.size();
+    uint16 fontHeight = mFont->getFontHeight();
     const Mat4& matWorld = getTransform()->getWorldMatrix();
     const Vec2& contentSize = getTransform()->getContentSize();
     if (mVerticalAlign == VerticalAlign::Center)
@@ -127,14 +133,30 @@ void TextComponent::calculateTextOffset(Vector<uint16>& lineWidths, uint32 textH
         {
             diffX = lineWidth - length;
         }
+        Mat4 offsetMatrix = matWorld;
         for (auto rChar : rChars)
         {
+            auto fChar = rChar.mChar;
             rChar.mLocal.x += diffX;
             rChar.mLocal.y += diffY;
-            Mat4 matTrans = Easy2D::transpose(matWorld * Easy2D::translate(diffX, diffY, 0));
-            rChar.mTexture->buildRect(Vec2(0), rChar.mChar->vertexSize, matTrans);
-            rChar.mTexture->mTextureID = rChar.mChar->textureID;
-            rChar.mTexture->setUvCooreds(rChar.mChar->uvCoords);
+            if (mShadowSize > 0)
+            {
+                for (int16 shadow = mShadowSize + mOutlineSize; shadow > mOutlineSize; shadow--)
+                {
+                    mRenderText->pushChar(rChar.mChar, mShadowColor, Vec4(rChar.mLocal, shadow, shadow), matWorld, fontHeight);
+                }
+            }
+            if (mOutlineSize > 0)
+            {
+                for (int16 outline = mOutlineSize; outline > 0; outline--)
+                {
+                    mRenderText->pushChar(rChar.mChar, mOutlineColor, Vec4(rChar.mLocal, -outline, -outline), matWorld, fontHeight);
+                    mRenderText->pushChar(rChar.mChar, mOutlineColor, Vec4(rChar.mLocal, -outline, outline), matWorld, fontHeight);
+                    mRenderText->pushChar(rChar.mChar, mOutlineColor, Vec4(rChar.mLocal, outline, -outline), matWorld, fontHeight);
+                    mRenderText->pushChar(rChar.mChar, mOutlineColor, Vec4(rChar.mLocal, outline, outline), matWorld, fontHeight);
+                }
+            }
+            mRenderText->pushChar(rChar.mChar, mColor, Vec4(rChar.mLocal, 0, 0), matWorld, fontHeight);
         }
     }
 }
@@ -148,41 +170,7 @@ void TextComponent::update(const uint32& escapeMs)
             checkWrapping();
             mbChanged = false;
         }
-        const Mat4& matWorld = getTransform()->getWorldMatrix();
-        for (auto renders : mRenderChars)
-        {
-            for (auto rChar : renders)
-            {
-                /*if (mShadowSize > 0)
-                {
-                    for (int16 shadow = mShadowSize + mOutlineSize; shadow > mOutlineSize; shadow--)
-                    {
-                        auto texture = std::make_shared<RenderTexture>();
-                        texture->mbHud = true;
-                        texture->mColor = mShadowColor;
-                        texture->mTextureID = rChar.mChar->textureID;
-                        texture->setUvCooreds(rChar.mChar->uvCoords);
-                        Mat4 matTrans = Easy2D::transpose(matWorld * Easy2D::translate(rChar.mLocal.x, rChar.mLocal.y, 0));
-                        texture->buildRect(Vec2(0), rChar.mChar->vertexSize, matTrans);
-                        RenderBatch::instance()->createSpriteQuad(texture);
-
-                        createTextQuad(text, Vec2(shadow, shadow), text->mShadowColor);
-                    }
-                }
-                if (text->mOutlineSize > 0)
-                {
-                    for (int16 outline = text->mOutlineSize; outline > 0; outline--)
-                    {
-                        createTextQuad(text, Vec2(-outline, -outline), text->mOutlineColor);
-                        createTextQuad(text, Vec2(-outline, outline), text->mOutlineColor);
-                        createTextQuad(text, Vec2(outline, -outline), text->mOutlineColor);
-                        createTextQuad(text, Vec2(outline, outline), text->mOutlineColor);
-                    }
-                }
-                createTextQuad(text, Vec2(0, 0), text->mColor);*/
-                RenderBatch::instance()->createSpriteQuad(rChar.mTexture);
-            }
-        }
+        RenderBatch::instance()->createTextQuad(mRenderText);
     }
 }
 

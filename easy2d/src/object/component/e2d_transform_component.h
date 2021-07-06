@@ -2,7 +2,7 @@
 #define TRANSFORM_COMPONENT_H
 
 #include "object/e2d_component.h"
-#include "math/e2d_vertix_rect.h"
+#include "math/e2d_vertex_rect.h"
 
 namespace Easy2D
 {
@@ -71,7 +71,7 @@ namespace Easy2D
         void setContentSize(const Vec2& size);
         void setContentSize(float32 x, float32 y);
         
-        const VertixRect& getRect() const;
+        const VertexRect& getRect() const;
         const Mat4& getWorldMatrix() const;
 
         void setDockerAlign(DockerAlign align);
@@ -86,7 +86,7 @@ namespace Easy2D
 
         Mat4 mWorld = {};
         float32 mRotation = 0;
-        VertixRect mVectics{};
+        VertexRect mVertexs{};
         bool mMirroredX = false, mMirroredY = false;
         DockerAlign mDockerAlign = DockerAlign::LeftTop;
         Vec2 mPostion{ 0 }, mAnchor{ 0 }, mScale { 1 }, mSize{ 1 }, mContentSize{ 0 }, mScaletmp{ 1 };

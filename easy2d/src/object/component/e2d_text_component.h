@@ -14,7 +14,6 @@ namespace Easy2D
         Vec2 mLocal;
         uint16 mIndex = 0;
         SPtr<FontChar> mChar = nullptr;
-        SPtr<RenderTexture> mTexture = nullptr;
     };
 
     class TextComponent : public Component
@@ -83,10 +82,11 @@ namespace Easy2D
         bool mbContentFollow = false;
         Wtring mOrigText = EMPTY_STR;
         SPtr<Font> mFont = nullptr;
+        SPtr<RenderText> mRenderText = nullptr;
         Vector<Vector<RenderChar>> mRenderChars{};
         VerticalAlign mVerticalAlign = VerticalAlign::Center;
         HorizontalAlign mHorizontalAlign = HorizontalAlign::Left;
-        Color mColor = Color::Black, mShadowColor = Color::Black, mOutlineColor = Color::Black;
+        Color mColor = Color::White, mShadowColor = Color::Black, mOutlineColor = Color::Black;
         uint16 mSpacing = 0, mShadowSize = 0, mOutlineSize = 0, mLineWidth = 0, mFrameOffset = 1;
 
     public:

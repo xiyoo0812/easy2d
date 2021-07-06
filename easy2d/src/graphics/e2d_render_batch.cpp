@@ -156,12 +156,12 @@ void RenderBatch::drawTexture(uint32 start, uint32 size, uint32 texture)
     }
 }
 
-void RenderBatch::createObjQuad(SPtr<RenderObject> obj)
+void RenderBatch::createRectQuad(SPtr<RenderRect> rect)
 {
     //Push back all vertices
     GLuint index = mVertexBuffer.size();
     //vextics0123
-    mVertexBuffer.insert(mVertexBuffer.end(), obj->mRect.mVectics.begin(), obj->mRect.mVectics.end());
+    mVertexBuffer.insert(mVertexBuffer.end(), rect->mVectics.begin(), rect->mVectics.end());
     //indices 012,132
     Vector<GLuint> indices = { index, index + 1, index + 2, index + 1, index + 3, index + 2 };
     mIndexBuffer.insert(mIndexBuffer.end(), indices.begin(), indices.end());
@@ -170,9 +170,32 @@ void RenderBatch::createObjQuad(SPtr<RenderObject> obj)
     //hud
     mIsHUDBuffer.insert(mIsHUDBuffer.end(), 4, float32(true));
     //color
-    mColorBuffer.insert(mColorBuffer.end(), 4, obj->mColor);
+    mColorBuffer.insert(mColorBuffer.end(), 4, rect->mColor);
     //tex
     mTextureQueue.push_back(0);
+}
+
+void RenderBatch::createTextQuad(SPtr<RenderText> text)
+{
+    //Push back all vertices
+    GLuint oldSize = mVertexBuffer.size();
+    //Push vextics 0123
+    mVertexBuffer.insert(mVertexBuffer.end(), text->mVectics.begin(), text->mVectics.end());
+    for (size_t i = 0; i < text->mCount; ++i)
+    {
+        GLuint index = oldSize + i * 4;
+        //Push indices 012,132
+        Vector<GLuint> indices = { index, index + 1, index + 2, index + 1, index + 3, index + 2 };
+        mIndexBuffer.insert(mIndexBuffer.end(), indices.begin(), indices.end());
+        //hud
+        mIsHUDBuffer.insert(mIsHUDBuffer.end(), 4, float32(true));
+    }
+    //Push back all uv's
+    mUvCoordBuffer.insert(mUvCoordBuffer.end(), text->mUvCoords.begin(), text->mUvCoords.end());
+    //color
+    mColorBuffer.insert(mColorBuffer.end(), text->mColors.begin(), text->mColors.end());
+    //tex
+    mTextureQueue.insert(mTextureQueue.end(), text->mTextureIDs.begin(), text->mTextureIDs.end());
 }
 
 void RenderBatch::createSpriteQuad(SPtr<RenderTexture> sprite)
@@ -180,7 +203,7 @@ void RenderBatch::createSpriteQuad(SPtr<RenderTexture> sprite)
     //Push back all vertices
     GLuint index = mVertexBuffer.size();
     //Push vextics 0123
-    mVertexBuffer.insert(mVertexBuffer.end(), sprite->mRect.mVectics.begin(), sprite->mRect.mVectics.end());
+    mVertexBuffer.insert(mVertexBuffer.end(), sprite->mVectics.begin(), sprite->mVectics.end());
     //Push indices 012,132
     Vector<GLuint> indices = { index, index + 1, index + 2, index + 1, index + 3, index + 2 };
     mIndexBuffer.insert(mIndexBuffer.end(), indices.begin(), indices.end());
