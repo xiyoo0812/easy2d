@@ -45,7 +45,7 @@ void E2dEngine::initialize(uint32 window_width, uint32 window_height)
     image->setDockerAlign(DockerAlign::Center);
     image->setAnchor(0.5, 0.5);
     image->setZorder(1);
-    image->setScale(0.8);
+    //image->setScale(0.8);
 
     auto button = UIFactory::instance()->createButton("button", "image/btn.png", Vec2(0, 0), image);
     //image->setScale9Tile(20, 12, 75, 30);
@@ -53,23 +53,22 @@ void E2dEngine::initialize(uint32 window_width, uint32 window_height)
     button->setHoverScale(1.05f);
     button->setPushedScale(0.95f);
     button->setAnchor(0.5, 0.5);
-    button->setScale(2);
+    //button->setScale(1.2);
     button->setZorder(2);
 
     auto buttonb = UIFactory::instance()->createButton("buttonb", "skin/btn_b_n.png", "skin/btn_b_p.png", Vec2(0, 0), image);
     //image->setScale9Tile(20, 12, 75, 30);
     buttonb->setDockerAlign(DockerAlign::LeftTop);
     buttonb->setAnchor(0, 0);
-    buttonb->setScale(1.2);
+    //buttonb->setScale(1.2);
     buttonb->setZorder(2);
-    buttonb->setRotate(-PI / 2);
+    //buttonb->setRotate(-PI / 2);
 
     auto buttony = UIFactory::instance()->createButton("buttony", "skin/btn_y_n.png","skin/btn_y_p.png", Vec2(0, 0), image);
     //image->setScale9Tile(20, 12, 75, 30);
     buttony->setDockerAlign(DockerAlign::RightTop);
     buttony->setAnchor(1, 0);
     buttony->setZorder(2);
-    buttony->setScale(0.8);
 
     auto progress = UIFactory::instance()->createProgress("progress", "skin/progress_bg.png","skin/progress_bar.png", Vec2(0, 0), image);
     //image->setScale9Tile(20, 12, 75, 30);
@@ -135,7 +134,7 @@ void E2dEngine::initialize(uint32 window_width, uint32 window_height)
     txt2->setItalic(true);
     //txt2->setShadowColor(Color::White, 1);
     txt2->setOutlineColor(Color::Red, 1);
-    txt2->setZorder(3);
+    txt2->setZorder(0);
 }
 
 void E2dEngine::update()

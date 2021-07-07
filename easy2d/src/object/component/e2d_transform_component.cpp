@@ -105,18 +105,6 @@ void TransformComponent::scaleY(float32 y)
     mbChanged = true;
 }
 
-void TransformComponent::scaleTemp(float32 x, float32 y)
-{
-    mScaletmp.x = x;
-    mScaletmp.y = y;
-    mbChanged = true;
-}
-
-void TransformComponent::scaleTemp(float32 v)
-{
-    scaleTemp(v, v);
-}
-
 void TransformComponent::mirror(bool x, bool y)
 {
     mMirroredX = x;
@@ -282,9 +270,9 @@ void TransformComponent::updateTransform()
     float32 docky = transDockerY(mPostion.y);
     transWorld *= Easy2D::translate(dockx - offsetx, docky - offsety, 0);
     transWorld *= Easy2D::translate(offsetx, offsety, 0);
-    if (mScale.x != 1.0f || mScale.y != 1.0f || mScaletmp.x != 1.0f || mScaletmp.y != 1.0f)
+    if (mScale.x != 1.0f || mScale.y != 1.0f)
     {
-        transWorld *= Easy2D::scale(Vec3(mScale.x * mScaletmp.x, mScale.y * mScaletmp.y, 1.0f));
+        transWorld *= Easy2D::scale(Vec3(mScale.x, mScale.y, 1.0f));
     }
     if (mMirroredX || mMirroredY)
     {

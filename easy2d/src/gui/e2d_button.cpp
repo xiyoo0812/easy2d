@@ -57,7 +57,6 @@ void UIButton::onMouseEnter(SPtr<MouseEvent> event)
     if (mStatus == ButtonStatus::Normal)
     {
         setStatus(ButtonStatus::Hover);
-        setScale(mHoverFactor);
     }
 }
 
@@ -244,6 +243,10 @@ void UIButton::setPushedScale(float32 pf)
 
 void UIButton::updateStatus(bool showOrHide)
 {
+    if (mScaleNormal == VEC2_ZERO)
+    {
+        mScaleNormal = getScale();
+    }
     float32 scale = 1.0f;
     SPtr<UIImage> ctrlImage = mNormal;
     switch (mStatus)
@@ -270,7 +273,7 @@ void UIButton::updateStatus(bool showOrHide)
     }
     if (showOrHide)
     {
-       setScaleTemp(scale);
+       setScale(scale * mScaleNormal);
     }
 }
 

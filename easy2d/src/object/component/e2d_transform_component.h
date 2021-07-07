@@ -40,8 +40,6 @@ namespace Easy2D
         void scale(float32 u);
         void scaleX(float32 x);
         void scaleY(float32 y);
-        void scaleTemp(float32 u);
-        void scaleTemp(float32 x, float32 y);
 
         void mirror(bool x, bool y);
         void mirrorX(bool x);
@@ -89,7 +87,7 @@ namespace Easy2D
         VertexRect mVertexs{};
         bool mMirroredX = false, mMirroredY = false;
         DockerAlign mDockerAlign = DockerAlign::LeftTop;
-        Vec2 mPostion{ 0 }, mAnchor{ 0 }, mScale { 1 }, mSize{ 1 }, mContentSize{ 0 }, mScaletmp{ 1 };
+        Vec2 mPostion{ 0 }, mAnchor{ 0 }, mScale { 1 }, mSize{ 1 }, mContentSize{ 0 };
 
     public:
         inline static String GUID = "transform";

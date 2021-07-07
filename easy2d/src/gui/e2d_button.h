@@ -54,6 +54,7 @@ namespace Easy2D
     protected:
         float32 mHoverFactor = 1.0f;
         float32 mPushedFactor = 1.0f;
+        Vec2 mScaleNormal = VEC2_ZERO;
         SPtr<UILabel> mLabel = nullptr;
         SPtr<UIImage> mNormal = nullptr;
         SPtr<UIImage> mPushed = nullptr;

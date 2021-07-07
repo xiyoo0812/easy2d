@@ -45,13 +45,12 @@ namespace Easy2D
         void setMirrorX(bool x);
         void setMirrorY(bool y);
 
+        const Vec2& getScale() const;
         void setScale(const Vec2& scale);
         void setScale(float32 x, float32 y);
         void setScale(float32 u);
         void setScaleX(float32 x);
         void setScaleY(float32 y);
-        void setScaleTemp(float32 u);
-        void setScaleTemp(float32 x, float32 y);
 
         float32 getRotation() const;
         void setRotate(float32 rotation);

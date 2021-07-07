@@ -146,6 +146,11 @@ void Entity::setMirrorY(bool y)
     mTransform->mirrorY(y);
 }
 
+const Vec2& Entity::getScale() const
+{
+    return mTransform->getScale();
+}
+
 void Entity::setScale(const Vec2& scale)
 {
     mTransform->scale(scale);
@@ -170,17 +175,6 @@ void Entity::setScaleY(float32 y)
 {
     mTransform->scaleY(y);
 }
-
-void Entity::setScaleTemp(float32 scale)
-{
-    mTransform->scaleTemp(scale);
-}
-
-void Entity::setScaleTemp(float32 x, float32 y)
-{
-    mTransform->scaleTemp(x, y);
-}
-
 
 float32 Entity::getRotation() const
 {

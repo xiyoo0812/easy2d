@@ -80,7 +80,8 @@ void TextComponent::checkWrapping()
         rChar.mIndex = index++;
         rChar.mLocal = Vec2(offsetX, offsetY);
         lineChars.push_back(rChar);
-        offsetX += charWidth;
+        //加上描边的长度
+        offsetX += charWidth + mOutlineSize;
     }
     float32 textHeight = offsetY + mFrameOffset;
     if (!lineChars.empty())
@@ -127,7 +128,7 @@ void TextComponent::calculateTextOffset(Vector<uint16>& lineWidths, uint32 textH
         Vector<RenderChar>& rChars = mRenderChars[line];
         if (mHorizontalAlign == HorizontalAlign::Center)
         {
-            diffX = (lineWidth - length / 2);
+            diffX = (lineWidth - length) / 2;
         }
         else if (mHorizontalAlign == HorizontalAlign::Right)
         {
