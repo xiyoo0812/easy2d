@@ -1,4 +1,0 @@
-
-[submodule "extend/luaext"]
-	path = extend/luaext
-	url = https://github.com/xiyoo0812/luaext.git
